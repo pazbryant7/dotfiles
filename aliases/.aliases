@@ -1,0 +1,77 @@
+#general
+alias fontcache="sudo fc-cache -f -v"
+alias kr="xset r rate 200 60"
+alias sct="crontab -l > ~/Documents/github/dotfiles/crontab_backup.txt"
+alias update-firefox='~/Documents/github/utilities/bash/update_firefox-developer.sh'
+alias rust-update='cargo install-update -a' # cargo install cargo-update needs to be installed
+alias showemails='bat ~/Dropbox/personal/Random/accounts.txt'
+alias zip='tar caf'
+alias sudo='sudo '
+alias cl='clear'
+alias 256test='echo -e "\e[38;5;196mred\e[38;5;46mgreen\e[38;5;21mblue\e[0m"'
+alias export_gpg_private_key='gpg --output private.gpg --armor --export-secret-key'
+alias export_gpg_public_key='gpg --output public.gpg --armor --export'
+
+# nvchad
+alias nc="cd ~/Documents/github/dotfiles/.conf/nvim/nvchad_V2; nvim ."
+
+# terminal
+alias :q='exit'
+alias sudoe="sudoedit"
+alias rma='rm -rf'
+alias apps="cd /usr/share/applications"
+alias cargoapps="ls ~/.cargo/bin/"
+
+# zoxide
+alias zb='cd -'
+alias .='cd ../'
+alias ..='cd ../../'
+alias ...='cd ../../../'
+alias ....='cd ../../../../'
+
+#third party apps
+alias transes="trans :es"
+alias ww='wget'
+alias standup='git standup'
+alias update='sudo apt-get update && sudo apt-get upgrade && update-firefox'
+alias record='ffmpeg -f x11grab -s 1920x1080 -r 25 -i :0.0 -f pulse -i 1 -c:v libx264 -preset ultrafast -crf 18 -c:a aac -b:a 192k ~/Video/screenshots/recording-$(date +"%d-%m-%Y_%H%M%S").mp4'
+alias hmd='himalaya'
+alias hm='himalaya -a'
+alias play='mpv'
+alias software='bat ~/Documents/github/dotfiles/software/software.md'
+
+#zsh
+alias szsh="source ~/.zshrc"
+alias dzshh='rm ~/.zsh_history'
+alias czsh='nvim ~/.zshrc'
+alias czshenv='nvim ~/.zshenv'
+
+#files
+alias kc='nvim ~/.config/kitty/kitty.conf'
+alias aliases="nvim ~/Documents/github/dotfiles/aliases/.aliases"
+alias tc="nvim ~/Documents/github/dotfiles/.conf/tmux/.tmux.conf"
+alias ac="nvim ~/.config/alacritty/alacritty.yml"
+
+#exa 
+alias ls="exa --icons -l" # ls
+alias ll='exa -l --git' # list, size, type, git
+alias llm='exa -lbGd --git --sort=modified' # long list, modified date sort
+alias la='exa -lbhHigUmuSa --time-style=long-iso --git --color-scale' # all list
+alias lx='exa -lbhHigUmuSa@ --time-style=long-iso --git --color-scale' # all + extended list
+alias lS='exa -1' # one column, just names
+alias lt='exa --tree --level=2' # tree
+
+#fd aliases
+alias fda='fd -H' # search hidden files and directories
+alias fdg='fd -g' # global search
+
+#git
+alias gcuw='git config --global user.name "Bryant Paz"; git config --global user.email "plbryant@hotmail.com"'
+alias gcup='git config --global user.name "pazita117"; git config --global user.email "plbryantt@outlook.com"'
+alias gdc="git diff --cached"
+alias sgun="git diff --cached"
+
+#ssh
+alias new-ssh='ssh-keygen -t ed25519 -C'
+alias start-ssh='eval "$(ssh-agent -s)"'
+alias show-ssh-config='bat ~/.ssh/config'

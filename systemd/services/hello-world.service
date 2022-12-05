@@ -1,0 +1,8 @@
+[Unit]
+Description=Hello world service
+
+[Service]
+ExecStart=/home/bryant/Documents/github/dotfiles/systemd/sh/hello_world.sh
+
+[Install]
+WantedBy=multi-user.target
