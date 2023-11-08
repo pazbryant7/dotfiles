@@ -1,0 +1,61 @@
+#!/usr/bin/env zsh
+
+autoload -U url-quote-magic edit-command-line compinit &&
+  compinit
+
+# zsh widgets
+zle -N edit-command-line
+zle -N copy_terminal_buffer
+
+# custom key binds
+bindkey -e # set to emacs binds
+bindkey '^[e' edit-command-line
+bindkey '^X' copy_terminal_buffer
+bindkey '^[[Z' reverse-menu-complete
+
+# zsh options
+setopt AUTO_CD HIST_FIND_NO_DUPS HIST_IGNORE_ALL_DUPS
+
+# completion configuration
+zstyle ':completion:*' menu select
+
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+
+# extend path
+extra_path=(
+	~/bin/global/
+	~/.cargo/bin/
+	~/.local/bin/
+	~/bin/crontab/
+	/usr/local/bin/
+	/var/lib/flatpak/exports/bin/
+	~/.local/share/nvim/mason/bin/
+	~/Documents/github/boilerplate/
+)
+
+PROMPT='%F{white}%2~%f '
+
+extra_path_expanded=$(printf "%s:" "${extra_path[@]}")
+export PATH="${(j/:/)extra_path}:${PATH}"
+
+# custom plugin manager
+# function can be found in ~/.zshplugin
+repos=(
+	# hlissner/zsh-autopair
+	# zsh-users/zsh-syntax-highlighting
+)
+
+# load plugins
+plugin-load $repos
+
+# start software
+eval "$(fzf --zsh)"
+
+eval "$(atuin init zsh)"
+eval "$(starship init zsh)"
+eval "$(fnm env --use-on-cd)"
+eval "$(zoxide init zsh)"
+
+# disable "c-s delay"
+stty -ixon
+stty susp undef

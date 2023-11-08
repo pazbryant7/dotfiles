@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+
+update_firefox() {
+	sh -c "$(curl -fsSL https://raw.githubusercontent.com/black7375/Firefox-UI-Fix/master/install.sh)"
+}
+
+main() {
+	update_firefox
+}
+
+main

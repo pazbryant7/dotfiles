@@ -1,0 +1,60 @@
+#!/bin/env sh
+
+MAX_VOLUME=150
+
+# NOTE: need to add a play/stop option
+
+get_volume() {
+	pactl get-sink-volume @DEFAULT_SINK@ |
+		awk -F'/' '{print $2}' |
+		tr -d ' %'
+}
+
+is_mute() {
+	pactl get-sink-mute @DEFAULT_SINK@ | rg "yes"
+}
+
+handle_volume() {
+	case $1 in
+	up)
+		pactl set-sink-mute @DEFAULT_SINK@ 0
+		if awk "BEGIN {exit !($(get_volume) >= $MAX_VOLUME)}"; then
+			return 0
+		fi
+		pactl set-sink-volume @DEFAULT_SINK@ +5%
+		;;
+	down)
+		pactl set-sink-mute @DEFAULT_SINK@ 0
+		pactl set-sink-volume @DEFAULT_SINK@ -5%
+		;;
+	mute)
+		pactl set-sink-mute @DEFAULT_SINK@ toggle
+		;;
+	esac
+}
+
+send_notification() {
+	volume="$(get_volume)"
+
+	if is_mute; then
+		icon="✖"
+	else
+		icon="✔"
+	fi
+
+	dunst_volume=$(awk "BEGIN {print ($volume / $MAX_VOLUME) * 100}")
+
+	dunstify -h string:x-dunst-stack-tag:volume \
+		-h int:value:"$dunst_volume" \
+		-t 2000 \
+		"$icon system"
+}
+
+main() {
+	action="$1"
+	handle_volume "$action"
+
+	send_notification
+}
+
+main "$1"

@@ -1,0 +1,33 @@
+#!/bin/env sh
+
+BAR_NAME="mainbar-bspwm"
+PID_FILE="/tmp/polybar_$BAR_NAME.pid"
+
+stop_polybar() {
+	killall -q polybar
+	wait
+}
+
+start_polybar() {
+	for m in $(polybar --list-monitors | cut -d":" -f1); do
+		MONITOR=$m polybar --reload "$BAR_NAME" &
+		echo $! >"$PID_FILE"
+	done
+}
+
+toggle_polybar() {
+	if [ -f "$PID_FILE" ] && pgrep -F "$PID_FILE" >/dev/null; then
+		stop_polybar
+		bspc config bottom_padding 0
+		rm -f "$PID_FILE"
+	else
+		start_polybar
+		bspc config bottom_padding 14
+	fi
+}
+
+main() {
+	toggle_polybar
+}
+
+main

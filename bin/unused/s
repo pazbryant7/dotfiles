@@ -1,0 +1,61 @@
+#!/usr/bin/env sh
+
+SSH_DIR="$HOME/.ssh/private"
+
+get_passphrase() {
+	selected_passphrase=$(pass show "ssh/$1")
+	echo "$selected_passphrase"
+}
+
+get_private_key_name() {
+	fd --base-directory "$SSH_DIR" |
+		fzf --header="Select your ssh private key file"
+}
+
+authenticate() {
+	if ! timeout 2s sshpass -P "Enter passphrase" -p "$1" \
+		ssh-add "$SSH_DIR/$2" >/dev/null 2>&1; then
+		echo "Error: passphrase or key are invalid"
+		return 1
+	fi
+
+	echo "Identity was added susccessfully"
+}
+
+main() {
+	identity=$(ssh-add -l | rg '@' | awk -F ' ' '{print $3}')
+	if [ -n "$identity" ]; then
+
+		printf "Identity found: %s \n" "$identity"
+
+		printf "Would you like change it (y/n)? "
+		read -r response
+
+		if [ "$response" != "y" ]; then
+			exit 1
+		fi
+
+		ssh-add -D # remove all identities
+	fi
+
+	private_key=$(get_private_key_name)
+
+	if [ -z "$private_key" ]; then
+		exit 1
+	fi
+
+	passphrase=$(get_passphrase "$private_key")
+
+	if [ -z "$passphrase" ]; then
+		echo "Passphrase has not been selected or is invalid"
+		exit 1
+	fi
+
+	authenticate "$passphrase" "$private_key"
+
+	unset "$passphrase" # make sure passphrase is not saved in memory
+
+	exit 0
+}
+
+main

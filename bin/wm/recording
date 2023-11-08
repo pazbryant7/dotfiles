@@ -1,0 +1,175 @@
+#!/bin/env sh
+
+set -e
+
+OUTPUT_DIR="$HOME/Videos/recordings"
+readonly OUTPUT_DIR
+
+FILENAME_PREFIX="recording"
+readonly FILENAME_PREFIX
+
+PID_FILE="/tmp/screen_recorder.pid"
+readonly PID_FILE
+
+LOG_FILE="/tmp/screen_recorder.log"
+readonly LOG_FILE
+
+PREDEFINED_MONITOR=":0.0+0,0" # record full screen
+readonly PREDEFINED_MONITOR
+
+DEFAULT_PROFILE_ALIAS="fhd_f" # Default short profile alias
+readonly DEFAULT_PROFILE_ALIAS
+
+# --- Script-level variables for ffmpeg parameters ---
+# These will be set by set_recording_parameters()
+FFMPEG_INPUT_OPTS=""
+FFMPEG_PROFILE_OPTS=""
+
+refresh_status_bar() {
+	# NOTE: This is for ~/bin/global/slstatus-recording script. It executes it
+	# thought a signal of slstatus
+	pkill -RTMIN+1 slstatus
+}
+
+set_recording_parameters() {
+	_srp_profile_alias="$1"
+	_srp_input_source_and_res="$2"
+
+	case "$_srp_profile_alias" in
+	"4k_b") FFMPEG_PROFILE_OPTS="-c:v libvpx-vp9 -crf 24 -b:v 0 -cpu-used 2 -an -s 3840x2160" ;;
+	"4k_q") FFMPEG_PROFILE_OPTS="-c:v libx264 -preset slow -crf 18 -g 15 -bf 2 -pix_fmt yuv420p -movflags +faststart -an -s 3840x2160" ;;
+	"fhd_q") FFMPEG_PROFILE_OPTS="-c:v libx264 -preset slow -crf 18 -g 15 -bf 2 -pix_fmt yuv420p -movflags +faststart -an -s 1920x1080" ;;
+	"4k_f") FFMPEG_PROFILE_OPTS="-c:v libx264 -preset faster -crf 22 -g 30 -bf 2 -pix_fmt yuv420p -movflags +faststart -an -s 3840x2160" ;;
+	"fhd_f") FFMPEG_PROFILE_OPTS="-c:v libx264 -preset faster -crf 20 -g 30 -bf 2 -pix_fmt yuv420p -movflags +faststart -an -s 1920x1080" ;;
+	*)
+		echo "Error: Profile '$_srp_profile_alias' not found."
+		return 1
+		;;
+	esac
+
+	FFMPEG_INPUT_OPTS="-f x11grab -draw_mouse 1 -i ${_srp_input_source_and_res}"
+	return 0
+}
+
+start_recording() {
+	_efr_profile_alias="$1" # Effective Profile Alias
+
+	_timestamp=$(date '+%Y-%m-%d_%H-%M-%S')
+	_output_file="${OUTPUT_DIR}/${FILENAME_PREFIX}_${_timestamp}.mkv"
+
+	printf "Starting recording with profile: %s\n" "$_efr_profile_alias"
+	printf "Output file: %s\n" "$_output_file"
+	printf "FFmpeg command structure:\n"
+	printf "ffmpeg %s %s %s \"%s\" > \"%s\" 2>&1 &\n" \
+		"$FFMPEG_INPUT_OPTS" "$FFMPEG_PROFILE_OPTS" "$_output_file" "$LOG_FILE"
+
+	# Run ffmpeg in background, redirect output, and capture PID
+	# The variables $FFMPEG_..._OPTS are expanded by the current shell.
+	# The resulting string is passed to sh -c.
+	# $_output_file and $LOG_FILE are quoted for the inner shell.
+	sh -c "ffmpeg $FFMPEG_INPUT_OPTS $FFMPEG_PROFILE_OPTS \"$_output_file\" > \"$LOG_FILE\" 2>&1 & echo \$! > \"$PID_FILE\""
+
+	sleep 1 # Give ffmpeg a moment to start and write PID
+
+	_recorded_pid=""
+	if [ -f "$PID_FILE" ]; then
+		_recorded_pid=$(cat "$PID_FILE")
+	fi
+
+	if [ -n "$_recorded_pid" ] && ps -p "$_recorded_pid" >/dev/null; then
+		refresh_status_bar
+		printf "Recording started. PID: %s\n" "$_recorded_pid"
+	else
+		printf "Error: Failed to start ffmpeg. Check %s for details.\n" "$LOG_FILE" >&2
+		rm -f "$PID_FILE" # Clean up PID file if ffmpeg failed or PID is invalid
+		return 1
+	fi
+	return 0
+}
+
+stop_recording() {
+	if [ ! -f "$PID_FILE" ]; then
+		echo "Not recording (no PID file found)."
+		return 1
+	fi
+
+	_pid=$(cat "$PID_FILE")
+
+	if [ -z "$_pid" ] || ! ps -p "$_pid" >/dev/null; then
+		_stale_pid_message="Recording process "
+		if [ -n "$_pid" ]; then
+			_stale_pid_message="${_stale_pid_message}(PID: $_pid) "
+		fi
+		_stale_pid_message="${_stale_pid_message}not found. Cleaning up stale PID file."
+		echo "$_stale_pid_message"
+		rm -f "$PID_FILE"
+		return 1
+	fi
+
+	printf "Stopping recording (PID: %s)...\n" "$_pid"
+	kill -INT "$_pid" # Send SIGINT first for graceful shutdown
+
+	_count=0
+	while ps -p "$_pid" >/dev/null; do
+		sleep 1
+		_count=$((_count + 1))
+		if [ "$_count" -gt 10 ]; then # Wait up to 10 seconds
+			printf "ffmpeg (PID: %s) did not stop gracefully after 10s. Sending SIGKILL.\n" "$_pid" >&2
+			kill -KILL "$_pid"
+			break
+		fi
+	done
+
+	rm -f "$PID_FILE"
+	refresh_status_bar
+	printf "Recording stopped.\n"
+}
+
+main() {
+	_action="start" # Default action
+
+	if [ -f "$PID_FILE" ]; then
+		_pid_from_file=$(cat "$PID_FILE")
+		if [ -n "$_pid_from_file" ] && ps -p "$_pid_from_file" >/dev/null; then
+			_action="stop"
+		else
+			# Stale or invalid PID file
+			_cleanup_message="Stale PID file found"
+			if [ -n "$_pid_from_file" ]; then
+				_cleanup_message="${_cleanup_message} for PID $_pid_from_file"
+			else
+				_cleanup_message="Empty or invalid PID file found"
+			fi
+			_cleanup_message="${_cleanup_message}. Cleaning up."
+			echo "$_cleanup_message"
+			rm -f "$PID_FILE"
+			# _action remains "start" (default)
+		fi
+	fi
+
+	if [ "$_action" = "stop" ]; then
+		stop_recording
+	else
+		# Default to start if no argument or if PID was stale
+		_profile_to_use="${1:-$DEFAULT_PROFILE_ALIAS}"
+		_input_arg="$PREDEFINED_MONITOR"
+
+		# Ensure output directory exists
+		if ! mkdir -p "$OUTPUT_DIR"; then
+			printf "Error: Could not create output directory %s\n" "$OUTPUT_DIR" >&2
+			exit 1
+		fi
+
+		if set_recording_parameters "$_profile_to_use" "$_input_arg"; then
+			if ! start_recording "$_profile_to_use"; then
+				exit 1 # start_recording already printed error
+			fi
+		else
+			# set_recording_parameters already sent notification
+			exit 1
+		fi
+	fi
+	exit 0
+}
+
+main "$@"

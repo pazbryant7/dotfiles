@@ -1,0 +1,23 @@
+{
+  "save to disk dialog": "/home/bryant/Documents/books/novels/Lord of the Mysteries",
+  "sort_history": [
+    [
+      "series",
+      true
+    ],
+    [
+      "title",
+      true
+    ],
+    [
+      "series",
+      true
+    ],
+    [
+      "timestamp",
+      false
+    ]
+  ],
+  "welcome_wizard_device": "android",
+  "welcome_wizard_was_run": true
+}

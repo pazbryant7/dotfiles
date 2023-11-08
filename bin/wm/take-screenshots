@@ -1,0 +1,90 @@
+#!/usr/bin/env sh
+# Take screenshots with maim
+
+# Default directory for storing screenshots
+dir="$HOME/Pictures/screenshots"
+time=$(date +%Y-%m-%d-%H-%M-%S)
+file="$dir/screenshot_$time.png"
+
+# Countdown function to wait before taking the screenshot
+countdown() {
+	sec="$1"
+	while [ "$sec" -gt 0 ]; do
+		notify-send -a "sshot" -t 1000 --replace=699 -i "$file" "Taking shot in: $sec"
+		sec=$((sec - 1)) # Decrement sec (POSIX-compliant)
+		sleep 1
+	done
+}
+
+# Display help message
+show_help() {
+	echo "Dependencies:
+    maim dunst xdotool xclip
+Options:
+    -m    Mode to take the screenshot (full|select|win)
+    -s    Way to store the screenshot (clip|save|clip&save)
+    -w    Wait how long to take the screenshot (number, 0 means immediately)"
+}
+
+# Parse command-line options
+while getopts "m:s:w:" opt; do
+	case "$opt" in
+	m) mode="$OPTARG" ;;      # `full`, `select`, or `win`
+	s) store="$OPTARG" ;;     # `clip`, `save`, or `clip&save`
+	w) wait_time="$OPTARG" ;; # Wait time in seconds
+	*)
+		show_help
+		exit 1
+		;;
+	esac
+done
+
+# Show help if requested
+if [ -z "$mode" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+	show_help
+	exit 0
+fi
+
+# Set default values if not provided
+mode="${mode:-full}"
+store="${store:-clip&save}"
+wait_time="${wait_time:-0}"
+
+# Create the directory if it doesn't exist
+mkdir -p "$dir"
+
+# Countdown if waiting
+if [ "$wait_time" -gt 0 ]; then
+	countdown "$wait_time"
+fi
+
+# Build the maim command
+command="maim -u -f png"
+case "$mode" in
+select) command="$command -s -b 2 -c 0.35,0.55,0.85,0.25 -l" ;;
+win) command="$command -i $(xdotool getactivewindow)" ;;
+full) ;; # No additional options needed for full screenshot
+*)
+	echo "Invalid mode: $mode"
+	exit 1
+	;;
+esac
+command="$command \"$file\""
+
+# Execute the screenshot command
+if eval "$command"; then
+	notify-send -a "sshot" -u normal --replace=699 -i "$file" "Screenshot Successfully"
+else
+	notify-send -a "sshot" -u normal --replace=699 "Screenshot Failed"
+	exit 1
+fi
+
+# Handle storage options
+if [ "$store" = "clip" ] || [ "$store" = "clip&save" ]; then
+	xclip -selection clipboard -t image/png <"$file" # No need for 'cat'
+	if [ "$store" = "clip" ]; then
+		rm "$file"
+	fi
+fi
+
+exit 0

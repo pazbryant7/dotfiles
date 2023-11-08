@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+
+pane_count=$(tmux list-panes | wc -l)
+
+window_count=$(tmux list-windows | wc -l)
+
+session_count=$(tmux list-sessions | rg -c "^$(tmux display-message -p '#S'):" | wc -l)
+
+if [ "$pane_count" -gt 1 ]; then
+	tmux kill-pane
+elif [ "$window_count" -gt 1 ]; then
+	tmux kill-window
+else
+	if [ "$session_count" -gt 0 ]; then
+		next_session=$(tmux list-sessions | rg -v "^$(tmux display-message -p '#S'):" | head -n 1 | cut -d ':' -f 1)
+		previous_session="$(tmux display-message -p '#S')"
+		tmux switch-client -t "$next_session"
+		tmux kill-session -t "$previous_session"
+	else
+		tmux kill-session
+	fi
+	tmux refresh-client -S
+fi

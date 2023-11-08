@@ -1,0 +1,128 @@
+#!/usr/bin/env sh
+
+# Treat unset variables as an error
+set -u
+
+# Function to perform actions without confirmation (informational)
+perform() {
+	printf "%s\n" "$1"
+}
+
+# --- Initial Checks ---
+if [ "$(id -u)" = 0 ]; then
+	printf "This script should not be run as root. It will use sudo when needed.\n"
+	exit 1
+fi
+
+perform "Starting Arch Linux Maintenance Script..."
+
+# --- Core System Maintenance ---
+perform "--- Core System Maintenance ---"
+
+perform "Updating package databases and upgrading system (sudo pacman -Syu)..."
+if sudo pacman -Syu; then
+	perform "System upgrade complete."
+else
+	printf "System upgrade failed or was aborted.\n"
+fi
+
+perform "Checking for failed systemd services..."
+systemctl --failed
+
+perform "Checking systemd timers..."
+systemctl list-timers --all
+
+# --- Package Management & Cleanup ---
+perform "--- Package Management & Cleanup ---"
+
+perform "Identifying and removing orphaned packages (pacman -Rns \$(pacman -Qdtq))..."
+orphans=$(pacman -Qdtq)
+if [ -n "$orphans" ]; then
+	perform "Removing orphaned packages: $orphans"
+	# shellcheck disable=SC2086 # $orphans needs word splitting
+	sudo pacman -Rns $orphans
+else
+	perform "No orphaned packages found."
+fi
+
+perform "Cleaning package cache with paccache (keeping last 2 versions)..."
+sudo paccache -rk2
+
+perform "Removing all cached versions of UNINSTALLED packages with paccache..."
+sudo paccache -ruk0
+
+# AUR packages cleanup
+perform "Checking for AUR helper and cleaning cache..."
+aur_helper_found=""
+# The command -v here is for detection of which helper to use.
+if command -v paru >/dev/null 2>&1; then aur_helper_found="paru"; fi
+if command -v yay >/dev/null 2>&1; then aur_helper_found="yay"; fi # yay takes precedence if both installed
+
+if [ -n "$aur_helper_found" ]; then
+	perform "Cleaning up AUR helper ($aur_helper_found) build files/caches..."
+	if [ "$aur_helper_found" = "paru" ]; then
+		paru -Sc --aur
+	elif [ "$aur_helper_found" = "yay" ]; then
+		yay -Yc
+	fi
+else
+	perform "No common AUR helper (paru or yay) detected by script. Skipping AUR cleanup."
+fi
+
+# --- Filesystem & User Space Cleanup ---
+perform "--- Filesystem & User Space Cleanup ---"
+
+perform "Clearing old files (older than 30 days, max depth 4) from user cache ($HOME/.cache) using fd..."
+fd --type file --max-depth 4 --changed-before 30d . "$HOME/.cache" -X rm 2>/dev/null
+
+if [ -d /tmp ]; then
+	perform "Clearing old files (older than 2 days) from /tmp (owned by you or deletable) using fd..."
+	fd --type file --changed-before 2d . "/tmp" -X rm 2>/dev/null
+fi
+
+perform "Clearing ALL user cache ($HOME/.cache)..."
+rm -rf "$HOME/.cache/"*
+perform "User cache cleared. Some applications might rebuild their caches on next start."
+
+perform "Checking for broken symlinks in $HOME using fd..."
+fd --type l --base-directory "$HOME" . | while IFS= read -r link_path; do
+	if ! readlink -e "$link_path" >/dev/null 2>&1; then
+		printf "Broken symlink: %s\n" "$link_path"
+	fi
+done
+perform "Broken symlink check complete."
+
+perform "Finding top 20 largest files (>100MB) in $HOME using fd..."
+fd --type file --size +100M --base-directory "$HOME" . -X ls -lh {} \; | sort -k5,5hr -k10,10 | head -n 20
+perform "Large file search complete."
+
+# --- System Specific Cleanups (Docker, Flatpak) ---
+perform "--- System Specific Cleanups ---"
+
+perform "Cleaning up Docker (prune system: all unused images, containers, volumes, networks)..."
+if command -v docker >/dev/null 2>&1; then
+	docker system prune -a -f
+else
+	perform "Docker not found. Skipping Docker cleanup."
+fi
+
+perform "Cleaning up Flatpak (uninstall unused runtimes/apps)..."
+if command -v flatpak >/dev/null 2>&1; then
+	flatpak uninstall --unused -y
+else
+	perform "Flatpak not found. Skipping Flatpak cleanup."
+fi
+
+# --- System Information & Final Steps ---
+perform "--- System Information & Final Steps ---"
+
+perform "Checking disk usage for / ..."
+df -h /
+
+perform "Cleaning journald log files (vacuum to keep last 2 weeks)..."
+sudo journalctl --vacuum-time=2weeks
+
+printf "IMPORTANT: Remember to check the Arch Linux news for any manual interventions required!\n"
+printf "Visit: https://archlinux.org/news/\n"
+
+printf "System maintenance script complete!\n"

@@ -1,0 +1,21 @@
+next_img n
+prev_img p
+
+scroll_up    j
+scroll_down  k
+scroll_left  h
+scroll_right l
+
+remove     d
+delete   C-d
+
+toggle_filenames i
+
+# zooming
+zoom_in plus
+zoom_out minus
+zoom_default equal
+zoom_fit f
+zoom_fill F
+
+quit q

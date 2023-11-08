@@ -1,0 +1,182 @@
+#!/usr/bin/env sh
+#
+# Script to switch audio output (sink) and input (source)
+# using pactl and rofi, with a main selection menu.
+# POSIX-compliant sh.
+
+# Function to get available audio items (sinks or sources)
+# $1: item type ("sinks" or "sources")
+# Output: Multiline string "name\tdescription"
+# If description is missing, name is used as description.
+get_audio_items() {
+	_item_type="$1"
+	pactl list "$_item_type" | awk '
+        function print_item() {
+            if (item_name) {
+                if (item_desc == "" || item_desc == item_name) { item_desc = item_name }
+                print item_name "\t" item_desc
+            }
+        }
+        /^Sink #/ || /^Source #/ {
+            if (item_name) { print_item() }
+            item_name=""; item_desc=""
+        }
+        /^[[:space:]]*Name: / {
+            sub(/^[[:space:]]*Name: /, "");
+            item_name=$0
+        }
+        /^[[:space:]]*Description: / {
+            sub(/^[[:space:]]*Description: /, "");
+            item_desc=$0
+        }
+        END {
+            if (item_name) { print_item() }
+        }
+    '
+}
+
+# Function to display options via rofi and get selected item's name
+# $1: Prompt message for rofi
+# $2: Multiline string "name\tdescription" from get_audio_items
+# Output: Selected item's name on stdout, returns 0 on success.
+#         Empty string on stdout, returns 1 on cancellation or error.
+select_item_with_rofi() {
+	_prompt_message="$1"
+	_items_list="$2"
+
+	_rofi_input=$(printf "%s\n" "$_items_list" | awk -F'\t' '{
+        if (NF>=2 && $1 != $2) { print $2 " (" $1 ")" }
+        else { print $1 }
+    }')
+
+	if [ -z "$_rofi_input" ]; then
+		echo ""
+		return 1
+	fi
+
+	_selected_line_rofi=$(printf "%s\n" "$_rofi_input" | rofi -dmenu -p "$_prompt_message" -i -format 's')
+
+	if [ -z "$_selected_line_rofi" ]; then
+		echo ""
+		return 1
+	fi
+
+	_selected_name=$(printf "%s\n" "$_selected_line_rofi" | sed 's/.*(\([^)]*\))$/\1/')
+
+	echo "$_selected_name"
+	return 0
+}
+
+# Function to set the default sink (output)
+set_default_sink() {
+	_sink_name="$1"
+	if [ -n "$_sink_name" ]; then
+		pactl set-default-sink "$_sink_name"
+	fi
+}
+
+# Function to set the default source (input)
+set_default_source() {
+	_source_name="$1"
+	if [ -n "$_source_name" ]; then
+		pactl set-default-source "$_source_name"
+	fi
+}
+
+# Function to move all existing playback streams to the new sink
+move_sink_inputs_to_sink() {
+	_target_sink_name="$1"
+	if [ -z "$_target_sink_name" ]; then return; fi
+
+	pactl list short sink-inputs | cut -f1 | while IFS= read -r stream_id; do
+		if [ -n "$stream_id" ]; then
+			pactl move-sink-input "$stream_id" "$_target_sink_name" >/dev/null 2>&1
+		fi
+	done
+}
+
+# Function to move all existing recording streams to the new source
+move_source_outputs_to_source() {
+	_target_source_name="$1"
+	if [ -z "$_target_source_name" ]; then return; fi
+
+	pactl list short source-outputs | cut -f1 | while IFS= read -r stream_id; do
+		if [ -n "$stream_id" ]; then
+			pactl move-source-output "$stream_id" "$_target_source_name" >/dev/null 2>&1
+		fi
+	done
+}
+
+# Procedure to switch audio output
+switch_output_procedure() {
+	_available_sinks=$(get_audio_items "sinks")
+
+	if [ -z "$_available_sinks" ]; then
+		rofi -e "No audio outputs (sinks) found."
+		return 1
+	fi
+
+	_selected_sink_name=$(select_item_with_rofi "Select Audio Output (Sink):" "$_available_sinks")
+	_select_status=$?
+
+	if [ "$_select_status" -eq 0 ] && [ -n "$_selected_sink_name" ]; then
+		set_default_sink "$_selected_sink_name"
+		move_sink_inputs_to_sink "$_selected_sink_name"
+		# rofi -e "Audio output set." # Optional notification
+		return 0
+	fi
+	return 1 # Cancelled or failed
+}
+
+# Procedure to switch audio input
+switch_input_procedure() {
+	_available_sources=$(get_audio_items "sources")
+
+	if [ -z "$_available_sources" ]; then
+		rofi -e "No audio inputs (sources) found."
+		return 1
+	fi
+
+	_selected_source_name=$(select_item_with_rofi "Select Audio Input (Source):" "$_available_sources")
+	_select_status=$?
+
+	if [ "$_select_status" -eq 0 ] && [ -n "$_selected_source_name" ]; then
+		set_default_source "$_selected_source_name"
+		move_source_outputs_to_source "$_selected_source_name"
+		# rofi -e "Audio input set." # Optional notification
+		return 0
+	fi
+	return 1 # Cancelled or failed
+}
+
+# Main function
+main() {
+	_action_input="Change Audio Input"
+	_action_output="Change Audio Output"
+	_action_exit="Exit"
+
+	_main_menu_options=$(printf "%s\n%s\n%s" \
+		"$_action_input" \
+		"$_action_output" \
+		"$_action_exit")
+
+	_selected_action=$(printf "%s\n" "$_main_menu_options" | rofi -dmenu -p "Audio Control:" -i -format 's')
+
+	case "$_selected_action" in
+	"$_action_output")
+		switch_output_procedure
+		;;
+	"$_action_input")
+		switch_input_procedure
+		;;
+	"$_action_exit")
+		exit 0
+		;;
+	*)      # Handles empty selection (rofi cancellation at main menu) or unknown
+		exit 0 # Graceful exit
+		;;
+	esac
+}
+
+# Run main
+main

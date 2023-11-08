@@ -1,0 +1,134 @@
+super + q
+  bspc node -c
+
+super + alt + {e,r}
+	bspc {quit,wm -r} && notify-send "Bspwm reloaded"
+
+super + control + Escape
+	pkill -USR1 -x sxhkd && notify-send "Sxhkd reloaded"
+
+super + f
+  bspc node -t {fullscreen,tiled}
+
+super + {p,n}
+	bspc node -f {prev,next}.local.!hidden.window
+
+super + shift + {h,l}
+	bspc node -s {prev,next}.local.!hidden.window
+
+super + {h,l}
+  bspc desktop -f {prev,next}.local
+
+super + { bracketleft,braceleft,parenleft,percent,equal, \
+ampersand,parenright,braceright,bracketright,exclam}
+  bspc desktop -f '^{1,2,3,4,5,6,7,8,9,10}'
+
+super + shift + {1,2,3,4,5,6,7,8,9,0}
+    bspc node -d '^{1,2,3,4,5,6,7,8,9,10}'
+
+super + {Escape,Tab}
+  bspc {node,desktop} -f last.local
+
+# -------------- main keys -----------------------
+
+super + a
+  ~/bin/wm/passmenu
+
+super + o
+  ~/bin/wm/passmenu --otp
+
+super + e
+  st -e sh -c "yazi"
+
+super + i
+  bspc rule -a Nsxiv -o state=floating follow=on center=true \
+    rectangle=1200x700+0+0 && ~/bin/wm/select-background
+
+super + u
+	~/bin/wm/switch-sink
+
+super + d
+  rofi -show run
+
+super + t
+  st
+
+super + shift + t
+  alacritty
+
+super + space
+  ~/bin/wm/switch-keyboard
+
+super + Return
+	brave --profile-directory="personal"
+
+super + shift + Return
+	brave --profile-directory="work"
+
+super + b
+  ~/bin/wm/set-brightness
+
+super + s
+  ~/bin/wm/screenkey
+
+super + r
+  ~/bin/wm/read
+
+super + shift + r
+  ~/bin/global/recording
+
+super + shift + w
+  ~/bin/wm/start-polybar
+
+super + v
+  ~/bin/wm/watch
+
+# -------- floating windows -----------
+
+super + w
+  bspc node focused.tiled -t floating || bspc node focused.floating -t tiled
+
+# -------- man keys with custom rules -----------
+
+super + m
+  bspc rule -a St -o state=floating follow=on center=true \
+    rectangle=700x350+0+0 && st -e sh -c "ncmpcpp"
+
+# -------------- print ---------------------------
+
+Print
+ ~/bin/wm/take-screenshots -m select -s clip && notify-send "Saved in clipboard"
+
+alt + Print
+ ~/bin/wm/take-screenshots -m select -s save && notify-send "Saved in disk"
+
+super + Print
+ ~/bin/wm/take-screenshots -m full -s clip && notify-send "Saved in clipboard"
+
+control + Print
+ ~/bin/wm/take-screenshots -m full -s save && notify-send "Saved in disk"
+
+# --------------- resize windows --------------------
+
+super + alt + l
+  bspc node -z right 20 0 || bspc node -z left 20 0
+
+super + alt + h
+  bspc node -z right -20 0 || bspc node -z left -20 0
+
+super + alt + j
+  bspc node -z bottom 0 20 || bspc node -z top 0 20
+
+super + alt + k
+  bspc node -z bottom 0 -20 || bspc node -z top 0 -20
+
+# ---------------- audio control ----------------------
+
+XF86Audio{LowerVolume,RaiseVolume,Mute}
+  ~/bin/wm/volume-dunst {down,up,mute}
+
+# ----------------  Cristiano Ronaldo ----------------------
+
+super + shift + c
+  bspc rule -a mpv -o state=floating follow=on center=true rectangle=800x450+0+0 && \
+    mpv --volume=100 ~/Documents/github/media/videos/biy/cristiano.mp4

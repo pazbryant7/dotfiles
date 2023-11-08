@@ -1,0 +1,52 @@
+#!/bin/sh
+
+ensure_session_exists() {
+	_session_name="$1"
+	if ! tmux has-session -t "$_session_name" 2>/dev/null; then
+		tmux new-session -d -s "$_session_name"
+	fi
+}
+
+kill_other_sessions() {
+	_target_session="$1"
+	tmux list-sessions -F '#S' | while read -r session; do
+		if [ "$session" != "$_target_session" ]; then
+			tmux kill-session -t "$session"
+		fi
+	done
+}
+
+kill_other_windows() {
+	_target_session="$1"
+	current_window_id=$(tmux display-message -p -t "$_target_session" '#I')
+	tmux list-windows -t "$_target_session" -F '#I' | while read -r window_id; do
+		if [ "$window_id" != "$current_window_id" ]; then
+			tmux kill-window -t "${_target_session}:${window_id}"
+		fi
+	done
+}
+
+navigate_home() {
+	_target_session="$1"
+	if [ -n "$TMUX" ]; then
+		tmux switch-client -t "$_target_session"
+	fi
+	tmux display-message -t "$_target_session" "Cleaned up other sessions and windows."
+}
+
+main() {
+	if [ -z "$1" ]; then
+		echo "Error: No session name provided." >&2
+		echo "Usage: $0 <session_name>" >&2
+		exit 1
+	fi
+
+	readonly TARGET_SESSION="$1"
+
+	ensure_session_exists "$TARGET_SESSION"
+	navigate_home "$TARGET_SESSION" # needs to switch before kill
+	kill_other_sessions "$TARGET_SESSION"
+	kill_other_windows "$TARGET_SESSION"
+}
+
+main "$@"

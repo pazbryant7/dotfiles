@@ -1,0 +1,67 @@
+#!/bin/env sh
+
+set -e
+
+typeit=0
+use_otp=0
+
+while [ $# -gt 0 ]; do
+	case "$1" in
+	--type)
+		typeit=1
+		;;
+	--otp)
+		use_otp=1
+		;;
+	*)
+		break
+		;;
+	esac
+	shift
+done
+
+if [ -n "$WAYLAND_DISPLAY" ]; then
+	selector="rofi -dmenu -i -p 'Select item'"
+	typecommand="ydotool type --file -"
+elif [ -n "$DISPLAY" ]; then
+	selector="rofi -dmenu -i -p 'Select item'"
+	typecommand="xdotool type --clearmodifiers --file -"
+else
+	echo "Error: No Wayland or X11 display detected" >&2
+	exit 1
+fi
+
+prefix=${PASSWORD_STORE_DIR:-$HOME/Documents/github/pass}
+
+password_files=$(cd "$prefix" && fd -t f -e gpg . --base-directory "$prefix" | sed 's|\.gpg$||' | sort)
+
+password=$(printf '%s\n' "$password_files" | eval "$selector")
+
+[ -n "$password" ] || exit
+
+if [ "$use_otp" -eq 1 ]; then
+	retrieve_command="gopass otp \"$password\""
+else
+	retrieve_command="gopass show \"$password\""
+fi
+
+entry=$(eval "$retrieve_command" 2>/dev/null)
+
+password=$(echo "$entry" | head -n 1)
+username=$(echo "$entry" | rg "username" | awk '{print $2}')
+
+if [ "$typeit" -eq 1 ]; then
+	original_layout=$(setxkbmap -query | awk '/layout/ {print $2}')
+	setxkbmap us
+	trap 'setxkbmap "$original_layout"' EXIT
+	printf '%s' "$password" | $typecommand
+else
+	printf '%s' "$password" | xclip -selection clipboard
+	echo "Password copied to clipboard."
+fi
+
+if [ -z "$username" ]; then
+	return 0
+fi
+
+notify-send "Login" "$username"

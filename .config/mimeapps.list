@@ -1,0 +1,24 @@
+
+[Default Applications]
+# this file needs to be chmod 644 filename
+text/x-shellscript=nvim.desktop
+image/jpeg=nsxiv.desktop
+
+# web url
+image/png=nsxiv.desktop
+text/plain=nvim.desktop
+audio/ogg=paplay.desktop
+audio/mpeg=mpv.desktop
+inode/x-empty=nvim.desktop
+inode/directory=yazi.desktop
+application/json=nvim.desktop
+application/zip=org.pwmt.zathura-pdf-mupdf.desktop
+application/pdf=org.pwmt.zathura.desktop
+application/epub+zip=org.pwmt.zathura-pdf-mupdf.desktop
+x-scheme-handler/discord=vesktop.desktop
+x-scheme-handler/bruno=bruno.desktop
+x-scheme-handler/postman=Postman.desktop
+application/javascript=nvim.desktop
+text/html=nvim.desktop
+application/octet-stream=nvim.desktop
+audio/x-m4a=mpv.desktop

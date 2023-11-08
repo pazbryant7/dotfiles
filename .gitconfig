@@ -1,0 +1,10 @@
+[user]
+  name = Bryant Paz
+  email = pazbryant7@outlook.com
+  username = pazbryant
+[init]
+  defaultBranch = main
+[core]
+  editor = nvim
+[pull]
+  rebase = true

@@ -1,0 +1,58 @@
+#!/usr/bin/env sh
+
+set -e
+
+FOLDER="${HOME}/Documents/github/media/images/wallpapers"
+
+get_palette() {
+	_gp_image_path="$1"
+
+	if [ -z "${_gp_image_path}" ]; then
+		echo "Error: No image path provided." >&2
+		return 1
+	fi
+
+	# Generate a palette of 8 colors, sorted by frequency (most dominant first),
+	# and extract just the hex codes.
+	magick "${_gp_image_path}" +dither -colors 8 -format '%c' histogram:info: |
+		sed -n 's/.*\(#[0-9A-F]\{6\}\).*/\1/p'
+}
+
+select_image() {
+	nsxiv -rto "${FOLDER}"
+}
+
+set_background() {
+	if [ -z "$1" ]; then
+		echo "Error: No image path provided to set_background."
+		return 1
+	fi
+
+	feh --bg-fill "$1"
+	echo "Background set to: $(basename "$1")"
+}
+
+main() {
+	selected_image="$(select_image)"
+
+	if [ -z "${selected_image}" ]; then
+		echo "No image selected. Exiting."
+		return 1
+	fi
+
+	set_background "${selected_image}"
+
+	# Get the entire palette (a list of hex codes)
+	palette=$(get_palette "${selected_image}" | tac)
+	if [ -z "${palette}" ]; then
+		echo "Could not generate color palette." >&2
+		return 1
+	fi
+
+	accent_color=$(echo "${palette}" | sed -n '2p')
+	if [ -n "${accent_color}" ]; then
+		"$HOME/bin/global/uitool" "${accent_color}"
+	fi
+}
+
+main

@@ -1,0 +1,12 @@
+#!/usr/bin/sh
+
+current_session=$(tmux display-message -p '#S')
+
+target_session=$(tmux list-sessions -F "#{session_last_attached} #{session_name}" |
+	sort -rn | awk -v cur="$current_session" '$2 != cur {print $2; exit}')
+
+if [ -z "$target_session" ]; then
+	tmux display-message "There is no sessions to switch to"
+fi
+
+tmux switch-client -t "$target_session"

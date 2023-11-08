@@ -1,0 +1,49 @@
+Xft.rgba: rgb
+Xft.hinting: 1
+Xft.antialias: 1
+Xft.hintstyle: hintslight
+Xft.lcdfilter: lcddefault
+
+! Global colors
+*.background: #1d1f21
+*.foreground: #ffffff
+*.cursorColor: #957139
+
+*.color0: #1d1f21
+*.color1: #cc6666
+*.color2: #b5bd68
+*.color3: #f0c674
+*.color4: #81a2be
+*.color5: #b294bb
+*.color6: #8abeb7
+*.color7: #c5c8c6
+*.color8: #666666
+*.color9: #d54e53
+*.color10: #b9ca4a
+*.color11: #e7c547
+*.color12: #7aa6da
+*.color13: #c397d8
+*.color14: #70c0b1
+*.color15: #eaeaea
+
+! ST specific configurations
+! st.font: Maple Mono:pixelsize=13.5:style:Bold
+! st.font: Maple Mono NL:pixelsize=13.5:style:SemiBold
+! st.font: Maple Mono NL NF:pixelsize=13.5:style:SemiBold
+! st.font: Maple Mono Normal NL NF:pixelsize=13.5:style:SemiBold
+! st.font: Maple Mono Normal NL:pixelsize=13.5:style:SemiBold
+st.font: Recursive Mono Casual Static:pixelsize=13.5:style:SemiBold
+
+
+st.alpha: 0.85
+st.chscale: 1.00
+st.cwscale: 1.00
+st.borderpx: 0px
+
+! DWM specific configurations
+dwm.selbgcolor: #957139
+dwm.selfgcolor: #ffffff
+dwm.normbgcolor: #000000
+dwm.normfgcolor: #817f7f
+dwm.selbordercolor: #957139
+dwm.normbordercolor: #817f7f

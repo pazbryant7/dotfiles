@@ -1,0 +1,45 @@
+#!/bin/env sh
+
+if [ -n "$1" ]; then
+	selected="$1"
+else
+	selected=$(fd . \
+		--max-depth 1 \
+		--type=directory \
+		--type=symlink \
+		--follow \
+		~/ \
+		/run/media/bryant/ \
+		~/Documents/github/ \
+		~/Documents/github/temp \
+		~/Downloads/ 2>/dev/null | fzf)
+fi
+
+if [ -z "$selected" ]; then
+	exit 0
+fi
+
+if [ -n "$2" ]; then
+	selected_name="working"
+else
+	selected_name=$(basename "$selected" | tr . _)
+fi
+
+current_attached_session=$(tmux display-message -p '#S')
+tmux_running=$(pgrep tmux)
+
+if [ "$current_attached_session" = "$selected_name" ]; then
+	tmux display-message "You are currently attached to this session."
+	exit 0
+fi
+
+if [ -z "$TMUX" ] && [ -z "$tmux_running" ]; then
+	tmux new-session -s "$selected_name" -c "$selected"
+	exit 0
+fi
+
+if ! tmux has-session -t="$selected_name" 2>/dev/null; then
+	tmux new-session -ds "$selected_name" -c "$selected"
+fi
+
+tmux switch-client -t "$selected_name"

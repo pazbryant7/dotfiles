@@ -1,0 +1,2 @@
+#Ansible: backup notes
+0 * * * * /home/bryant/bin/crontab/backup-notes > /tmp/cron-backup-notes 2>&1

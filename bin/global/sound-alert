@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+main() {
+	paplay ~/Documents/github/media/audio/notifications/isabella_s_lullaby.ogg &
+}
+
+main

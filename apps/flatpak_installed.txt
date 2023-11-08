@@ -1,0 +1,6 @@
+Anki	net.ankiweb.Anki	25.02.4	stable	system
+Intel VAAPI driver	org.freedesktop.Platform.VAAPI.Intel		24.08	system
+KDE Application Platform	org.kde.Platform		6.9	system
+Mesa (Extra)	org.freedesktop.Platform.GL.default	25.1.3	24.08extra	system
+Mesa	org.freedesktop.Platform.GL.default	25.1.3	24.08	system
+openh264	org.freedesktop.Platform.openh264	2.5.1	2.5.1	system

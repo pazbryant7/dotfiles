@@ -1,0 +1,16 @@
+add_newline = false
+
+format = """
+$directory\
+$character"""
+
+# Directory configuration
+[directory]
+truncation_length = 2
+truncate_to_repo = false
+style = "white"
+
+[character]
+error_symbol = "[✗](#957139)"
+vimcmd_symbol = "[](#24c760)"
+success_symbol = "[󰁕](#957139)"

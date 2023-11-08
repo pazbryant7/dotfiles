@@ -1,0 +1,21 @@
+#!/bin/sh
+
+tmux_running=$(pgrep tmux)
+current_attached_session=$(tmux display-message -p '#S')
+selected_session=$(tmux list-sessions | awk -F ':' '{print $1}' | fzf | sort)
+
+if [ -z "$TMUX" ] && [ -z "$tmux_running" ]; then
+	exit 0
+fi
+
+if [ "$current_attached_session" = "$selected_session" ]; then
+	tmux display-message "You are currently attached to this session."
+	exit 1
+fi
+
+if ! tmux has-session -t="$selected_session" 2>/dev/null; then
+	tmux display-message "The session you selected no longer exists."
+	exit 1
+fi
+
+tmux switch-client -t "$selected_session"

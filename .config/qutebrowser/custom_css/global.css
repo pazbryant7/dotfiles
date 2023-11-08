@@ -1,0 +1,51 @@
+* {
+	font-family: sans-serif !important;
+}
+
+code,
+pre,
+kbd,
+samp,
+.\!font-mono,
+var,
+spam,
+letter,
+tt {
+	font-family: monospace !important;
+}
+
+pre,
+kbd,
+samp,
+var,
+spam,
+letter,
+code {
+	font-family: monospace !important;
+}
+
+.fas,
+.fa,
+.far {
+	font-family: "Font Awesome" !important;
+}
+
+/*Github code*/
+.blob-code-inner * {
+	font-family: monospace !important;
+}
+
+/*Google symbols*/
+.google-symbols {
+	font-family: "Google Symbols" !important;
+}
+
+/*Google material icons*/
+.google-material-icons {
+	font-family: "Google Material Icons" !important;
+}
+
+/*Outlook icons*/
+.f1sxfq9t {
+	font-family: FluentSystemIcons !important;
+}
