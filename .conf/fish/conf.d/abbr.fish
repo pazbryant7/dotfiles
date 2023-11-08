@@ -1,0 +1,95 @@
+# fihs
+abbr --add cf "nvim ~/.config/fish/config.fish"
+abbr --add aliases "nvim ~/.config/fish/conf.d/abbr.fish"
+
+# general
+abbr --add atm neofetch
+abbr --add :q exit
+abbr --add ck "nvim ~/.config/sxhkd/sxhkdrc"
+abbr --add cl "clear; printf '\033[4 q'"
+abbr --add clear "clear; printf '\033[4 q'"
+abbr --add cwm "nvim ~/.config/bspwm/bspwmrc"
+abbr --add dh "rm ~/.history.db"
+abbr --add fontcache "sudo fc-cache -f -v"
+abbr --add gtapps "z /usr/share/applications"
+abbr --add motivation "mpv ~/Videos/dios.mp4"
+abbr --add nvchad "rm -rf ~/.local/share/nvim; rm -rf ~/.config/nvim; git clone https://github.com/plbryant/NvChad ~/.config/nvim --depth 1 && nvim"
+abbr --add rel "xrdb merge ~/.Xresources && kill -USR1 (pidof st)"
+abbr --add rma "rm -rf"
+abbr --add sapps "pacman -Qen; pacman -Qm; pipx list; ls ~/.cargo/bin/; flatpak list"
+abbr --add sssh "bat ~/.ssh/config"
+abbr --add sudo "sudo "
+abbr --add sudoe "sudoedit"
+abbr --add u-all "paru -Syu && pipx upgrade-all && flatpak update && cargo install-update -a"
+abbr --add ugrup "sudo grub-mkconfig -o /boot/grub/grub.cfg"
+abbr --add updatefirefox "bash -c (curl -fsSL https://raw.githubusercontent.com/black7375/Firefox-UI-Fix/master/install.sh)"
+abbr --add vi nvim
+abbr --add vim "nvim --clean"
+abbr --add xevkeycode "xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf \'%-3s %s\\n\', \$5, \$8 }'"
+abbr --add leetcode "nvim leetcode.nvim"
+
+# zoxide
+abbr --add .... "z ../../../../"
+abbr --add ... "z ../../../"
+abbr --add .. "z ../../"
+abbr --add . "z ../"
+abbr --add zb "z -"
+
+# git
+abbr --add gb "git branch"
+abbr --add gaa "git add --all"
+abbr --add gcmsg "git commit --message"
+abbr --add gco "git checkout"
+abbr --add gcup "git config --global user.name 'pazita117'; git config --global user.email 'plbryantt@outlook.com'"
+abbr --add gcuw "git config --global user.name 'Bryant Paz'; git config --global user.email 'plbryant@hotmail.com'"
+abbr --add gd "git diff"
+abbr --add gdc "git diff --cached"
+abbr --add gdcw "git diff --cached --word-diff"
+abbr --add gds "git diff --staged"
+abbr --add gdw "git diff --word-diff"
+abbr --add ggpull "git pull origin (git branch --show-current)"
+abbr --add ggpush "git push origin (git branch --show-current)"
+abbr --add glg "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' --all"
+abbr --add glga "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Crese' --stat"
+abbr --add gsb "git status --short --branch"
+abbr --add lzg "lazygit"
+
+# docker
+abbr --add lzd "lazydocker"
+abbr --add enable-docker "sudo systemctl start docker.socket"
+
+# mongo
+abbr --add enable-mongo "sudo systemctl start mongodb.service"
+
+# postgres
+abbr --add enable-postgres "sudo systemctl start postgresql.service"
+
+# himalaya
+abbr --add hm "himalaya"
+abbr --add hmg "himalaya -a google-main"
+abbr --add hmw "himalaya -a microsoft-work"
+
+# elsa
+abbr --add ls "eza --icons"                                           # ls
+abbr --add lsa "eza --oneline --all"                                        # all list
+abbr --add lt "eza --tree --level=2"                                        # tree
+  
+# tmux
+abbr --add ta "tmux attach"
+abbr --add tc "nvim ~/.tmux.conf"
+abbr --add td "tmux detach"
+abbr --add tk "tmux kill-server"
+abbr --add tn "tmux new -s main"
+
+# youtube
+abbr --add ydl-music-playlist "yt-dlp -x --audio-format mp3 --audio-quality 0 --yes-playlist"
+abbr --add ydl-music "yt-dlp -x --audio-format mp3 --audio-quality 0"
+abbr --add ydl-video-playlist "yt-dlp -f 'bestvideo[height<=1080]+bestaudio/best[height<=1080]' --yes-playlist"
+abbr --add ydl-video "yt-dlp -f 'bestvideo[height<=1080]+bestaudio/best[height<=1080]'"
+
+# zellij
+abbr --add ze "zellij"
+abbr --add zea "ze attach"
+abbr --add zed "zellij delete-all-sessions --force"
+abbr --add zek "zellij kill-all-sessions --yes"
+abbr --add zen "ze --session main"

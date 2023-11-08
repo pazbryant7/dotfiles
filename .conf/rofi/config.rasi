@@ -1,0 +1,10 @@
+configuration {
+ modi: "window,drun,ssh,combi";
+ font: "Maple Mono NF 10";
+ combi-modi: "window,drun,ssh";
+ }
+
+@theme "~/.config/rofi/center.rasi"
+
+
+

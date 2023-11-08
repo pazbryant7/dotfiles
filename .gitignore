@@ -1,0 +1,7 @@
+.conf/mpd/mpd.log
+.conf/mpd/mpdstate
+
+.conf/lazygit/state.yml
+
+.ssh
+.gnupg

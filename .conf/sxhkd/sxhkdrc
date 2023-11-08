@@ -1,0 +1,199 @@
+# bspwm hotkeys
+super + q
+  bspc node -c
+
+# quit/restart bspwm
+super + shift + {q,r}
+	bspc {quit,wm -r}
+
+# terminal emulator
+super + Return
+  st
+
+# floating terminal
+super + space
+  tdrop -ma -x '33%' -y '30%' -w '35%' -h '35%' -p 'bspc rule -a St -o state=floating' st
+
+
+# rotate the whole desktop
+super + alt + r
+    bspc node @/ -R 90
+
+# rotate the parent of current focused
+super + r
+    bspc node @parent -R 90
+
+super + alt + Return
+  urxvt
+
+# program launche
+super + d
+    rofi -modes "drun,window,run" -show drun
+
+# make sxhkd reload its configuration files:
+super + Escape
+	pkill -USR1 -x sxhkd && dunstify "sxhkd" "Reloaded successfully"
+
+# hide window
+super + u
+    bspc node -g hidden
+
+# unhide window
+super + alt + u
+    bspc node {,$(bspc query -N -n .hidden | tail -n1)} -g hidden=off
+
+# hide/unhide all windows
+super + alt + space
+    bspc query -N -n .local.window | xargs -I ID bspc node ID -g hidden
+
+# focus a floating window from a tiled window
+super + a
+    if [ "$(bspc query -N -n focused.floating)" ]; then \
+        bspc node -f last.tiled.local; \
+    else \
+        bspc node -f last.floating.local; \
+    fi
+
+# -------------- toggle modes ------------- #
+
+# toggle between tiled and floating
+super + w
+    if [ -z "$(bspc query -N -n focused.floating)" ]; then \                    
+        bspc node focused -t floating; \                                        
+    else \                                                                      
+        bspc node focused -t tiled; \                                           
+    fi
+
+# full screen
+super + m
+  bspc node -t '~fullscreen'
+
+# -------------- focus window ------------- #
+
+# focus the node in the given direction
+super + {_,shift + }{h,j,k,l}
+	bspc node -{f,s} {west,south,north,east}
+
+# focus the next/previous window in the current desktop
+super + {n,p}
+	bspc node -f {next,prev}.local.!hidden.window
+
+# focus the next/previous desktop in the current monitor
+super +{braceleft,braceright}
+	bspc desktop -f {prev,next}.local
+
+# focus the last node/desktop
+super + {Tab}
+	bspc {node} -f last
+
+
+# focus or send to the given desktop
+super + {_,alt + }{1-7}
+  bspc {desktop -f,node -d} '^{1-7}'
+
+# -------------- preselect ------------- #
+
+# preselect the direction
+super + ctrl + {h,j,k,l}
+	bspc node -p {west,south,north,east}
+
+# cancel the preselection for the focused node
+super + ctrl + space
+	bspc node -p cancel
+
+# -------------- move and resize ------------- #
+
+# expand/contract a window by moving one of its side outward/inward
+super + comma : {Left,Down,Up,Right}
+    STEP=20; SELECTION={1,2,3,4}; \
+    bspc node -z $(echo "left -$STEP 0,bottom 0 $STEP,top 0 -$STEP,right $STEP 0" | cut -d',' -f$SELECTION) || \
+    bspc node -z $(echo "right -$STEP 0,top 0 $STEP,bottom 0 -$STEP,left $STEP 0" | cut -d',' -f$SELECTION)
+
+# expand/contract a window by moving one of its side outward/inward
+super + comma : {h,j,k,l}
+    STEP=20; SELECTION={1,2,3,4}; \
+    bspc node -z $(echo "left -$STEP 0,bottom 0 $STEP,top 0 -$STEP,right $STEP 0" | cut -d',' -f$SELECTION) || \
+    bspc node -z $(echo "right -$STEP 0,top 0 $STEP,bottom 0 -$STEP,left $STEP 0" | cut -d',' -f$SELECTION)
+
+# move floating window
+super + {Left,Down,Up,Right}
+	bspc node -v {-20 0,0 20,0 -20,20 0}
+
+# -------------- take screenshots ------------- #
+
+# clipboard cropped
+Print
+  maim --select | xclip -selection clipboard -t image/png
+
+# clipboard full
+super + Print
+  maim | xclip -selection clipboard -t image/png
+
+# save screenshot to mega
+super + {s,S}
+  ~/bin/sh/screenshots.sh {cropped,full}
+
+# -------------- open apps ------------- #
+
+# open Firefox
+super + backslash
+  firefox-developer-edition
+
+# open file manager
+super + e
+  pcmanfm
+
+# -------------- music player ------------- #
+
+# volume down
+super + minus
+  mpc volume -5 
+
+# volume up
+super + plus
+  mpc volume +5 
+
+# next song
+super + greater
+  mpc next
+
+# previous song
+super + less
+  mpc prev
+
+# toggle pause
+super + alt + BackSpace
+  mpc toggle
+
+# -------------- custom scripts ------------- #
+
+# recording video
+super + F1
+  ~/bin/sh/video.sh
+
+# recording audio
+super + F2
+  ~/bin/sh/audio.sh
+
+# set brightness
+super + alt + b
+  ~/bin/sh/set_brightness.sh
+
+# change wall
+super + alt + w
+  ~/bin/sh/rofiwall.sh
+
+# switch keyboard
+super + alt + k
+  xmodmap ~/.Xmodmap; dunstify "Dvorak"
+
+super + alt + K
+  xmodmap ~/.XmodmapIntl; dunstify "Dvorak Intl"
+
+super + alt + m
+  tdrop -ma -x '33%' -y '30%' -w '35%' -h '35%' -p 'bspc rule -a URxvt -o state=floating' urxvt -e sh -c "ncmpcpp"
+
+# -------------- eww widgets ------------- #
+
+# super + alt + BackSpace
+#   ~/.config/eww/dashboard/launch_dashboard

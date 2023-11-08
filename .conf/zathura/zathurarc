@@ -1,0 +1,93 @@
+" -----------------------------------------------------------------------------
+" Zathura settings
+" -----------------------------------------------------------------------------
+
+" Colors
+set default-bg              "#2E3440"
+set default-fg              "#D8DEE9"
+
+set statusbar-bg            "#3B4252"
+set statusbar-fg            "#E5E9F0"
+
+set inputbar-bg             "#2E3440"
+set inputbar-fg             "#D8DEE9"
+
+set notification-error-bg   "#BF616A"
+set notification-error-fg   "#2E3440"
+
+set notification-warning-bg "#D08770"
+set notification-warning-fg "#2E3440"
+
+set highlight-color         "#88C0D0"
+set highlight-active-color  "#BF616A"
+
+set completion-highlight-fg "#E5E9F0"
+set completion-highlight-bg "#3B4252"
+
+set completion-bg           "#2E3440"
+set completion-fg           "#D8DEE9"
+
+set notification-bg         "#D8DEE9"
+set notification-fg         "#2E3440"
+
+set recolor                 "true"
+set recolor-lightcolor      "#2E3440"
+set recolor-darkcolor       "#D8DEE9"
+set recolor-reverse-video   "true"
+set recolor-keephue         "false"
+
+" Clipboard
+set selection-clipboard clipboard
+
+" Search
+set incremental-search true
+set search-hadjust true
+
+" Autoadjust
+set adjust-open width
+
+" Typography
+set font "Maple Mono NF Bold 9"
+
+" -----------------------------------------------------------------------------
+" Zathura mappings
+" -----------------------------------------------------------------------------
+
+" Zoom in/out
+map [normal]     z zoom in
+map [normal]     Z zoom out
+map [fullscreen] z zoom in
+map [fullscreen] Z zoom out
+
+" Toggle mode
+map [normal]     D toggle_page_mode
+map [fullscreen] D toggle_page_mode
+
+" Scroll
+map [normal]     u scroll half-up
+map [normal]     d scroll half-down
+map [fullscreen] u scroll half-up
+map [fullscreen] d scroll half-down
+
+" Fullscreen
+" map [normal]     f toggle_fullscreen
+" map [fullscreen] f toggle_fullscreen
+
+" Reload
+map [normal]     <C-r> reload
+map [fullscreen] <C-r> reload
+
+" Status bar
+map [normal]     b toggle_statusbar
+map [fullscreen] b toggle_statusbar
+
+" Set width as in mupdf
+map [normal]     H adjust_window best-fit
+map [normal]     W adjust_window width
+map [fullscreen] H adjust_window best-fit
+map [fullscreen] W adjust_window width
+
+map [normal]     i set recolor
+map [fullscreen] i set recolor
+
+" vim: ft=vim

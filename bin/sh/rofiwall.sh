@@ -1,0 +1,58 @@
+#!/bin/sh
+
+WALLPAPER_DIR="$HOME/Pictures/wall"
+LAST_WALLPAPER_FILE="$HOME/.fehbg"
+
+# Function to list folders in the first level of the wallpaper directory
+list_folders() {
+	fd --type directory --max-depth 1 --base-directory "$WALLPAPER_DIR"
+}
+
+# Function to list files within a selected folder
+list_files_in_folder() {
+	fd --type f --base-directory "$WALLPAPER_DIR/$1"
+}
+
+# Function to select a folder using Rofi
+select_folder() {
+	list_folders | rofi -dmenu -i -p "Select wallpaper folder"
+}
+
+# Function to select a wallpaper file using Rofi
+select_wallpaper() {
+	list_files_in_folder "$1" | rofi -dmenu -i -p "Select Wallpaper"
+}
+
+SELECTED_FOLDER=$(select_folder)
+
+# Check if a folder was selected
+[ -z "$SELECTED_FOLDER" ] && {
+	echo "No folder selected. Exiting."
+	exit 1
+}
+
+# List files within the selected folder
+WALLPAPERS=$(list_files_in_folder "$SELECTED_FOLDER")
+
+# Check if wallpapers were found in the selected folder
+[ -z "$WALLPAPERS" ] && {
+	echo "No wallpapers found in the selected folder. Exiting."
+	exit 1
+}
+
+# Select a wallpaper file using Rofi
+SELECTED_WALLPAPER=$(select_wallpaper "$SELECTED_FOLDER")
+
+# Check if a wallpaper was selected
+[ -z "$SELECTED_WALLPAPER" ] && {
+	echo "No wallpaper selected. Exiting."
+	exit 1
+}
+
+# Apply the selected wallpaper using feh
+feh --bg-fill "$WALLPAPER_DIR/$SELECTED_FOLDER/$SELECTED_WALLPAPER"
+
+# Update the .fehbg file with the new wallpaper path
+sed -i "s|^feh --bg-fill '.*'|feh --bg-fill '$WALLPAPER_DIR/$SELECTED_FOLDER/$SELECTED_WALLPAPER'|" "$LAST_WALLPAPER_FILE"
+
+dunstify "New wallpaper:" "$SELECTED_WALLPAPER"

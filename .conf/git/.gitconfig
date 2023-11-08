@@ -1,0 +1,58 @@
+[user]
+	name = Bryant Paz
+	email = plbryant@hotmail.com
+	username = plbryant
+[init]
+	defaultBranch = main
+[core]
+	editor = nvim
+	whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
+[pager]
+  diff = delta
+  log = delta
+  reflog = delta
+  show = delta
+[color]
+	ui = auto
+[color "branch"]
+	current = yellow bold
+	local = "#32c235" bold
+	remote = cyan bold
+[color "diff"]
+	meta = yellow bold
+	frag = magenta bold
+	old = "#bf616a" bold
+	new = "#32c235" bold
+	whitespace = "#bf616a" reverse
+[color "status"]
+	added = "#32c235" bold
+	changed = yellow bold
+	untracked = "#bf616a" bold
+[diff]
+	tool = vimdiff
+[difftool]
+	prompt = false
+[delta]
+	features = line-numbers decorations
+	line-numbers = true
+  syntax-theme = Nord
+  navigate = true
+[delta "decorations"]
+	minus-style = "#bf616a" bold normal
+	plus-style = "#32c235" bold normal
+	minus-emph-style = white bold "#bf616a"
+	minus-non-emph-style = "#bf616a" bold normal
+	plus-emph-style = white bold "#32c235"
+	plus-non-emph-style = "#32c235" bold normal
+	file-style = yellow bold none
+	file-decoration-style = yellow box
+	hunk-header-style = magenta bold
+	hunk-header-decoration-style = magenta box
+	minus-empty-line-marker-style = normal normal
+	plus-empty-line-marker-style = normal normal
+	line-numbers-right-format = "{np:^4}│ "
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+  require = true

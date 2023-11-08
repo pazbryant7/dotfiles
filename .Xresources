@@ -1,0 +1,112 @@
+! URxvt configuration.
+URxvt.font:                       xft:Maple Mono NF:pixelsize=12:style:Bold,\
+                                  xft:Font Awesome:size=9:autohint=true:style:Solid,\
+                                  xft:Font Awesome:size=9:autohint=true:style:Regular,\
+URxvt.geometry:                   400x400
+URxvt.internalBorder:             5
+URxvt.cursorBlink:                false
+URxvt.cursorUnderline:            true
+URxvt.saveLines:                  8192
+URxvt.scrollBar:                  false
+URxvt.scrollBar_right:            true
+URxvt.scrollBar_floating:         false
+URxvt.scrollstyle:                plain
+URxvt.scrollWithBuffer:           false
+URxvt.urgentOnBell:               false
+URxvt.depth:                      32
+URxvt.iso14755:                   false
+URxvt.cursorMode:                 0
+URxvt.jumpScroll:                 true
+
+! URxvt.iconFile:                   /home/username/.icons/Gladient/terminal.png
+
+! Uncomment below if too much font spacing, and fix glyphs performance issues.
+URxvt.letterSpace:                -1
+! URxvt.skipBuiltinGlyphs:          true
+
+! Disable printing the terminal contents when pressing PrintScreen.
+! The strings will be interpreted as if typed into the shell as-is.
+URxvt.print-pipe:                 "cat >/dev/null"
+
+! Clear the scrollback buffer cleanly, the shell built-in sequence replacement.
+URxvt.keysym.Control-Shift-L:     command:\033c
+
+! URxvt extensions.
+URxvt.perl-ext-common:            default,matcher,resize-font
+
+! Eval built-in extension.
+URxvt.keysym.Control-Shift-C:     eval:selection_to_clipboard
+URxvt.keysym.Control-Shift-V:     eval:paste_clipboard
+URxvt.keysym.Control-Up:          eval:scroll_up 1
+URxvt.keysym.Control-Down:        eval:scroll_down 1
+URxvt.keysym.Control-Home:        eval:scroll_to_top
+URxvt.keysym.Control-End:         eval:scroll_to_bottom
+
+! Matcher built-in extension.
+URxvt.keysym.Control-Shift-U:     matcher:select
+URxvt.url-launcher:               /usr/bin/firefox-developer-edition
+URxvt.matcher.button:             1
+URxvt.matcher.rend.0:             Uline fg7
+
+! Resize-font extension.
+URxvt.keysym.Control-minus:       resize-font:smaller
+URxvt.keysym.Control-plus:        resize-font:bigger
+URxvt.keysym.Control-equal:       resize-font:reset
+URxvt.keysym.Control-question:    resize-font:show
+URxvt.resize-font.step:           1
+
+! Fix shift tab
+URxvt.iso14755_52:                False
+
+! Nvim configuration keybinds
+URxvt.keysym.Control-Tab:         \033[27;5;9~
+URxvt.keysym.S-Return:            \033[13;2u
+URxvt.keysym.C-Return:            \033[13;5u
+URxvt.keysym.C-S-Return:          \033[13;6u
+
+! ===================
+! st settings
+st.alpha: 1
+st.borderpx: 5
+st.font: Maple Mono NF:pixelsize=12:style:Bold
+
+! Copyright (c) 2016-present Sven Greb <development@svengreb.de>
+! This source code is licensed under the MIT license found in the license file.
+
+#define nord0 #2E3440
+#define nord1 #3B4252
+#define nord2 #434C5E
+#define nord3 #4C566A
+#define nord4 #D8DEE9
+#define nord5 #E5E9F0
+#define nord6 #ECEFF4
+#define nord7 #8FBCBB
+#define nord8 #88C0D0
+#define nord9 #81A1C1
+#define nord10 #5E81AC
+#define nord11 #BF616A
+#define nord12 #D08770
+#define nord13 #EBCB8B
+#define nord14 #A3BE8C
+#define nord15 #B48EAD
+
+*.foreground:   nord4
+*.background:   nord0
+*.cursorColor:  nord4
+
+*.color0: nord1
+*.color1: nord11
+*.color2: nord14
+*.color3: nord13
+*.color4: nord9
+*.color5: nord15
+*.color6: nord8
+*.color7: nord5
+*.color8: nord3
+*.color9: nord11
+*.color10: nord14
+*.color11: nord13
+*.color12: nord9
+*.color13: nord15
+*.color14: nord7
+*.color15: nord6

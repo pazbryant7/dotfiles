@@ -1,0 +1,12 @@
+[Default Applications]
+image/apng=sxiv.desktop;
+image/jpeg=sxiv.desktop;
+image/png=sxiv.desktop;
+application/x-shellscript=nvim.desktop;
+text/plain=nvim.desktop
+inode/directory=nvim.desktop
+application/x-code-workspace=nvim.desktop
+
+[Removed Associations]
+
+[Added Associations]

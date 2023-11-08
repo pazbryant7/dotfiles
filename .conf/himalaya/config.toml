@@ -4,7 +4,7 @@ signature = "Atentament,\nBryant Paz"
 email-listing-page-size = 25
 
 
-[microsoft]
+[microsoft-main]
 default = true
 email = "plbryant@hotmail.com"
 
@@ -14,7 +14,7 @@ imap-port = 993
 imap-login = "plbryant@hotmail.com"
 
 imap-auth="passwd"
-imap-passwd.cmd = "pass show himalaya/hotmail/plbryant"
+imap-passwd.cmd = "pass show himalaya/microsoft/main"
 
 sender = "smtp"
 smtp-host = "smtp-mail.outlook.com"
@@ -23,10 +23,32 @@ smtp-starttls = true
 smtp-login = "plbryant@hotmail.com"
 
 smtp-auth="passwd"
-smtp-passwd.cmd = "pass show himalaya/hotmail/plbryant"
+smtp-passwd.cmd = "pass show himalaya/microsoft/main"
 
 
-[google]
+[microsoft-work]
+email = "plbryantt@outlook.com"
+
+backend = "imap"
+imap-host = "outlook.office365.com"
+imap-port = 993
+imap-login = "plbryantt@outlook.com"
+
+imap-auth="passwd"
+imap-passwd.cmd = "pass show himalaya/microsoft/work"
+
+sender = "smtp"
+smtp-host = "smtp-mail.outlook.com"
+smtp-port = 587
+smtp-starttls = true
+smtp-login = "plbryantt@outlook.com"
+
+smtp-auth="passwd"
+smtp-passwd.cmd = "pass show himalaya/microsoft/work"
+
+
+
+[google-main]
 email = "pazitaa117@gmail.com"
 
 backend = "imap"
@@ -35,7 +57,7 @@ imap-port = 993
 imap-login = "pazitaa117@gmail.com"
 
 imap-auth="passwd"
-imap-passwd.cmd = "pass show himalaya/gmail/pazitaa117"
+imap-passwd.cmd = "pass show himalaya/google/main"
 
 sender = "smtp"
 smtp-host = "smtp.gmail.com"
@@ -43,9 +65,9 @@ smtp-port = 465
 smtp-login = "pazitaa117@gmail.com"
 
 smtp-auth="passwd"
-smtp-passwd.cmd = "pass show himalaya/gmail/pazitaa117"
+smtp-passwd.cmd = "pass show himalaya/google/main"
 
-[google.folder-aliases]
+[google-main.folder-aliases]
 inbox = "INBOX"
 sent = "[Gmail]/Sent Mail"
 drafts = "[Gmail]/Drafts"
