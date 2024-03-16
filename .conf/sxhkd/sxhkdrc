@@ -69,8 +69,8 @@ super + shift + {p,n}
 	bspc desktop -f {prev,next}.local
 
 # focus the last node/desktop
-super + {Tab}
-	bspc {node} -f last
+super + {_,shift + }{Tab}
+	bspc {desktop,node} -f last
 
 # focus or send to the given desktop
 super + {bracketleft,braceleft,parenleft,percent,equal,numbersign,parenright}
