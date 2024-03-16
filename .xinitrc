@@ -22,13 +22,5 @@ fi
 # keyboard
 xmodmap ~/.Xmodmap &
 
-# fix cursor
-xsetroot -cursor_name left_ptr &
-
-# start window manager
-dunst &
-# lxsession &
-picom --config /home/bryant/.config/picom/picom.conf &
-# udiskie &
-unclutter &
+# window manager
 exec bspwm

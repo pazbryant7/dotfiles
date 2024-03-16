@@ -1,61 +1,12 @@
 add_newline = false
-format = """$directory$character"""
-right_format = """$all"""
 
-[git_branch]
+[line_break]
 disabled = true
 
-[git_status]
-disabled = true
-
-[git_commit]
-disabled = true
-
-[git_state]
-disabled = true
+[directory]
+truncation_length = 2
 
 [character]                            
 success_symbol = "[](bold green)"     
 error_symbol = "[!](bold red)"
 vimcmd_symbol = "[](bold yellow)"
-
-[directory]
-read_only = " "
-truncation_length = 1
-truncation_symbol = ""
-truncate_to_repo = true
-style = "bold blue"
-
-[aws]
-symbol = "  "
-
-[docker_context]
-symbol = " "
-format = "via [$symbol$context]($style) "
-style = "blue bold"
-only_with_files = true
-detect_files = ["docker-compose.yml", "docker-compose.yaml", "Dockerfile"]
-detect_folders = []
-disabled = false
-
-[golang]
-symbol = " "
-
-[python]
-symbol = " "
-#pyenv_version_name = true
-format = 'via [${symbol}python (${version} )(\($virtualenv\) )]($style)'
-style = "bold yellow"
-pyenv_prefix = "venv "
-python_binary = ["./venv/bin/python", "python", "python3", "python2"]
-detect_extensions = ["py"]
-version_format = "v${raw}"
-
-[rust]
-symbol = " "
-
-[nodejs]
-format = "via [ Node.js $version](bold green) "
-detect_files = ["package.json", ".node-version"]
-detect_folders = ["node_modules"]
-disabled = false

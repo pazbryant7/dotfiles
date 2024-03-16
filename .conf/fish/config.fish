@@ -7,17 +7,38 @@ end
 
 # {{{ fish config
 
-set fish_cursor_replace_one underscore
-set -U fish_key_bindings fish_vi_key_bindings
 set fish_greeting
+set fish_key_bindings fish_vi_key_bindings
 
-set fish_cursor_default     underscore
-set fish_cursor_insert      underscore
-set fish_cursor_replace_one underscore
-set fish_cursor_visual      underscore
+set fish_cursor_default underscore
+set fish_cursor_insert  underscore
+set fish_cursor_insert  underscore
 
-alias suspend="systemctl suspend"
-alias shutdown="shutdown now"
+bind \cn "forward-word"
+bind \cp "backward-word"
+bind \cd "get_pwd"
+bind \en "accept-autosuggestion"
+bind \ep "suppress-autosuggestion"
+
+bind --mode insert \cd "get_pwd"
+bind --mode insert \cn "forward-word"
+bind --mode insert \cp "backward-word"
+bind --mode insert \en "accept-autosuggestion"
+bind --mode insert \ep "suppress-autosuggestion"
+
+# disable default bindings
+bind --mode insert \eh true
+
+# }}}
+
+# {{{ fish plugins
+
+fzf_configure_bindings  --directory=\ct \
+                        --git_status= \
+                        --history= \
+                        --variables= \
+                        --processes= \
+                        --git_log
 
 # }}}
 
@@ -37,7 +58,6 @@ fish_add_path ~/go/bin/
 
 atuin init fish | source
 fnm env --use-on-cd | source
-thefuck --alias fk | source 
 zoxide init fish | source
 
 # }}}

@@ -10,21 +10,13 @@ super + shift + {q,r}
 super + Return
   st
 
-# floating terminal
-super + space
-  tdrop -ma -x '33%' -y '30%' -w '35%' -h '35%' -p 'bspc rule -a St -o state=floating' st
-
-
-# rotate the whole desktop
-super + alt + r
-    bspc node @/ -R 90
-
 # rotate the parent of current focused
-super + r
+super + t
     bspc node @parent -R 90
 
-super + alt + Return
-  urxvt
+# rotate the whole desktop
+super + shift + t
+    bspc node @/ -R 90
 
 # program launche
 super + d
@@ -39,30 +31,24 @@ super + u
     bspc node -g hidden
 
 # unhide window
-super + alt + u
+super + shift + u
     bspc node {,$(bspc query -N -n .hidden | tail -n1)} -g hidden=off
 
 # hide/unhide all windows
-super + alt + space
+super + shift + space
     bspc query -N -n .local.window | xargs -I ID bspc node ID -g hidden
 
 # focus a floating window from a tiled window
 super + a
-    if [ "$(bspc query -N -n focused.floating)" ]; then \
-        bspc node -f last.tiled.local; \
-    else \
-        bspc node -f last.floating.local; \
-    fi
+    bspc node -f last.floating
 
 # -------------- toggle modes ------------- #
 
 # toggle between tiled and floating
 super + w
-    if [ -z "$(bspc query -N -n focused.floating)" ]; then \                    
-        bspc node focused -t floating; \                                        
-    else \                                                                      
-        bspc node focused -t tiled; \                                           
-    fi
+  bspc query -N -n focused.floating >/dev/null && \
+      bspc node focused -t tiled || \
+      bspc node focused -t floating
 
 # full screen
 super + m
@@ -79,17 +65,19 @@ super + {n,p}
 	bspc node -f {next,prev}.local.!hidden.window
 
 # focus the next/previous desktop in the current monitor
-super +{braceleft,braceright}
+super + shift + {p,n}
 	bspc desktop -f {prev,next}.local
 
 # focus the last node/desktop
 super + {Tab}
 	bspc {node} -f last
 
-
 # focus or send to the given desktop
-super + {_,alt + }{1-7}
-  bspc {desktop -f,node -d} '^{1-7}'
+super + {bracketleft,braceleft,parenleft,percent,equal,numbersign,parenright}
+  bspc desktop -f '^{1-7}'
+
+super + shift {1-7}
+  bspc node -d '^{1-7}'
 
 # -------------- preselect ------------- #
 
@@ -101,20 +89,6 @@ super + ctrl + {h,j,k,l}
 super + ctrl + space
 	bspc node -p cancel
 
-# -------------- move and resize ------------- #
-
-# expand/contract a window by moving one of its side outward/inward
-super + comma : {Left,Down,Up,Right}
-    STEP=20; SELECTION={1,2,3,4}; \
-    bspc node -z $(echo "left -$STEP 0,bottom 0 $STEP,top 0 -$STEP,right $STEP 0" | cut -d',' -f$SELECTION) || \
-    bspc node -z $(echo "right -$STEP 0,top 0 $STEP,bottom 0 -$STEP,left $STEP 0" | cut -d',' -f$SELECTION)
-
-# expand/contract a window by moving one of its side outward/inward
-super + comma : {h,j,k,l}
-    STEP=20; SELECTION={1,2,3,4}; \
-    bspc node -z $(echo "left -$STEP 0,bottom 0 $STEP,top 0 -$STEP,right $STEP 0" | cut -d',' -f$SELECTION) || \
-    bspc node -z $(echo "right -$STEP 0,top 0 $STEP,bottom 0 -$STEP,left $STEP 0" | cut -d',' -f$SELECTION)
-
 # move floating window
 super + {Left,Down,Up,Right}
 	bspc node -v {-20 0,0 20,0 -20,20 0}
@@ -123,11 +97,11 @@ super + {Left,Down,Up,Right}
 
 # clipboard cropped
 Print
-  maim --select | xclip -selection clipboard -t image/png
+  maim --select | xclip -selection clipboard -t image/png && dunstify "Save to clipboard"
 
 # clipboard full
 super + Print
-  maim | xclip -selection clipboard -t image/png
+  maim | xclip -selection clipboard -t image/png && dunstify "Save to clipboard"
 
 # save screenshot to mega
 super + {s,S}
@@ -162,7 +136,7 @@ super + less
   mpc prev
 
 # toggle pause
-super + alt + BackSpace
+super + shift + BackSpace
   mpc toggle
 
 # -------------- custom scripts ------------- #
@@ -176,24 +150,22 @@ super + F2
   ~/bin/sh/audio.sh
 
 # set brightness
-super + alt + b
+super + b
   ~/bin/sh/set_brightness.sh
 
 # change wall
-super + alt + w
+super + shift + w
   ~/bin/sh/rofiwall.sh
 
+super + semicolon
+  ~/bin/select_and_execute.sh
+
 # switch keyboard
-super + alt + k
+super + g
   xmodmap ~/.Xmodmap; dunstify "Dvorak"
 
-super + alt + K
+super + shift + g
   xmodmap ~/.XmodmapIntl; dunstify "Dvorak Intl"
 
-super + alt + m
-  tdrop -ma -x '33%' -y '30%' -w '35%' -h '35%' -p 'bspc rule -a URxvt -o state=floating' urxvt -e sh -c "ncmpcpp"
-
-# -------------- eww widgets ------------- #
-
-# super + alt + BackSpace
-#   ~/.config/eww/dashboard/launch_dashboard
+super + shift + m
+  tdrop -ma -x '33%' -y '30%' -w '35%' -h '35%' -p 'bspc rule -a URxvt -o state=floating' urxvt -e fish -c "ncmpcpp"

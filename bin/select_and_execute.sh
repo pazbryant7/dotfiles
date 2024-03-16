@@ -1,6 +1,6 @@
 #!/bin/bash
 
-base_dir="$HOME/bin/"
+base_dir="$HOME/bin/sh/"
 
 # Check if rofi and dunstify are installed
 if ! command -v rofi &>/dev/null || ! command -v dunstify &>/dev/null; then

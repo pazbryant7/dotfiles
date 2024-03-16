@@ -1,5 +1,7 @@
 db_path = "~/.history.db"
 
+filter_mode = "host" # session/global/directory
+
 key_path = "~/.key"
 
 session_path = "~/.session"
@@ -19,8 +21,8 @@ sync_address = "https://api.atuin.sh"
 sync_frequency = "1h"
 
 history_filter = [
-  "^secret-cmd",
-  "^innocuous-cmd .*--secret=.+"
+  "^clear",
+  "^z"
 ]
 
 cwd_filter = [
@@ -47,6 +49,6 @@ common_subcommands = [
 # 
 common_prefix = ["sudo"]
 
-keymap_mode = "vim-insert"
+keymap_mode = "vim-normal"
 
 keymap_cursor = { vim_insert = "steady-underline", vim_normal = "steady-underline" }

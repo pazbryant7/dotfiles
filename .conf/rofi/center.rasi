@@ -1,24 +1,17 @@
-
-/**
- * ROFI Color theme
- * NAME: dt-center.rasi
- * DESCRIPTION: This is a centered prompt.
- */
-
 * {
-    background-color:            #3b4252; /* Updated color: Nord3 */
-    border-color:                #3b4252; /* Updated color: Nord3 */
-    text-color:                  #d8dee9; /* Nord4 */
-    font:                        "Maple Mono NF Bold 9";
-    prompt-font:                 "Maple Mono NF Bold 9";
-    prompt-background:           #5e81ac; /* Nord9 */
-    prompt-foreground:           #3b4252; /* Updated color: Nord3 */
-    prompt-padding:              4px;
-    alternate-normal-background: #3b4252; /* Updated color: Nord3 */
-    alternate-normal-foreground: @text-color;
-    selected-normal-background:  #5e81ac; /* Nord9 */
-    selected-normal-foreground:  #eceff4; /* Nord6 */
-    spacing:                     3;
+   background-color:            #1a1d28;
+   border-color:                #1a1d28;
+   text-color:                  #c2cad6;
+   font:                        "Maple Mono NF Bold 9";
+   prompt-font:                 "Maple Mono NF Bold 9";
+   prompt-background:           #3d3f49;
+   prompt-foreground:           #1a1d28;
+   prompt-padding:              4px;
+   alternate-normal-background: #1a1d28;
+   alternate-normal-foreground: @text-color;
+   selected-normal-background:  #3d3f49;
+   selected-normal-foreground:  #c2cad6;
+   spacing:                     3;
 }
 #window {
     border:  1;
