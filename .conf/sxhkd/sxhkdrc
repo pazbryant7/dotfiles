@@ -51,7 +51,7 @@ super + w
       bspc node focused -t floating
 
 # full screen
-super + m
+super + z
   bspc node -t '~fullscreen'
 
 # -------------- focus window ------------- #
@@ -167,5 +167,5 @@ super + g
 super + shift + g
   xmodmap ~/.XmodmapIntl; dunstify "Dvorak Intl"
 
-super + shift + m
+super + m
   tdrop -ma -x '33%' -y '30%' -w '35%' -h '35%' -p 'bspc rule -a URxvt -o state=floating' urxvt -e fish -c "ncmpcpp"
