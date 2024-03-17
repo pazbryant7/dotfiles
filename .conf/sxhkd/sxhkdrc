@@ -73,7 +73,7 @@ super + {_,shift + }{Tab}
 	bspc {desktop,node} -f last
 
 # focus or send to the given desktop
-super + {bracketleft,braceleft,parenleft,percent,equal,numbersign,parenright}
+super + {bracketleft,braceleft,parenleft,percent,equal,ampersand,parenright}
   bspc desktop -f '^{1-7}'
 
 super + shift {1-7}
