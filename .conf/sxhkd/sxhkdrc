@@ -51,7 +51,7 @@ super + w
       bspc node focused -t floating
 
 # full screen
-super + z
+super + f
   bspc node -t '~fullscreen'
 
 # -------------- focus window ------------- #
