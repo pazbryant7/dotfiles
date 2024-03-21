@@ -70,42 +70,24 @@ st.alpha: 1
 st.borderpx: 0
 st.font: Maple Mono NF:pixelsize=12:style:Bold
 
-! Copyright (c) 2016-present Sven Greb <development@svengreb.de>
-! This source code is licensed under the MIT license found in the license file.
+! Rose Pine Moon color scheme for st terminal
 
-! special
-*.foreground:   #e0def4
-*.background:   #232136
-*.cursorColor:  #e0def4
-
-! black
-*.color0:       #2a273f
-*.color8:       #393552
-
-! red
-*.color1:       #eb6f92
-*.color9:       #eb6f92
-
-! green
-*.color2:       #f6c177
-*.color10:      #f6c177
-
-! yellow
-*.color3:       #ea9a97
-*.color11:      #ea9a97
-
-! blue
-*.color4:       #3e8fb0
-*.color12:      #3e8fb0
-
-! magenta
-*.color5:       #c4a7e7
-*.color13:      #c4a7e7
-
-! cyan
-*.color6:       #9ccfd8
-*.color14:      #9ccfd8
-
-! white
-*.color7:       #6e6a86
-*.color15:      #908caa
+*background: #191724
+*foreground: #c7aed6
+*cursorColor: #c7aed6
+*color0: #3e353b
+*color8: #3d353b
+*color1: #d4969c
+*color9: #d4969c
+*color2: #b1a1d1
+*color10: #b1a1d1
+*color3: #e9cdd0
+*color11: #e9cdd0
+*color4: #70a9a1
+*color12: #70a9a1
+*color5: #b58da6
+*color13: #b58da6
+*color6: #75a7b3
+*color14: #75a7b3
+*color7: #b9a2bf
+*color15: #c5bdd2

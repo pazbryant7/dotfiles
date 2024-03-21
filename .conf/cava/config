@@ -165,16 +165,15 @@
 ; continuous_rendering = 0
 
 [color]
-
-background = '#232136'
+background = '#191724'
 gradient = 1
 gradient_count = 6
-gradient_color_1 = '#3e8fb0'
-gradient_color_2 = '#9ccfd8'
-gradient_color_3 = '#c4a7e7'
-gradient_color_4 = '#ea9a97'
-gradient_color_5 = '#f6c177'
-gradient_color_6 = '#eb6f92'
+gradient_color_1 = '#75a7b3'
+gradient_color_2 = '#70a9a1'
+gradient_color_3 = '#b58da6'
+gradient_color_4 = '#e9cdd0'
+gradient_color_5 = '#b1a1d1'
+gradient_color_6 = '#d4969c'
 
 
 
