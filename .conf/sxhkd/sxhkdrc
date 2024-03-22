@@ -1,171 +1,105 @@
-# bspwm hotkeys
 super + q
   bspc node -c
 
-# quit/restart bspwm
 super + shift + {q,r}
 	bspc {quit,wm -r}
 
-# terminal emulator
-super + Return
-  st
-
-# rotate the parent of current focused
-super + t
-    bspc node @parent -R 90
-
-# rotate the whole desktop
-super + shift + t
-    bspc node @/ -R 90
-
-# program launche
-super + d
-    rofi -modes "drun,window,run" -show drun
-
-# make sxhkd reload its configuration files:
-super + Escape
+super + shift + Escape
 	pkill -USR1 -x sxhkd && dunstify "sxhkd" "Reloaded successfully"
 
-# hide window
-super + u
-    bspc node -g hidden
-
-# unhide window
-super + shift + u
-    bspc node {,$(bspc query -N -n .hidden | tail -n1)} -g hidden=off
-
-# hide/unhide all windows
-super + shift + space
+super + space
     bspc query -N -n .local.window | xargs -I ID bspc node ID -g hidden
 
-# focus a floating window from a tiled window
-super + a
-    bspc node -f last.floating
-
-# -------------- toggle modes ------------- #
-
-# toggle between tiled and floating
 super + w
   bspc query -N -n focused.floating >/dev/null && \
       bspc node focused -t tiled || \
       bspc node focused -t floating
 
-# full screen
-super + f
+super + z
   bspc node -t '~fullscreen'
 
-# -------------- focus window ------------- #
-
-# focus the node in the given direction
 super + {_,shift + }{h,j,k,l}
 	bspc node -{f,s} {west,south,north,east}
 
-# focus the next/previous window in the current desktop
 super + {n,p}
 	bspc node -f {next,prev}.local.!hidden.window
 
-# focus the next/previous desktop in the current monitor
 super + shift + {p,n}
 	bspc desktop -f {prev,next}.local
 
-# focus the last node/desktop
-super + {_,shift + }{Tab}
-	bspc {desktop,node} -f last
+super + Tab
+	bspc desktop -f last
 
-# focus or send to the given desktop
 super + {bracketleft,braceleft,parenleft,percent,equal,ampersand,parenright}
   bspc desktop -f '^{1-7}'
 
 super + shift {1-7}
   bspc node -d '^{1-7}'
 
-# -------------- preselect ------------- #
+# -------------- print ------------- #
 
-# preselect the direction
-super + ctrl + {h,j,k,l}
-	bspc node -p {west,south,north,east}
-
-# cancel the preselection for the focused node
-super + ctrl + space
-	bspc node -p cancel
-
-# move floating window
-super + {Left,Down,Up,Right}
-	bspc node -v {-20 0,0 20,0 -20,20 0}
-
-# -------------- take screenshots ------------- #
-
-# clipboard cropped
 Print
-  maim --select | xclip -selection clipboard -t image/png && dunstify "Save to clipboard"
+  maim --select | xclip -selection clipboard -t image/png && dunstify "Save selection to clipboard"
 
-# clipboard full
 super + Print
-  maim | xclip -selection clipboard -t image/png && dunstify "Save to clipboard"
+  maim | xclip -selection clipboard -t image/png && dunstify "Save full to clipboard"
 
-# save screenshot to mega
 super + {s,S}
   ~/bin/sh/screenshots.sh {cropped,full}
 
-# -------------- open apps ------------- #
-
-# open Firefox
-super + backslash
-  firefox-developer-edition
-
-# open file manager
-super + e
-  pcmanfm
-
 # -------------- music player ------------- #
 
-# volume down
 super + minus
   mpc volume -5 
 
-# volume up
 super + plus
   mpc volume +5 
 
-# next song
 super + greater
   mpc next
 
-# previous song
 super + less
   mpc prev
 
-# toggle pause
 super + shift + BackSpace
   mpc toggle
 
+# -------------- main keys ------------- #
+
+super + u
+  firefox-developer-edition
+
+super + e
+  pcmanfm
+
+super + d
+  rofi -modes "drun,window,run" -show drun
+
+super + t
+  st
+
+super + o
+  Chromium 
+
 # -------------- custom scripts ------------- #
 
-# recording video
 super + F1
   ~/bin/sh/video.sh
 
-# recording audio
 super + F2
   ~/bin/sh/audio.sh
 
-# set brightness
 super + b
   ~/bin/sh/set_brightness.sh
 
-# change wall
 super + shift + w
   ~/bin/sh/rofiwall.sh
 
-super + semicolon
-  ~/bin/select_and_execute.sh
-
-# switch keyboard
-super + g
+super + d
   xmodmap ~/.Xmodmap; dunstify "Dvorak"
 
-super + shift + g
+super + shift + d
   xmodmap ~/.XmodmapIntl; dunstify "Dvorak Intl"
 
-super + m
+super + shift + m
   tdrop -ma -x '33%' -y '30%' -w '35%' -h '35%' -p 'bspc rule -a URxvt -o state=floating' urxvt -e fish -c "ncmpcpp"
