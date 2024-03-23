@@ -18,17 +18,6 @@ bind \ep "suppress-autosuggestion"
 
 # }}}
 
-# {{{ fish plugins
-
-fzf_configure_bindings  --directory=\ct \
-                        --git_status= \
-                        --history= \
-                        --variables= \
-                        --processes= \
-                        --git_log
-
-# }}}
-
 # {{{ extend path
 
 fish_add_path /usr/local/bin/

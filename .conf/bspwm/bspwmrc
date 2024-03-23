@@ -1,28 +1,18 @@
 #! /bin/sh
 bspc monitor -d 1 2 3 4 5 6 7
 
-bspc config border_width 3
-bspc config window_gap 8
-bspc config bottom_padding 0
-bspc config top_padding 20
-bspc config left_padding 0
-bspc config right_padding 0
-bspc config single_monocle false
-bspc config click_to_focus true
-bspc config split_ratio 0.50
-bspc config borderless_monocle true
-bspc config gapless_monocle true
-bspc config focus_follows_pointer false
-bspc config remove_disabled_monitors true
-bspc config merge_overlapping_monitors true
-bspc config pointer_action1 move
-bspc config pointer_action2 resize_side
-bspc config pointer_action3 resize_corner
+bspc config border_width         2
+bspc config borderless_monocle   false
 
-bspc config focused_border_color "#70a9a1"
-bspc config normal_border_color "#3e353b"
-bspc config active_border_color "#b58da6"
-bspc config presel_feedback_color "#8fbcbb"
+bspc config top_padding          15
+
+bspc config window_gap            7
+bspc config split_ratio           0.50
+bspc config gapless_monocle       true
+bspc config focus_follows_pointer true
+
+bspc config focused_border_color "#d4969c"
+bspc config normal_border_color "#353b45"
 
 # rules
 bspc rule -a firefoxdeveloperedition desktop=^3 follow=off
@@ -45,7 +35,7 @@ bspc rule -a Pavucontrol state=floating rectangle=700x400+0+0 center=true
 xsetroot -cursor_name left_ptr &
 
 ~/.fehbg &
-~/bin/sh/polybar-bspwm.sh & 
+~/bin/sh/polybar-bspwm.sh &
 
 if ! pgrep -x "pipewire" > /dev/null; then pipewire & fi
 if ! pgrep -x "pipewire-pulse" > /dev/null; then pipewire-pulse & fi
