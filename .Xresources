@@ -1,5 +1,5 @@
 ! URxvt configuration.
-URxvt.font:                       xft:Maple Mono NF:pixelsize=12:style:Bold,\
+URxvt.font:                       xft:Maple Mono NF:pixelsize=16:style:Bold,\
                                   xft:Font Awesome:size=9:autohint=true:style:Solid,\
                                   xft:Font Awesome:size=9:autohint=true:style:Regular,\
 URxvt.geometry:                   400x400
@@ -68,7 +68,7 @@ URxvt.keysym.C-S-Return:          \033[13;6u
 ! st settings
 st.alpha: 1
 st.borderpx: 0
-st.font: Maple Mono NF:pixelsize=12:style:Bold
+st.font: Maple Mono NF:pixelsize=16:style:Bold
 
 ! Rose Pine Moon color scheme for st terminal
 
