@@ -28,11 +28,11 @@
   require = true
 [delta "decorations"]
   minus-style = "#d4969c"
-  plus-style = "#b1a1d1"
+  plus-style = "#3dad57"
   minus-emph-style = "#d4969c"
   minus-non-emph-style = "#d4969c"
-  plus-emph-style = "#b1a1d1"
-  plus-non-emph-style = "#b1a1d1"
+  plus-emph-style = "#3dad57"
+  plus-non-emph-style = "#3dad57"
   file-style = "#8fbcbb" bold
   file-decoration-style = "#8fbcbb"
   hunk-header-style = "#d08770"
@@ -42,8 +42,8 @@
   meta = "#b9a2bf"
   frag = "#75a7b3"
   old = "#d4969c"
-  new = "#b1a1d1"
+  new = "#3dad57"
   whitespace = "#434c5e"
-  added = "#b1a1d1"
+  added = "#3dad57"
   changed = "#d08770"
   untracked = "#d4969c"

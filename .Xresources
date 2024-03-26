@@ -70,24 +70,41 @@ st.alpha: 1
 st.borderpx: 0
 st.font: Maple Mono NF:pixelsize=12:style:Bold
 
-! Rose Pine Moon color scheme for st terminal
+! Rose Pine color scheme
 
-*background: #191724
-*foreground: #c7aed6
-*cursorColor: #c7aed6
-*color0: #3e353b
-*color8: #3d353b
-*color1: #d4969c
-*color9: #d4969c
-*color2: #b1a1d1
-*color10: #b1a1d1
-*color3: #e9cdd0
-*color11: #e9cdd0
-*color4: #70a9a1
-*color12: #70a9a1
-*color5: #b58da6
-*color13: #b58da6
-*color6: #75a7b3
-*color14: #75a7b3
-*color7: #b9a2bf
-*color15: #c5bdd2
+! special
+*.foreground:   #e0def4
+*.background:   #191724
+*.cursorColor:  #e0def4
+
+! black
+*.color0:       #1f1d2e
+*.color8:       #26233a
+
+! red
+*.color1:       #eb6f92
+*.color9:       #eb6f92
+
+! green
+*.color2:       #f6c177
+*.color10:      #f6c177
+
+! yellow
+*.color3:       #ebbcba
+*.color11:      #ebbcba
+
+! blue
+*.color4:       #31748f
+*.color12:      #31748f
+
+! magenta
+*.color5:       #c4a7e7
+*.color13:      #c4a7e7
+
+! cyan
+*.color6:       #9ccfd8
+*.color14:      #9ccfd8
+
+! white
+*.color7:       #6e6a86
+*.color15:      #908caa
