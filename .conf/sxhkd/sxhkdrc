@@ -81,6 +81,9 @@ super + t
 super + o
   Chromium 
 
+super + a
+  pavucontrol
+
 # -------------- custom scripts ------------- #
 
 super + F1
