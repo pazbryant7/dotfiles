@@ -1,6 +1,7 @@
 # {{{ interactive
 
 if status is-interactive
+  printf '\033[4 q'
 end
 
 # }}}
