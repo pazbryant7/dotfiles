@@ -1,5 +1,4 @@
 apple-fonts 1.0.5-1
-cava 0.10.1-1
 datagrip 2023.3.4-1
 datagrip-jre 2023.3.4-1
 mongodb-bin 7.0.6-1
