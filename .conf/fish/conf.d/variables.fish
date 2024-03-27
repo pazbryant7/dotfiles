@@ -18,9 +18,6 @@ set -x STARSHIP_CONFIG "~/.config/starship/starship.toml"
 
 # FZF
 set -x FZF_DEFAULT_OPTS " \
---color=bg+:#393552,bg:#191724,spinner:#eb6f92,hl:#eb6f92 \
---color=fg:#c7aed6,header:#eb6f92,info:#b58da6,pointer:#eb6f92 \
---color=marker:#eb6f92,fg+:#c7aed6,prompt:#b58da6,hl+:#eb6f92 \
 --preview-window noborder \
 --height=50%"
 
