@@ -5,6 +5,3 @@ configuration {
  }
 
 @theme "~/.config/rofi/center.rasi"
-
-
-

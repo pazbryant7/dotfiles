@@ -27,23 +27,23 @@
 	process = git-lfs filter-process
   require = true
 [delta "decorations"]
-  minus-style = "#d4969c"
-  plus-style = "#3dad57"
-  minus-emph-style = "#d4969c"
-  minus-non-emph-style = "#d4969c"
-  plus-emph-style = "#3dad57"
-  plus-non-emph-style = "#3dad57"
-  file-style = "#8fbcbb" bold
-  file-decoration-style = "#8fbcbb"
-  hunk-header-style = "#d08770"
-  hunk-header-decoration-style = "#d08770"
+  minus-style = "#CC342B"
+  plus-style = "#198844"
+  minus-emph-style = "#CC342B"
+  minus-non-emph-style = "#CC342B"
+  plus-emph-style = "#198844"
+  plus-non-emph-style = "#198844"
+  file-style = "#A36AC7" bold
+  file-decoration-style = "#A36AC7"
+  hunk-header-style = "#FBA922"
+  hunk-header-decoration-style = "#FBA922"
 
 [color]
-  meta = "#b9a2bf"
-  frag = "#75a7b3"
-  old = "#d4969c"
-  new = "#3dad57"
-  whitespace = "#434c5e"
-  added = "#3dad57"
-  changed = "#d08770"
-  untracked = "#d4969c"
+  meta = "#A36AC7"
+  frag = "#3971ED"
+  old = "#CC342B"
+  new = "#198844"
+  whitespace = "#969896"
+  added = "#198844"
+  changed = "#FBA922"
+  untracked = "#CC342B"

@@ -1,17 +1,17 @@
 * {
-   background-color:            #1a1d28;
-   border-color:                #1a1d28;
-   text-color:                  #c2cad6;
-   font:                        "Maple Mono NF Bold 9";
-   prompt-font:                 "Maple Mono NF Bold 9";
-   prompt-background:           #3d3f49;
-   prompt-foreground:           #1a1d28;
-   prompt-padding:              4px;
-   alternate-normal-background: #1a1d28;
-   alternate-normal-foreground: @text-color;
-   selected-normal-background:  #3d3f49;
-   selected-normal-foreground:  #c2cad6;
-   spacing:                     3;
+    background-color:            #1d1f21;
+    border-color:                #1d1f21;
+    text-color:                  #c5c8c6;
+    font:                        "Maple Mono NF Bold 9";
+    prompt-font:                 "Maple Mono NF Bold 9";
+    prompt-background:           #282a2e;
+    prompt-foreground:           #c5c8c6;
+    prompt-padding:              4px;
+    alternate-normal-background: #1d1f21;
+    alternate-normal-foreground: #c5c8c6;
+    selected-normal-background:  #282a2e;
+    selected-normal-foreground:  #c5c8c6;
+    spacing:                     3;
 }
 #window {
     border:  1;
