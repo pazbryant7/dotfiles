@@ -1,7 +1,7 @@
 ! URxvt configuration.
-URxvt.font:                       xft:Maple Mono NF:pixelsize=12:style:Bold,\
-                                  xft:Font Awesome:size=9:autohint=true:style:Solid,\
-                                  xft:Font Awesome:size=9:autohint=true:style:Regular,\
+URxvt.font:                       xft:Maple Mono NF:pixelsize=12:style:Bold:antialias=true:autohint=true:,\
+                                  xft:Font Awesome:size=9:autohint=true:antialias=true:style:Solid,\
+                                  xft:Font Awesome:size=9:autohint=true:antialias=true:style:Regular,\
 URxvt.geometry:                   400x400
 URxvt.internalBorder:             5
 URxvt.cursorBlink:                false
