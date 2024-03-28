@@ -105,4 +105,4 @@ super + shift + d
   xmodmap ~/.XmodmapIntl; dunstify "Dvorak Intl"
 
 super + shift + m
-  tdrop -ma -x '33%' -y '30%' -w '35%' -h '35%' -p 'bspc rule -a URxvt -o state=floating' urxvt -e fish -c "ncmpcpp"
+  bspc rule -a URxvt -o state=floating follow=on center=true  && urxvt -e fish -c "ncmpcpp"
