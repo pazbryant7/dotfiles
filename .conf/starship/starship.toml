@@ -4,7 +4,7 @@ add_newline = false
 disabled = true
 
 [directory]
-truncation_length = 1
+truncation_length = 2
 
 [character]                            
 success_symbol = "[](bold green)"     
