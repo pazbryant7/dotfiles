@@ -51,4 +51,8 @@ common_prefix = ["sudo"]
 
 keymap_mode = "vim-normal"
 
-keymap_cursor = { vim_insert = "steady-underline", vim_normal = "steady-underline" }
+keymap_cursor = { 
+  emacs = "steady-underline", 
+  vim_insert = "steady-underline", 
+  vim_normal = "steady-underline" 
+}
