@@ -41,6 +41,7 @@ if ! pgrep -x "udiskie" > /dev/null; then udiskie & fi
 if ! pgrep -x "unclutter" > /dev/null; then unclutter & fi
 if ! pgrep -x "wireplumber" > /dev/null; then wireplumber & fi
 if ! pgrep -x "dunst" > /dev/null; then dunst & fi
+if ! pgrep -x "mpd" > /dev/null; then mpd & fi
 
 if ! pgrep -x "picom" > /dev/null; then
     picom --config /home/bryant/.config/picom/picom.conf &
