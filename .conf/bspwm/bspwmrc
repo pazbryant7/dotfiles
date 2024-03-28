@@ -1,22 +1,20 @@
 #! /bin/sh
 bspc monitor -d 1 2 3 4 5 6 7
 
-bspc config border_width         3
-bspc config borderless_monocle   false
+bspc config border_width          3
+bspc config borderless_monocle    false
 
-bspc config top_padding          10
+bspc config top_padding           10
 
 bspc config window_gap            10
 bspc config split_ratio           0.50
 bspc config gapless_monocle       true
-bspc config focus_follows_pointer true
 
-bspc config focused_border_color "#969896"
-bspc config normal_border_color "#282a2e"
+bspc config focused_border_color  "#969896"
+bspc config normal_border_color   "#282a2e"
 
 # rules
 bspc rule -a firefoxdeveloperedition desktop=^3 follow=off
-bspc rule -a firefox-aurora desktop=^3 follow=off
 
 bspc rule -a Postman desktop=^4 follow=off
 bspc rule -a postman desktop=^4 follow=off
