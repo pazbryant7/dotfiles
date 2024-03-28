@@ -3,6 +3,7 @@ abbr --add cf "z ~/.config/fish/; nvim config.fish"
 
 # general
 abbr --add sp "systemctl suspend"
+abbr --add dh "rm ~/.history.db ~/.local/share/fish/fish_history"
 abbr --add sht "shutdown now"
 abbr --add ck "nvim ~/.config/sxhkd/sxhkdrc"
 abbr --add cl "clear; printf '\033[4 q'"
