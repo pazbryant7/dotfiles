@@ -66,7 +66,13 @@ super + shift + BackSpace
 
 # -------------- main keys ------------- #
 
-super + u
+super + a
+  bspc node -f last.floating
+
+super + o
+  zathura
+
+super + f
   firefox-developer-edition
 
 super + e
@@ -78,10 +84,10 @@ super + d
 super + t
   st
 
-super + o
+super + c
   chromium 
 
-super + a
+super + u
   pavucontrol
 
 # -------------- custom scripts ------------- #
@@ -105,4 +111,4 @@ super + shift + d
   xmodmap ~/.XmodmapIntl; dunstify "Dvorak Intl"
 
 super + shift + m
-  bspc rule -a URxvt -o state=floating follow=on center=true  && urxvt -e fish -c "ncmpcpp"
+  bspc rule -a URxvt -o state=floating follow=on center=true width=100% && urxvt -e fish -c "ncmpcpp"
