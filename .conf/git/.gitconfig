@@ -19,7 +19,7 @@
 [delta]
 	features = line-numbers decorations
 	line-numbers = true
-  syntax-theme = base16
+  syntax-theme = Dracula
   navigate = true
 [filter "lfs"]
 	clean = git-lfs clean -- %f
@@ -27,23 +27,23 @@
 	process = git-lfs filter-process
   require = true
 [delta "decorations"]
-  minus-style = "#CC342B"
-  plus-style = "#198844"
-  minus-emph-style = "#CC342B"
-  minus-non-emph-style = "#CC342B"
-  plus-emph-style = "#198844"
-  plus-non-emph-style = "#198844"
-  file-style = "#A36AC7" bold
-  file-decoration-style = "#A36AC7"
-  hunk-header-style = "#FBA922"
-  hunk-header-decoration-style = "#FBA922"
+  minus-style = "#ff5555"
+  plus-style = "#50fa7b"
+  minus-emph-style = "#ff5555"
+  minus-non-emph-style = "#ff5555"
+  plus-emph-style = "#50fa7b"
+  plus-non-emph-style = "#50fa7b"
+  file-style = "#bd93f9" bold
+  file-decoration-style = "#bd93f9"
+  hunk-header-style = "#f1fa8c"
+  hunk-header-decoration-style = "#f1fa8c"
 
 [color]
-  meta = "#A36AC7"
-  frag = "#3971ED"
-  old = "#CC342B"
-  new = "#198844"
-  whitespace = "#969896"
-  added = "#198844"
-  changed = "#FBA922"
-  untracked = "#CC342B"
+  meta = "#bd93f9"
+  frag = "#8be9fd"
+  old = "#ff5555"
+  new = "#50fa7b"
+  whitespace = "#6272a4"
+  added = "#50fa7b"
+  changed = "#f1fa8c"
+  untracked = "#ff5555"

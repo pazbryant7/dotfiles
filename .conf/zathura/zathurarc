@@ -3,38 +3,38 @@
 " -----------------------------------------------------------------------------
 
 " Colors
-set default-bg              "#2E3440"
-set default-fg              "#D8DEE9"
+set default-bg  "#282a36"
+set default-fg  "#f8f8f2"
 
-set statusbar-bg            "#3B4252"
-set statusbar-fg            "#E5E9F0"
+set statusbar-bg  "#44475a"
+set statusbar-fg  "#f8f8f2"
 
-set inputbar-bg             "#2E3440"
-set inputbar-fg             "#D8DEE9"
+set inputbar-bg  "#282a36"
+set inputbar-fg  "#f8f8f2"
 
-set notification-error-bg   "#BF616A"
-set notification-error-fg   "#2E3440"
+set notification-error-bg  "#bf616a"
+set notification-error-fg  "#282a36"
 
-set notification-warning-bg "#D08770"
-set notification-warning-fg "#2E3440"
+set notification-warning-bg  "#d08770"
+set notification-warning-fg  "#282a36"
 
-set highlight-color         "#88C0D0"
-set highlight-active-color  "#BF616A"
+set highlight-color  "#88c0d0"
+set highlight-active-color  "#bf616a"
 
-set completion-highlight-fg "#E5E9F0"
-set completion-highlight-bg "#3B4252"
+set completion-highlight-fg  "#f8f8f2"
+set completion-highlight-bg  "#44475a"
 
-set completion-bg           "#2E3440"
-set completion-fg           "#D8DEE9"
+set completion-bg  "#282a36"
+set completion-fg  "#f8f8f2"
 
-set notification-bg         "#D8DEE9"
-set notification-fg         "#2E3440"
+set notification-bg  "#f8f8f2"
+set notification-fg  "#282a36"
 
-set recolor                 "true"
-set recolor-lightcolor      "#2E3440"
-set recolor-darkcolor       "#D8DEE9"
-set recolor-reverse-video   "true"
-set recolor-keephue         "false"
+set recolor  "true"
+set recolor-lightcolor  "#282a36"
+set recolor-darkcolor  "#f8f8f2"
+set recolor-reverse-video  "true"
+set recolor-keephue  "false"
 
 " Clipboard
 set selection-clipboard clipboard

@@ -1,5 +1,5 @@
 ! URxvt configuration.
-URxvt.font:                       xft:Maple Mono NF:pixelsize=12:style:Regular,\
+URxvt.font:                       xft:Maple Mono NF:pixelsize=12.5:style:Regular,\
                                   xft:Font Awesome:size=9:autohint=true:style:Solid,\
                                   xft:Font Awesome:size=9:autohint=true:style:Regular,\
 URxvt.geometry:                   400x400
@@ -68,46 +68,24 @@ URxvt.keysym.C-S-Return:          \033[13;6u
 ! st settings
 st.alpha: 1
 st.borderpx: 0
-st.font: Maple Mono NF:pixelsize=12:style:Regular
+st.font: Maple Mono NF:pixelsize=12.5:style:Regular
 
-#define base00 #1d1f21
-#define base01 #282a2e
-#define base02 #373b41
-#define base03 #969896
-#define base04 #b4b7b4
-#define base05 #c5c8c6
-#define base06 #e0e0e0
-#define base07 #ffffff
-#define base08 #CC342B
-#define base09 #F96A38
-#define base0A #FBA922
-#define base0B #198844
-#define base0C #A36AC7
-#define base0D #A36AC7
-#define base0E #3971ED
-#define base0F #A36AC7
-
-*.foreground:   base05
-#ifdef background_opacity
-*.background:   [background_opacity]base00
-#else
-*.background:   base00
-#endif
-*.cursorColor:  base05
-
-*.color0:       base00
-*.color1:       base08
-*.color2:       base0B
-*.color3:       base0A
-*.color4:       base0D
-*.color5:       base0E
-*.color6:       base0C
-*.color7:       base05
-*.color8:       base03
-*.color9:       base08
-*.color10:      base0B
-*.color11:      base0A
-*.color12:      base0D
-*.color13:      base0E
-*.color14:      base0C
-*.color15:      base07
+! Dracula Xresources palette
+*.foreground: #F8F8F2
+*.background: #282A36
+*.color0:     #282a2e
+*.color8:     #4D4D4D
+*.color1:     #FF5555
+*.color9:     #FF6E67
+*.color2:     #50FA7B
+*.color10:    #5AF78E
+*.color3:     #F1FA8C
+*.color11:    #F4F99D
+*.color4:     #BD93F9
+*.color12:    #CAA9FA
+*.color5:     #FF79C6
+*.color13:    #FF92D0
+*.color6:     #8BE9FD
+*.color14:    #9AEDFE
+*.color7:     #BFBFBF
+*.color15:    #E6E6E6

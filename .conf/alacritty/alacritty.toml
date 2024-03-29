@@ -1,58 +1,72 @@
 live_config_reload = true
 
-[colors]
-draw_bold_text_with_bright_colors = true
+[colors.primary]
 
-[colors.bright]
-black = "#393552"
-blue = "#4285f4"
-cyan = "#34a853"
-green = "#34a853"
-magenta = "#b294bb"
-red = "#ea4335"
-white = "#569cd6"
-yellow = "#fbbc05"
+background = "#282a36"
+foreground = "#f8f8f2"
+bright_foreground = "#ffffff"
 
 [colors.cursor]
-cursor = "#e0def4"
-text = "#232136"
 
-[colors.dim]
-black = "#2a273f"
-blue = "#4285f4"
-cyan = "#34a853"
-green = "#34a853"
-magenta = "#b294bb"
-red = "#ea4335"
-white = "#7aa7ce"
-yellow = "#fbbc05"
-
-[colors.normal]
-black = "#312E3D"
-blue = "#4285f4"
-cyan = "#34a853"
-green = "#34a853"
-magenta = "#b294bb"
-red = "#ea4335"
-white = "#ECEBF0"
-yellow = "#fbbc05"
-
-[colors.primary]
-background = "#1d1f21"
-dim_foreground = "#ECEBF0"
-foreground = "#e0def4"
-
-[colors.search.matches]
-background = "#34a853"
-foreground = "CellBackground"
-
-[colors.selection]
-background = "#393552"
-text = "CellForeground"
+text = "#282a36"
+cursor = "#f8f8f2"
 
 [colors.vi_mode_cursor]
-cursor = "#e0def4"
-text = "#232136"
+
+text = "CellBackground"
+cursor = "CellForeground"
+
+[colors.selection]
+
+text = "CellForeground"
+background = "#44475a"
+
+[colors.normal]
+
+black = "#21222c"
+red = "#ff5555"
+green = "#50fa7b"
+yellow = "#f1fa8c"
+blue = "#bd93f9"
+magenta = "#ff79c6"
+cyan = "#8be9fd"
+white = "#f8f8f2"
+
+[colors.bright]
+
+black = "#6272a4"
+red = "#ff6e6e"
+green = "#69ff94"
+yellow = "#ffffa5"
+blue = "#d6acff"
+magenta = "#ff92df"
+cyan = "#a4ffff"
+white = "#ffffff"
+
+[colors.search.matches]
+
+foreground = "#44475a"
+background = "#50fa7b"
+
+[colors.search.focused_match]
+
+foreground = "#44475a"
+background = "#ffb86c"
+
+[colors.footer_bar]
+
+background = "#282a36"
+foreground = "#f8f8f2"
+
+[colors.hints.start]
+
+foreground = "#282a36"
+background = "#f1fa8c"
+
+[colors.hints.end]
+
+foreground = "#f1fa8c"
+background = "#282a36"
 
 [cursor.style]
 shape = "Underline"
@@ -69,15 +83,15 @@ style = "Bold"
 
 [font.bold_italic]
 family = "Maple Mono NF"
-style = "Bold"
+style = "BoldItalic"
 
 [font.italic]
 family = "Maple Mono NF"
-style = "Regular"
+style = "Italic"
 
 [font.normal]
 family = "Maple Mono NF"
-style = "Bold"
+style = "Regular"
 
 [font.offset]
 x = 0
