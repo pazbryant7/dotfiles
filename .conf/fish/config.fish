@@ -19,6 +19,12 @@ bind \ep "suppress-autosuggestion"
 
 # }}}
 
+# {{{ aliases
+
+alias sudo "sudo "
+
+# }}}
+
 # {{{ extend path
 
 fish_add_path /usr/local/bin/
