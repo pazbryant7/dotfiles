@@ -5,30 +5,19 @@
 [init]
 	defaultBranch = main
 [core]
-	editor = nvim
-	whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
-[pager]
-  diff = delta
-  log = delta
-  reflog = delta
-  show = delta
-[diff]
-	tool = vimdiff
-[difftool]
-	prompt = false
+  editor = nvim
+  pager = delta
+[interactive]
+    diffFilter = delta --color-only --features=interactive
 [delta]
-	features = line-numbers decorations
+	features = decorations
 	line-numbers = true
   syntax-theme = Dracula
   navigate = true
-[filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-  require = true
+  true-color = always
 [delta "decorations"]
-  minus-style = "#ff5555"
-  plus-style = "#50fa7b"
+  minus-style = bold "#ff5555" "#6272a4"
+  plus-style = bold "#50fa7b" "#6272a4"
   minus-emph-style = "#ff5555"
   minus-non-emph-style = "#ff5555"
   plus-emph-style = "#50fa7b"
@@ -37,13 +26,5 @@
   file-decoration-style = "#bd93f9"
   hunk-header-style = "#f1fa8c"
   hunk-header-decoration-style = "#f1fa8c"
-
-[color]
-  meta = "#bd93f9"
-  frag = "#8be9fd"
-  old = "#ff5555"
-  new = "#50fa7b"
-  whitespace = "#6272a4"
-  added = "#50fa7b"
-  changed = "#f1fa8c"
-  untracked = "#ff5555"
+[merge]
+  conflictstyle = diff3
