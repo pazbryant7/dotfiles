@@ -16,8 +16,8 @@
   navigate = true
   true-color = always
 [delta "decorations"]
-  minus-style = bold "#ff5555" "#6272a4"
-  plus-style = bold "#50fa7b" "#6272a4"
+  minus-style = bold "#ff5555"
+  plus-style = bold "#50fa7b"  
   minus-emph-style = "#ff5555"
   minus-non-emph-style = "#ff5555"
   plus-emph-style = "#50fa7b"
