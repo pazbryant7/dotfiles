@@ -1,3 +1,7 @@
+# nvim
+abbr --add vi "NVIM_APPNAME="custom" nvim"
+abbr --add vim "NVIM_APPNAME="nvchad" nvim"
+
 # fihs
 abbr --add cf "z ~/.config/fish/; nvim config.fish"
 
