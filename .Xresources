@@ -1,7 +1,5 @@
 ! URxvt configuration.
-URxvt.font:                       xft:Maple Mono NF:pixelsize=12.5:style:Regular,\
-                                  xft:Font Awesome:size=9:autohint=true:style:Solid,\
-                                  xft:Font Awesome:size=9:autohint=true:style:Regular,\
+URxvt.font:                       xft:Maple Mono NF:pixelsize=12.5:style:Regular:antialias=true:autohint=true
 URxvt.geometry:                   400x400
 URxvt.internalBorder:             5
 URxvt.cursorBlink:                false
@@ -21,7 +19,7 @@ URxvt.jumpScroll:                 true
 ! URxvt.iconFile:                   /home/username/.icons/Gladient/terminal.png
 
 ! Uncomment below if too much font spacing, and fix glyphs performance issues.
-URxvt.letterSpace:                -1
+! URxvt.letterSpace:                -1
 ! URxvt.skipBuiltinGlyphs:          true
 
 ! Disable printing the terminal contents when pressing PrintScreen.
