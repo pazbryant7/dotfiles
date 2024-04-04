@@ -28,3 +28,5 @@
   hunk-header-decoration-style = "#f1fa8c"
 [merge]
   conflictstyle = diff3
+[pull]
+	rebase = true
