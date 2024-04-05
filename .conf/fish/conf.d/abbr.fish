@@ -13,7 +13,7 @@ abbr --add fontcache "sudo fc-cache -f -v"
 abbr --add motivation "mpv ~/Videos/dios.mp4"
 abbr --add rel "xrdb merge ~/.Xresources && kill -USR1 (pidof st)"
 abbr --add rma "rm -rf"
-abbr --add leetcode "nvim leetcode.nvim"
+abbr --add ltc "nvim leetcode.nvim"
 
 # zoxide
 abbr --add .... "z ../../../../"
