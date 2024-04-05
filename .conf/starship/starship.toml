@@ -12,7 +12,7 @@ error_symbol = "[!](bold)"
 vimcmd_symbol = "[](bold)"
 
 [git_branch]
-format = "[$branch]($style)"
+format = "[$branch]($style) "
 
 [git_status]
 disabled = true
