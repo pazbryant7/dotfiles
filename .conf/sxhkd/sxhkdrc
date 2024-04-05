@@ -104,10 +104,10 @@ super + b
 super + shift + w
   ~/bin/sh/rofiwall.sh
 
-super + d
+super + i
   xmodmap ~/.Xmodmap; dunstify "Dvorak"
 
-super + shift + d
+super + shift + i
   xmodmap ~/.XmodmapIntl; dunstify "Dvorak Intl"
 
 super + shift + m
