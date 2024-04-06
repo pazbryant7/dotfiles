@@ -14,6 +14,7 @@ abbr --add motivation "mpv ~/Videos/dios.mp4"
 abbr --add rel "xrdb merge ~/.Xresources && kill -USR1 (pidof st)"
 abbr --add rma "rm -rf"
 abbr --add ltc "nvim leetcode.nvim"
+abbr --add cpass "z ~/.password-store/"
 
 # zoxide
 abbr --add .... "z ../../../../"
