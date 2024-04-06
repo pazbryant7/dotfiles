@@ -4,7 +4,7 @@ set -x VISUAL $EDITOR
 set -x TERMINAL "st"
 set -x SUDO_EDITOR $EDITOR
 set -x BROWSER "firefox-developer-edition"
-set -x GTK_THEME "Nordic"
+set -x GTK_THEME "Dracula"
 set -x READER "zathura"
 set -x VIDEO "mpv"
 set -x COLORTERM "truecolor"
