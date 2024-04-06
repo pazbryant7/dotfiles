@@ -14,7 +14,7 @@ imap-port = 993
 imap-login = "plbryant@hotmail.com"
 
 imap-auth="passwd"
-imap-passwd.cmd = "pass show himalaya/microsoft/main"
+imap-passwd.cmd = "pass show personal/himalaya/microsoft"
 
 sender = "smtp"
 smtp-host = "smtp-mail.outlook.com"
@@ -23,7 +23,7 @@ smtp-starttls = true
 smtp-login = "plbryant@hotmail.com"
 
 smtp-auth="passwd"
-smtp-passwd.cmd = "pass show himalaya/microsoft/main"
+smtp-passwd.cmd = "pass show personal/himalaya/microsoft"
 
 
 [microsoft-work]
@@ -35,7 +35,7 @@ imap-port = 993
 imap-login = "plbryantt@outlook.com"
 
 imap-auth="passwd"
-imap-passwd.cmd = "pass show himalaya/microsoft/work"
+imap-passwd.cmd = "pass show work/himalaya/microsoft"
 
 sender = "smtp"
 smtp-host = "smtp-mail.outlook.com"
@@ -44,7 +44,7 @@ smtp-starttls = true
 smtp-login = "plbryantt@outlook.com"
 
 smtp-auth="passwd"
-smtp-passwd.cmd = "pass show himalaya/microsoft/work"
+smtp-passwd.cmd = "pass show work/himalaya/microsoft"
 
 
 
@@ -57,7 +57,7 @@ imap-port = 993
 imap-login = "pazitaa117@gmail.com"
 
 imap-auth="passwd"
-imap-passwd.cmd = "pass show himalaya/google/main"
+imap-passwd.cmd = "pass show personal/himalaya/google"
 
 sender = "smtp"
 smtp-host = "smtp.gmail.com"
@@ -65,7 +65,7 @@ smtp-port = 465
 smtp-login = "pazitaa117@gmail.com"
 
 smtp-auth="passwd"
-smtp-passwd.cmd = "pass show himalaya/google/main"
+smtp-passwd.cmd = "pass show personal/himalaya/google"
 
 [google-main.folder-aliases]
 inbox = "INBOX"
