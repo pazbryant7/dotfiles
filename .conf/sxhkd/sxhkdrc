@@ -1,7 +1,7 @@
 super + q
   bspc node -c
 
-super + shift + {q,r}
+super + alt + {q,r}
 	bspc {quit,wm -r}
 
 super + shift + Escape
@@ -67,7 +67,7 @@ super + shift + BackSpace
 # -------------- main keys ------------- #
 
 super + a
-  bspc node -f last.floating
+  if bspc query -N -n focused.floating; bspc node -f last.tiled.local; else; bspc node -f last.floating.local; end
 
 super + o
   zathura
@@ -112,3 +112,25 @@ super + shift + i
 
 super + shift + m
   urxvt -e fish -c "ncmpcpp"
+
+# --------------- resize windows --------------#
+
+super + alt + l
+    bspc node -z right 20 0 || bspc node -z left 20 0
+
+super + alt + h
+    bspc node -z right -20 0 || bspc node -z left -20 0
+
+super + alt + j
+    bspc node -z bottom 0 20 || bspc node -z top 0 20
+
+super + alt + k
+    bspc node -z bottom 0 -20 || bspc node -z top 0 -20
+
+# ---------------- rotate windows --------------#
+
+super + shift + r
+    bspc node @/ -R 90
+
+super + r
+    bspc node @parent -R 90
