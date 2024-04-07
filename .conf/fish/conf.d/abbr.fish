@@ -15,6 +15,8 @@ abbr --add rel "xrdb merge ~/.Xresources && kill -USR1 (pidof st)"
 abbr --add rma "rm -rf"
 abbr --add ltc "nvim leetcode.nvim"
 abbr --add cpass "z ~/.password-store/"
+abbr --add als "nvim ~/.config/fish/conf.d/abbr.fish"
+abbr --add xevk "xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf \"%-3s %s\n\", \$5, \$8 }'"
 
 # zoxide
 abbr --add .... "z ../../../../"

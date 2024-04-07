@@ -11,9 +11,11 @@ end
 set fish_greeting
 set fish_cursor_default underscore
 
+# ctrl
 bind \cn "forward-word"
 bind \cp "backward-word"
-bind \cd "get_pwd"
+
+# alt
 bind \en "accept-autosuggestion"
 bind \ep "suppress-autosuggestion"
 

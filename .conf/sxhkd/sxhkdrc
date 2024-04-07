@@ -15,7 +15,7 @@ super + w
       bspc node focused -t tiled || \
       bspc node focused -t floating
 
-super + z
+super + f
   bspc node -t '~fullscreen'
 
 super + {_,shift + }{h,j,k,l}
@@ -72,9 +72,6 @@ super + a
 super + o
   zathura
 
-super + f
-  firefox-developer-edition
-
 super + e
   pcmanfm
 
@@ -89,6 +86,9 @@ super + c
 
 super + u
   pavucontrol
+
+super + Return
+  firefox-developer-edition
 
 # -------------- custom scripts ------------- #
 

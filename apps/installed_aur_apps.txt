@@ -8,7 +8,6 @@ mongosh-bin 2.2.0-1
 obinskit 1.2.11-2
 paru 2.0.3-1
 postman-bin 10.23.9-1
-rose-pine-gtk-theme-full 2.1.0-1
 ttf-maple 6.4-1
 urxvt-resize-font-git 27.b593580-1
 visual-studio-code-bin 1.87.2-1
