@@ -111,7 +111,7 @@ super + shift + i
   xmodmap ~/.XmodmapIntl; dunstify "Dvorak Intl"
 
 super + shift + m
-  urxvt -e fish -c "ncmpcpp"
+  bspc rule -a St -o state=floating follow=on center=true && st -e fish -c "ncmpcpp"
 
 # --------------- resize windows --------------#
 
