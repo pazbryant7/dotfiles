@@ -24,9 +24,6 @@ super + {_,shift + }{h,j,k,l}
 super + {n,p}
 	bspc node -f {next,prev}.local.!hidden.window
 
-super + shift + {p,n}
-	bspc desktop -f {prev,next}.local
-
 super + Tab
 	bspc desktop -f last
 
@@ -35,6 +32,9 @@ super + {bracketleft,braceleft,parenleft,percent,equal,ampersand,parenright}
 
 super + shift {1-7}
   bspc node -d '^{1-7}'
+
+super + shift + n
+  if bspc query -N -n focused.floating; bspc node -f last.tiled.local; else; bspc node -f last.floating.local; end
 
 # -------------- print ------------- #
 
@@ -66,14 +66,14 @@ super + shift + BackSpace
 
 # -------------- main keys ------------- #
 
-super + a
-  if bspc query -N -n focused.floating; bspc node -f last.tiled.local; else; bspc node -f last.floating.local; end
-
 super + o
   zathura
 
 super + e
   pcmanfm
+
+super + u
+  pavucontrol
 
 super + d
   rofi -modes "drun,window,run" -show drun
@@ -84,11 +84,14 @@ super + t
 super + c
   chromium 
 
-super + u
-  pavucontrol
-
 super + Return
   firefox-developer-edition
+
+super + b
+  ~/bin/sh/set_brightness.sh
+
+super + m
+  bspc rule -a St -o state=floating follow=on center=true && st -e fish -c "ncmpcpp"
 
 # -------------- custom scripts ------------- #
 
@@ -98,9 +101,6 @@ super + F1
 super + F2
   ~/bin/sh/audio.sh
 
-super + b
-  ~/bin/sh/set_brightness.sh
-
 super + shift + w
   ~/bin/sh/rofiwall.sh
 
@@ -109,9 +109,6 @@ super + i
 
 super + shift + i
   xmodmap ~/.XmodmapIntl; dunstify "Dvorak Intl"
-
-super + shift + m
-  bspc rule -a St -o state=floating follow=on center=true && st -e fish -c "ncmpcpp"
 
 # --------------- resize windows --------------#
 
@@ -134,3 +131,11 @@ super + shift + r
 
 super + r
     bspc node @parent -R 90
+
+# ---------------- hide windows --------------#
+
+super + v
+  bspc node -g hidden
+
+super + shift + v
+  bspc node {,$(bspc query -N -n .hidden | tail -n1)} -g hidden=off
