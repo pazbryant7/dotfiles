@@ -101,6 +101,12 @@ super + F1
 super + F2
   ~/bin/sh/audio.sh
 
+super + F3
+  ~/bin/sh/megasync.sh
+
+super + F4
+  ~/bin/sh/dropbox.sh
+
 super + shift + w
   ~/bin/sh/rofiwall.sh
 
