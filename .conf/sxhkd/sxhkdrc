@@ -24,6 +24,9 @@ super + {_,shift + }{h,j,k,l}
 super + {n,p}
 	bspc node -f {next,prev}.local.!hidden.window
 
+super + shift + {p,n}
+  bspc desktop -f {prev,next}.local
+
 super + Tab
 	bspc desktop -f last
 
@@ -32,9 +35,6 @@ super + {bracketleft,braceleft,parenleft,percent,equal,ampersand,parenright}
 
 super + shift {1-7}
   bspc node -d '^{1-7}'
-
-super + shift + n
-  if bspc query -N -n focused.floating; bspc node -f last.tiled.local; else; bspc node -f last.floating.local; end
 
 # -------------- print ------------- #
 
@@ -65,6 +65,9 @@ super + shift + BackSpace
   mpc toggle
 
 # -------------- main keys ------------- #
+
+super + a
+  if bspc query -N -n focused.floating; bspc node -f last.tiled.local; else; bspc node -f last.floating.local; end
 
 super + o
   zathura
