@@ -61,9 +61,6 @@ super + greater
 super + less
   mpc prev
 
-super + shift + BackSpace
-  mpc toggle
-
 # -------------- main keys ------------- #
 
 super + a
