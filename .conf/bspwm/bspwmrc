@@ -15,12 +15,8 @@ bspc config normal_border_color   "#282a2e"
 
 # rules
 bspc rule -a obsidian desktop=^2 follow=off
-
-bspc rule -a firefoxdeveloperedition desktop=^3 follow=off
-
 bspc rule -a Postman desktop=^4 follow=off
 bspc rule -a postman desktop=^4 follow=off
-bspc rule -a Insomnia desktop=^4 follow=off
 
 bspc rule -a jetbrains-datagrip desktop=^5 follow=off
 bspc rule -a "MongoDB Compass" desktop=^5 follow=off

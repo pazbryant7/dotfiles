@@ -38,6 +38,7 @@ fish_add_path ~/.local/bin
 fish_add_path ~/.local/share/bob/nvim-bin/
 fish_add_path ~/.local/share/nvim/mason/bin
 fish_add_path ~/bin/sh/
+fish_add_path ~/bin/crontab/
 fish_add_path ~/go/bin/
 
 # }}}
