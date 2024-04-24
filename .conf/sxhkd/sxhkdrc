@@ -67,7 +67,7 @@ super + a
   if bspc query -N -n focused.floating; bspc node -f last.tiled.local; else; bspc node -f last.floating.local; end
 
 super + o
-  zathura
+  obsidian
 
 super + e
   pcmanfm
