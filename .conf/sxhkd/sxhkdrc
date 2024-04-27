@@ -78,11 +78,11 @@ super + u
 super + d
   rofi -modes "drun,window,run" -show drun
 
+super + shift + d
+  ~/bin/select_and_execute.sh
+
 super + t
   st
-
-super + c
-  chromium 
 
 super + Return
   firefox-developer-edition
@@ -95,17 +95,6 @@ super + m
 
 # -------------- custom scripts ------------- #
 
-super + F1
-  ~/bin/sh/video.sh
-
-super + F2
-  ~/bin/sh/audio.sh
-
-super + F3
-  ~/bin/sh/megasync.sh
-
-super + F4
-  ~/bin/sh/dropbox.sh
 
 super + shift + w
   ~/bin/sh/rofiwall.sh
