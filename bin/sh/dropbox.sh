@@ -14,29 +14,29 @@ case "$selected_option" in
 	# Check if there are changes
 	if rclone check "$local_folder" "$remote_folder" &>/dev/null; then
 		# No changes, show notification and exit
-		dunstify -u low -t 3000 "DropboxSync" "No changes to sync."
+		dunstify "DropboxSync" "No changes to sync."
 		exit 0
 	fi
 
 	# Proceed with sync
 	rclone sync "$local_folder" "$remote_folder"
-	dunstify -u low -t 3000 "DropboxSync" "Sync from local to dropbox completed successfully."
+	dunstify "DropboxSync" "Sync from local to dropbox completed successfully."
 	;;
 "Sync from dropbox to local")
 	# Check if there are changes
 	if rclone check "$remote_folder" "$local_folder" &>/dev/null; then
 		# No changes, show notification and exit
-		dunstify -u low -t 3000 "DropboxSync" "No changes to sync."
+		dunstify "DropboxSync" "No changes to sync."
 		exit 0
 	fi
 
 	# Proceed with sync
 	rclone sync "$remote_folder" "$local_folder"
-	dunstify -u low -t 3000 "DropboxSync" "Sync from dropbox to local completed successfully."
+	dunstify "DropboxSync" "Sync from dropbox to local completed successfully."
 	;;
 "Cancel")
 	# User selected cancel, exit
-	dunstify -u low -t 3000 "DropboxSync" "Action canceled by the user."
+	dunstify "DropboxSync" "Action canceled by the user."
 	exit 0
 	;;
 esac

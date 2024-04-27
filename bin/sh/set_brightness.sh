@@ -17,8 +17,8 @@ fi
 
 if [[ $brightness =~ ^[0-1](\.[0-9]+)?$ ]]; then
     xrandr --output HDMI-2 --brightness $brightness
-    notify-send -t 2000 "Brightness updated"
+    dunstify "Brightness updated"
 else
     # If not valid, show a message in dunst
-    notify-send -t 2000 "Invalid input"
+    dunstify -t 2000 "Invalid input"
 fi

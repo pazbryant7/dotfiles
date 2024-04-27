@@ -14,7 +14,7 @@ case "$selected_option" in
 	# Check if there are changes
 	if rclone check "$local_folder" "$remote_folder" &>/dev/null; then
 		# No changes, show notification and exit
-		dunstify -u low -t 3000 "MegaSync" "No changes to sync."
+		dunstify "MegaSync" "No changes to sync."
 		exit 0
 	fi
 
@@ -26,17 +26,17 @@ case "$selected_option" in
 	# Check if there are changes
 	if rclone check "$remote_folder" "$local_folder" &>/dev/null; then
 		# No changes, show notification and exit
-		dunstify -u low -t 3000 "MegaSync" "No changes to sync."
+		dunstify "MegaSync" "No changes to sync."
 		exit 0
 	fi
 
 	# Proceed with sync
 	rclone sync "$remote_folder" "$local_folder"
-	dunstify -u low -t 3000 "MegaSync" "Sync from mega to local completed successfully."
+	dunstify "MegaSync" "Sync from mega to local completed successfully."
 	;;
 "Cancel")
 	# User selected cancel, exit
-	dunstify -u low -t 3000 "MegaSync" "Action canceled by the user."
+	dunstify "MegaSync" "Action canceled by the user."
 	exit 0
 	;;
 esac
