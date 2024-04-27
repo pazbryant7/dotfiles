@@ -68,5 +68,6 @@
     background = "#BD93F9"
     foreground = "#1a1a1a"
     timeout = 0
-
-# vim: ft=cfg
+[play_sound]
+    summary = "*"
+    script = "/home/bryant/bin/sh/alert.sh"
