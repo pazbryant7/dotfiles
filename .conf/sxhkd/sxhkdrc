@@ -93,6 +93,9 @@ super + b
 super + m
   bspc rule -a St -o state=floating follow=on center=true && st -e fish -c "ncmpcpp"
 
+super + c
+  chromium
+
 # -------------- custom scripts ------------- #
 
 
