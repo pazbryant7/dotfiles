@@ -8,11 +8,11 @@ if [[ "$brightness" == "2" ]]; then
 fi
 
 if [[ "$brightness" == "3" ]]; then
-    brightness="0.8"
+    brightness="0.4"
 fi
 
 if [[ "$brightness" == "4" ]]; then
-    brightness="0.4"
+    brightness="0.3"
 fi
 
 if [[ $brightness =~ ^[0-1](\.[0-9]+)?$ ]]; then
