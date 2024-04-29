@@ -14,7 +14,7 @@ imap-port = 993
 imap-login = "plbryant@hotmail.com"
 
 imap-auth="passwd"
-imap-passwd.cmd = "pass show personal/himalaya/microsoft"
+imap-passwd.cmd = "pass personal/hotmail/main"
 
 sender = "smtp"
 smtp-host = "smtp-mail.outlook.com"
@@ -23,7 +23,7 @@ smtp-starttls = true
 smtp-login = "plbryant@hotmail.com"
 
 smtp-auth="passwd"
-smtp-passwd.cmd = "pass show personal/himalaya/microsoft"
+smtp-passwd.cmd = "pass personal/hotmail/main"
 
 
 [microsoft-work]
@@ -35,7 +35,7 @@ imap-port = 993
 imap-login = "plbryantt@outlook.com"
 
 imap-auth="passwd"
-imap-passwd.cmd = "pass show work/himalaya/microsoft"
+imap-passwd.cmd = "pass show work/outlook/main"
 
 sender = "smtp"
 smtp-host = "smtp-mail.outlook.com"
@@ -44,7 +44,7 @@ smtp-starttls = true
 smtp-login = "plbryantt@outlook.com"
 
 smtp-auth="passwd"
-smtp-passwd.cmd = "pass show work/himalaya/microsoft"
+smtp-passwd.cmd = "pass show work/outlook/main"
 
 
 
