@@ -87,6 +87,9 @@ super + t
 super + Return
   firefox-developer-edition
 
+super + shift + Return
+  chromium
+
 super + b
   ~/bin/sh/set_brightness.sh
 
@@ -94,7 +97,7 @@ super + m
   bspc rule -a St -o state=floating follow=on center=true && st -e fish -c "ncmpcpp"
 
 super + c
-  chromium
+  rofi -show calc -modi calc -no-show-match -no-sort 
 
 # -------------- custom scripts ------------- #
 

@@ -71,6 +71,7 @@ qt5ct 1.8-1
 rclone 1.66.0-1
 ripgrep 14.1.0-1
 rofi 1.7.5-2
+rofi-calc 2.2.1-1
 rsync 3.3.0-1
 rxvt-unicode 9.31-4
 sox 14.4.2+r182+g42b3557e-4
