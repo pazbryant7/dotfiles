@@ -3,6 +3,7 @@ abbr --add cf "z ~/.config/fish/; nvim config.fish"
 
 # general
 abbr --add sp "systemctl suspend"
+abbr --add weather "wego"
 abbr --add dh "rm ~/.history.db ~/.local/share/fish/fish_history"
 abbr --add sht "shutdown now"
 abbr --add ck "nvim ~/.config/sxhkd/sxhkdrc"
