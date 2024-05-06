@@ -78,7 +78,7 @@ super + u
 super + d
   rofi -modes "drun,window,run" -show drun
 
-super + shift + d
+super + x
   ~/bin/select_and_execute.sh
 
 super + t
