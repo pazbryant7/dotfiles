@@ -1,11 +1,16 @@
 #!/bin/sh
 
+set -x
+
 WALLPAPER_DIR="$HOME/Pictures/wall"
 LAST_WALLPAPER_FILE="$HOME/.fehbg"
 
 # Function to list folders in the first level of the wallpaper directory
 list_folders() {
-	fd --type directory --max-depth 1 --base-directory "$WALLPAPER_DIR"
+	fd --type directory \
+		--max-depth 1 \
+		--base-directory "$WALLPAPER_DIR" |
+		xargs -I {} basename {}
 }
 
 # Function to list files within a selected folder
@@ -53,6 +58,8 @@ SELECTED_WALLPAPER=$(select_wallpaper "$SELECTED_FOLDER")
 feh --bg-fill "$WALLPAPER_DIR/$SELECTED_FOLDER/$SELECTED_WALLPAPER"
 
 # Update the .fehbg file with the new wallpaper path
-sed -i "s|^feh --bg-fill '.*'|feh --bg-fill '$WALLPAPER_DIR/$SELECTED_FOLDER/$SELECTED_WALLPAPER'|" "$LAST_WALLPAPER_FILE"
+sed -i "s|^feh --bg-fill '.*'|feh --bg-fill \
+  '$WALLPAPER_DIR/$SELECTED_FOLDER/$SELECTED_WALLPAPER'|" \
+	"$LAST_WALLPAPER_FILE"
 
 dunstify "New wallpaper:" "$SELECTED_WALLPAPER"

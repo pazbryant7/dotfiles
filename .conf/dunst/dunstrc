@@ -70,4 +70,4 @@
     timeout = 0
 [play_sound]
     summary = "*"
-    script = "/home/bryant/bin/sh/alert.sh"
+    script = "/home/bryant/bin/sh/send-alert.sh"

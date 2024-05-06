@@ -11,7 +11,14 @@ toggle_recording() {
 		dunstify "Recording started"
 		touch "$FLAG_FILE"
 		# Execute the ffmpeg command without audio recording
-		ffmpeg -f x11grab -s 1920x1080 -r 25 -i :0.0 -c:v libx264 -preset ultrafast -crf 18 "$DIR"/recording-$(date +"%d-%m-%Y_%H%M%S").mp4
+		ffmpeg -f x11grab \
+			-s 1920x1080 \
+			-r 25 \
+			-i :0.0 \
+			-c:v libx264 \
+			-preset ultrafast \
+			-crf 18 \
+			"$DIR"/"recording-$(date +"%d-%m-%Y_%H%M%S").mp4"
 	fi
 }
 

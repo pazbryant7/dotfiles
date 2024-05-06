@@ -45,7 +45,7 @@ super + Print
   maim | xclip -selection clipboard -t image/png && dunstify "Save full to clipboard"
 
 super + {s,S}
-  ~/bin/sh/screenshots.sh {cropped,full}
+  ~/bin/sh/take-screenshots.sh {cropped,full}
 
 # -------------- music player ------------- #
 
@@ -91,7 +91,7 @@ super + shift + Return
   chromium
 
 super + b
-  ~/bin/sh/set_brightness.sh
+  ~/bin/sh/set-brightness.sh
 
 super + m
   bspc rule -a St -o state=floating follow=on center=true && st -e fish -c "ncmpcpp"
@@ -103,7 +103,7 @@ super + c
 
 
 super + shift + w
-  ~/bin/sh/rofiwall.sh
+  ~/bin/sh/set-wallpaper.sh
 
 super + i
   xmodmap ~/.Xmodmap; dunstify "Dvorak"

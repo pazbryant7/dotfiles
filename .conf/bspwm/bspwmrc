@@ -31,7 +31,7 @@ bspc rule -a Pavucontrol state=floating rectangle=700x400+0+0 center=true
 xsetroot -cursor_name left_ptr &
 
 ~/.fehbg &
-~/bin/sh/polybar-bspwm.sh &
+~/bin/sh/start-polybar.sh &
 
 if ! pgrep -x "pipewire" > /dev/null; then pipewire & fi
 if ! pgrep -x "pipewire-pulse" > /dev/null; then pipewire-pulse & fi
