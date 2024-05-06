@@ -1,19 +1,28 @@
-#!/bin/bash
+#!/bin/sh
 
-if [[ $# -eq 1 ]]; then
-	selected=$1
+set -x
+
+if [ $# -eq 1 ]; then
+	selected="$1"
 else
-	selected=$(fd --min-depth 1 --max-depth 1 --type d . ~/Documents/github ~/Documents/github/codeeditors ~/Documents/github/royal ~/Documents/github/examples ~/Downloads | fzf)
+	selected=$(fd --min-depth 1 \
+		--max-depth 1 \
+		--type d . \
+		~/Documents/github \
+		~/Documents/github/codeeditors \
+		~/Documents/github/royal \
+		~/Documents/github/examples \
+		~/Downloads | fzf)
 fi
 
-if [[ -z $selected ]]; then
+if [ -z "$selected" ]; then
 	exit 0
 fi
 
 selected_name=$(basename "$selected" | tr . _)
 tmux_running=$(pgrep tmux)
 
-if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
+if [ -z "$TMUX" ] && [ -z "$tmux_running" ]; then
 	tmux new-session -s "$selected_name" -c "$selected"
 	exit 0
 fi
