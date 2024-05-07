@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 #
 brightness=$(rofi -dmenu -p "Enter brightness (0 to 1.0):" -lines 1)
 
@@ -17,8 +17,4 @@ fi
 
 if [[ $brightness =~ ^[0-1](\.[0-9]+)?$ ]]; then
     xrandr --output HDMI-2 --brightness $brightness
-    dunstify "Brightness updated"
-else
-    # If not valid, show a message in dunst
-    dunstify -t 2000 "Invalid input"
 fi
