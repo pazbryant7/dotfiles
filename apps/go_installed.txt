@@ -5,6 +5,7 @@ fillswitch
 ginkgo
 go-enum
 gofumpt
+go-global-update
 goimports
 golangci-lint
 golines
@@ -23,3 +24,4 @@ json-to-struct
 lazydocker
 mockgen
 richgo
+wego

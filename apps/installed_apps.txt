@@ -4,7 +4,6 @@ atuin 18.2.0-2
 bandwhich 0.22.2-1
 base 3-2
 base-devel 1-1
-bash-language-server 5.1.2-1
 bat 0.24.0-1
 bob 2.9.1-1
 bottom 0.9.6-1
@@ -85,7 +84,6 @@ tmux 3.4-6
 ttf-font-awesome 6.5.2-1
 ttf-jetbrains-mono-nerd 3.2.1-1
 ttf-nerd-fonts-symbols-mono 3.2.1-1
-typescript-language-server 4.3.3-1
 udiskie 2.5.2-1
 ufw 0.36.2-3
 unclutter 1:1.6-3
