@@ -1,41 +1,6 @@
 " -----------------------------------------------------------------------------
 " Zathura settings
 " -----------------------------------------------------------------------------
-
-" Colors
-set default-bg  "#282a36"
-set default-fg  "#f8f8f2"
-
-set statusbar-bg  "#44475a"
-set statusbar-fg  "#f8f8f2"
-
-set inputbar-bg  "#282a36"
-set inputbar-fg  "#f8f8f2"
-
-set notification-error-bg  "#bf616a"
-set notification-error-fg  "#282a36"
-
-set notification-warning-bg  "#d08770"
-set notification-warning-fg  "#282a36"
-
-set highlight-color  "#88c0d0"
-set highlight-active-color  "#bf616a"
-
-set completion-highlight-fg  "#f8f8f2"
-set completion-highlight-bg  "#44475a"
-
-set completion-bg  "#282a36"
-set completion-fg  "#f8f8f2"
-
-set notification-bg  "#f8f8f2"
-set notification-fg  "#282a36"
-
-set recolor  "true"
-set recolor-lightcolor  "#282a36"
-set recolor-darkcolor  "#f8f8f2"
-set recolor-reverse-video  "true"
-set recolor-keephue  "false"
-
 " Clipboard
 set selection-clipboard clipboard
 
@@ -43,7 +8,7 @@ set selection-clipboard clipboard
 set incremental-search true
 set search-hadjust true
 
-" Autoadjust
+" Auto adjust
 set adjust-open width
 
 " Typography
@@ -70,8 +35,8 @@ map [fullscreen] u scroll half-up
 map [fullscreen] d scroll half-down
 
 " Fullscreen
-" map [normal]     f toggle_fullscreen
-" map [fullscreen] f toggle_fullscreen
+map [normal]     f toggle_fullscreen
+map [fullscreen] f toggle_fullscreen
 
 " Reload
 map [normal]     <C-r> reload
@@ -89,5 +54,3 @@ map [fullscreen] W adjust_window width
 
 map [normal]     i set recolor
 map [fullscreen] i set recolor
-
-" vim: ft=vim
