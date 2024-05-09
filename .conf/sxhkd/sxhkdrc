@@ -7,9 +7,6 @@ super + alt + {q,r}
 super + shift + Escape
 	pkill -USR1 -x sxhkd && dunstify "sxhkd" "Reloaded successfully"
 
-super + space
-    bspc query -N -n .local.window | xargs -I ID bspc node ID -g hidden
-
 super + w
   bspc query -N -n focused.floating >/dev/null && \
       bspc node focused -t tiled || \
@@ -126,6 +123,8 @@ super + alt + k
     bspc node -z bottom 0 -20 || bspc node -z top 0 -20
 
 # ---------------- rotate windows --------------#
+super + space
+    ~/bin/sh/select-book.sh
 
 super + shift + r
     bspc node @/ -R 90
