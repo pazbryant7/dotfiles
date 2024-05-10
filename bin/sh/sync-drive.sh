@@ -7,8 +7,7 @@ local_folder="$HOME/drive"
 remote_folder="drive:"
 
 # Display a dialog window to select the action
-selected_option=$(echo -e "Sync from local to drive\nSync \
-  from drive to local\nCancel" |
+selected_option=$(echo -e "Sync from local to drive\nSync from drive to local\nCancel" |
 	rofi -dmenu -i -p "Select Action:")
 
 case "$selected_option" in
