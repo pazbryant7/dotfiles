@@ -1,5 +1,8 @@
 apps are exposed on your $PATH at /home/bryant/.local/bin
+    - man1/yt-dlp.1
 manual pages are exposed at /home/bryant/.local/share/man
    package spotdl 4.2.4, installed using Python 3.11.6
+   package yt-dlp 2024.4.9, installed using Python 3.11.8
     - spotdl
 venvs are in /home/bryant/.local/share/pipx/venvs
+    - yt-dlp
