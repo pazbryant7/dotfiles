@@ -84,6 +84,7 @@ tealdeer 1.6.1-1
 telegram-desktop 4.16.8-1
 terraform 1.8.1-1
 tmux 3.4-6
+tokei 12.1.2-1
 ttf-font-awesome 6.5.2-1
 ttf-jetbrains-mono-nerd 3.2.1-1
 ttf-nerd-fonts-symbols-mono 3.2.1-1
