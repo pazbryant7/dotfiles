@@ -43,6 +43,9 @@ abbr --add glga "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s 
 abbr --add gsb "git status --short --branch"
 abbr --add lzg "lazygit"
 
+# notes
+abbr --add snotes "git commit -m 'update notes'"
+
 # docker
 abbr --add lzd "lazydocker"
 abbr --add start-docker "sudo systemctl start docker.socket"
