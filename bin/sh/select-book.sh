@@ -3,6 +3,7 @@
 set -x
 
 BOOKS_DIR="$HOME/mega/personal/books"
+LAST_READ_BOOK_PATH="$HOME/.last-read-book"
 
 list_folders() {
 	fd --type directory \
@@ -26,31 +27,51 @@ select_book() {
 	list_files_in_folder "$1" | rofi -dmenu -i -p "Select book"
 }
 
-SELECTED_FOLDER=$(select_folder)
+get_last_book() {
+	rg "/home/bryant/mega/personal/books/" "$LAST_READ_BOOK_PATH"
+}
+
+update_last_read_book() {
+	echo "$1" >"$LAST_READ_BOOK_PATH"
+}
+
+read_option=$(printf "Read last book\nCancel" |
+	rofi -dmenu -i -p "Select Action:")
+
+last_read_book=$(get_last_book)
+
+[ "$read_option" = "Read last book" ] && [ -n "$last_read_book" ] && {
+	zathura "$last_read_book"
+	exit 0
+}
+
+selected_folder=$(select_folder)
 
 # Check if a folder was selected
-[ -z "$SELECTED_FOLDER" ] && {
+[ -z "$selected_folder" ] && {
 	echo "No folder selected. Exiting."
 	exit 1
 }
 
 # List files within the selected folder
-BOOKS=$(list_files_in_folder "$SELECTED_FOLDER")
+books=$(list_files_in_folder "$selected_folder")
 
 # Check if books were found in the selected folder
-[ -z "$BOOKS" ] && {
+[ -z "$books" ] && {
 	echo "No books found in the selected folder. Exiting."
 	exit 1
 }
 
 # Select a book file using Rofi
-SELECTED_BOOK=$(select_book "$SELECTED_FOLDER")
+selected_book=$(select_book "$selected_folder")
 
 # Check if a book was selected
-[ -z "$SELECTED_BOOK" ] && {
+[ -z "$selected_book" ] && {
 	echo "No book selected. Exiting."
 	exit 1
 }
 
-# Apply the selected book using feh
-zathura "$BOOKS_DIR/$SELECTED_FOLDER/$SELECTED_BOOK" &
+selected_book_file_path="$BOOKS_DIR/$selected_folder/$selected_book"
+
+update_last_read_book "$selected_book_file_path" &&
+	zathura "$selected_book_file_path" &
