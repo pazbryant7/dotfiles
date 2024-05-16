@@ -44,7 +44,7 @@ abbr --add gsb "git status --short --branch"
 abbr --add lzg "lazygit"
 
 # notes
-abbr --add snotes "git commit -m 'update notes'"
+abbr --add sn "git commit -m 'update notes'"
 
 # docker
 abbr --add lzd "lazydocker"
