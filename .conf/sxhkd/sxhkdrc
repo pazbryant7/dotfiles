@@ -27,7 +27,7 @@ super + shift + {p,n}
 super + Tab
 	bspc desktop -f last
 
-super + {bracketleft,braceleft,parenleft,equal,percent,ampersand,parenright}
+super + {bracketleft,braceleft,parenleft,percent,equal,ampersand,parenright}
   bspc desktop -f '^{1-7}'
 
 super + shift {1-7}
