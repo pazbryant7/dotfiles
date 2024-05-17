@@ -103,10 +103,10 @@ super + shift + w
   ~/bin/sh/set-wallpaper.sh
 
 super + i
-  xmodmap ~/.Xmodmap
+  xmodmap ~/.Xmodmap; dunstify "Dvorak"
 
 super + shift + i
-  xmodmap ~/.XmodmapIntl
+  xmodmap ~/.XmodmapIntl; dunstify "Dvorak Intl"
 
 # --------------- resize windows --------------#
 
