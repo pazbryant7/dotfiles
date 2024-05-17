@@ -1,15 +1,13 @@
 #!/bin/sh
 
-set -x
+set -e
 
 BOOKS_DIR="$HOME/mega/personal/books"
 LAST_READ_BOOK_PATH="$HOME/.last-read-book"
 
+# Function to list folders within the books directory
 list_folders() {
-	fd --type directory \
-		--max-depth 1 \
-		--base-directory "$BOOKS_DIR" |
-		xargs -I {} basename {}
+	fd --type directory --max-depth 1 --base-directory "$BOOKS_DIR" | xargs -I {} basename {}
 }
 
 # Function to list files within a selected folder
@@ -27,51 +25,62 @@ select_book() {
 	list_files_in_folder "$1" | rofi -dmenu -i -p "Select book"
 }
 
+# Function to get the last read book path
 get_last_book() {
-	rg "/home/bryant/mega/personal/books/" "$LAST_READ_BOOK_PATH"
+	[ -f "$LAST_READ_BOOK_PATH" ] && cat "$LAST_READ_BOOK_PATH" || echo ""
 }
 
+# Function to update the last read book path
 update_last_read_book() {
 	echo "$1" >"$LAST_READ_BOOK_PATH"
 }
 
-read_option=$(printf "Read last book\nCancel" |
-	rofi -dmenu -i -p "Select Action:")
+# Function to prompt the user to read the last book or cancel
+prompt_last_read_book() {
+	local last_read_book_path last_read_book_filename read_option
+	last_read_book_path=$(get_last_book)
+	last_read_book_filename=$(basename "$last_read_book_path")
 
-last_read_book=$(get_last_book)
+	if [ -n "$last_read_book_path" ]; then
+		read_option=$(printf "Read last book: %s\nCancel" "$last_read_book_filename" | rofi -dmenu -i -p "Select Action:")
+	else
+		read_option="Cancel"
+	fi
 
-[ "$read_option" = "Read last book" ] && [ -n "$last_read_book" ] && {
-	zathura "$last_read_book"
-	exit 0
+	if [ "$read_option" = "Read last book: $last_read_book_filename" ]; then
+		zathura "$last_read_book_path"
+		exit 0
+	fi
 }
 
-selected_folder=$(select_folder)
+# Function to handle the main logic
+main() {
+	local selected_folder books selected_book selected_book_file_path
 
-# Check if a folder was selected
-[ -z "$selected_folder" ] && {
-	echo "No folder selected. Exiting."
-	exit 1
-}
+	prompt_last_read_book
 
-# List files within the selected folder
-books=$(list_files_in_folder "$selected_folder")
+	selected_folder=$(select_folder)
+	if [ -z "$selected_folder" ]; then
+		echo "No folder selected. Exiting."
+		exit 1
+	fi
 
-# Check if books were found in the selected folder
-[ -z "$books" ] && {
-	echo "No books found in the selected folder. Exiting."
-	exit 1
-}
+	books=$(list_files_in_folder "$selected_folder")
+	if [ -z "$books" ]; then
+		echo "No books found in the selected folder. Exiting."
+		exit 1
+	fi
 
-# Select a book file using Rofi
-selected_book=$(select_book "$selected_folder")
+	selected_book=$(select_book "$selected_folder")
+	if [ -z "$selected_book" ]; then
+		echo "No book selected. Exiting."
+		exit 1
+	fi
 
-# Check if a book was selected
-[ -z "$selected_book" ] && {
-	echo "No book selected. Exiting."
-	exit 1
-}
-
-selected_book_file_path="$BOOKS_DIR/$selected_folder/$selected_book"
-
-update_last_read_book "$selected_book_file_path" &&
+	selected_book_file_path="$BOOKS_DIR/$selected_folder/$selected_book"
+	update_last_read_book "$selected_book_file_path"
 	zathura "$selected_book_file_path" &
+}
+
+# Execute the main function
+main
