@@ -2,8 +2,6 @@
 
 set -x
 
-echo "hello world"
-
 sync_system_apps() {
 	sudo pacman -Qen | sort >"$1/installed_apps.txt"
 }
