@@ -7,16 +7,17 @@ sync_system_apps() {
 }
 
 sync_python_apps() {
-	pipx list | sort >"$1/pipx_installed.txt"
+	fd . -d 1 /home/bryant/.local/bin | awk -F/ '{print $NF}' |
+		sort >"$1/pipx_installed.txt"
 }
 
 sync_rust_apps() {
-	fd . -d 1 -t f -a ~/.cargo/bin | awk -F/ '{print $NF}' |
+	fd . -d 1 -t f /home/bryant/.cargo/bin | awk -F/ '{print $NF}' |
 		sort >"$1/cargo_installed.txt"
 }
 
 sync_go_apps() {
-	fd . -d 1 -t f -a ~/go/bin | awk -F/ '{print $NF}' |
+	fd . -d 1 -t f /home/bryant/go/bin | awk -F/ '{print $NF}' |
 		sort >"$1/go_installed.txt"
 }
 
