@@ -57,17 +57,15 @@
 [urgency_low]
     background = "#BD93F9"
     foreground = "#1a1a1a"
-    timeout = 1
 
 [urgency_normal]
     background = "#BD93F9"
     foreground = "#1a1a1a"
-    timeout = 1
 
 [urgency_critical]
     background = "#BD93F9"
     foreground = "#1a1a1a"
-    timeout = 0
+
 [play_sound]
     summary = "*"
     script = "/home/bryant/bin/sh/send-alert.sh"
