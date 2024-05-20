@@ -113,3 +113,6 @@ install manually gd from pacman to source st terminal
 
 configure keybinds vsconsole
 at /etc/vconsole.conf
+
+add this to  /etc/sudoer
+Defaults    env_keep += "VISUAL EDITOR"

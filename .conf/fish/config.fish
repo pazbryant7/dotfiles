@@ -26,7 +26,6 @@ bind \ep "suppress-autosuggestion"
 alias sudo "sudo "
 alias bandwhich "sudo bandwhich"
 alias vi "NVIM_APPNAME='ide' nvim"
-alias vim "NVIM_APPNAME='nvchad' nvim"
 
 # }}}
 

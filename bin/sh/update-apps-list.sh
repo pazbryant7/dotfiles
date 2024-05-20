@@ -1,13 +1,46 @@
 #!/bin/sh
 
-dotfiles_path="/home/bryant/Documents/github/dotfiles/apps/"
+set -x
 
-pacman -Qen | sort >"$dotfiles_path/installed_apps.txt"
-paru -Qm | sort >"$dotfiles_path/installed_aur_apps.txt"
-pipx list | sort >"$dotfiles_path/pipx_installed.txt"
-ls ~/.cargo/bin/ | sort >"$dotfiles_path/cargo_installed.txt"
-flatpak list | sort >"$dotfiles_path/flatpak_installed.txt"
-ls ~/go/bin/ | sort > "$dotfiles_path/go_installed.txt"
+echo "hello world"
 
+sync_system_apps() {
+	sudo pacman -Qen | sort >"$1/installed_apps.txt"
+}
 
-dunstify  "Notification" "update apps database"
+sync_python_apps() {
+	pipx list | sort >"$1/pipx_installed.txt"
+}
+
+sync_rust_apps() {
+	fd . -d 1 -t f -a ~/.cargo/bin | awk -F/ '{print $NF}' |
+		sort >"$1/cargo_installed.txt"
+}
+
+sync_go_apps() {
+	fd . -d 1 -t f -a ~/go/bin | awk -F/ '{print $NF}' |
+		sort >"$1/go_installed.txt"
+}
+
+sync_flatpak_apps() {
+	flatpak list | sort >"$1/flatpak_installed.txt"
+}
+
+sync_aur_apps() {
+	paru -Qm | sort >"$1/installed_aur_apps.txt"
+}
+
+main() {
+	DOTFILES_PATH="/home/bryant/Documents/github/dotfiles/apps"
+
+	sync_system_apps $DOTFILES_PATH
+	sync_python_apps $DOTFILES_PATH
+	sync_rust_apps $DOTFILES_PATH
+	sync_go_apps $DOTFILES_PATH
+	sync_flatpak_apps $DOTFILES_PATH
+	sync_aur_apps $DOTFILES_PATH
+
+	dunstify "Notification" "update apps database"
+}
+
+main
