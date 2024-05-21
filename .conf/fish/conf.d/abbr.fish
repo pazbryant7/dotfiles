@@ -32,8 +32,6 @@ abbr --add gc "git commit"
 abbr --add gaa "git add --all"
 abbr --add gcmsg "git commit --message"
 abbr --add gco "git checkout"
-abbr --add gcup "git config --global user.name 'bryantpaz'; git config --global user.email 'pazbryant7@outlook.com'"
-abbr --add gcuw "git config --global user.name 'pazbryant'; git config --global user.email 'bryantpaz7@outlook.com'"
 abbr --add gd "git diff"
 abbr --add gdc "git diff --cached"
 abbr --add ggpull "git pull origin (git branch --show-current)"
@@ -42,6 +40,9 @@ abbr --add glg "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %
 abbr --add glga "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Crese' --stat"
 abbr --add gsb "git status --short --branch"
 abbr --add lzg "lazygit"
+
+abbr --add gitpersonal "git config --global user.name 'bryantpaz'; git config --global user.email 'pazbryant7@outlook.com'"
+abbr --add gitwork "git config --global user.name 'pazbryant'; git config --global user.email 'bryantpaz7@outlook.com'"
 
 # docker
 abbr --add lzd "lazydocker"

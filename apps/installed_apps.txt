@@ -92,7 +92,6 @@ udiskie 2.5.2-2
 ufw 0.36.2-4
 unclutter 1:1.6-3
 urxvt-perls 2.3-2
-vim 9.1.0408-1
 vulkan-intel 1:24.0.7-3
 wget 1.24.5-2
 wireplumber 0.5.2-1
