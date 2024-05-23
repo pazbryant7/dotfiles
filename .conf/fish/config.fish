@@ -12,8 +12,11 @@ set fish_greeting
 set fish_cursor_default underscore
 
 set fish_color_valid_path --no-underline
+
 set fish_pager_color_selected_background none
+
 set fish_pager_color_selected_completion blue --bold
+set fish_pager_color_selected_prefix blue --bold
 
 # ctrl
 bind \cn "forward-word"
