@@ -30,5 +30,5 @@ SETUVAR fish_pager_color_completion:normal
 SETUVAR fish_pager_color_description:yellow\x1e\x2di
 SETUVAR fish_pager_color_prefix:\x2d\x2dbackground\x3dred
 SETUVAR fish_pager_color_progress:brwhite\x1e\x2d\x2dbackground\x3dcyan
-SETUVAR fish_pager_color_selected_background:\x2dr
+SETUVAR fish_pager_color_selected_background:none
 SETUVAR fish_user_paths:/home/bryant/\x2elocal/share/ide/mason/bin\x1e/home/bryant/bin/crontab\x1e/home/bryant/bin/sh\x1e/home/bryant/go/bin\x1e/home/bryant/\x2elocal/share/bob/nvim\x2dbin\x1e/home/bryant/\x2elocal/bin\x1e/home/bryant/\x2ecargo/bin\x1e/var/lib/flatpak/exports/bin\x1e/usr/local/bin\x1e/home/bryant/\x2elocal/share/nvim/mason/bin

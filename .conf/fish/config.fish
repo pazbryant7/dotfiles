@@ -11,6 +11,9 @@ end
 set fish_greeting
 set fish_cursor_default underscore
 
+set fish_pager_color_selected_background none
+set fish_pager_color_selected_completion blue --bold
+
 # ctrl
 bind \cn "forward-word"
 bind \cp "backward-word"
