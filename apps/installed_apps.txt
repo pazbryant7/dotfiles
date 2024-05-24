@@ -56,6 +56,7 @@ noto-fonts-extra 1:24.5.1-1
 obsidian 1.5.12-1
 onefetch 2.21.0-1
 openssh 9.7p1-2
+openvpn 2.6.10-1
 otf-overpass 3.0.5-2
 pacman-contrib 1.10.6-1
 pass 1.7.4-5
