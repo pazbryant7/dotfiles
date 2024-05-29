@@ -15,6 +15,7 @@ set -x WM "bspwm"
 set -x MANPAGER "nvim +Man!"
 set -x QT_QPA_PLATFORMTHEME "qt5ct"
 set -x STARSHIP_CONFIG "~/.config/starship/starship.toml"
+set -x GOPASS_NO_NOTIFY false
 
 # FZF
 set -x FZF_DEFAULT_OPTS " \
