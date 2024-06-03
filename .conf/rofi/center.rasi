@@ -1,16 +1,16 @@
 * {
-  background-color:            #282a36;
-  border-color:                #282a36;
-  text-color:                  #f8f8f2;
+  background-color:            #303446;
+  border-color:                #303446;
+  text-color:                  #c6d0f5;
   font:                        "Maple Mono NF Bold 9";
   prompt-font:                 "Maple Mono NF Bold 9";
-  prompt-background:           #282a36;
-  prompt-foreground:           #f8f8f2;
+  prompt-background:           #303446;
+  prompt-foreground:           #c6d0f5;
   prompt-padding:              4px;
-  alternate-normal-background: #282a36;
-  alternate-normal-foreground: #f8f8f2;
-  selected-normal-background:  #44475a;
-  selected-normal-foreground:  #f8f8f2;
+  alternate-normal-background: #303446;
+  alternate-normal-foreground: #c6d0f5;
+  selected-normal-background:  #292c3c;
+  selected-normal-foreground:  #c6d0f5;
   spacing:                     3;
 }
 #window {

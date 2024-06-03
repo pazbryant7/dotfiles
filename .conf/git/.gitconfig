@@ -8,25 +8,46 @@
   editor = nvim
   pager = delta
 [interactive]
-    diffFilter = delta --color-only --features=interactive
+    diffFilter = delta --color-only
 [delta]
-	features = decorations
+	features = catppuccin-frappe
 	line-numbers = true
-  syntax-theme = Dracula
   navigate = true
   true-color = always
-[delta "decorations"]
-  minus-style = bold "#ff5555"
-  plus-style = bold "#50fa7b"  
-  minus-emph-style = "#ff5555"
-  minus-non-emph-style = "#ff5555"
-  plus-emph-style = "#50fa7b"
-  plus-non-emph-style = "#50fa7b"
-  file-style = "#bd93f9" bold
-  file-decoration-style = "#bd93f9"
-  hunk-header-style = "#f1fa8c"
-  hunk-header-decoration-style = "#f1fa8c"
-[merge]
-  conflictstyle = diff3
 [pull]
 	rebase = true
+[merge]
+  conflictstyle = diff3
+[diff]
+  colorMoved = default
+[delta "catppuccin-frappe"]
+	blame-palette = "#303446 #292c3c #232634 #414559 #51576d"
+	commit-decoration-style = "box ul"
+	dark = true
+	file-decoration-style = "#c6d0f5"
+	file-style = "#c6d0f5"
+	hunk-header-decoration-style = "box ul"
+	hunk-header-file-style = "bold"
+	hunk-header-line-number-style = "bold #a5adce"
+	hunk-header-style = "file line-number syntax"
+	line-numbers = true
+	line-numbers-left-style = "#737994"
+	line-numbers-minus-style = "bold #e78284"
+	line-numbers-plus-style = "bold #a6d189"
+	line-numbers-right-style = "#737994"
+	line-numbers-zero-style = "#737994"
+	# 25% red 75% base
+	minus-emph-style = "bold syntax #5e4855"
+	# 10% red 90% base
+	minus-style = "syntax #433c4c"
+	# 25% green 75% base
+	plus-emph-style = "bold syntax #4e5c57"
+	# 10% green 90% base
+	plus-style = "syntax #3c444e"
+	map-styles = \
+		bold purple => syntax "#574f6f", \
+		bold blue => syntax "#475271", \
+		bold cyan => syntax "#4b5c6b", \
+		bold yellow => syntax "#5d5a59"
+	# Should match the name of the bat theme
+	syntax-theme = "base16-256"

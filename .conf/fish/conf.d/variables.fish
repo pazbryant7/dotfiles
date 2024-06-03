@@ -11,6 +11,7 @@ set -x COLORTERM "truecolor"
 set -x OPENER "xdg-open"
 set -x PAGER "less"
 set -x BAT_PAGER $PAGER
+set -x DELTA_PAGER "less -R"
 set -x WM "bspwm"
 set -x MANPAGER "nvim +Man!"
 set -x QT_QPA_PLATFORMTHEME "qt5ct"
