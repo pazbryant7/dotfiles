@@ -2,6 +2,12 @@
 
 if status is-interactive
   printf '\033[4 q'
+
+ # Declare the function if it exists
+ if functions -q manage_tmux_session
+  manage_tmux_session
+ end
+
 end
 
 # }}}
