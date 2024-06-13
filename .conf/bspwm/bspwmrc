@@ -24,7 +24,8 @@ bspc rule -a Stremio desktop=^7 follow=off
 
 bspc rule -a Pavucontrol state=floating rectangle=700x400+0+0 center=true
 
-xsetroot -cursor_name left_ptr &
+xset -dpms # stay awake
+xsetroot -cursor_name left_ptr & # fix mouse
 
 ~/.fehbg &
 ~/bin/sh/start-polybar.sh &
