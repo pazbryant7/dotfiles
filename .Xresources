@@ -101,6 +101,7 @@ URxvt.color15: #A5ADCE
 
 ! ===================
 ! st settings
+
 st.alpha: 1
 st.borderpx: 0
-st.font: Maple Mono NF:pixelsize=12.5:style:Regular
+st.font: Maple Mono NF:pixelsize=12.5:style:Regular:antialias=true:autohint=true
