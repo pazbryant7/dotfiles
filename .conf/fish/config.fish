@@ -19,12 +19,12 @@ set fish_pager_color_selected_completion blue --bold
 set fish_pager_color_selected_prefix blue --bold
 
 # ctrl
-bind \cn "forward-word"
-bind \cp "backward-word"
+bind \en "forward-word"
+bind \ep "backward-word"
 
 # alt
-bind \en "accept-autosuggestion"
-bind \ep "suppress-autosuggestion"
+bind \cn "accept-autosuggestion"
+bind \cp "suppress-autosuggestion"
 
 # }}}
 
