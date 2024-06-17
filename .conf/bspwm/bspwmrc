@@ -1,44 +1,35 @@
 #! /bin/sh
 bspc monitor -d 1 2 3 4 5 6 7
 
-bspc config borderless_monocle    false
+bspc config border_width 3
+bspc config borderless_monocle false
 
-bspc config top_padding           13
+bspc config window_gap 10
+bspc config split_ratio 0.50
+bspc config gapless_monocle true
+bspc config focus_follows_pointer true
 
-bspc config window_gap            2
-bspc config split_ratio           0.50
-bspc config gapless_monocle       true
+bspc config focused_border_color "#A6D189"
+bspc config normal_border_color "#282a2e"
 
-# rules
-bspc rule -a Postman desktop=^4 follow=off
-bspc rule -a postman desktop=^4 follow=off
-
-bspc rule -a jetbrains-datagrip desktop=^5 follow=off
-bspc rule -a "MongoDB Compass" desktop=^5 follow=off
-
-bspc rule -a discord desktop=^6 follow=off
-bspc rule -a TelegramDesktop desktop=^6 follow=off
-
-bspc rule -a Stremio desktop=^7 follow=off
-
-xset -dpms # stay awake
+xset -dpms                       # stay awake
 xsetroot -cursor_name left_ptr & # fix mouse
 
 ~/.fehbg &
 ~/bin/sh/start-polybar.sh &
 
-if ! pgrep -x "pipewire" > /dev/null; then pipewire & fi
-if ! pgrep -x "pipewire-pulse" > /dev/null; then pipewire-pulse & fi
-if ! pgrep -x "udiskie" > /dev/null; then udiskie & fi
-if ! pgrep -x "unclutter" > /dev/null; then unclutter & fi
-if ! pgrep -x "wireplumber" > /dev/null; then wireplumber & fi
-if ! pgrep -x "dunst" > /dev/null; then dunst & fi
-if ! pgrep -x "mpd" > /dev/null; then mpd & fi
+if ! pgrep -x "pipewire" >/dev/null; then pipewire & fi
+if ! pgrep -x "pipewire-pulse" >/dev/null; then pipewire-pulse & fi
+if ! pgrep -x "udiskie" >/dev/null; then udiskie & fi
+if ! pgrep -x "unclutter" >/dev/null; then unclutter & fi
+if ! pgrep -x "wireplumber" >/dev/null; then wireplumber & fi
+if ! pgrep -x "dunst" >/dev/null; then dunst & fi
+if ! pgrep -x "mpd" >/dev/null; then mpd & fi
 
-if ! pgrep -x "picom" > /dev/null; then
-    picom --config /home/bryant/.config/picom/picom.conf &
+if ! pgrep -x "picom" >/dev/null; then
+	picom --config /home/bryant/.config/picom/picom.conf &
 fi
 
-if ! pgrep -x "sxhkd" > /dev/null; then
-    sxhkd -m -1 &
+if ! pgrep -x "sxhkd" >/dev/null; then
+	sxhkd -m -1 &
 fi
