@@ -12,7 +12,9 @@ bspwm 0.9.10-3
 capitaine-cursors 4-2
 chromium 126.0.6478.61-1
 cronie 1.7.2-1
+ctop 0.7.7-2
 discord 0.0.57-1
+dive 0.12.0-1
 docker 1:26.1.4-1
 docker-buildx 0.15.0-1
 docker-compose 2.27.1-1

@@ -1,7 +1,7 @@
 ! URxvt configuration.
 URxvt.font:                       xft:Maple Mono NF:pixelsize=16:style:Regular:antialias=true:autohint=true
 URxvt.geometry:                   400x400
-URxvt.internalBorder:             15
+URxvt.internalBorder:             0
 URxvt.cursorBlink:                false
 URxvt.cursorUnderline:            true
 URxvt.saveLines:                  8192
@@ -109,7 +109,7 @@ Xft.rgba:	rgb
 Xft.lcdfilter:	lcddefault
 
 ! window padding
-st.borderpx: 15
+st.borderpx: 0
 
 ! values between 0.1 and 1.0
 st.alpha: 0.99
