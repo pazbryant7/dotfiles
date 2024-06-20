@@ -7,7 +7,6 @@ abbr --add weather "wego"
 abbr --add dh "rm ~/.history.db ~/.local/share/fish/fish_history"
 abbr --add sht "shutdown now"
 abbr --add ck "nvim ~/.config/sxhkd/sxhkdrc"
-abbr --add cl "clear; printf '\033[4 q'"
 abbr --add clear "clear; printf '\033[4 q'"
 abbr --add cwm "nvim ~/.config/bspwm/bspwmrc"
 abbr --add fontcache "sudo fc-cache -f -v"
@@ -15,10 +14,12 @@ abbr --add motivation "mpv ~/Videos/dios.mp4"
 abbr --add rel "xrdb merge ~/.Xresources && kill -USR1 (pidof st)"
 abbr --add rma "rm -rf"
 abbr --add leetcode "nvim leetcode.nvim"
-abbr --add cpass "z ~/.password-store/"
-abbr --add als "nvim ~/.config/fish/conf.d/abbr.fish"
 abbr --add xevk "xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf \"%-3s %s\n\", \$5, \$8 }'"
 abbr --add awake "xset -dpms"
+
+# emails
+abbr --add cpe "echo 'pazbryant7@outlook.com' | xclip -selection clipboard"
+abbr --add cwe "echo 'bryantpaz7@outlook.com' | xclip -selection clipboard"
 
 # zoxide
 abbr --add .... "z ../../../../"

@@ -1,5 +1,5 @@
 ! URxvt configuration.
-URxvt.font:                       xft:Maple Mono NF:pixelsize=13.5:style:Regular:antialias=true:autohint=true
+URxvt.font:                       xft:Maple Mono NF:pixelsize=16:style:Regular:antialias=true:autohint=true
 URxvt.geometry:                   400x400
 URxvt.internalBorder:             15
 URxvt.cursorBlink:                false
@@ -115,4 +115,4 @@ st.borderpx: 15
 st.alpha: 0.99
 
 ! font family
-st.font: Maple Mono NF:pixelsize=13.5:style:Regular
+st.font: Maple Mono NF:pixelsize=16:style:Regular

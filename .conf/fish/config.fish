@@ -33,7 +33,6 @@ bind \cp "suppress-autosuggestion"
 alias sudo "sudo "
 alias bandwhich "sudo bandwhich"
 alias vi "NVIM_APPNAME='ide' nvim"
-alias pass "gopass"
 alias yz "yazi"
 
 # }}}
