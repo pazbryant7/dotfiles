@@ -2,7 +2,7 @@
 
 set -e
 
-BOOKS_DIR="$HOME/mega/personal/books"
+BOOKS_DIR="$HOME/mega/personal/pc/books"
 LAST_READ_BOOK_PATH="$HOME/.last-read-book"
 
 # Function to list folders within the books directory

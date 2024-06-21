@@ -1,3 +1,3 @@
 #!/bin/sh
 
-paplay ~/.local/share/notifications/tut_turu.ogg
+paplay /home/bryant/mega/personal/pc/audio/notifications/isabella_s_lullaby.ogg

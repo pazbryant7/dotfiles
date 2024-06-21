@@ -26,7 +26,7 @@ backup_folder="$backup_destination/Music"
 mkdir -p "$backup_folder"
 
 # Run rsync to perform the backup
-rsync -aAXv --delete --link-dest="$previous_backup" "$backup_source" "$backup_folder/"
+rsync -aAXv --delete --progress --link-dest="$previous_backup" "$backup_source" "$backup_folder/"
 
 # Unmount the external drive after the backup is complete
 umount "$external_mount_point"

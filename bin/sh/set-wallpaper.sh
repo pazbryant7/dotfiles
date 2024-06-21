@@ -2,7 +2,7 @@
 
 set -x
 
-WALLPAPER_DIR="$HOME/Pictures/wall"
+WALLPAPER_DIR="$HOME/mega/personal/pc/images/wallpapers"
 LAST_WALLPAPER_FILE="$HOME/.fehbg"
 
 # Function to list folders in the first level of the wallpaper directory

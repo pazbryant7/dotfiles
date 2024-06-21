@@ -1,5 +1,5 @@
 #!/bin/sh
-DIR="$HOME/audio"
+DIR="$HOME/mega/personal/pc/audio/recordings"
 FLAG_FILE="$DIR/audio_recording_flag"
 
 toggle_recording() {

@@ -58,7 +58,7 @@ for exclude in "${additional_excludes[@]}"; do
 done
 
 # Run rsync to perform the backup
-rsync -aAXv --delete "$exclude_params" --link-dest="$previous_backup" "$backup_source" "$backup_folder"
+rsync -aAXv --delete --progress "$exclude_params" --link-dest="$previous_backup" "$backup_source" "$backup_folder"
 
 # Unmount the external drive after the backup is complete
 umount "$external_mount_point"
