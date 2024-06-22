@@ -1,5 +1,5 @@
 #!/bin/sh
-DIR="$HOME/mega/personal/pc/videos/screen-recorder"
+DIR="$HOME/Videos/Recordings"
 FLAG_FILE="$DIR/recording_flag"
 
 toggle_recording() {

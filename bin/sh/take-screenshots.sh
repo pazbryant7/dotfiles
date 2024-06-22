@@ -1,5 +1,5 @@
 #!/bin/sh
-DIR="$HOME/mega/personal/pc/images/screenshots"
+DIR="$HOME/Pictures/Screenshots"
 
 save_cropped_clipboard() {
 	maim --select "$DIR/$(date).png"
