@@ -34,6 +34,7 @@ alias sudo "sudo "
 alias bandwhich "sudo bandwhich"
 alias vi "NVIM_APPNAME='ide' nvim"
 alias yz "yazi"
+alias cl "clear"
 
 # }}}
 
