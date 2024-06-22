@@ -13,5 +13,5 @@ if rclone check "$remote_folder" "$local_folder" &>/dev/null; then
 fi
 
 # Proceed with sync
-rclone sync "$remote_folder" "$local_folder"
+rclone sync "$remote_folder" "$local_folder" --verbose --progress
 dunstify "Google drive" "Sync from drive to local."
