@@ -10,7 +10,6 @@ bob 3.0.1-1
 bottom 0.9.6-1
 bspwm 0.9.10-3
 capitaine-cursors 4-2
-chromium 126.0.6478.61-1
 cronie 1.7.2-1
 ctop 0.7.7-2
 discord 0.0.57-1

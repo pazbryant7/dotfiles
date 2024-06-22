@@ -85,7 +85,7 @@ super + Return
   firefox-developer-edition
 
 super + shift + Return
-  chromium
+  brave
 
 super + b
   ~/bin/sh/set-brightness.sh
