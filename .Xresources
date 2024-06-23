@@ -112,7 +112,7 @@ Xft.lcdfilter:	lcddefault
 st.borderpx: 15
 
 ! values between 0.1 and 1.0
-st.alpha: 1.0
+st.alpha: 1
 
 ! font family
 st.font: Maple Mono NF:pixelsize=12.5:style:Regular
