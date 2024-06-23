@@ -1,15 +1,15 @@
 * {
-  background-color:            #303446;
-  border-color:                #303446;
+  background-color:            #484f69;
+  border-color:                #484f69;
   text-color:                  #c6d0f5;
   font:                        "Maple Mono NF 9";
   prompt-font:                 "Maple Mono NF 9";
-  prompt-background:           #303446;
+  prompt-background:           #484f69;
   prompt-foreground:           #c6d0f5;
   prompt-padding:              4px;
-  alternate-normal-background: #303446;
+  alternate-normal-background: #484f69;
   alternate-normal-foreground: #c6d0f5;
-  selected-normal-background:  #292c3c;
+  selected-normal-background:  #353b52;
   selected-normal-foreground:  #c6d0f5;
   spacing:                     3;
 }
