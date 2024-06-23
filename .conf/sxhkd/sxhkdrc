@@ -98,39 +98,31 @@ super + c
 
 # -------------- custom scripts ------------- #
 
-
 super + shift + w
   ~/bin/sh/set-wallpaper.sh
-
-super + i
-  xmodmap ~/.Xmodmap; dunstify "Dvorak"
-
-super + shift + i
-  xmodmap ~/.XmodmapIntl; dunstify "Dvorak Intl"
 
 # --------------- resize windows --------------#
 
 super + alt + l
-    bspc node -z right 20 0 || bspc node -z left 20 0
+  bspc node -z right 20 0 || bspc node -z left 20 0
 
 super + alt + h
-    bspc node -z right -20 0 || bspc node -z left -20 0
+  bspc node -z right -20 0 || bspc node -z left -20 0
 
 super + alt + j
-    bspc node -z bottom 0 20 || bspc node -z top 0 20
+  bspc node -z bottom 0 20 || bspc node -z top 0 20
 
 super + alt + k
-    bspc node -z bottom 0 -20 || bspc node -z top 0 -20
+  bspc node -z bottom 0 -20 || bspc node -z top 0 -20
 
 # ---------------- rotate windows --------------#
-super + space
-    ~/bin/sh/select-book.sh
 
-super + shift + r
-    bspc node @/ -R 90
+super + space
+  ~/bin/sh/select-keyboard.sh
 
 super + r
-    bspc node @parent -R 90
+  ~/bin/sh/select-book.sh
+  
 
 # ---------------- hide windows --------------#
 

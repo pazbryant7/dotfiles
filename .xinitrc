@@ -21,6 +21,7 @@ fi
 
 # keyboard
 xmodmap ~/.Xmodmap &
+echo "Devorak" > ~/.current_keyboard
 
 # window manager
 exec bspwm
