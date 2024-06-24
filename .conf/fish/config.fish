@@ -36,6 +36,12 @@ alias vi "NVIM_APPNAME='ide' nvim"
 alias yz "yazi"
 alias cl "clear"
 
+alias ls "eza --icons --group --group-directories-first"
+alias ll "eza --group --header --group-directories-first --long --all"
+alias lg "eza --group --header --group-directories-first --long --git --git-ignore"                                    
+alias lt "eza --group --header --group-directories-first --tree --level=2"                                    
+alias lsa "eza --oneline --all"
+
 # }}}
 
 # {{{ extend path

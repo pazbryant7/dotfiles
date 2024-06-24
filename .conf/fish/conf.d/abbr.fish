@@ -17,10 +17,6 @@ abbr --add leetcode "nvim leetcode.nvim"
 abbr --add xevk "xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf \"%-3s %s\n\", \$5, \$8 }'"
 abbr --add awake "xset -dpms"
 
-# emails
-abbr --add cpe "echo 'pazbryant7@outlook.com' | xclip -selection clipboard"
-abbr --add cwe "echo 'bryantpaz7@outlook.com' | xclip -selection clipboard"
-
 # zoxide
 abbr --add .... "z ../../../../"
 abbr --add ... "z ../../../"
@@ -29,22 +25,13 @@ abbr --add . "z ../"
 abbr --add zb "z -"
 
 # git
-abbr --add gb "git branch"
-abbr --add gc "git commit"
-abbr --add gaa "git add --all"
-abbr --add gcmsg "git commit --message"
-abbr --add gco "git checkout"
-abbr --add gd "git diff"
-abbr --add gdc "git diff --cached"
-abbr --add ggpull "git pull origin (git branch --show-current)"
-abbr --add ggpush "git push origin (git branch --show-current)"
 abbr --add glg "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' --all"
 abbr --add glga "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Crese' --stat"
 abbr --add gsb "git status --short --branch"
 abbr --add lzg "lazygit"
 
-abbr --add gitpersonal "git config --global user.name 'bryantpaz'; git config --global user.email 'pazbryant7@outlook.com'"
-abbr --add gitwork "git config --global user.name 'pazbryant'; git config --global user.email 'bryantpaz7@outlook.com'"
+abbr --add set-git-personal "git config --global user.name 'bryantpaz'; git config --global user.email 'pazbryant7@outlook.com'"
+abbr --add set-git-work "git config --global user.name 'pazbryant'; git config --global user.email 'bryantpaz7@outlook.com'"
 
 # docker
 abbr --add lzd "lazydocker"
@@ -61,16 +48,7 @@ abbr --add stop-postgres "sudo systemctl stop postgresql.service"
 
 # himalaya
 abbr --add hm "himalaya"
-abbr --add hmg "himalaya -a google-main"
-abbr --add hmw "himalaya -a microsoft-work"
 
-# elsa
-abbr --add ls "eza --icons --group --group-directories-first"
-abbr --add ll "eza --group --header --group-directories-first --long --all"
-abbr --add lg "eza --group --header --group-directories-first --long --git --git-ignore"                                    
-abbr --add lt "eza --group --header --group-directories-first --tree --level=2"                                    
-abbr --add lsa "eza --oneline --all"
-  
 # tmux
 abbr --add ta "tmux attach"
 abbr --add tc "nvim ~/.tmux.conf"
