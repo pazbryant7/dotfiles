@@ -91,7 +91,7 @@ super + b
   ~/bin/sh/set-brightness.sh
 
 super + m
-  bspc rule -a URxvt -o state=floating follow=on center=true rectangle=600x400+0+0 && urxvt -e fish -c "ncmpcpp"
+  bspc rule -a URxvt -o state=floating follow=on center=true rectangle=700x400+0+0 && urxvt -e fish -c "ncmpcpp"
 
 super + c
   rofi -show calc -modi calc -no-show-match -no-sort 

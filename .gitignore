@@ -1,5 +1,6 @@
 .conf/mpd/mpd.log
 .conf/mpd/mpdstate
+.conf/mpd/playlist
 
 .conf/lazygit/state.yml
 
