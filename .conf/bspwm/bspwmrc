@@ -1,6 +1,7 @@
 #! /bin/sh
 bspc monitor -d one two three four five six seven
 
+bspc config border_width 0
 bspc config top_padding 11
 bspc config borderless_monocle false
 
