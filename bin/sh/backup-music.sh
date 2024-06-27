@@ -1,6 +1,6 @@
 #!/bin/sh
 
-backup_source="/home/bryant/Music/"
+backup_source="/home/bryant/mega/personal/pc/music"
 backup_destination="/home/bryant/external"
 
 # Specify the external drive details
