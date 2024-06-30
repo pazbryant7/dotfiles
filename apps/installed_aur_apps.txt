@@ -2,6 +2,7 @@ apple-fonts 1.0.5-1
 brave-bin 1:1.67.119-1
 datagrip 2024.1.3-1
 datagrip-jre 2024.1.3-1
+librewolf-bin 127.0.2-2
 mongodb-bin 7.0.9-1
 mongodb-compass 1.43.0-1
 mongosh-bin 2.2.5-1
