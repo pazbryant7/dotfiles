@@ -35,16 +35,16 @@ abbr --add set-git-work "git config --global user.name 'pazbryant'; git config -
 
 # docker
 abbr --add lzd "lazydocker"
-abbr --add start-docker "sudo systemctl start docker.socket"
-abbr --add stop-docker "sudo systemctl stop docker.socket"
+abbr --add docker-start "sudo systemctl start docker.socket"
+abbr --add docker-stop "sudo systemctl stop docker.socket"
 
 # mongo
-abbr --add start-mongo "sudo systemctl start mongodb.service"
-abbr --add stop-mongo "sudo systemctl stop mongodb.service"
+abbr --add mongo-start "sudo systemctl start mongodb.service"
+abbr --add mongo-stop "sudo systemctl stop mongodb.service"
 
 # postgres
-abbr --add start-postgres "sudo systemctl start postgresql.service"
-abbr --add stop-postgres "sudo systemctl stop postgresql.service"
+abbr --add postgres-start "sudo systemctl start postgresql.service"
+abbr --add postgres-stop "sudo systemctl stop postgresql.service"
 
 # himalaya
 abbr --add hm "himalaya"
