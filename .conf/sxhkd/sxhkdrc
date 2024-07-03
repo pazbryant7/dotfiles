@@ -117,6 +117,9 @@ super + alt + k
 super + space
   ~/bin/sh/select-keyboard.sh
 
+super + shift + space
+  xmodmap ~/.Xmodmap && dunstify "Devorak layout"
+
 super + r
   ~/bin/sh/select-book.sh
   
@@ -128,6 +131,3 @@ super + v
 
 super + shift + v
   bspc node {,$(bspc query -N -n .hidden | tail -n1)} -g hidden=off
-
-super + shift + space
-  bspc query -N -n .local.window | xargs -I ID bspc node ID -g hidden
