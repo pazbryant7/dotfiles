@@ -116,3 +116,6 @@ at /etc/vconsole.conf
 
 add this to  /etc/sudoer
 Defaults    env_keep += "VISUAL EDITOR"
+
+create a crontab config
+0 */3 * * * /home/bryant/bin/sh/sync-password-manager.sh
