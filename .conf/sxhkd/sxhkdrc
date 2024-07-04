@@ -81,6 +81,9 @@ super + x
 super + t
   st
 
+super + shift + t
+  urxvt
+
 super + Return
   firefox-developer-edition
 

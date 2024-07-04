@@ -16,6 +16,9 @@ bspc config focus_follows_pointer true
 xset -dpms                       # stay awake
 xsetroot -cursor_name left_ptr & # fix mouse
 
+# app rules
+bspc rule -a URxvt split_ratio=0.70
+
 ~/.fehbg &
 ~/bin/sh/start-polybar.sh &
 
