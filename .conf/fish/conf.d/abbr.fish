@@ -1,5 +1,5 @@
 # fihs
-abbr --add cf "z ~/.config/fish/; nvim config.fish"
+abbr --add cf "nvim ~/.config/fish/config.fish"
 
 # general
 abbr --add sp "systemctl suspend"
@@ -29,9 +29,13 @@ abbr --add glg "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %
 abbr --add glga "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Crese' --stat"
 abbr --add gsb "git status --short --branch"
 abbr --add lzg "lazygit"
+abbr --add gdc "git diff --cached"
+abbr --add gd "git diff"
+abbr --add gaa "git add -A"
+abbr --add gc "git commit"
 
-abbr --add set-git-personal "git config --global user.name 'bryantpaz'; git config --global user.email 'pazbryant7@outlook.com'"
-abbr --add set-git-work "git config --global user.name 'pazbryant'; git config --global user.email 'bryantpaz7@outlook.com'"
+abbr --add git-personal "git config --global user.name 'bryantpaz'; git config --global user.email 'pazbryant7@outlook.com'"
+abbr --add git-work "git config --global user.name 'pazbryant'; git config --global user.email 'bryantpaz7@outlook.com'"
 
 # docker
 abbr --add lzd "lazydocker"
