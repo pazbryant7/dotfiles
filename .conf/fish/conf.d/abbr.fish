@@ -18,11 +18,10 @@ abbr --add xevk "xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf \
 abbr --add awake "xset -dpms"
 
 # zoxide
-abbr --add .... "z ../../../../"
-abbr --add ... "z ../../../"
-abbr --add .. "z ../../"
-abbr --add . "z ../"
-abbr --add zb "z -"
+abbr --add . "cd ../"
+abbr --add .. "cd ../../"
+abbr --add ... "cd ../../../"
+abbr --add .... "cd ../../../../"
 
 # git
 abbr --add glg "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' --all"
