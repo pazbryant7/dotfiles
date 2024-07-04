@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 set -x
 set -e
@@ -6,13 +6,8 @@ set -e
 # Set the paths
 local_folder="$HOME/mega"
 remote_folder="mega:MEGAsync"
-# Check if there are changes
-if rclone check "$remote_folder" "$local_folder" &>/dev/null; then
-	# No changes, show notification and exit
-	dunstify "MegaSync" "No changes to sync."
-	exit 0
-fi
 
-# Proceed with sync
-rclone sync "$remote_folder" "$local_folder" --verbose --progress
-dunstify "MegaSync" "Sync from mega to local"
+rclone copy "$local_folder" "$remote_folder" -L
+rclone sync "$remote_folder" "$local_folder"
+
+dunstify "Mega" "Successfully"

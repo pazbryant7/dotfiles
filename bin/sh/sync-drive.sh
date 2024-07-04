@@ -1,17 +1,13 @@
 #!/bin/bash
 
 set -x
+set -e
 
 # Set the paths
 local_folder="$HOME/drive"
 remote_folder="drive:"
 
-if rclone check "$remote_folder" "$local_folder" &>/dev/null; then
-	# No changes, show notification and exit
-	dunstify "Google drive" "No changes to sync."
-	exit 0
-fi
+rclone copy "$local_folder" "$remote_folder" -L
+rclone sync "$remote_folder" "$local_folder"
 
-# Proceed with sync
-rclone sync "$remote_folder" "$local_folder" --verbose --progress
-dunstify "Google drive" "Sync from drive to local."
+dunstify "Drive" "Successfully"
