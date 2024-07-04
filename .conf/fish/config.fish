@@ -63,7 +63,7 @@ fish_add_path ~/go/bin/
 
 atuin init fish | source
 fnm env --use-on-cd | source
-zoxide init fish | source
+zoxide init --cmd cd fish | source
 
 # }}}
 
