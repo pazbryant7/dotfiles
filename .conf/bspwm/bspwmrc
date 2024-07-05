@@ -2,7 +2,7 @@
 bspc monitor -d one two three four five six seven
 
 bspc config top_padding 0
-bspc config bottom_padding 12
+bspc config bottom_padding 11
 bspc config borderless_monocle false
 
 bspc config focused_border_color "#ad1858"
@@ -18,6 +18,9 @@ xsetroot -cursor_name left_ptr & # fix mouse
 
 # app rules
 bspc rule -a URxvt split_ratio=0.70
+bspc rule -a qBitorrent desktop=^7 follow=off
+bspc rule -a obsidian desktop=^6 follow=off
+
 
 ~/.fehbg &
 ~/bin/sh/start-polybar.sh &
