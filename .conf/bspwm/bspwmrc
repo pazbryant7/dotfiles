@@ -18,6 +18,7 @@ xsetroot -cursor_name left_ptr & # fix mouse
 
 # app rules
 bspc rule -a URxvt split_ratio=0.70
+bspc rule -a LibreWolf desktop=^3 follow=off
 bspc rule -a qBitorrent desktop=^7 follow=off
 bspc rule -a obsidian desktop=^6 follow=off
 
