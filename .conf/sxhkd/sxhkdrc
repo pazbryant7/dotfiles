@@ -60,17 +60,8 @@ super + less
 
 # -------------- main keys ------------- #
 
-super + a
-  if bspc query -N -n focused.floating; bspc node -f last.tiled.local; else; bspc node -f last.floating.local; end
-
-super + o
-  obsidian
-
 super + e
   pcmanfm
-
-super + u
-  pavucontrol
 
 super + d
   rofi -modes "drun,window,run" -show drun
@@ -92,9 +83,6 @@ super + b
 
 super + m
   bspc rule -a URxvt -o state=floating follow=on center=true rectangle=700x400+0+0 && urxvt -e fish -c "ncmpcpp"
-
-super + c
-  rofi -show calc -modi calc -no-show-match -no-sort 
 
 # -------------- custom scripts ------------- #
 
@@ -121,11 +109,10 @@ super + space
   ~/bin/sh/select-keyboard.sh
 
 super + shift + space
-  xmodmap ~/.Xmodmap && dunstify "Devorak layout"
+  bspc query -N -n .local.window | xargs -I ID bspc node ID -g hidden
 
 super + r
   ~/bin/sh/select-book.sh
-  
 
 # ---------------- hide windows --------------#
 
@@ -133,4 +120,4 @@ super + v
   bspc node -g hidden
 
 super + shift + v
-  bspc node {,$(bspc query -N -n .hidden | tail -n1)} -g hidden=off
+  bspc node {,$(bspc query -N -n .hidden | tail -n0)} -g hidden=off

@@ -15,7 +15,7 @@ abbr --add rel "xrdb merge ~/.Xresources && kill -USR1 (pidof st)"
 abbr --add rma "rm -rf"
 abbr --add leetcode "nvim leetcode.nvim"
 abbr --add xevk "xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf \"%-3s %s\n\", \$5, \$8 }'"
-abbr --add awake "xset -dpms"
+abbr --add ff "fastfetch"
 
 # zoxide
 abbr --add . "cd ../"
