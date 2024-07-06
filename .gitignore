@@ -16,3 +16,4 @@
 .conf/qBittorrent/qBittorrent-data.conf
 .conf/qBittorrent/lockfile
 .conf/qBittorrent/rss/storage.lock
+.conf/qBittorrent/qBittorrent-data.conf
