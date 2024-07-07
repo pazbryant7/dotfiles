@@ -5,7 +5,7 @@ bspc config top_padding 0
 bspc config bottom_padding 11
 bspc config borderless_monocle false
 
-bspc config border_width 3
+bspc config border_width 4
 bspc config focused_border_color "#ad1858"
 bspc config normal_border_color "#70707e"
 
@@ -19,7 +19,7 @@ xsetroot -cursor_name left_ptr & # fix mouse
 
 # app rules
 bspc rule -a URxvt split_ratio=0.70
-bspc rule -a LibreWolf desktop=^3 follow=off
+bspc rule -a Cromite desktop=^3 follow=off
 bspc rule -a qBitorrent desktop=^7 follow=off
 bspc rule -a obsidian desktop=^6 follow=off
 
