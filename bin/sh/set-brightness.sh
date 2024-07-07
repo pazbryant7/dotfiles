@@ -8,14 +8,18 @@ if [ "$brightness" = "2" ]; then
 fi
 
 if [ "$brightness" = "3" ]; then
-	brightness="0.3"
+	brightness="0.4"
 fi
 
 if [ "$brightness" = "4" ]; then
-	brightness="0.25"
+	brightness="0.3"
 fi
 
 if [ "$brightness" = "5" ]; then
+	brightness="0.25"
+fi
+
+if [ "$brightness" = "6" ]; then
 	brightness="0.2"
 fi
 
