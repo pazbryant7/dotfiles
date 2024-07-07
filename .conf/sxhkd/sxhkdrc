@@ -78,6 +78,9 @@ super + shift + t
 super + Return
   firefox-developer-edition
 
+super + shift + Return
+  firefox
+
 super + b
   ~/bin/sh/set-brightness.sh
 
