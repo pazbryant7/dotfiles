@@ -25,6 +25,7 @@ fastfetch 2.17.2-1
 fd 10.1.0-1
 feh 3.10.3-1
 ffmpegthumbnailer 2.2.2-6
+firefox 127.0.2-1
 firefox-developer-edition 128.0b9-1
 fish 3.7.1-2
 flatpak 1:1.15.8-1
@@ -99,7 +100,6 @@ ufw 0.36.2-4
 unarchiver 1.10.8-2
 unclutter 1:1.6-3
 urxvt-perls 2.3-2
-vlc 3.0.21-1
 vulkan-intel 1:24.1.2-1
 wireplumber 0.5.5-1
 xclip 0.13-5
