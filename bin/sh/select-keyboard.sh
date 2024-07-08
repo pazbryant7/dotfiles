@@ -3,37 +3,24 @@
 set -x
 set -e
 
-CURRENT_KEYBOARD="$HOME/.current_keyboard"
-
-read_state() {
-	bat "$CURRENT_KEYBOARD"
-}
-
-set_keyboard_layout() {
-	xmodmap "$1"
+get_current_layout() {
+  setxkbmap -query | rg layout | awk '{print $2}'
 }
 
 send_notification() {
-	dunstify "$1 layout"
+  current_layout=$1
+  notify-send "Keyboard" "$current_layout"
 }
 
-toggle_keyboard() {
-	state="$1"
-
-	devorak="Devorak"
-	spanish="Spanish"
-
-	if [ "$state" = "$devorak" ]; then
-		set_keyboard_layout "$SPANISH_LAYOUT"
-		echo "$spanish" >"$CURRENT_KEYBOARD"
-	else
-		set_keyboard_layout "$DEVORAK_LAYOUT"
-		echo "$devorak" >"$CURRENT_KEYBOARD"
-	fi
+switch_layout() {
+  current_layout=$(get_current_layout)
+  if [ "$current_layout" = "bryant-dvorak" ]; then
+    setxkbmap bryant-dvorak-itl
+  else
+    setxkbmap bryant-dvorak
+  fi
+  new_layout=$(get_current_layout)
+  send_notification "$new_layout"
 }
 
-CURRENT_STATE=$(read_state)
-toggle_keyboard "$CURRENT_STATE"
-
-CURRENT_STATE=$(read_state)
-send_notification "$CURRENT_STATE"
+switch_layout
