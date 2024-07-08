@@ -119,3 +119,9 @@ Defaults    env_keep += "VISUAL EDITOR"
 
 create a crontab config
 0 */3 * * * /home/bryant/bin/sh/sync-password-manager.sh
+
+I need to copy my custom keyboard layouts to
+/usr/share/X11/xkb/symbols/
+
+and then execute those commands
+localectl set-x11-keymap  bryant-dvorak

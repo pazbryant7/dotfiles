@@ -5,9 +5,6 @@ set -e
 
 CURRENT_KEYBOARD="$HOME/.current_keyboard"
 
-DEVORAK_LAYOUT="$HOME/.Xmodmap"
-SPANISH_LAYOUT="$HOME/.XmodmapIntl"
-
 read_state() {
 	bat "$CURRENT_KEYBOARD"
 }
