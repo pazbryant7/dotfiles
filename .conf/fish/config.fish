@@ -33,7 +33,7 @@ bind \cp "suppress-autosuggestion"
 alias cl "clear"
 alias sudo "sudo "
 alias bandwhich "sudo bandwhich"
-alias vim "NVIM_APPNAME='minimal' nvim"
+alias vi "NVIM_APPNAME='minimal' nvim"
 alias fvim "NVIM_APPNAME='firevim' nvim"
 
 alias ls "eza --icons --group --group-directories-first"
