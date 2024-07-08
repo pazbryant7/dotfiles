@@ -7,7 +7,7 @@ super + alt + {q,r}
 super + shift + Escape
 	pkill -USR1 -x sxhkd && dunstify "sxhkd" "Reloaded successfully"
 
-super + w
+super + g
   bspc query -N -n focused.floating >/dev/null && \
       bspc node focused -t tiled || \
       bspc node focused -t floating
@@ -46,6 +46,9 @@ super + {s,S}
 
 # -------------- music player ------------- #
 
+super + BackSpace
+  mpc toggle 
+
 super + minus
   mpc volume -5 
 
@@ -63,8 +66,11 @@ super + less
 super + e
   pcmanfm
 
-super + d
-  rofi -modes "drun,window,run" -show drun
+super + @d
+    rofi -show drun -show-icons
+
+super + w
+    rofi -show window -show-icons
 
 super + x
   ~/bin/select_and_execute.sh

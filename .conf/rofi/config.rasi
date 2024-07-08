@@ -1,7 +1,12 @@
 configuration {
- modi: "window,drun,ssh,combi";
- font: "Maple Mono NF 10";
- combi-modi: "window,drun,ssh";
+    modi: "run,drun,window";
+    icon-theme: "WhiteSur";
+    terminal: "st";
+    hide-scrollbar: true;
+    display-run: "";
+    display-drun: "";
+    display-window: "";
+    show-match: true;
  }
 
-@theme "~/.config/rofi/center.rasi"
+@theme "~/.config/rofi/theme.rasi"
