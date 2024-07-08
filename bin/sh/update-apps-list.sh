@@ -38,8 +38,6 @@ main() {
 	sync_go_apps $DOTFILES_PATH
 	sync_flatpak_apps $DOTFILES_PATH
 	sync_aur_apps $DOTFILES_PATH
-
-	dunstify "Notification" "update apps database"
 }
 
 main

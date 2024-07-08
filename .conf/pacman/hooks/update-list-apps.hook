@@ -1,0 +1,12 @@
+# /etc/pacman.d/hooks/update-list-apps.hook
+
+[Trigger]
+Operation = Remove
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = *
+
+[Action]
+When = PostTransaction
+Exec = '/home/bryant/bin/sh/update-apps-list.sh'
