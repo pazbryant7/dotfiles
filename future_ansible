@@ -124,4 +124,6 @@ I need to copy my custom keyboard layouts to
 /usr/share/X11/xkb/symbols/
 
 and then execute those commands
-localectl set-x11-keymap  bryant-dvorak
+localectl set-x11-keymap  bryant-dvorak (xorg graphic keyboard)
+localectl localectl set-keymap --no-convert dvorak (vconsole)
+
