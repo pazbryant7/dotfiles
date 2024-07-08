@@ -16,6 +16,7 @@ abbr --add rma "rm -rf"
 abbr --add leetcode "nvim leetcode.nvim"
 abbr --add xevk "xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf \"%-3s %s\n\", \$5, \$8 }'"
 abbr --add ff "fastfetch"
+abbr --add sudoe "sudoedit"
 
 # zoxide
 abbr --add . "cd ../"
