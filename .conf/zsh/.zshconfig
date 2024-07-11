@@ -1,0 +1,47 @@
+# {{{ settings options
+
+autoload -U compinit && compinit
+autoload -U bashcompinit && bashcompinit
+
+# zsh options
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_FIND_NO_DUPS
+
+extra_path=(
+  /usr/local/bin/
+  /var/lib/flatpak/exports/bin/
+  ~/.cargo/bin/
+  ~/.local/bin
+  ~/.local/share/bob/nvim-bin/
+  ~/.local/share/nvim/mason/bin
+  ~/.local/share/ide/mason/bin
+  ~/bin/sh/
+  ~/bin/crontab/
+  ~/go/bin/
+) 
+
+# extend path
+export PATH="${(j|:|)extra_path}:$PATH"
+
+# }}}
+
+##{{{ start binaries config
+
+eval "$(zoxide init --cmd cd zsh)"
+eval "$(fnm env --use-on-cd)"
+eval "$(atuin init zsh)"
+
+# }}}
+
+# {{{ starship
+
+eval "$(starship init zsh --print-full-init)"
+
+# }}}
+
+# {{{ clear cursor
+
+printf '\033[4 q'
+
+# ]]]

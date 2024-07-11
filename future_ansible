@@ -127,3 +127,9 @@ and then execute those commands
 localectl set-x11-keymap  bryant-dvorak (xorg graphic keyboard)
 localectl localectl set-keymap --no-convert dvorak (vconsole)
 
+manually install zsh plugins
+git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions
+
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
+

@@ -12,9 +12,9 @@
     background:     #2a273f;
     background-alt: #393552;
     foreground:     #e0def4;
-    selected:       #3e8fb0;
+    selected:       #8aadf4;
 
-    font: "Maple Mono SC NF 9";
+    font: "Maple Mono SC NF Bold 9";
 }
 
 /*****----- Main Window -----*****/

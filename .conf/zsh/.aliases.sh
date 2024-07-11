@@ -1,112 +1,65 @@
-# general
-alias shutdown="shutdown now"
-alias suspend="systemctl suspend"
-alias :q="exit"
-alias fontcache="sudo fc-cache -f -v"
-alias rma="rm -rf"
-alias rust-u="cargo install-update -a" # cargo install cargo-update needs to be installed
+# main
+alias cl="clear"
 alias sudo="sudo "
-alias sudoe="sudoedit"
-alias u-all='paru -Syu && pipx upgrade-all && flatpak update && cargo install-update -a'
-alias xevkeycode='xev | awk -F"[ )]+" "/^KeyPress/ { a[NR+2] } NR in a { printf \"%-3s %s\\n\", \$5, \$8 }"'
-alias vim="nvim --clean"
-alias vi="nvim"
-alias cl="clear; printf '\033[4 q'"
+alias bandwhich="sudo bandwhich"
+alias vi="NVIM_APPNAME='minimal' nvim"
+alias fvim="NVIM_APPNAME='firevim' nvim"
+
+alias ls="eza --icons --group --group-directories-first"
+alias ll="eza --group --header --group-directories-first --long --all"
+alias lg="eza --group --header --group-directories-first --long --git --git-ignore"
+alias lt="eza --group --header --group-directories-first --tree --level=2"
+alias lsa="eza --oneline --all"
+
+# fihs
+alias cf="nvim ~/.config/fish/config.fish"
+alias sp="systemctl suspend"
+alias weather="wego"
+alias dh="rm ~/.history.db ~/.local/share/fish/fish_history"
+alias sht="shutdown now"
 alias clear="clear; printf '\033[4 q'"
-
-# apps
-alias sapps=" pacman -Qen; pacman -Qm; pipx list; ls ~/.cargo/bin/; flatpak list"
-
-# configuration files
-alias aliases="nvim ~/zsh/.aliases.sh"
-alias gtapps="z /usr/share/applications"
 alias ck="nvim ~/.config/sxhkd/sxhkdrc"
-alias cwm="nvim ~/.config/bspwm/bspwmrc"
-
-# third party apps
-alias lzg="lazygit"
-alias lzd="lazydocker"
-
-# zsh
-alias czsh="nvim ~/zsh/.zshrc"
-alias dzshh="rm ~/.zsh_history; rm ~/.history.db"
-alias szsh="source ~/.zshrc"
+alias cwmy"nvim ~/.config/bspwm/bspwmrc"
+alias fontcache="sudo fc-cache -f -v"
+alias motivation="mpv ~/mega/personal/pc/videos/biy/dios.mp4"
+alias rel="xrdb merge ~/.Xresources && kill -USR1 (pidof st)"
+alias rma="rm -rf"
+alias leetcode="nvim leetcode.nvim"
+alias ff="fastfetch"
+alias sudoe="sudoedit"
 
 # zoxide
-alias ....="z ../../../../"
-alias ...="z ../../../"
-alias ..="z ../../"
-alias .="z ../"
-alias zb="z -"
+alias .="cd ../"
+alias ..="cd ../../"
+alias ...="cd ../../../"
+alias ....="cd ../../../../"
 
-# eza
-alias lS="eza -1"                                                      # one column, just names
-alias lsa="eza --oneline --all"                                        # all list
-alias ll="eza -l --git"                                                # list, size, type, git
-alias llm="eza -lbG --git --sort=modified"                             # long list, modified date sort
-alias ls="eza --icons --git"                                           # ls
-alias lt="eza --tree --level=2"                                        # tree
-alias lx="eza -lbhHigUmuSa@ --time-style=long-iso --git --color-scale" # all + extended list
-
-# ssh
-alias sssh="bat ~/.ssh/config"
-
-# tmux
-alias tc="nvim ~/.tmux.conf"
-alias ta="tmux attach"
-alias td="tmux detach"
-alias tk="tmux kill-server"
-alias tn="tmux new -s main"
-
-# zellij
-alias ze="zellij"
-alias zea="ze attach"
-alias zen="ze --session main"
-alias zek="zellij kill-all-sessions --yes"
-alias zed="zellij delete-all-sessions --force"
-
-# leetcode
-alias leetcode="nvim leetcode.nvim"
-
-# starting day
-alias motivation="mpv ~/Videos/dios.mp4"
-
-# st terminal
-alias rel="xrdb merge ~/.Xresources && kill -USR1 $(pidof st)"
-
-# update firefox theme
-alias ufirefoxtheme='bash -c "$(curl -fsSL https://raw.githubusercontent.com/black7375/Firefox-UI-Fix/master/install.sh)"'
-
-# youtube dl
-alias ydl-music='yt-dlp -x --audio-format mp3 --audio-quality 0'
-alias ydl-music-playlist='yt-dlp -x --audio-format mp3 --audio-quality 0 --yes-playlist'
-alias ydl-video='yt-dlp -f "bestvideo[height<=1080]+bestaudio/best[height<=1080]"'
-alias ydl-video-playlist='yt-dlp -f "bestvideo[height<=1080]+bestaudio/best[height<=1080]" --yes-playlist'
-
-# grub
-alias ugrup='sudo grub-mkconfig -o /boot/grub/grub.cfg'
-
-#git
-alias gaa='git add --all'
-alias gcmsg='git commit --message'
-alias gco='git checkout'
-alias gcup="git config --global user.name 'pazita117'; git config --global user.email 'plbryantt@outlook.com'"
-alias gcuw="git config --global user.name 'Bryant Paz'; git config --global user.email 'plbryant@hotmail.com'"
-alias gd='git diff'
+alias glg="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' --all"
+alias glga="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Crese' --stat"
+alias gsb="git status --short --branch"
+alias lzg="lazygit"
 alias gdc="git diff --cached"
-alias gdcw='git diff --cached --word-diff'
-alias gds='git diff --staged'
-alias gdw='git diff --word-diff'
-alias ggpull='git pull origin "$(git branch --show-current)"'
-alias ggpush='git push origin "$(git branch --show-current)"'
-alias glg='git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset" --all'
-alias glga='git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset" --stat'
-alias gsb='git status --short --branch'
+alias gd="git diff"
+alias gaa="git add -A"
+alias gc="git commit"
 
-# himalaya 
-alias hm="himalaya"
-alias hmg="himalaya -a google-main"
-alias hmw="himalaya -a microsoft-work"
+alias git-personal="git config --global user.name 'bryantpaz'; git config --global user.email 'pazbryant7@outlook.com'"
+alias git-work="git config --global user.name 'pazbryant'; git config --global user.email 'bryantpaz7@outlook.com'"
 
-# nvchad
-alias nvchad="rm -rf ~/.local/share/nvim; rm -rf ~/.config/nvim; git clone https://github.com/plbryant/NvChad ~/.config/nvim --depth 1 && nvim"
+alias lzd="lazydocker"
+alias docker-start="sudo systemctl start docker.socket"
+alias docker-stop="sudo systemctl stop docker.socket"
+
+alias mongo-start="sudo systemctl start mongodb.service"
+alias mongo-stop="sudo systemctl stop mongodb.service"
+
+alias postgres-start="sudo systemctl start postgresql.service"
+alias postgres-stop="sudo systemctl stop postgresql.service"
+
+alias ta="tmux attach"
+alias tc="nvim ~/.tmux.conf"
+alias tk="tmux kill-server"
+alias tn='tmux new -s $USER'
+
+alias openvpn-japan="sudo openvpn /etc/openvpn/client/jp-free-127011.protonvpn.udp.ovpn"
+alias openvpn-us="sudo openvpn /etc/openvpn/client/us-free-111014.protonvpn.udp.ovpn"

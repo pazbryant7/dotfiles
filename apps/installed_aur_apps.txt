@@ -9,6 +9,8 @@ openvpn-update-systemd-resolved 1.3.0-4
 paru 2.0.3-1
 postman-bin 11.0.4-1
 ttf-maple 6.4-1
+turbo-base64 2023.08-2
+ueberzugpp 2.9.6-2
 urxvt-resize-font-git 27.b593580-1
 vscodium-bin 1.90.2.24171-1
 whitesur-icon-theme 2024.04.22-1

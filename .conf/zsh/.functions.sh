@@ -1,22 +1,19 @@
-check_and_source_files() {
-	for item in "$@"; do
-		if [ -d "$item" ]; then
-			if command -v fd &>/dev/null; then
-				result=$(fd --full-path plugin.zsh "$item")
-				while IFS= read -r file_path; do
-					if [ -f "$file_path" ]; then
-						source "$file_path"
-					fi
-				done <<<"$result"
-			fi
-		elif [ -r "$item" ]; then
-			source "$item"
-		fi
-	done
-}
-
 cheat() { clear && curl cheat.sh/"$1"; }
 
-pwdp() {
-	echo "$(pwd)/$1"
+yy() {
+  tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+  yazi "$@" --cwd-file="$tmp"
+  if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+    cd -- "$cwd" || return
+  fi
+  rm -f -- "$tmp"
+}
+
+xevkeys() {
+  xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf "%-3s %s\n", $5, $8 }'
+}
+
+# Function to reload the Zsh configuration
+reload() {
+  source ~/.zshrc
 }

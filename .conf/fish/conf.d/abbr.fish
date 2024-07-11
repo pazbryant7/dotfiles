@@ -14,7 +14,6 @@ abbr --add motivation "mpv ~/mega/personal/pc/videos/biy/dios.mp4"
 abbr --add rel "xrdb merge ~/.Xresources && kill -USR1 (pidof st)"
 abbr --add rma "rm -rf"
 abbr --add leetcode "nvim leetcode.nvim"
-abbr --add xevk "xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf \"%-3s %s\n\", \$5, \$8 }'"
 abbr --add ff "fastfetch"
 abbr --add sudoe "sudoedit"
 
@@ -49,9 +48,6 @@ abbr --add mongo-stop "sudo systemctl stop mongodb.service"
 # postgres
 abbr --add postgres-start "sudo systemctl start postgresql.service"
 abbr --add postgres-stop "sudo systemctl stop postgresql.service"
-
-# himalaya
-abbr --add hm "himalaya"
 
 # tmux
 abbr --add ta "tmux attach"
