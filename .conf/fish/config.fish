@@ -29,7 +29,6 @@ alias cl "clear"
 alias sudo "sudo "
 alias bandwhich "sudo bandwhich"
 alias vi "NVIM_APPNAME='minimal' nvim"
-alias fvim "NVIM_APPNAME='firevim' nvim"
 
 alias ls "eza --icons --group --group-directories-first"
 alias ll "eza --group --header --group-directories-first --long --all"
