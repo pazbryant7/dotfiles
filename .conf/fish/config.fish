@@ -10,13 +10,8 @@ end
 
 set fish_greeting
 set fish_cursor_default underscore
-
 set fish_color_valid_path --no-underline
 
-set fish_pager_color_selected_background none
-
-set fish_pager_color_selected_completion blue --bold
-set fish_pager_color_selected_prefix blue --bold
 
 # ctrl
 bind \en "forward-word"
@@ -54,10 +49,18 @@ fish_add_path ~/.local/share/bob/nvim-bin/
 fish_add_path ~/.local/share/nvim/mason/bin
 fish_add_path ~/.local/share/ide/mason/bin
 fish_add_path ~/bin/sh/
-fish_add_path ~/bin/crontab/
 fish_add_path ~/go/bin/
 
 # }}}
+
+# {{{ fzf
+
+fzf --fish | source
+
+bind \cp fzf-file-widget
+bind \cy fzf-cd-widget
+
+# }
 
 # {{{ start binariest config
 

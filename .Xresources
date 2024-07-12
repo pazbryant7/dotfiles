@@ -63,42 +63,42 @@ URxvt.keysym.S-Return:            \033[13;2u
 URxvt.keysym.C-Return:            \033[13;5u
 URxvt.keysym.C-S-Return:          \033[13;6u
 
-! Macchiato theme
-URxvt.background: #24273A
-URxvt.foreground: #CAD3F5
-URxvt.cursorColor: #F4DBD6
+! Frappe theme
+URxvt.background: #303446
+URxvt.foreground: #C6D0F5
+URxvt.cursorColor: #F2D5CF
 
 ! black
-URxvt.color0: #494D64
-URxvt.color8: #5B6078
+URxvt.color0: #51576D
+URxvt.color8: #626880
 
 ! red
-URxvt.color1: #ED8796
-URxvt.color9: #ED8796
+URxvt.color1: #E78284
+URxvt.color9: #E78284
 
 ! green
-URxvt.color2: #A6DA95
-URxvt.color10: #A6DA95
+URxvt.color2: #A6D189
+URxvt.color10: #A6D189
 
 ! yellow
-URxvt.color3: #EED49F
-URxvt.color11: #EED49F
+URxvt.color3: #E5C890
+URxvt.color11: #E5C890
 
 ! blue
-URxvt.color4: #8AADF4
-URxvt.color12: #8AADF4
+URxvt.color4: #8CAAEE
+URxvt.color12: #8CAAEE
 
 ! magenta
-URxvt.color5: #F5BDE6
-URxvt.color13: #F5BDE6
+URxvt.color5: #F4B8E4
+URxvt.color13: #F4B8E4
 
 ! cyan
-URxvt.color6: #8BD5CA
-URxvt.color14: #8BD5CA
+URxvt.color6: #81C8BE
+URxvt.color14: #81C8BE
 
 ! white
-URxvt.color7: #B8C0E0
-URxvt.color15: #A5ADCB
+URxvt.color7: #B5BFE2
+URxvt.color15: #A5ADCE
 
 ! ===================
 ! st settings

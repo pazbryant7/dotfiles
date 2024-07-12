@@ -1,5 +1,8 @@
 # fihs
-abbr --add cf "nvim ~/.config/fish/config.fish"
+abbr --add cf "vi ~/.config/fish/config.fish"
+
+# zsh
+abbr --add czsh "vi ~/.zshrc"
 
 # general
 abbr --add sp "systemctl suspend"
@@ -7,13 +10,13 @@ abbr --add weather "wego"
 abbr --add dh "rm ~/.history.db ~/.local/share/fish/fish_history"
 abbr --add sht "shutdown now"
 abbr --add clear "clear; printf '\033[4 q'"
-abbr --add ck "nvim ~/.config/sxhkd/sxhkdrc"
-abbr --add cwm "nvim ~/.config/bspwm/bspwmrc"
+abbr --add ck "vi ~/.config/sxhkd/sxhkdrc"
+abbr --add cwm "vi ~/.config/bspwm/bspwmrc"
 abbr --add fontcache "sudo fc-cache -f -v"
 abbr --add motivation "mpv ~/mega/personal/pc/videos/biy/dios.mp4"
 abbr --add rel "xrdb merge ~/.Xresources && kill -USR1 (pidof st)"
 abbr --add rma "rm -rf"
-abbr --add leetcode "nvim leetcode.nvim"
+abbr --add leetcode "vi leetcode.nvim"
 abbr --add ff "fastfetch"
 abbr --add sudoe "sudoedit"
 
@@ -51,7 +54,7 @@ abbr --add postgres-stop "sudo systemctl stop postgresql.service"
 
 # tmux
 abbr --add ta "tmux attach"
-abbr --add tc "nvim ~/.tmux.conf"
+abbr --add tc "vi ~/.tmux.conf"
 abbr --add tk "tmux kill-server"
 abbr --add tn "tmux new -s $USER"
 

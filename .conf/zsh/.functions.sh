@@ -15,5 +15,5 @@ xevkeys() {
 
 # Function to reload the Zsh configuration
 reload() {
-  source ~/.zshrc
+  source /home/bryant/.zshrc
 }

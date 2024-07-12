@@ -4,6 +4,8 @@ autoload -U compinit && compinit
 autoload -U bashcompinit && bashcompinit
 
 # zsh options
+bindkey -e
+
 setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_FIND_NO_DUPS
@@ -17,31 +19,45 @@ extra_path=(
   ~/.local/share/nvim/mason/bin
   ~/.local/share/ide/mason/bin
   ~/bin/sh/
-  ~/bin/crontab/
   ~/go/bin/
 ) 
 
 # extend path
 export PATH="${(j|:|)extra_path}:$PATH"
 
+# set underscore 
+printf '\033[4 q'
+
+# }}}
+
+# {{{ fzf
+
+eval "$(fzf --zsh)"
+
+bindkey '^P' fzf-file-widget
+bindkey '^Y' fzf-cd-widget
+
 # }}}
 
 ##{{{ start binaries config
 
-eval "$(zoxide init --cmd cd zsh)"
-eval "$(fnm env --use-on-cd)"
 eval "$(atuin init zsh)"
-
-# }}}
-
-# {{{ starship
-
+eval "$(fnm env --use-on-cd)"
+eval "$(zoxide init --cmd cd zsh)"
 eval "$(starship init zsh --print-full-init)"
 
-# }}}
+# }}
 
-# {{{ clear cursor
+# {{{ plugins
 
-printf '\033[4 q'
+source $HOME/.zsh/zsh-sudo/zsh-sudo.zsh
+source $HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+source $HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-# ]]]
+bindkey '^N' autosuggest-accept
+bindkey '^[n' forward-word
+
+# plugin configuration
+ZSH_AUTOSUGGEST_MAX_LENGTH=20
+
+# }}} 
