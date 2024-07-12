@@ -38,6 +38,5 @@ tmux switch-client -t "$selected_name"
 selected_path="/home/bryant/Documents/github/notes/"
 
 if [ "$selected" = "$selected_path" ]; then
-  echo "hereeeeeeeeee"
   tmux send-keys "nvim Todo.md" Enter
 fi
