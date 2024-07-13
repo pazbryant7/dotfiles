@@ -59,5 +59,7 @@ bindkey '^[n' forward-word
 
 # plugin configuration
 ZSH_AUTOSUGGEST_MAX_LENGTH=20
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+ZSH_AUTOSUGGEST_HISTORY_IGNORE="(mv * | curl *)"
 
 # }}} 

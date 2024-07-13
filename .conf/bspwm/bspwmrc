@@ -1,5 +1,5 @@
 #! /bin/sh
-bspc monitor -d one two three four five six seven
+bspc monitor -d 1 2 3 4 5 6 7
 
 bspc config top_padding 0
 bspc config bottom_padding 11

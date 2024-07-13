@@ -95,7 +95,6 @@ telegram-desktop 5.2.3-1
 terraform 1.9.2-1
 tmux 3.4-8
 tree 2.1.1-2
-ttf-font-awesome 6.5.2-1
 udiskie 2.5.3-1
 ufw 0.36.2-4
 unarchiver 1.10.8-2
