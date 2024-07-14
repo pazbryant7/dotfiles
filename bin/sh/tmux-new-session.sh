@@ -1,8 +1,5 @@
 #!/bin/sh
 
-set -x
-set -e
-
 if [ $# -eq 1 ]; then
   selected="$1"
 else

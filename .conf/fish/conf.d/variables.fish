@@ -1,7 +1,7 @@
 # Environment variables
 set -x EDITOR "nvim"
-set -x VISUAL $EDITOR
-set -x TERMINAL "st"
+set -x VISUAL $gDITOR
+set -x TERMINAL "urxvt"
 set -x SUDO_EDITOR $EDITOR
 set -x BROWSER "firefox-developer-edition"
 set -x READER "zathura"

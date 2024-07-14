@@ -76,10 +76,10 @@ super + x
   ~/bin/select_and_execute.sh
 
 super + t
-  st
+  urxvt
 
 super + shift + t
-  urxvt
+  st
 
 super + Return
   firefox-developer-edition
@@ -91,7 +91,7 @@ super + b
   ~/bin/sh/set-brightness.sh
 
 super + m
-  bspc rule -a URxvt -o state=floating follow=on center=true rectangle=700x400+0+0 && urxvt -e fish -c "ncmpcpp"
+  bspc rule -a St -o state=floating follow=on center=true rectangle=700x400+0+0 && st -e fish -c "ncmpcpp"
 
 # -------------- custom scripts ------------- #
 
