@@ -76,10 +76,10 @@ super + x
   ~/bin/select_and_execute.sh
 
 super + t
-  urxvt
+  st
 
 super + shift + t
-  st
+  alacritty
 
 super + Return
   firefox-developer-edition

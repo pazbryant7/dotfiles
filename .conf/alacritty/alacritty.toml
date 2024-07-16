@@ -102,7 +102,7 @@ family = "Maple Mono NF"
 style = "Regular"
 
 [font.offset]
-x = 0
+x = 1
 y = 0
 
 [[keyboard.bindings]]
@@ -120,6 +120,11 @@ chars = "\u001B[13;2u"
 key = "Return"
 mods = "Shift"
 
+[[keyboard.bindings]]
+action = "IncreaseFontSize"
+key = "Plus"
+mods = "Control|Shift"
+
 [mouse]
 hide_when_typing = true
 
@@ -128,3 +133,4 @@ decorations = "full"
 dynamic_padding = true
 opacity = 1
 startup_mode = "Windowed"
+padding = { x = 10, y = 10 }

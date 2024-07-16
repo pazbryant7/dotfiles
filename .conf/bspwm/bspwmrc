@@ -18,7 +18,7 @@ xset -dpms                       # stay awake
 xsetroot -cursor_name left_ptr & # fix mouse
 
 # app rules
-bspc rule -a St split_ratio=0.70
+bspc rule -a Alacritty split_ratio=0.70
 bspc rule -a Cromite desktop=^3 follow=off
 bspc rule -a qBittorrent desktop=^7 follow=off
 bspc rule -a obsidian desktop=^6 follow=off
