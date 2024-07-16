@@ -9,6 +9,7 @@ openvpn-update-systemd-resolved 1.3.0-4
 paru 2.0.3-1
 postman-bin 11.0.4-1
 ttf-maple 6.4-1
+ttf-material-design-icons-git v7.4.47.r0.g57b567a-1
 turbo-base64 2023.08-2
 ueberzugpp 2.9.6-2
 vscodium-bin 1.90.2.24171-1
