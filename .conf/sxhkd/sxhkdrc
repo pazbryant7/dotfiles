@@ -1,3 +1,5 @@
+#!/bin/sh
+
 super + q
   bspc node -c
 
@@ -6,11 +8,6 @@ super + alt + {q,r}
 
 super + shift + Escape
 	pkill -USR1 -x sxhkd && dunstify "sxhkd" "Reloaded successfully"
-
-super + g
-  bspc query -N -n focused.floating >/dev/null && \
-      bspc node focused -t tiled || \
-      bspc node focused -t floating
 
 super + f
   bspc node -t '~fullscreen'
@@ -33,7 +30,7 @@ super + {bracketleft,braceleft,parenleft,percent,equal,ampersand,parenright}
 super + shift {1-7}
   bspc node -d '^{1-7}'
 
-# -------------- print ------------- #
+# -------------- print ---------------------------
 
 Print
   maim --select | xclip -selection clipboard -t image/png && dunstify "Save selection to clipboard"
@@ -41,10 +38,13 @@ Print
 super + Print
   maim | xclip -selection clipboard -t image/png && dunstify "Save full to clipboard"
 
-super + {s,S}
-  ~/bin/sh/take-screenshots.sh {cropped,full}
+alt + Print
+  ~/bin/sh/take-screenshots.sh cropped
 
-# -------------- music player ------------- #
+shift + Print
+  ~/bin/sh/take-screenshots.sh full
+
+# -------------- music player --------------------
 
 super + BackSpace
   mpc toggle 
@@ -61,16 +61,19 @@ super + greater
 super + less
   mpc prev
 
-# -------------- main keys ------------- #
+# -------------- main keys -----------------------
 
 super + e
   pcmanfm
 
-super + @d
-    rofi -show drun -show-icons
+super + d
+  rofi -show drun -show-icons
+
+super + shift + d
+  rofi -show window -show-icons
 
 super + w
-    rofi -show window -show-icons
+  bspc desktop -l next
 
 super + x
   ~/bin/select_and_execute.sh
@@ -93,12 +96,10 @@ super + b
 super + m
   bspc rule -a St -o state=floating follow=on center=true rectangle=700x400+0+0 && st -e fish -c "ncmpcpp"
 
-# -------------- custom scripts ------------- #
-
 super + shift + w
-  ~/bin/sh/set-wallpaper.sh
+  bspc node -t \~floating
 
-# --------------- resize windows --------------#
+# --------------- resize windows --------------------
 
 super + alt + l
   bspc node -z right 20 0 || bspc node -z left 20 0
@@ -112,21 +113,27 @@ super + alt + j
 super + alt + k
   bspc node -z bottom 0 -20 || bspc node -z top 0 -20
 
-# ---------------- rotate windows --------------#
+# ---------------- switch keyboard ------------------
 
 super + space
   ~/bin/sh/select-keyboard.sh
+
+# ---------------- windows --------------------------
 
 super + shift + space
   bspc query -N -n .local.window | xargs -I ID bspc node ID -g hidden
 
 super + r
-  ~/bin/sh/select-book.sh
+    bspc node @parent -R 90
 
-# ---------------- hide windows --------------#
+super + shift + r
+    bspc node @/ -R 90
 
 super + v
-  bspc node -g hidden
+    bspc node -g hidden
 
 super + shift + v
-  bspc node {,$(bspc query -N -n .hidden | tail -n0)} -g hidden=off
+    bspc node {,$(bspc query -N -n .hidden | tail -n1)} -g hidden=off
+
+super + {Left,Down,Up,Right}
+    bspc node -v {-30 0,0 30,0 -30,30 0}

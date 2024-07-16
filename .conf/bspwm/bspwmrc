@@ -1,27 +1,35 @@
 #! /bin/sh
+export SXHKD_SHELL=/usr/bin/sh
+ 
 bspc monitor -d 1 2 3 4 5 6 7
 
 bspc config top_padding 0
 bspc config bottom_padding 11
-bspc config borderless_monocle false
 
-bspc config border_width 4
-bspc config focused_border_color "#8aadf4"
-bspc config normal_border_color "#70707e"
+bspc config border_width 3
+bspc config focused_border_color "#a6d189"
+bspc config normal_border_color "#8aadf4"
 
-bspc config window_gap 15
+bspc config window_gap 10
 bspc config split_ratio 0.50
 bspc config gapless_monocle true
+bspc config borderless_monocle true
 bspc config focus_follows_pointer false
 
 xset -dpms                       # stay awake
 xsetroot -cursor_name left_ptr & # fix mouse
 
 # app rules
+# app favorite desktop 
 bspc rule -a Alacritty split_ratio=0.70
 bspc rule -a Cromite desktop=^3 follow=off
 bspc rule -a qBittorrent desktop=^7 follow=off
 bspc rule -a obsidian desktop=^6 follow=off
+
+# app favorite mode
+bspc rule -a vlc state=floating
+bspc rule -a mpv state=floating
+bspc rule -a feh state=floating center=true
 
 
 ~/.fehbg &

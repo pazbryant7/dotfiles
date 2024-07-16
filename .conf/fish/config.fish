@@ -33,7 +33,7 @@ alias vi "NVIM_APPNAME='minimal' nvim"
 alias ls "eza --icons --group --group-directories-first"
 alias ll "eza --group --header --group-directories-first --long --all"
 alias lg "eza --group --header --group-directories-first --long --git --git-ignore"                                    
-alias lt "eza --group --header --group-directories-first --tree --level=2"                                    
+alias lt "eza --group --header  --tree --level=3"
 alias lsa "eza --oneline --all"
 
 # }}}

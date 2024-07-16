@@ -1,5 +1,5 @@
 configuration {
-    modi: "run,drun,window";
+    modi: "window";
     icon-theme: "WhiteSur";
     terminal: "st";
     hide-scrollbar: true;

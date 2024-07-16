@@ -87,7 +87,6 @@ rsync 3.3.0-2
 sox 14.4.2+r184+gf3094754-1
 starship 1.19.0-1
 sxhkd 0.6.2-3
-sxiv 26-2
 syncthing 1.27.9-1
 tealdeer 1.6.1-1
 telegram-desktop 5.2.3-1
