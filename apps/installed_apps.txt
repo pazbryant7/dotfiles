@@ -35,6 +35,7 @@ git 2.45.2-1
 git-cliff 2.4.0-1
 git-delta 0.17.0-3
 go 2:1.22.5-1
+gopass 1.15.13-1
 grex 1.4.5-1
 grub 2:2.12-2
 gvfs 1.54.2-1

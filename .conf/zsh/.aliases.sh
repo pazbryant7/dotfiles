@@ -1,6 +1,7 @@
 # main
 alias cl="clear"
 alias sudo="sudo "
+alias gpass="gopass"
 alias bandwhich="sudo bandwhich"
 alias vi="NVIM_APPNAME='minimal' nvim"
 
