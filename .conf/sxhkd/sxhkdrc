@@ -99,6 +99,9 @@ super + m
 super + shift + w
   bspc node -t \~floating
 
+super + alt + w
+  ~/bin/sh/set-wallpaper.sh
+
 # --------------- resize windows --------------------
 
 super + alt + l
