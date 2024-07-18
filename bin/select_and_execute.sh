@@ -1,34 +1,51 @@
-#!/bin/bash
+#!/bin/sh
 
-base_dir="$HOME/bin/sh/"
+set -e
+set -x
 
-# Check if rofi and dunstify are installed
-if ! command -v rofi &>/dev/null || ! command -v dunstify &>/dev/null; then
-	echo "Error: 'rofi' or 'dunstify' is not installed. Please install both and try again."
-	exit 1
-fi
+# Base directory containing the scripts
+BASE_DIR="$HOME/bin/rofi"
 
-# Use find to locate all shell script files in the base directory and its subdirectories
-script_list=$(find "$base_dir" -type f -name "*.sh")
+# Validate if necessary dependencies are installed
+check_dependencies() {
+  if ! command -v rofi >/dev/null 2>&1 || ! command -v dunstify >/dev/null 2>&1; then
+    echo "Error: 'rofi' or 'dunstify' is not installed. Please install both and try again."
+    exit 1
+  fi
+}
 
-# Check if script_list is empty
-if [[ -z $script_list ]]; then
-	dunstify "No shell script files found in $base_dir and its subdirectories." -t 1000
-	exit 1
-fi
+# Get the name of the script to execute
+select_script() {
+  script_list=$(fd . "$BASE_DIR/" -tf -tl -tx)
 
-# Extract only the script names without the path
-script_names=$(echo "$script_list" | xargs -n 1 basename)
+  if [ -z "$script_list" ]; then
+    dunstify "No scripts found in $BASE_DIR"
+    exit 1
+  fi
 
-# Use rofi to create a searchable list of script names
-chosen_script=$(echo "$script_names" | rofi -dmenu -p "Choose a script:")
+  script_names=$(echo "$script_list" | xargs -n 1 basename)
+  script_name=$(echo "$script_names" | rofi -dmenu -p "Choose a script:")
 
-if [[ -n $chosen_script ]]; then
-	# Find the full path of the selected script
-	full_path=$(echo "$script_list" | grep "/$chosen_script$")
+  if [ -z "$script_name" ]; then
+    dunstify "No script selected"
+    exit 1
+  fi
 
-	if [[ -n $full_path ]]; then
-		# Execute the selected script
-		bash "$full_path"
-	fi
-fi
+  echo "$script_name"
+}
+
+# Execute the selected script
+run_script() {
+  script_name=$1
+  sh "$BASE_DIR/$script_name"
+}
+
+# Main function
+main() {
+  check_dependencies
+  script=$(select_script)
+  run_script "$script"
+}
+
+# Run the main function
+main
