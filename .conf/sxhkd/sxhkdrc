@@ -30,37 +30,6 @@ super + {bracketleft,braceleft,parenleft,percent,equal,ampersand,parenright}
 super + shift {1-7}
   bspc node -d '^{1-7}'
 
-# -------------- print ---------------------------
-
-Print
-  maim --select | xclip -selection clipboard -t image/png && dunstify "Save selection to clipboard"
-
-super + Print
-  maim | xclip -selection clipboard -t image/png && dunstify "Save full to clipboard"
-
-alt + Print
-  ~/bin/sh/take-screenshots.sh cropped
-
-shift + Print
-  ~/bin/sh/take-screenshots.sh full
-
-# -------------- music player --------------------
-
-super + BackSpace
-  mpc toggle 
-
-super + minus
-  mpc volume -5 
-
-super + plus
-  mpc volume +5 
-
-super + greater
-  mpc next
-
-super + less
-  mpc prev
-
 # -------------- main keys -----------------------
 
 super + a
@@ -97,13 +66,51 @@ super + b
   ~/bin/sh/set-brightness.sh
 
 super + m
-  bspc rule -a St -o state=floating follow=on center=true rectangle=700x400+0+0 && st -e fish -c "ncmpcpp"
+  bspc rule -a St -o state=floating follow=on center=true \
+    rectangle=700x400+0+0 && st -e fish -c "ncmpcpp"
 
 super + shift + w
   bspc node -t \~floating
 
 super + alt + w
   ~/bin/sh/set-wallpaper.sh
+
+super + shift + BackSpace
+  ~/go/bin/recorder
+
+
+# -------------- print ---------------------------
+
+Print
+  maim --select | xclip -selection clipboard -t image/png \
+    && dunstify "Save selection to clipboard"
+
+super + Print
+  maim | xclip -selection clipboard -t image/png \
+    && dunstify "Save full to clipboard"
+
+alt + Print
+  ~/bin/sh/take-screenshots.sh cropped
+
+shift + Print
+  ~/bin/sh/take-screenshots.sh full
+
+# -------------- music player --------------------
+
+super + BackSpace
+  mpc toggle 
+
+super + minus
+  mpc volume -5 
+
+super + plus
+  mpc volume +5 
+
+super + greater
+  mpc next
+
+super + less
+  mpc prev
 
 # --------------- resize windows --------------------
 

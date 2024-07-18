@@ -80,7 +80,7 @@ func start(audioSource string) {
 		return
 	}
 
-	showNotification("Recording started", "")
+	showNotification("Recording", "started")
 }
 
 func stop() {
@@ -95,7 +95,7 @@ func stop() {
 		return
 	}
 
-	showNotification("Recording finalized", "")
+	showNotification("Recording", "finalized")
 }
 
 func toggleRecording(audioSource string) {
