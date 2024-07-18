@@ -14,6 +14,7 @@ set -x DELTA_PAGER "less -R"
 set -x WM "bspwm"
 set -x MANPAGER "nvim +Man!"
 set -x QT_QPA_PLATFORMTHEME "qt5ct"
+set -x GOPATH "/home/bryant/go/bin"
 
 # FZF
 set -x FZF_DEFAULT_OPTS " \

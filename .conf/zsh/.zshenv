@@ -16,6 +16,7 @@ export WM="bspwm"
 export MANPAGER='nvim +Man!'
 export QT_QPA_PLATFORMTHEME="qt5ct"  
 export STARSHIP_CONFIG=~/.config/starship/starship.toml
+export GOPATH="/home/bryant/go/bin"
 
 # }}
 

@@ -63,6 +63,9 @@ super + less
 
 # -------------- main keys -----------------------
 
+super + a
+  pavucontrol
+
 super + e
   pcmanfm
 
