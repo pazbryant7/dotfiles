@@ -10,4 +10,4 @@ st.borderpx: 15
 st.alpha: 1
 
 ! font family
-st.font: Maple Mono NF:pixelsize=12:style:regular
+st.font: Maple Mono NF:pixelsize=13:style:regular

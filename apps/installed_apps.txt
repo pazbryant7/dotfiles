@@ -28,7 +28,6 @@ ffmpegthumbnailer 2.2.2-6
 firefox 127.0.2-1
 firefox-developer-edition 129.0b1-1
 fish 3.7.1-2
-flatpak 1:1.15.8-1
 fzf 0.53.0-1
 gd 2.3.3-8
 git 2.45.2-1

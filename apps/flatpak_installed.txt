@@ -1,7 +1,0 @@
-Adwaita theme	org.kde.KStyle.Adwaita		5.15-22.08	system
-Intel	org.freedesktop.Platform.VAAPI.Intel		22.08	system
-KDE Application Platform	org.kde.Platform		5.15-22.08	system
-Mesa (Extra)	org.freedesktop.Platform.GL.default	23.3.0	22.08-extra	system
-Mesa	org.freedesktop.Platform.GL.default	23.3.0	22.08	system
-openh264	org.freedesktop.Platform.openh264	2.1.0	2.2.0	system
-Stremio	com.stremio.Stremio	4.4.165	stable	system
