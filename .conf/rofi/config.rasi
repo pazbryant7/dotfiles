@@ -1,6 +1,5 @@
 configuration {
     modi: "window";
-    icon-theme: "WhiteSur";
     terminal: "st";
     hide-scrollbar: true;
     display-run: "";

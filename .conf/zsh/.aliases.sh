@@ -1,5 +1,6 @@
 # main
 alias cl="clear"
+alias yay="paru"
 alias sudo="sudo "
 alias gpass="gopass"
 alias bandwhich="sudo bandwhich"
