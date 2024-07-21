@@ -3,7 +3,7 @@ set -x EDITOR "nvim"
 set -x VISUAL $gDITOR
 set -x TERMINAL "st"
 set -x SUDO_EDITOR $EDITOR
-set -x BROWSER "firefox-developer-edition"
+set -x BROWSER "brave"
 set -x READER "zathura"
 set -x VIDEO "mpv"
 set -x COLORTERM "truecolor"

@@ -1,4 +1,4 @@
-cromite-bin 126.0.6478.186-1
+brave-bin 1:1.67.134-1
 datagrip 2024.1.4-1
 datagrip-jre 2024.1.4-1
 mongodb-bin 7.0.12-1
