@@ -54,7 +54,7 @@ super + t
   st
 
 super + shift + t
-  alacritty
+  bspc rule -a St -o split_ratio 0.60 && st
 
 super + Return
   firefox-developer-edition
