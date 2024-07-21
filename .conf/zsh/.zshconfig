@@ -18,8 +18,11 @@ extra_path=(
   ~/.local/share/bob/nvim-bin/
   ~/.local/share/nvim/mason/bin
   ~/.local/share/ide/mason/bin
-  ~/bin/sh/
   ~/go/bin/
+  ~/bin/sh/
+  ~/bin/lua/
+  ~/bin/golang/
+  ~/bin/rofi/
 ) 
 
 # extend path

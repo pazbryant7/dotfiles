@@ -28,7 +28,7 @@ bind \cp "suppress-autosuggestion"
 alias cl "clear"
 alias yay "paru"
 alias sudo "sudo "
-alias gpass "gopass"
+alias pass "gopass"
 alias bandwhich "sudo bandwhich"
 alias vi "NVIM_APPNAME='minimal' nvim"
 
@@ -50,6 +50,9 @@ fish_add_path ~/.local/share/bob/nvim-bin/
 fish_add_path ~/.local/share/nvim/mason/bin
 fish_add_path ~/.local/share/ide/mason/bin
 fish_add_path ~/bin/sh/
+fish_add_path ~/bin/lua/
+fish_add_path ~/bin/rofi/
+fish_add_path ~/bin/golang/
 fish_add_path ~/go/bin/
 
 # }}}

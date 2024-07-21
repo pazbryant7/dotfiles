@@ -4,7 +4,7 @@ export EDITOR="nvim"
 export VISUAL=$EDITOR
 export TERMINAL="st"
 export SUDO_EDITOR=$EDITOR
-export BROWSER="brave"
+export BROWSER="firefox-developer-edition"
 export GTK_THEME="Nordic"
 export VIDEO="mpv"
 export COLORTERM="truecolor"
@@ -17,6 +17,8 @@ export MANPAGER='nvim +Man!'
 export QT_QPA_PLATFORMTHEME="qt5ct"  
 export STARSHIP_CONFIG=~/.config/starship/starship.toml
 export GOPATH="/home/bryant/go/bin"
+export CM_LAUNCHER="rofi"
+export SXHKD_SHELL="sh"
 
 # }}
 

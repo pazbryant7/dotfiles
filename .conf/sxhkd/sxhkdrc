@@ -1,5 +1,3 @@
-#!/bin/sh
-
 super + q
   bspc node -c
 
@@ -35,8 +33,11 @@ super + shift {1-7}
 super + a
   pavucontrol
 
-super + e
-  pcmanfm
+super + o
+  clipmenu
+
+super + c
+  ~/bin/rofi/calc
 
 super + d
   rofi -show drun -show-icons

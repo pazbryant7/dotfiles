@@ -2,7 +2,7 @@
 alias cl="clear"
 alias yay="paru"
 alias sudo="sudo "
-alias gpass="gopass"
+alias pass="gopass"
 alias bandwhich="sudo bandwhich"
 alias vi="NVIM_APPNAME='minimal' nvim"
 

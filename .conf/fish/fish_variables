@@ -43,4 +43,4 @@ SETUVAR fish_pager_color_selected_background:\x1d
 SETUVAR fish_pager_color_selected_completion:\x1d
 SETUVAR fish_pager_color_selected_description:\x1d
 SETUVAR fish_pager_color_selected_prefix:\x1d
-SETUVAR fish_user_paths:/home/bryant/\x2elocal/share/ide/mason/bin\x1e/home/bryant/bin/crontab\x1e/home/bryant/bin/sh\x1e/home/bryant/go/bin\x1e/home/bryant/\x2elocal/share/bob/nvim\x2dbin\x1e/home/bryant/\x2elocal/bin\x1e/home/bryant/\x2ecargo/bin\x1e/var/lib/flatpak/exports/bin\x1e/usr/local/bin\x1e/home/bryant/\x2elocal/share/nvim/mason/bin
+SETUVAR fish_user_paths:/home/bryant/bin/golang\x1e/home/bryant/bin/rofi\x1e/home/bryant/bin/lua\x1e/home/bryant/\x2elocal/share/ide/mason/bin\x1e/home/bryant/bin/crontab\x1e/home/bryant/bin/sh\x1e/home/bryant/go/bin\x1e/home/bryant/\x2elocal/share/bob/nvim\x2dbin\x1e/home/bryant/\x2elocal/bin\x1e/home/bryant/\x2ecargo/bin\x1e/var/lib/flatpak/exports/bin\x1e/usr/local/bin\x1e/home/bryant/\x2elocal/share/nvim/mason/bin

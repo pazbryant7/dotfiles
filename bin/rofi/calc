@@ -1,0 +1,8 @@
+#!/usr/bin/sh
+
+main() {
+  rofi -show calc -modi calc -no-show-match -no-sort -no-history \
+    -calc-command "echo -n {result} | xclip -selection clipboard"
+}
+
+main

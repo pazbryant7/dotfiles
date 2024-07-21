@@ -3,7 +3,7 @@ set -x EDITOR "nvim"
 set -x VISUAL $gDITOR
 set -x TERMINAL "st"
 set -x SUDO_EDITOR $EDITOR
-set -x BROWSER "brave"
+set -x BROWSER "firefox-developer-edition"
 set -x READER "zathura"
 set -x VIDEO "mpv"
 set -x COLORTERM "truecolor"
@@ -15,6 +15,8 @@ set -x WM "bspwm"
 set -x MANPAGER "nvim +Man!"
 set -x QT_QPA_PLATFORMTHEME "qt5ct"
 set -x GOPATH "/home/bryant/go/bin"
+set -x CM_LAUNCHER "rofi"
+set -x SXHKD_SHELL "sh"
 
 # FZF
 set -x FZF_DEFAULT_OPTS " \

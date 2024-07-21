@@ -1,5 +1,4 @@
 #! /bin/sh
-export SXHKD_SHELL=/usr/bin/sh
  
 bspc monitor -d 1 2 3 4 5 6 7
 
@@ -41,6 +40,7 @@ if ! pgrep -x "unclutter" >/dev/null; then unclutter & fi
 if ! pgrep -x "wireplumber" >/dev/null; then wireplumber & fi
 if ! pgrep -x "dunst" >/dev/null; then dunst & fi
 if ! pgrep -x "mpd" >/dev/null; then mpd & fi
+if ! pgrep -x "clipmenud" >/dev/null; then clipmenud & fi
 
 if ! pgrep -x "picom" >/dev/null; then
   picom --config /home/bryant/.config/picom/picom.conf &
