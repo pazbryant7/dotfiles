@@ -57,10 +57,10 @@ super + shift + t
   bspc rule -a St -o split_ratio 0.60 && st
 
 super + Return
-  brave
-
-super + shift + Return
   firefox-developer-edition
+  
+super + shift + Return
+  brave
 
 super + b
   ~/bin/sh/set-brightness.sh
