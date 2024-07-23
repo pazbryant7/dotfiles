@@ -37,7 +37,7 @@ select_script() {
 # Execute the selected script
 run_script() {
   script_name=$1
-  sh "$BASE_DIR/$script_name"
+  "$BASE_DIR/$script_name"
 }
 
 # Main function
