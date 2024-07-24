@@ -1,3 +1,5 @@
+#!/usr/bin/sh
+
 # main
 alias cl="clear"
 alias yay="paru"
@@ -5,6 +7,7 @@ alias sudo="sudo "
 alias pass="gopass"
 alias bandwhich="sudo bandwhich"
 alias vi="NVIM_APPNAME='minimal' nvim"
+alias transes="trans en:es"
 
 alias ls="eza --icons --group --group-directories-first"
 alias ll="eza --group --header --group-directories-first --long --all"
@@ -17,11 +20,11 @@ alias cf="vi ~/.config/fish/config.fish"
 alias czsh="vi ~/.zshrc"
 alias sp="systemctl suspend"
 alias weather="wego"
-alias dh="rm ~/.history.db; ~/.local/share/fish/fish_history;"
+alias dh="rm ~/.history.db"
 alias sht="shutdown now"
 alias clear="clear; printf '\033[4 q'"
 alias ck="vi ~/.config/sxhkd/sxhkdrc"
-alias cwmy"vi ~/.config/bspwm/bspwmrc"
+alias cwm="vi ~/.config/bspwm/bspwmrc"
 alias fontcache="sudo fc-cache -f -v"
 alias motivation="mpv ~/mega/personal/pc/videos/biy/dios.mp4"
 alias rel="xrdb merge ~/.Xresources && kill -USR1 $(pidof st)"

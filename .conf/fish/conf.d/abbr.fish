@@ -7,7 +7,7 @@ abbr --add czsh "vi ~/.zshrc"
 # general
 abbr --add sp "systemctl suspend"
 abbr --add weather "wego"
-abbr --add dh "rm ~/.history.db ~/.local/share/fish/fish_history"
+abbr --add dh "rm ~/.history.db"
 abbr --add sht "shutdown now"
 abbr --add clear "clear; printf '\033[4 q'"
 abbr --add ck "vi ~/.config/sxhkd/sxhkdrc"
@@ -19,6 +19,7 @@ abbr --add rma "rm -rf"
 abbr --add leetcode "vi leetcode.nvim"
 abbr --add ff "fastfetch"
 abbr --add sudoe "sudoedit"
+abbr --add transes "trans en:es"
 
 # zoxide
 abbr --add . "cd ../"
