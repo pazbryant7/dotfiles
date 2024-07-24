@@ -9,9 +9,9 @@
 
 /*****----- Global Properties -----*****/
 * {
-    background:     #2a273f;
-    background-alt: #393552;
-    foreground:     #e0def4;
+    background:     #eff1f5;
+    background-alt: #dce0e8;
+    foreground:     #4c4f69;
     selected:       #a6d189;
 
     font: "Maple Mono SC NF Bold 9";

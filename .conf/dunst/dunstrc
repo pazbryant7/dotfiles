@@ -55,16 +55,16 @@
     per_monitor_dpi = true
 
 [urgency_low]
-    background = "#282a36"
-    foreground = "#f8f8f2"
+    background = "#eff1f5"
+    foreground = "#4c4f69"
 
 [urgency_normal]
-    background = "#44475a"
-    foreground = "#f8f8f2"
+    background = "#dce0e8"
+    foreground = "#4c4f69"
 
 [urgency_critical]
-    background = "#ff5555"
-    foreground = "#f8f8f2"
+    background = "#d20f39"
+    foreground = "#ffffff"
 
 [play_sound]
     summary = "*"
