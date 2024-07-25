@@ -9,6 +9,7 @@ else
     ~/Documents/github/ \
     ~/Documents/github/codeeditors/ \
     ~/Documents/github/examples/ \
+    ~/Documents/github/royal/ \
     ~/mega/personal/pc/ \
     ~/mega/work/ \
     ~/Downloads/ | fzf)
