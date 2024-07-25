@@ -141,16 +141,16 @@ super + shift + space
   bspc query -N -n .local.window | xargs -I ID bspc node ID -g hidden
 
 super + r
-    bspc node @parent -R 90
+  bspc node @parent -R 90
 
 super + shift + r
-    bspc node @/ -R 90
+  bspc node @/ -R 90
 
 super + v
-    bspc node -g hidden
+  bspc node -g hidden
 
 super + shift + v
-    bspc node {,$(bspc query -N -n .hidden | tail -n1)} -g hidden=off
+  bspc node {,$(bspc query -N -n .hidden | tail -n1)} -g hidden=off
 
 super + {Left,Down,Up,Right}
-    bspc node -v {-30 0,0 30,0 -30,30 0}
+  bspc node -v {-30 0,0 30,0 -30,30 0}
