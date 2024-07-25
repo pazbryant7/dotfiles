@@ -8,6 +8,7 @@ alias pass="gopass"
 alias bandwhich="sudo bandwhich"
 alias vi="NVIM_APPNAME='minimal' nvim"
 alias transes="trans en:es"
+alias cheat="cht.sh"
 
 alias ls="eza --icons --group --group-directories-first"
 alias ll="eza --group --header --group-directories-first --long --all"
@@ -66,5 +67,5 @@ alias tc="vi ~/.tmux.conf"
 alias tk="tmux kill-server"
 alias tn='tmux new -s $USER'
 
-alias openvpn-japan="sudo openvpn /etc/openvpn/client/jp-free-127011.protonvpn.udp.ovpn"
-alias openvpn-us="sudo openvpn /etc/openvpn/client/us-free-111014.protonvpn.udp.ovpn"
+alias openvpnjapan="sudo openvpn /etc/openvpn/client/jp-free-127011.protonvpn.udp.ovpn"
+alias openvpnus="sudo openvpn /etc/openvpn/client/us-free-111014.protonvpn.udp.ovpn"

@@ -1,5 +1,3 @@
-cheat() { clear && curl cheat.sh/"$1"; }
-
 yy() {
   tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
   yazi "$@" --cwd-file="$tmp"

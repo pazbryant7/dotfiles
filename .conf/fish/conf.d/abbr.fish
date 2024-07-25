@@ -20,6 +20,7 @@ abbr --add leetcode "vi leetcode.nvim"
 abbr --add ff "fastfetch"
 abbr --add sudoe "sudoedit"
 abbr --add transes "trans en:es"
+abbr --add cheat "cht.sh"
 
 # zoxide
 abbr --add . "cd ../"
@@ -60,5 +61,5 @@ abbr --add tk "tmux kill-server"
 abbr --add tn "tmux new -s $USER"
 
 # open vpn
-abbr --add openvpn-japan "sudo openvpn /etc/openvpn/client/jp-free-127011.protonvpn.udp.ovpn"
-abbr --add openvpn-us "sudo openvpn /etc/openvpn/client/us-free-111014.protonvpn.udp.ovpn"
+abbr --add openvpnjapan "sudo openvpn /etc/openvpn/client/jp-free-127011.protonvpn.udp.ovpn"
+abbr --add openvpnus "sudo openvpn /etc/openvpn/client/us-free-111014.protonvpn.udp.ovpn"

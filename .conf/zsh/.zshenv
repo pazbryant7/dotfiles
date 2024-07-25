@@ -19,6 +19,7 @@ export STARSHIP_CONFIG=~/.config/starship/starship.toml
 export GOPATH="/home/bryant/go/bin"
 export CM_LAUNCHER="rofi"
 export SXHKD_SHELL="sh"
+export CHTSH_QUERY_OPTIONS="style=perldoc"
 
 # }}
 

@@ -7,7 +7,8 @@ LAST_READ_BOOK_PATH="$HOME/.last-read-book"
 
 # Function to list folders within the books directory
 list_folders() {
-  fd --type directory --max-depth 1 --base-directory "$BOOKS_DIR" | xargs -I {} basename {}
+  fd --type directory --max-depth 1 --base-directory "$BOOKS_DIR" |
+    xargs -I {} basename {}
 }
 
 # Function to list files within a selected folder

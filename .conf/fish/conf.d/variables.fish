@@ -17,6 +17,7 @@ set -x QT_QPA_PLATFORMTHEME "qt5ct"
 set -x GOPATH "/home/bryant/go/bin"
 set -x CM_LAUNCHER "rofi"
 set -x SXHKD_SHELL "sh"
+set -x CHTSH_QUERY_OPTIONS "style=perldoc"
 
 # FZF
 set -Ux FZF_DEFAULT_OPTS "\

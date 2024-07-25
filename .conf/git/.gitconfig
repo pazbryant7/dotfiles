@@ -51,4 +51,4 @@
 		bold cyan => syntax "#b4def1", \
 		bold yellow => syntax "#ebd9bf"
 	# Should match the name of the bat theme
-	syntax-theme = "base16-256"
+	syntax-theme = "GitHub"

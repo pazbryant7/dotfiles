@@ -18,10 +18,10 @@ bspc config borderless_monocle true
 bspc config focus_follows_pointer false
 
 # app favorite desktop
-bspc rule -a qBittorrent desktop=^7 follow=off
-bspc rule -a mpv desktop=^5 state=floating
-bspc rule -a vlc desktop=^5 state=floating
-bspc rule -a obsidian desktop=^6 follow=off
+bspc rule -a qBittorrent desktop=^7 follow=true
+bspc rule -a mpv desktop=^5 state=floating follow=true
+bspc rule -a vlc desktop=^5 state=floating follow=true
+bspc rule -a obsidian desktop=^6 follow=off follow=true
 
 # app favorite mode
 bspc rule -a feh state=floating center=true
