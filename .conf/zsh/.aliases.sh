@@ -40,6 +40,7 @@ alias ..="cd ../../"
 alias ...="cd ../../../"
 alias ....="cd ../../../../"
 
+alias gb="git branch"
 alias glg="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' --all"
 alias glga="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Crese' --stat"
 alias gsb="git status --short --branch"
@@ -48,6 +49,8 @@ alias gdc="git diff --cached"
 alias gd="git diff"
 alias gaa="git add -A"
 alias gc="git commit"
+alias ggpush='git push origin $(git rev-parse --abbrev-ref HEAD)'
+alias ggpull='git pull origin $(git rev-parse --abbrev-ref HEAD)'
 
 alias git-personal="git config --global user.name 'bryantpaz'; git config --global user.email 'pazbryant7@outlook.com'"
 alias git-work="git config --global user.name 'pazbryant'; git config --global user.email 'bryantpaz7@outlook.com'"

@@ -29,6 +29,7 @@ abbr --add ... "cd ../../../"
 abbr --add .... "cd ../../../../"
 
 # git
+abbr --add gb "git branch"
 abbr --add glg "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset' --all"
 abbr --add glga "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Crese' --stat"
 abbr --add gsb "git status --short --branch"
@@ -37,6 +38,8 @@ abbr --add gdc "git diff --cached"
 abbr --add gd "git diff"
 abbr --add gaa "git add -A"
 abbr --add gc "git commit"
+abbr -a ggpush 'git push origin (git rev-parse --abbrev-ref HEAD)'
+abbr -a ggpull 'git pull origin (git rev-parse --abbrev-ref HEAD)'
 
 abbr --add git-personal "git config --global user.name 'bryantpaz'; git config --global user.email 'pazbryant7@outlook.com'"
 abbr --add git-work "git config --global user.name 'pazbryant'; git config --global user.email 'bryantpaz7@outlook.com'"
