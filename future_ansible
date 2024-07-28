@@ -135,3 +135,4 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:
 copy manually this file and adding to my zsh plugin confi
 https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/sudo/sudo.plugin.zsh
 
+install manually tachidesk image with docker
