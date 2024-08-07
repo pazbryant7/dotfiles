@@ -3,7 +3,7 @@
 autoload -U compinit && compinit
 autoload -U bashcompinit && bashcompinit
 
-# zsh options
+# set emacs keybind
 bindkey -e
 
 setopt HIST_IGNORE_DUPS
@@ -11,18 +11,9 @@ setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_FIND_NO_DUPS
 
 extra_path=(
+  ~/.cargo/bin/
   /usr/local/bin/
   /var/lib/flatpak/exports/bin/
-  ~/.cargo/bin/
-  ~/.local/bin
-  ~/.local/share/bob/nvim-bin/
-  ~/.local/share/nvim/mason/bin
-  ~/.local/share/ide/mason/bin
-  ~/go/bin/
-  ~/bin/sh/
-  ~/bin/lua/
-  ~/bin/golang/
-  ~/bin/rofi/
 ) 
 
 # extend path
@@ -37,9 +28,6 @@ printf '\033[4 q'
 
 eval "$(fzf --zsh)"
 
-bindkey '^P' fzf-file-widget
-bindkey '^Y' fzf-cd-widget
-
 # }}}
 
 ##{{{ start binaries config
@@ -50,19 +38,5 @@ eval "$(zoxide init --cmd cd zsh)"
 eval "$(starship init zsh --print-full-init)"
 
 # }}
-
-# {{{ plugins
-
-source $HOME/.zsh/zsh-sudo/zsh-sudo.zsh
-source $HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
-source $HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-bindkey '^N' autosuggest-accept
-bindkey '^[n' forward-word
-
-# plugin configuration
-ZSH_AUTOSUGGEST_MAX_LENGTH=20
-ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
-ZSH_AUTOSUGGEST_HISTORY_IGNORE="(mv * | curl *)"
 
 # }}} 
