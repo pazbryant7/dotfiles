@@ -36,12 +36,6 @@ super + a
 super + e
   pcmanfm
 
-super + o
-  clipmenu
-
-super + c
-  ~/bin/rofi/calc
-
 super + d
   rofi -show drun -show-icons
 
@@ -61,17 +55,17 @@ super + shift + t
   bspc rule -a St -o split_ratio 0.60 && st
 
 super + Return
-  firefox-developer-edition
+  firefox -P Personal
   
 super + shift + Return
-  firefox
+  firefox -P Work
 
 super + b
   ~/bin/sh/set-brightness.sh
 
 super + m
   bspc rule -a St -o state=floating follow=on center=true \
-    rectangle=700x400+0+0 && st -e fish -c "ncmpcpp"
+    rectangle=700x400+0+0 && st -e zsh -c "ncmpcpp"
 
 super + shift + w
   bspc node -t \~floating
@@ -99,23 +93,6 @@ alt + Print
 shift + Print
   ~/bin/sh/take-screenshots.sh full
 
-# -------------- music player --------------------
-
-super + BackSpace
-  mpc toggle 
-
-super + minus
-  mpc volume -5 
-
-super + plus
-  mpc volume +5 
-
-super + greater
-  mpc next
-
-super + less
-  mpc prev
-
 # --------------- resize windows --------------------
 
 super + alt + l
@@ -132,12 +109,12 @@ super + alt + k
 
 # ---------------- switch keyboard ------------------
 
-super + space
+super + shift + space
   ~/bin/sh/select-keyboard.sh
 
 # ---------------- windows --------------------------
 
-super + shift + space
+super + space
   bspc query -N -n .local.window | xargs -I ID bspc node ID -g hidden
 
 super + r
