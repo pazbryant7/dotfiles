@@ -1,6 +1,0 @@
-[Default Applications]
-application/x-shellscript=nvim.desktop;
-image/apng=sxiv.desktop;
-image/jpeg=sxiv.desktop;
-image/png=sxiv.desktop;
-application/pdf=org.pwmt.zathura.desktop

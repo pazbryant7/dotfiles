@@ -1,3 +1,0 @@
-# minutes hours day-of-month month day-week 
-0 8,10,12,18 * * 0-6  /home/bryant/bin/sh/update-apps-list.sh
-0 8,10,12,18 * * 0-6  /home/bryant/bin/sh/update-crontab.sh

@@ -7,3 +7,6 @@ install manually firefox fix ui theme
 improve megasync script because doest not work 
 manually downloand github repositories (st,dotfiles,neovim config)
 manually create neovim symlink and also change branches (minimal and normal)
+
+
+check the config to delete unused things
