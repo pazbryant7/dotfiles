@@ -30,7 +30,7 @@ sync_aur_apps() {
 }
 
 main() {
-	DOTFILES_PATH="/home/bryant/Documents/github/dotfiles/apps"
+	DOTFILES_PATH="/home/bryant/documents/github/dotfiles/apps"
 
 	sync_system_apps $DOTFILES_PATH
 	sync_python_apps $DOTFILES_PATH
