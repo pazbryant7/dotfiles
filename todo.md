@@ -10,3 +10,4 @@ manually create neovim symlink and also change branches (minimal and normal)
 
 
 check the config to delete unused things
+manage secrets with some tool
