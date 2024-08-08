@@ -10,6 +10,8 @@ manually create neovim symlink and also change branches (minimal and normal)
 create manually ssh keys and config file
 manually set the icons, cursor and gtk theme using lxappareacne
 installing and manually configurin pipx
+manually config openssh (enable service)
+manually config syncthing (enable service and share folder)
 
 
 check the config to delete unused things
