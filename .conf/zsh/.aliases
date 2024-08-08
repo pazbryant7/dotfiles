@@ -2,6 +2,7 @@
 
 # main
 alias cl="clear"
+alias pass="gopass"
 alias sudo="sudo "
 alias vi="NVIM_APPNAME='minimal' nvim"
 alias transes="trans en:es"
@@ -13,7 +14,7 @@ alias sht="shutdown now"
 alias clear="clear; printf '\033[4 q'"
 alias fontcache="sudo fc-cache -f -v"
 alias cristiano="mpv ~/mega/personal/pc/videos/biy/dios.mp4"
-alias rel="xrdb merge ~/.Xresources && kill -USR1 $(pidof st)"
+alias rel="xrdb merge ~/.Xresources && kill -USR1 \$(pidof st)"
 alias leetcode="vi leetcode.vi"
 alias ff="fastfetch"
 
