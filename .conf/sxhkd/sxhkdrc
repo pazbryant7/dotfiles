@@ -39,9 +39,6 @@ super + e
 super + d
   rofi -show drun -show-icons
 
-super + shift + d
-  rofi -show window -show-icons
-
 super + w
   bspc desktop -l next
 
@@ -54,6 +51,10 @@ super + t
 super + shift + t
   bspc rule -a St -o split_ratio 0.60 && st
 
+super + space
+  bspc rule -a St -o state=floating follow=on center=true \
+    rectangle=700x350+0+0 && st
+
 super + Return
   firefox -P Personal
   
@@ -65,16 +66,13 @@ super + b
 
 super + m
   bspc rule -a St -o state=floating follow=on center=true \
-    rectangle=700x400+0+0 && st -e zsh -c "ncmpcpp"
+    rectangle=700x350+0+0 && st -e zsh -c "ncmpcpp"
 
 super + shift + w
   bspc node -t \~floating
 
 super + alt + w
   ~/bin/sh/set-wallpaper.sh
-
-super + shift + BackSpace
-  ~/go/bin/recorder
 
 
 # -------------- print ---------------------------
@@ -114,7 +112,7 @@ super + shift + space
 
 # ---------------- windows --------------------------
 
-super + space
+super + alt + space
   bspc query -N -n .local.window | xargs -I ID bspc node ID -g hidden
 
 super + r
