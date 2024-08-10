@@ -13,6 +13,8 @@ installing and manually configurin pipx
 manually config openssh (enable service)
 manually config syncthing (enable service and share folder) and start service
 adding term-118n font to vconsole.config /etc/vconsole.conf # location
+adding update app list hook
+manually update grub to actiave grub menu and save last session
 
 
 check the config to delete unused things

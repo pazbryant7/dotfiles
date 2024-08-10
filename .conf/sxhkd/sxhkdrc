@@ -51,10 +51,6 @@ super + t
 super + shift + t
   bspc rule -a St -o split_ratio 0.60 && st
 
-super + space
-  bspc rule -a St -o state=floating follow=on center=true \
-    rectangle=700x350+0+0 && st
-
 super + Return
   firefox -P Personal
   
@@ -112,7 +108,7 @@ super + shift + space
 
 # ---------------- windows --------------------------
 
-super + alt + space
+super + space
   bspc query -N -n .local.window | xargs -I ID bspc node ID -g hidden
 
 super + r

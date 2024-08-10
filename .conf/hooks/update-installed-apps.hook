@@ -1,0 +1,13 @@
+# /usr/share/libalpm/hooks/
+
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Operation = Remove
+Type = Package
+Target = *
+
+[Action]
+Description = Running my custom script...
+When = PostTransaction
+Exec = /path/to/your-script.sh
