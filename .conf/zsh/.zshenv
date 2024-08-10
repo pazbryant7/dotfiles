@@ -16,7 +16,7 @@ export STARSHIP_CONFIG=~/.config/starship/starship.toml
 export GOPATH="/home/bryant/go/bin"
 export CM_LAUNCHER="rofi"
 export SXHKD_SHELL="sh"
-export GTK_THEME="Breeze"
+export GTK_THEME="Arc-Lighter"
 
 # }}
 

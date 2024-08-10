@@ -11,7 +11,8 @@ create manually ssh keys and config file
 manually set the icons, cursor and gtk theme using lxappareacne
 installing and manually configurin pipx
 manually config openssh (enable service)
-manually config syncthing (enable service and share folder)
+manually config syncthing (enable service and share folder) and start service
+adding term-118n font to vconsole.config /etc/vconsole.conf # location
 
 
 check the config to delete unused things
