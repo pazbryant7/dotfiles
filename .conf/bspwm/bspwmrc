@@ -33,18 +33,13 @@ xsetroot -cursor_name left_ptr & # fix mouse
 ~/.fehbg &
 ~/bin/sh/start-polybar.sh &
 
-if ! pgrep -x "pipewire" >/dev/null; then pipewire & fi
-if ! pgrep -x "pipewire-pulse" >/dev/null; then pipewire-pulse & fi
-if ! pgrep -x "udiskie" >/dev/null; then udiskie & fi
-if ! pgrep -x "unclutter" >/dev/null; then unclutter & fi
-if ! pgrep -x "wireplumber" >/dev/null; then wireplumber & fi
-if ! pgrep -x "dunst" >/dev/null; then dunst & fi
-if ! pgrep -x "mpd" >/dev/null; then mpd & fi
+pipewire &
+pipewire-pulse &
+dunst &
+mpd &
+picom &
 
-if ! pgrep -x "picom" >/dev/null; then
-  picom --config /home/bryant/.config/picom/picom.conf &
-fi
-
-if ! pgrep -x "sxhkd" >/dev/null; then
-  sxhkd -m -1 &
-fi
+pgrep -x "wireplumber" >/dev/null || wireplumber &
+pgrep -x "udiskie" >/dev/null || udiskie &
+pgrep -x "unclutter" >/dev/null || unclutter &
+pgrep -x "sxhkd" >/dev/null || sxhkd -m -1 &
