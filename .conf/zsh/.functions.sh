@@ -46,3 +46,7 @@ arch() {
 
   echo "$architecture"
 }
+
+tachidesk(){
+
+}
