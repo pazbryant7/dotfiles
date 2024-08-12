@@ -1,3 +1,4 @@
+lazydocker 0.23.3-1
 paru 2.0.3-1
 paru-debug 2.0.3-1
 ttf-maple 6.4-1
