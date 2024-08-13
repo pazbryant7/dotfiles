@@ -19,10 +19,10 @@ return {
 	{ key = "l", mods = "LEADER", action = wezterm_action({ ActivatePaneDirection = "Right" }) },
 	{ key = "o", mods = "LEADER", action = wezterm_action({ ActivatePaneDirection = "Next" }) },
 	{ key = ";", mods = "LEADER", action = wezterm_action({ ActivatePaneDirection = "Prev" }) },
-	{ key = "h", mods = "LEADER|SHIFT", action = wezterm_action({ AdjustPaneSize = { "Left", 5 } }) },
-	{ key = "j", mods = "LEADER|SHIFT", action = wezterm_action({ AdjustPaneSize = { "Down", 5 } }) },
-	{ key = "k", mods = "LEADER|SHIFT", action = wezterm_action({ AdjustPaneSize = { "Up", 5 } }) },
-	{ key = "l", mods = "LEADER|SHIFT", action = wezterm_action({ AdjustPaneSize = { "Right", 5 } }) },
+	{ key = "h", mods = "LEADER|CTRL", action = wezterm_action({ AdjustPaneSize = { "Left", 5 } }) },
+	{ key = "j", mods = "LEADER|CTRL", action = wezterm_action({ AdjustPaneSize = { "Down", 5 } }) },
+	{ key = "k", mods = "LEADER|CTRL", action = wezterm_action({ AdjustPaneSize = { "Up", 5 } }) },
+	{ key = "l", mods = "LEADER|CTRL", action = wezterm_action({ AdjustPaneSize = { "Right", 5 } }) },
 
 	-- tabs
 	{ key = "c", mods = "LEADER", action = wezterm_action({ SpawnTab = "CurrentPaneDomain" }) },
