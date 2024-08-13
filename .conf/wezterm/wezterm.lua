@@ -43,10 +43,10 @@ return {
 	color_scheme = color_scheme,
 
 	window_padding = {
-		left = 15,
-		right = 15,
-		top = 15,
-		bottom = 15,
+		left = 0,
+		right = 0,
+		top = 0,
+		bottom = 0,
 	},
 
 	window_background_opacity = 1,
@@ -56,7 +56,7 @@ return {
 	scrollback_lines = 5000,
 	pane_focus_follows_mouse = true,
 
-	enable_tab_bar = true,
+	enable_tab_bar = false,
 	use_fancy_tab_bar = false,
 	hide_tab_bar_if_only_one_tab = false,
 	tab_bar_at_bottom = true,

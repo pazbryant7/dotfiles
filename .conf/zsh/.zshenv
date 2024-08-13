@@ -2,7 +2,7 @@
 
 export EDITOR="nvim"
 export VISUAL=$EDITOR
-export TERMINAL="wezterm"
+export TERMINAL="st"
 export SUDO_EDITOR=$EDITOR
 export BROWSER="firefox"
 export VIDEO="mpv"
