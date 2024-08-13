@@ -25,6 +25,7 @@ alias gsb="git status --short --branch"
 alias lzg="lazygit"
 alias gdc="git diff --cached"
 alias gd="git diff"
+alias gco="git checkout"
 alias gaa="git add -A"
 alias gc="git commit"
 alias ggpush='git push origin $(git rev-parse --abbrev-ref HEAD)'

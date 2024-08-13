@@ -9,10 +9,10 @@
 
 /*****----- Global Properties -----*****/
 * {
-    background:     #eff1f5;
-    background-alt: #dce0e8;
-    foreground:     #4c4f69;
-    selected:       #a6d189;
+background:     #404040; /* Very dark gray */
+background-alt: #333333; /* Dark gray */
+foreground:     #ffffff; /* Near black */
+selected:       #862d59; /* Even darker gray */
 
     font: "Maple Mono SC NF Bold 9";
 }
@@ -61,7 +61,7 @@ inputbar {
     border-radius:               0px;
     border-color:                @selected;
     background-color:            @selected;
-    text-color:                  @background;
+    text-color:                  @foreground;
     children:                    [ "prompt", "entry" ];
 }
 

@@ -52,8 +52,8 @@ super + shift + t
   bspc rule -a Alacritty -o split_ratio 0.60 && alacritty
 
 super + y
-  bspc rule -a org.wezfurlong.wezterm -o state=floating follow=on center=true \
-    rectangle=700x350+0+0 && wezterm -e zsh -c "yazi"
+  bspc rule -a Alacritty -o state=floating follow=on center=true \
+    rectangle=700x350+0+0 && alacritty -e zsh -c "yazi"
 
 super + Return
   firefox -P Personal
