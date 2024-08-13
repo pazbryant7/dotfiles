@@ -125,6 +125,11 @@ action = "IncreaseFontSize"
 key = "Plus"
 mods = "Control|Shift"
 
+[[keyboard.bindings]]
+action = "ResetFontSize"
+key = "Equals"
+mods = "Control"
+
 [mouse]
 hide_when_typing = true
 
