@@ -1,1 +1,39 @@
 #! /usr/bin/env sh
+
+set -x
+set -e
+
+START="start"
+STOP="stop"
+TACHIDESK_PATH="$HOME/documents/github/tachidesk"
+
+send_notification() {
+  dunstify "Tachidesk" "$1"
+}
+
+select_option() {
+  printf "%s\n%s" "$START" "$STOP" | rofi -dmenu -i -p "Select option"
+}
+
+start() {
+  echo "here"
+  cd "$TACHIDESK_PATH" && docker compose start
+  send_notification "starting"
+}
+
+stop() {
+  echo "here"
+  cd "$TACHIDESK_PATH" && docker compose stop
+  send_notification "stoping"
+}
+
+main() {
+  selected_option=$(select_option)
+  if [ "$selected_option" = "$START" ]; then
+    start
+  else
+    stop
+  fi
+}
+
+main
