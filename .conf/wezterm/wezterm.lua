@@ -1,30 +1,18 @@
 ---@diagnostic disable: unused-local
 local wezterm = require("wezterm")
 
-local function modify_colorscheme(colorscheme)
-	local file_path = os.getenv("HOME") .. "/.config/wezterm/wezterm.lua"
-	local _f = assert(io.open(file_path, "r"))
-	local data = _f:read("*a")
-	_f:close()
+local bindings = require("bindings")
+local hyperlink_rules = require("hiperlinks")
 
-	local f = assert(io.open(file_path, "w"))
-	data = data:gsub('local color_scheme = "[^%%]-"', ('local color_scheme = "%s"'):format(colorscheme))
-	f:write(data)
-	f:close()
-end
-
-wezterm.on("user-var-changed", function(window, pane, name, value)
-	local overrides = window:get_config_overrides() or {}
-	if name == "Nvim_Colorscheme" then
-		overrides.color_scheme = value
-		modify_colorscheme(value)
-	end
-	window:set_config_overrides(overrides)
-end)
-
-local color_scheme = "default"
+local color_scheme = "Catppuccin Latte"
 
 return {
+	default_cwd = "/usr/bin/env zsh",
+
+	freetype_load_target = "Light",
+
+	cell_width = 1.0,
+
 	font = wezterm.font_with_fallback({
 		{
 			family = "Maple Mono",
@@ -40,9 +28,9 @@ return {
 			},
 		},
 		{ family = "Symbols Nerd Font Mono", scale = 0.80 },
-		"Maple Mono NF",
+		"Maple Mono SC NF",
 		"Noto Color Emoji",
-		"JetBrains Mono NF",
+		"JetBrains Mono",
 
 		-- icons
 		"Font Awesome 6 Pro Solid",
@@ -65,37 +53,17 @@ return {
 	window_decorations = "NONE",
 	window_close_confirmation = "NeverPrompt",
 
-	enable_tab_bar = false,
-	use_fancy_tab_bar = true,
-	hide_tab_bar_if_only_one_tab = true,
-	tab_bar_at_bottom = false,
+	crollback_lines = 5000,
+	pane_focus_follows_mouse = true,
 
-	hyperlink_rules = {
-		{
-			regex = "\\b\\w+://(?:[\\w.-]+)\\.[a-z]{2,15}\\S*\\b",
-			format = "$0",
-		},
-		{
-			regex = "\\b\\w+://(?:[\\w.-]+):\\d+\\S*\\b",
-			format = "$0",
-		},
-		{
-			regex = "\\b\\w+@[\\w-]+(\\.[\\w-]+)+\\b",
-			format = "mailto:$0",
-		},
-		{
-			regex = "\\bfile://\\S*\\b",
-			format = "$0",
-		},
-	},
+	enable_tab_bar = true,
+	use_fancy_tab_bar = false,
+	hide_tab_bar_if_only_one_tab = false,
+	tab_bar_at_bottom = true,
+
+	hyperlink_rules = hyperlink_rules,
 
 	disable_default_key_bindings = true,
-	keys = {
-		{ key = "Enter", mods = "SHIFT", action = wezterm.action.SendString("\x1b[13;2u") },
-		{ key = "=", mods = "CTRL", action = wezterm.action.ResetFontSize },
-		{ key = "+", mods = "CTRL|SHIFT", action = wezterm.action.IncreaseFontSize },
-		{ key = "-", mods = "CTRL", action = wezterm.action.DecreaseFontSize },
-		{ key = "c", mods = "CTRL|SHIFT", action = wezterm.action.CopyTo("Clipboard") },
-		{ key = "v", mods = "CTRL|SHIFT", action = wezterm.action.PasteFrom("Clipboard") },
-	},
+	leader = { key = "b", mods = "CTRL", timeout_milliseconds = 2000 },
+	keys = bindings,
 }
