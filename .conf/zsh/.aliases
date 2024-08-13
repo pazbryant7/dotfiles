@@ -1,7 +1,6 @@
 #!/usr/bin/sh
 
 # main
-alias ls="eza"
 alias :q="exit"
 alias cl="clear"
 alias sudo="sudo "
