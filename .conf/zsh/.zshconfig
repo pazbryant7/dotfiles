@@ -12,6 +12,7 @@ setopt HIST_FIND_NO_DUPS
 
 extra_path=(
   ~/.cargo/bin/
+  ~/bin/global/
   ~/.local/bin/
   /usr/local/bin/
   /var/lib/flatpak/exports/bin/

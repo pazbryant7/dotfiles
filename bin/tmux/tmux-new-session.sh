@@ -13,7 +13,7 @@ else
     ~/Documents/github/forks/ \
     ~/mega/personal/pc/ \
     ~/mega/work/ \
-    ~/Downloads/ | fzf)
+    ~/Downloads/ 2>/dev/null | fzf)
 fi
 
 if [ -z "$selected" ]; then

@@ -43,7 +43,7 @@ super + w
   bspc desktop -l next
 
 super + x
-  ~/bin/select_and_execute.sh
+  ~/bin/sxhkd/select_and_execute.sh
 
 super + t
   alacritty
@@ -62,7 +62,7 @@ super + shift + Return
   firefox -P Work
 
 super + b
-  ~/bin/sh/set-brightness.sh
+  ~/bin/sxhkd/set-brightness.sh
 
 super + m
   bspc rule -a Alacritty -o state=floating follow=on center=true \
@@ -72,7 +72,7 @@ super + shift + w
   bspc node -t \~floating
 
 super + alt + w
-  ~/bin/sh/set-wallpaper.sh
+  ~/bin/sxhkd/set-wallpaper.sh
 
 
 # -------------- print ---------------------------
@@ -86,10 +86,10 @@ super + Print
     && dunstify "Save full to clipboard"
 
 alt + Print
-  ~/bin/sh/take-screenshots.sh cropped
+  ~/bin/sxhkd/take-screenshots.sh cropped
 
 shift + Print
-  ~/bin/sh/take-screenshots.sh full
+  ~/bin/sxhkd/take-screenshots.sh full
 
 # --------------- resize windows --------------------
 
@@ -108,7 +108,7 @@ super + alt + k
 # ---------------- switch keyboard ------------------
 
 super + shift + space
-  ~/bin/sh/select-keyboard.sh
+  ~/bin/sxhkd/select-keyboard.sh
 
 # ---------------- windows --------------------------
 

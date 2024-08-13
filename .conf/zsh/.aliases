@@ -1,12 +1,13 @@
 #!/usr/bin/sh
 
 # main
-alias cl="clear"
+alias ls="eza"
 alias :q="exit"
-alias pass="gopass"
+alias cl="clear"
 alias sudo="sudo "
-alias vi="NVIM_APPNAME='minimal' nvim"
+alias pass="gopass"
 alias transes="trans en:es"
+alias vi="NVIM_APPNAME='minimal' nvim"
 
 # fihs
 alias sp="systemctl suspend"
@@ -36,3 +37,6 @@ alias ta="tmux attach"
 alias tc="vi ~/.tmux.conf"
 alias tk="tmux kill-server"
 alias tn='tmux new -s $USER'
+
+# docker
+alias tachidesk='cd ~/documents/github/tachidesk && docker compose start'
