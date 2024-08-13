@@ -46,10 +46,10 @@ super + x
   ~/bin/select_and_execute.sh
 
 super + t
-  wezterm
+  alacritty
 
 super + shift + t
-  bspc rule -a org.wezfurlong.wezterm -o split_ratio 0.60 && wezterm
+  bspc rule -a Alacritty -o split_ratio 0.60 && alacritty
 
 super + y
   bspc rule -a org.wezfurlong.wezterm -o state=floating follow=on center=true \

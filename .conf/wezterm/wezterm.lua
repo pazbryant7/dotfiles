@@ -11,7 +11,7 @@ return {
 
 	freetype_load_target = "Light",
 
-	cell_width = 1.0,
+	cell_width = 1,
 
 	font = wezterm.font_with_fallback({
 		{
