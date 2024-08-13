@@ -53,7 +53,7 @@ return {
 	window_decorations = "NONE",
 	window_close_confirmation = "NeverPrompt",
 
-	crollback_lines = 5000,
+	scrollback_lines = 5000,
 	pane_focus_follows_mouse = true,
 
 	enable_tab_bar = true,

@@ -61,8 +61,8 @@ super + b
   ~/bin/sh/set-brightness.sh
 
 super + m
-  bspc rule -a org.wezfurlong.wezterm -o state=floating follow=on center=true \
-    rectangle=700x350+0+0 && wezterm -e zsh -c "ncmpcpp"
+  bspc rule -a Alacritty -o state=floating follow=on center=true \
+    rectangle=700x350+0+0 && alacritty -e zsh -c "ncmpcpp"
 
 super + shift + w
   bspc node -t \~floating
