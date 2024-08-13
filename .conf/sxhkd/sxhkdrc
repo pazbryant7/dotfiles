@@ -46,10 +46,10 @@ super + x
   ~/bin/select_and_execute.sh
 
 super + t
-  st
+  wezterm
 
 super + shift + t
-  bspc rule -a St -o split_ratio 0.60 && st
+  bspc rule -a org.wezfurlong.wezterm -o split_ratio 0.60 && wezterm
 
 super + y
   bspc rule -a org.wezfurlong.wezterm -o state=floating follow=on center=true \
@@ -65,8 +65,8 @@ super + b
   ~/bin/sh/set-brightness.sh
 
 super + m
-  bspc rule -a St -o state=floating follow=on center=true \
-    rectangle=700x350+0+0 && st -e zsh -c "ncmpcpp"
+  bspc rule -a Alacritty -o state=floating follow=on center=true \
+    rectangle=700x350+0+0 && alacritty -e zsh -c "ncmpcpp"
 
 super + shift + w
   bspc node -t \~floating
