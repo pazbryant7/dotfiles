@@ -2,7 +2,7 @@
 
 export EDITOR="nvim"
 export VISUAL=$EDITOR
-export TERMINAL="wezterm"
+export TERMINAL="st"
 export SUDO_EDITOR=$EDITOR
 export BROWSER="firefox"
 export VIDEO="mpv"
@@ -16,7 +16,7 @@ export STARSHIP_CONFIG=~/.config/starship/starship.toml
 export GOPATH="/home/bryant/go/bin"
 export CM_LAUNCHER="rofi"
 export SXHKD_SHELL="sh"
-export GTK_THEME="Arc-Lighter"
+export GTK_THEME="Arc-Dark"
 
 # }}
 

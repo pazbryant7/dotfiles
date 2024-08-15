@@ -1,5 +1,3 @@
-# {{{ settings options
-
 autoload -U compinit && compinit
 autoload -U bashcompinit && bashcompinit
 
@@ -10,6 +8,7 @@ setopt HIST_IGNORE_DUPS
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_FIND_NO_DUPS
 
+# extend path
 extra_path=(
   ~/.cargo/bin/
   ~/bin/global/
@@ -17,28 +16,14 @@ extra_path=(
   /usr/local/bin/
   /var/lib/flatpak/exports/bin/
 ) 
-
-# extend path
 export PATH="${(j|:|)extra_path}:$PATH"
 
-# set underscore 
-printf '\033[4 q'
 
-# }}}
-
-# {{{ fzf
-
+# fzf
 eval "$(fzf --zsh)"
 
-# }}}
-
-##{{{ start binaries config
-
+# start binaries config
 eval "$(atuin init zsh)"
 eval "$(fnm env --use-on-cd)"
 eval "$(zoxide init --cmd cd zsh)"
 eval "$(starship init zsh --print-full-init)"
-
-# }}
-
-# }}} 
