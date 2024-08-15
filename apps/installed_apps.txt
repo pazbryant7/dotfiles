@@ -80,6 +80,7 @@ ripgrep 14.1.0-1
 rofi 1.7.5-3
 rsync 3.3.0-2
 sd 1.0.0-1
+sl 5.05-5
 starship 1.20.1-1
 sxhkd 0.6.2-4
 syncthing 1.27.10-1
