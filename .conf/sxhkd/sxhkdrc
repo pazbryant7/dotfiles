@@ -33,8 +33,18 @@ super + shift {1-7}
 super + a
   pavucontrol
 
+super + o
+  obsidian
+
 super + e
+  bspc rule -a St -o state=floating follow=on center=true \
+    rectangle=700x350+0+0 && st -e zsh -c "yazi"
+
+super + u
   pcmanfm
+
+super + i
+  discord
 
 super + d
   rofi -show drun -show-icons
@@ -42,14 +52,14 @@ super + d
 super + w
   bspc desktop -l next
 
-super + x
-  ~/bin/sxhkd/select_and_execute.sh
-
 super + t
   st
 
 super + shift + t
   bspc rule -a St -o split_ratio 0.60 && st
+
+super + s
+  ~/bin/sxhkd/select_and_execute.sh
 
 super + Return
   firefox -P Personal
