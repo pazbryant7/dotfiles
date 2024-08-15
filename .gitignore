@@ -1,7 +1,7 @@
 # mdp
 .conf/mpd/mpd.log
 .conf/mpd/mpdstate
-.conf/mpd/playlist
+.conf/mpd/pid
 
 # lazy
 .conf/lazygit/state.yml
@@ -16,4 +16,3 @@
 .conf/qBittorrent/qBittorrent-data.conf
 .conf/qBittorrent/lockfile
 .conf/qBittorrent/rss/storage.lock
-.conf/qBittorrent/qBittorrent-data.conf
