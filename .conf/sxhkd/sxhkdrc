@@ -71,8 +71,8 @@ super + b
   ~/bin/sxhkd/set-brightness.sh
 
 super + m
-  bspc rule -a St -o state=floating follow=on center=true \
-    rectangle=700x350+0+0 && st -e zsh -c "ncmpcpp"
+  tdrop -ma -x '25%' -y '5%' -w '50%' -h '30%' \
+    -p 'bspc rule -a St -o state=floating' st -T ncmpcpp -e ncmpcpp
 
 super + shift + w
   bspc node -t \~floating
