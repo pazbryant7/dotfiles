@@ -6,11 +6,11 @@ else
   selected=$(fd --min-depth 1 \
     --max-depth 1 \
     --type d . \
-    ~/Documents/github/ \
-    ~/Documents/github/codeeditors/ \
-    ~/Documents/github/examples/ \
-    ~/Documents/github/royal/ \
-    ~/Documents/github/forks/ \
+    ~/documents/github/ \
+    ~/documents/github/codeeditors/ \
+    ~/documents/github/examples/ \
+    ~/documents/github/royal/ \
+    ~/documents/github/forks/ \
     ~/mega/personal/pc/ \
     ~/mega/work/ \
     ~/Downloads/ 2>/dev/null | fzf)
