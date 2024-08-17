@@ -1,0 +1,74 @@
+#!/bin/sh
+
+set -x
+set -e
+
+backup_source="/"
+backup_destination="/home/bryant/external"
+
+external_drive="/dev/sda1"
+external_mount_point="$backup_destination/"
+
+if ! grep -qs "$external_mount_point" /proc/mounts; then
+  mkdir -p "$external_mount_point"
+  mount "$external_drive" "$external_mount_point"
+
+  if [ $? -eq 0 ]; then
+    echo "Drive mounted successfully."
+  else
+    echo "Failed to mount the drive."
+    exit 1
+  fi
+fi
+
+exclude_folders="
+  home/bryant/Desktop home/bryant/Documents home/bryant/Downloads
+  home/bryant/mega home/bryant/Pictures home/bryant/Videos
+  home/bryant/external home/bryant/.cache home/bryant/.tealdeer-cache
+"
+
+additional_excludes="
+  --exclude=/dev --exclude=/proc --exclude=/sys --exclude=/tmp
+  --exclude=/run --exclude=/mnt --exclude=/media --exclude=/lost+found
+  --exclude=/var/log --exclude=/var/tmp --exclude=/var/run
+  --exclude=/swapfile --exclude=*/Cache --exclude=*/cache --exclude=*/.cache
+"
+
+backup_date=$(date +%Y-%m-%d)
+previous_backup="$backup_destination/backup/previous"
+backup_folder="$backup_destination/backup/$backup_date"
+mkdir -p "$backup_folder"
+mkdir -p "$previous_backup"
+
+exclude_params=""
+for folder in $exclude_folders; do
+  exclude_params="$exclude_params --exclude=/$folder"
+done
+
+exclude_params="$exclude_params $additional_excludes"
+
+rsync -aAXv --delete --progress "$exclude_params" --link-dest="$previous_backup" "$backup_source" "$backup_folder"
+
+if [ $? -ne 0 ]; then
+    echo "rsync failed. Backup not completed."
+    exit 1
+fi
+
+echo "Syncing data..."
+sync
+
+if [ $? -ne 0 ]; then
+    echo "sync failed. Some data might not be written to the disk."
+    exit 1
+fi
+
+umount "$external_mount_point"
+
+if [ $? -eq 0 ]; then
+  echo "Drive unmounted successfully."
+else
+  echo "Failed to unmount the drive."
+  exit 1
+fi
+
+exit 0

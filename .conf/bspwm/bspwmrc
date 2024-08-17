@@ -17,13 +17,13 @@ bspc config focus_follows_pointer false
 
 # app favorite desktop
 bspc rule -a qBittorrent desktop=^7 follow=true
-bspc rule -a mpv desktop=^5 state=floating follow=true
-bspc rule -a vlc desktop=^5 state=floating follow=true
 bspc rule -a obsidian desktop=^6 follow=off follow=true
 
 # app favorite mode
 bspc rule -a feh state=floating center=true
 bspc rule -a pavucontrol state=floating center=true
+bspc rule -a mpv state=floating center=true
+bspc rule -a vlc state=floating center=true
 
 xset -dpms &                       # stay awake
 xsetroot -cursor_name left_ptr & # fix mouse
