@@ -1,85 +1,86 @@
 [metadata]
 aliases = []
-author = 'Catppuccin Org'
-name = 'Catppuccin Latte'
+author = 'chatgpt'
+name = 'alacritty'
 
 [colors]
-background = '#eff1f5'
-compose_cursor = '#dd7878'
-cursor_bg = '#dc8a78'
-cursor_border = '#dc8a78'
-cursor_fg = '#dce0e8'
-foreground = '#4c4f69'
-scrollbar_thumb = '#acb0be'
-selection_bg = '#acb0be'
-selection_fg = '#4c4f69'
-split = '#9ca0b0'
-visual_bell = '#ccd0da'
+background = '#181818'
+compose_cursor = '#cc6666'
+cursor_bg = '#b5bd68'
+cursor_border = '#b5bd68'
+cursor_fg = '#c5c8c6'
+foreground = '#c5c8c6'
+scrollbar_thumb = '#666666'
+selection_bg = '#666666'
+selection_fg = '#c5c8c6'
+split = '#d54e53'
+visual_bell = '#b5bd68'
 
 ansi = [
-  '#bcc0cc',
-  '#d20f39',
-  '#40a02b',
-  '#df8e1d',
-  '#1e66f5',
-  '#ea76cb',
-  '#179299',
-  '#5c5f77',
+  '#1d1f21',  # Black
+  '#cc6666',  # Red
+  '#b5bd68',  # Green
+  '#f0c674',  # Yellow
+  '#81a2be',  # Blue
+  '#b294bb',  # Magenta
+  '#8abeb7',  # Cyan
+  '#c5c8c6',  # White
 ]
+
 brights = [
-  '#acb0be',
-  '#d20f39',
-  '#40a02b',
-  '#df8e1d',
-  '#1e66f5',
-  '#ea76cb',
-  '#179299',
-  '#6c6f85',
+  '#666666',  # Bright Black
+  '#d54e53',  # Bright Red
+  '#b9ca4a',  # Bright Green
+  '#e7c547',  # Bright Yellow
+  '#7aa6da',  # Bright Blue
+  '#c397d8',  # Bright Magenta
+  '#70c0b1',  # Bright Cyan
+  '#eaeaea',  # Bright White
 ]
 
 [colors.indexed]
-16 = '#fe640b'
-17 = '#dc8a78'
+16 = '#862d59'
+17 = '#c5c8c6'
 
 [colors.tab_bar]
-background = '#dce0e8'
-inactive_tab_edge = '#ccd0da'
+background = '#181818'
+inactive_tab_edge = '#c5c8c6'
 
 [colors.tab_bar.active_tab]
-bg_color = '#8839ef'
-fg_color = '#dce0e8'
+bg_color = '#81a2be'
+fg_color = '#c5c8c6'
 intensity = 'Normal'
 italic = false
 strikethrough = false
 underline = 'None'
 
 [colors.tab_bar.inactive_tab]
-bg_color = '#e6e9ef'
-fg_color = '#4c4f69'
+bg_color = '#1d1f21'
+fg_color = '#c5c8c6'
 intensity = 'Normal'
 italic = false
 strikethrough = false
 underline = 'None'
 
 [colors.tab_bar.inactive_tab_hover]
-bg_color = '#eff1f5'
-fg_color = '#4c4f69'
+bg_color = '#181818'
+fg_color = '#c5c8c6'
 intensity = 'Normal'
 italic = false
 strikethrough = false
 underline = 'None'
 
 [colors.tab_bar.new_tab]
-bg_color = '#ccd0da'
-fg_color = '#4c4f69'
+bg_color = '#c5c8c6'
+fg_color = '#1d1f21'
 intensity = 'Normal'
 italic = false
 strikethrough = false
 underline = 'None'
 
 [colors.tab_bar.new_tab_hover]
-bg_color = '#bcc0cc'
-fg_color = '#4c4f69'
+bg_color = '#666666'
+fg_color = '#c5c8c6'
 intensity = 'Normal'
 italic = false
 strikethrough = false

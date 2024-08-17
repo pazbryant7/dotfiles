@@ -1,4 +1,5 @@
 brave-bin 1:1.68.141-1
+cromite-bin 127.0.6533.103-1
 lazydocker 0.23.3-1
 paru 2.0.3-1
 paru-debug 2.0.3-1

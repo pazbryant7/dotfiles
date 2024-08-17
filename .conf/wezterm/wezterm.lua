@@ -4,7 +4,7 @@ local wezterm = require("wezterm")
 local bindings = require("bindings")
 local hyperlink_rules = require("hiperlinks")
 
-local color_scheme = "Catppuccin Latte"
+local color_scheme = "alacritty"
 
 return {
 	default_cwd = "/usr/bin/env zsh",
