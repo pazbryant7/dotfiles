@@ -6,7 +6,7 @@ set -e
 backup_source="/"
 backup_destination="/home/bryant/external"
 
-external_drive="/dev/sda1"
+external_drive="/dev/sda"
 external_mount_point="$backup_destination/"
 
 if ! grep -qs "$external_mount_point" /proc/mounts; then
@@ -22,9 +22,9 @@ if ! grep -qs "$external_mount_point" /proc/mounts; then
 fi
 
 exclude_folders="
-  home/bryant/Desktop home/bryant/Documents home/bryant/Downloads
-  home/bryant/mega home/bryant/Pictures home/bryant/Videos
-  home/bryant/external home/bryant/.cache home/bryant/.tealdeer-cache
+  /home/bryant/Desktop /home/bryant/Documents /home/bryant/Downloads
+  /home/bryant/mega /home/bryant/Pictures /home/bryant/Videos
+  /home/bryant/external /home/bryant/.cache /home/bryant/.tealdeer-cache
 "
 
 additional_excludes="

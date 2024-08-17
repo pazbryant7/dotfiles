@@ -11,11 +11,12 @@ return {
 
 	freetype_load_target = "Light",
 
-	cell_width = 1,
+	cell_width = 1.1,
 
 	font = wezterm.font_with_fallback({
 		{
 			family = "Maple Mono",
+			scale = 1.0,
 			harfbuzz_features = {
 				"cv01=1",
 				"cv02=1",
@@ -37,7 +38,7 @@ return {
 		"MesloLGSDZ Nerd Font Mono",
 	}),
 
-	font_size = 9.5,
+	font_size = 9,
 	allow_square_glyphs_to_overflow_width = "Never",
 
 	color_scheme = color_scheme,
