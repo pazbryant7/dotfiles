@@ -22,9 +22,10 @@ if ! grep -qs "$external_mount_point" /proc/mounts; then
 fi
 
 exclude_folders="
-  /home/bryant/Desktop /home/bryant/Documents /home/bryant/Downloads
-  /home/bryant/mega /home/bryant/Pictures /home/bryant/Videos
+  /home/bryant/desktop /home/bryant/documents /home/bryant/downloads
+  /home/bryant/mega /home/bryant/pictures /home/bryant/videos
   /home/bryant/external /home/bryant/.cache /home/bryant/.tealdeer-cache
+  /home/bryant/himmel
 "
 
 additional_excludes="
@@ -42,33 +43,26 @@ mkdir -p "$previous_backup"
 
 exclude_params=""
 for folder in $exclude_folders; do
-  exclude_params="$exclude_params --exclude=/$folder"
+  exclude_params="$exclude_params --exclude=$folder"
 done
 
 exclude_params="$exclude_params $additional_excludes"
 
-rsync -aAXv --delete --progress "$exclude_params" --link-dest="$previous_backup" "$backup_source" "$backup_folder"
+rsync -aAXv --delete --progress $exclude_params --link-dest="$previous_backup" "$backup_source" "$backup_folder"
 
 if [ $? -ne 0 ]; then
-    echo "rsync failed. Backup not completed."
-    exit 1
+  echo "rsync failed. Backup not completed."
+  exit 1
 fi
 
 echo "Syncing data..."
 sync
 
 if [ $? -ne 0 ]; then
-    echo "sync failed. Some data might not be written to the disk."
-    exit 1
-fi
-
-umount "$external_mount_point"
-
-if [ $? -eq 0 ]; then
-  echo "Drive unmounted successfully."
-else
-  echo "Failed to unmount the drive."
+  echo "sync failed. Some data might not be written to the disk."
   exit 1
 fi
+
+echo "Backup finalized successfully"
 
 exit 0
