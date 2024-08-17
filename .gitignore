@@ -1,18 +1,10 @@
 # mdp
 .conf/mpd/mpd.log
 .conf/mpd/mpdstate
-.conf/mpd/pid
+.conf/mpd/mpd.pid
 
 # lazy
 .conf/lazygit/state.yml
 
-# ssh
-.ssh
-
-# gnupg
-.gnupg
-
 # qBittorrent
 .conf/qBittorrent/qBittorrent-data.conf
-.conf/qBittorrent/lockfile
-.conf/qBittorrent/rss/storage.lock
