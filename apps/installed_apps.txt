@@ -25,7 +25,6 @@ feh 3.10.3-1
 ffmpegthumbnailer 2.2.2-6
 firefox 129.0.1-2
 fzf 0.54.3-1
-gd 2.3.3-8
 git 2.46.0-1
 go 2:1.23.0-1
 gopass 1.15.14-1

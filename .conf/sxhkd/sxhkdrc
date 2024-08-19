@@ -56,7 +56,7 @@ super + t
   st
 
 super + shift + t
-  bspc rule -a St -o split_ratio 0.60 && st
+  bspc rule -a St -o state=floating follow=on center=true && st
 
 super + alt + t
   wezterm
