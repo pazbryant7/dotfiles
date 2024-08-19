@@ -21,6 +21,7 @@ finish docker setup https://docs.docker.com/engine/install/linux-postinstall/
 import zsh highlight to my config manually (after installit in archlinux package manager)
 manually creating a crontab job in sudo mode
 manually adding nvim as a default editor in env variables /etc/environment
+manually adding my tachidesk backup script to user crontab
 
 
 # I would like to do in the future
