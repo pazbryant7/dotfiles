@@ -38,7 +38,7 @@ super + o
 
 super  + e
   bspc rule -a St -o state=floating follow=on center=true \
-    rectangle=700x350+0+0 && st -e zsh -c "yazi"
+    rectangle=800x450+0+0 && st -e zsh -c "yazi"
 
 super + u
   pcmanfm
