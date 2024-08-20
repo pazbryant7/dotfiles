@@ -1,6 +1,3 @@
 [submodule ".conf/nvim"]
 	path = .conf/nvim
 	url = https://github.com/plbryant/nvim
-[submodule ".conf/nvchad-custom"]
-	path = .conf/nvchad-custom
-	url = https://github.com/plbryant/nvchad-custom
