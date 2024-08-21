@@ -1,8 +1,11 @@
 brave-bin 1:1.68.141-1
 cromite-bin 127.0.6533.103-1
+datagrip 2024.2.1-1
+datagrip-jre 2024.2.1-1
 lazydocker 0.23.3-1
 paru 2.0.3-1
 paru-debug 2.0.3-1
+postman-bin 11.7.0-1
 tdrop 0.5.0-1
 ttf-maple 6.4-1
 turbo-base64 2023.08-2

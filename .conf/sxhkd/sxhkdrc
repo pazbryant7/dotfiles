@@ -34,7 +34,7 @@ super + a
   pavucontrol
 
 super + o
-  obsidian
+  datagrip
 
 super  + e
   bspc rule -a St -o state=floating follow=on center=true \

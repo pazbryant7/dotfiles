@@ -22,6 +22,7 @@ import zsh highlight to my config manually (after installit in archlinux package
 manually creating a crontab job in sudo mode
 manually adding nvim as a default editor in env variables /etc/environment
 manually adding my tachidesk backup script to user crontab
+manually initialize postgress initdb -D /var/lib/postgres/data ( you need to be postgress user to initialize the database )
 
 
 # I would like to do in the future

@@ -16,8 +16,10 @@ bspc config borderless_monocle false
 bspc config focus_follows_pointer false
 
 # app favorite desktop
-bspc rule -a qBittorrent desktop=^7 follow=true
-bspc rule -a obsidian desktop=^6 follow=off follow=true
+bspc rule -a Postman desktop=^3 follow=off
+bspc rule -a jetbrains-datagrip desktop=^4 follow=off
+bspc rule -a qBittorrent desktop=^7 follow=off
+bspc rule -a obsidian desktop=^6 follow=off
 
 # app favorite mode
 bspc rule -a feh state=floating center=true
