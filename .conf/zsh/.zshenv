@@ -17,6 +17,7 @@ export GOPATH="/home/bryant/go/bin"
 export CM_LAUNCHER="rofi"
 export SXHKD_SHELL="sh"
 export GTK_THEME="Arc-Dark"
+export GOPASS_NO_NOTIFY=false
 
 # }}
 
