@@ -15,6 +15,7 @@ extra_path=(
   ~/.local/bin/
   /usr/local/bin/
   /var/lib/flatpak/exports/bin/
+  ~/.local/share/nvim/mason/bin/
 ) 
 export PATH="${(j|:|)extra_path}:$PATH"
 
