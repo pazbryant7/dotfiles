@@ -12,11 +12,9 @@ export PAGER="less"
 export BAT_PAGER=$PAGER
 export WM="bspwm"
 export MANPAGER='nvim +Man!'
-export STARSHIP_CONFIG=~/.config/starship/starship.toml
 export GOPATH="/home/bryant/go/bin"
 export CM_LAUNCHER="rofi"
 export SXHKD_SHELL="sh"
-export GTK_THEME="Arc-Dark"
 export GOPASS_NO_NOTIFY=false
 
 # }}
