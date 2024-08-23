@@ -38,7 +38,7 @@ super + o
 
 super  + e
   bspc rule -a St -o state=floating follow=on center=true \
-    rectangle=800x450+0+0 && st -e zsh -c "yazi"
+    rectangle=800x450+0+0 && st-light -e zsh -c "yazi"
 
 super + u
   pcmanfm
@@ -53,10 +53,10 @@ super + w
   bspc desktop -l next
 
 super + t
-  st
+  st-light
 
 super + shift + t
-  st-light
+  st
 
 super + alt + t
   wezterm
