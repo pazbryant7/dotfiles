@@ -4,7 +4,7 @@ super + q
 super + alt + {q,r}
 	bspc {quit,wm -r}
 
-super + shift + Escape
+super + control + Escape
 	pkill -USR1 -x sxhkd && dunstify "sxhkd" "Reloaded successfully"
 
 super + f
@@ -20,6 +20,9 @@ super + shift + {p,n}
   bspc desktop -f {prev,next}.local
 
 super + Tab
+	bspc node -f last
+
+super + shift + Tab
 	bspc desktop -f last
 
 super + {bracketleft,braceleft,parenleft,percent,equal,ampersand,parenright}
