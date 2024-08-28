@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+main() {
+  paplay ~/MEGAsync/personal/pc/audio/notifications/isabella_s_lullaby.ogg &
+}
+
+main
