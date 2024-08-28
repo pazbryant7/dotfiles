@@ -4,7 +4,7 @@ set -x
 set -e
 
 backup_source="$HOME/.config/tachidesk"
-backup_destination="$HOME/mega/personal/backups/tachidesk"
+backup_destination="$HOME/mega/personal/pc/backups/tachidesk"
 
 backup() {
   backup_date=$(date +%Y-%m-%d)

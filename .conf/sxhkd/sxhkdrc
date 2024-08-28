@@ -65,7 +65,7 @@ super + alt + t
   wezterm
 
 super + s
-  ~/bin/sxhkd/select_and_execute.sh
+  ~/bin/sxhkd/select_and_execute
 
 super + Return
   firefox -P Personal
@@ -74,7 +74,7 @@ super + shift + Return
   firefox -P Work
 
 super + b
-  ~/bin/sxhkd/set-brightness.sh
+  ~/bin/sxhkd/set-brightness
 
 super + m
   bspc rule -a St -o state=floating follow=on center=true \
@@ -84,7 +84,7 @@ super + shift + w
   bspc node -t \~floating
 
 super + alt + w
-  ~/bin/sxhkd/set-wallpaper.sh
+  ~/bin/sxhkd/set-wallpaper
 
 
 # -------------- print ---------------------------
@@ -98,10 +98,10 @@ super + Print
     && dunstify "Save full to clipboard"
 
 alt + Print
-  ~/bin/sxhkd/take-screenshots.sh cropped
+  ~/bin/sxhkd/take-screenshots cropped
 
 shift + Print
-  ~/bin/sxhkd/take-screenshots.sh full
+  ~/bin/sxhkd/take-screenshots full
 
 # --------------- resize windows --------------------
 
@@ -120,7 +120,7 @@ super + alt + k
 # ---------------- switch keyboard ------------------
 
 super + shift + space
-  ~/bin/sxhkd/select-keyboard.sh
+  ~/bin/sxhkd/select-keyboard
 
 # ---------------- windows --------------------------
 
