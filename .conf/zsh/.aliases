@@ -15,7 +15,7 @@ alias dh="rm ~/.history.db"
 alias sht="shutdown now"
 alias clear="clear; printf '\033[4 q'"
 alias fontcache="sudo fc-cache -f -v"
-alias cristiano="mpv ~/mega/personal/pc/videos/biy/dios.mp4"
+alias motivation="mpv ~/MEGAsync/personal/pc/videos/biy/cristiano.mp4"
 alias rel="xrdb merge ~/.Xresources && kill -USR1 \$(pidof st) && kill -USR1 \$(pidof st-light)"
 alias ff="fastfetch"
 
