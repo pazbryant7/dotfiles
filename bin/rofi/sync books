@@ -6,25 +6,30 @@ set -e
 local_folder="$HOME/documents/books"
 remote_folder="mega:phone/documents/books"
 
-is_dual="Dual sync"
-is_pull_force="Pull force sync"
-is_push_force="Push force sync"
+is_dual="Dual"
+is_pull_force="Download"
+is_push_force="Upload"
 
 select_sync_method() {
   printf "%s\n%s\n%s" "$is_dual" "$is_pull_force" "$is_push_force" | rofi -dmenu -i -p "Select option"
 }
 
-push_force_sync() {
-  rclone sync "$local_folder" "$remote_folder" --copy-links
+push() {
+  mode="$1"
+  rclone "$mode" \
+    "$local_folder" "$remote_folder" \
+    --copy-links --progress
 }
 
-pull_force_sync() {
-  rclone sync "$remote_folder" "$local_folder"
+pull() {
+  rclone sync \
+    "$remote_folder" "$local_folder" \
+    --progress
 }
 
 dual_sync() {
-  rclone copy "$local_folder" "$remote_folder" --copy-links
-  rclone sync "$remote_folder" "$local_folder"
+  push copy # copy \ sync
+  pull
 }
 
 send_notification() {
@@ -32,7 +37,7 @@ send_notification() {
 }
 
 main() {
-  mkdir -p "$HOME/mega"
+  mkdir -p "$local_folder"
   sync_method=$(select_sync_method)
 
   if [ "$sync_method" = "$is_dual" ]; then
@@ -40,11 +45,11 @@ main() {
   fi
 
   if [ "$sync_method" = "$is_pull_force" ]; then
-    pull_force_sync
+    pull
   fi
 
   if [ "$sync_method" = "$is_push_force" ]; then
-    push_force_sync
+    push sync
   fi
 
   send_notification
