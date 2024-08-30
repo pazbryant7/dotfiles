@@ -97,7 +97,6 @@ ttf-meslo-nerd 3.2.1-2
 udiskie 2.5.3-1
 unclutter 1:1.6-4
 vulkan-intel 1:24.1.6-1
-wezterm 20240203.110809.5046fc22-2
 wireplumber 0.5.5-1
 xclip 0.13-5
 xcolor 0.5.1-4

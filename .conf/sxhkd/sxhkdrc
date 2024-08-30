@@ -62,7 +62,7 @@ super + shift + t
   st
 
 super + alt + t
-  wezterm
+  alacritty
 
 super + s
   ~/bin/sxhkd/select_and_execute
