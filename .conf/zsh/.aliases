@@ -5,7 +5,6 @@ alias :q="exit"
 alias cl="clear"
 alias sudo="sudo "
 alias pass="gopass"
-alias transes="trans en:es"
 alias vi="NVIM_APPNAME='minimal' nvim"
 alias btmd="btm --theme=default"
 
