@@ -34,7 +34,7 @@ dual_sync() {
 
 send_notification() {
   dunstify "Books" "synchronized successfully"
-  sed-sound-alert
+  send-sound-alert
 }
 
 main() {
