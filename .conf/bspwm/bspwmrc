@@ -31,7 +31,7 @@ xset -dpms &                       # stay awake
 xsetroot -cursor_name left_ptr & # fix mouse
 
 ~/.fehbg &
-~/bin/sxhkd/start-polybar &
+~/bin/sxhkd/toggle-polybar &
 
 pipewire &
 pipewire-pulse &

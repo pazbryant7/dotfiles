@@ -86,6 +86,8 @@ super + shift + w
 super + alt + w
   ~/bin/sxhkd/set-wallpaper
 
+super + control + p
+  ~/bin/sxhkd/toggle-polybar
 
 # -------------- print ---------------------------
 

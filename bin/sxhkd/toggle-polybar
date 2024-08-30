@@ -1,0 +1,42 @@
+#!/usr/bin/sh
+
+BAR_NAME="mainbar-bspwm"
+BSPWM_PADDING_ON=13
+BSPWM_PADDING_OFF=0
+
+is_polybar_running() {
+  pgrep -x "polybar" >/dev/null
+}
+
+kill_polybar() {
+  killall -q polybar
+  bspc config bottom_padding $BSPWM_PADDING_OFF
+}
+
+wait_for_polybar_termination() {
+  while pgrep -u $UID -x polybar >/dev/null; do
+    sleep 1
+  done
+}
+
+launch_polybar() {
+  for m in $(polybar --list-monitors | cut -d":" -f1); do
+    MONITOR=$m polybar --reload $BAR_NAME &
+  done
+  bspc config bottom_padding $BSPWM_PADDING_ON
+}
+
+toggle_polybar() {
+  if is_polybar_running; then
+    kill_polybar
+  else
+    wait_for_polybar_termination
+    launch_polybar
+  fi
+}
+
+main() {
+  toggle_polybar
+}
+
+main
