@@ -9,6 +9,7 @@ TACHIDESK_PATH="$HOME/documents/github/tachidesk"
 
 send_notification() {
   dunstify "Tachidesk" "$1"
+  send-sound-alert
 }
 
 select_option() {

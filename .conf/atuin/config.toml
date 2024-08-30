@@ -1,6 +1,6 @@
 db_path = "~/.history.db"
 
-filter_mode = "host" # session/global/directory
+filter_mode = "session" # session/global/directory/host
 
 key_path = "~/.key"
 

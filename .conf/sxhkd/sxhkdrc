@@ -47,7 +47,7 @@ super + d
   rofi -show drun -show-icons
 
 super + w
-  bspc desktop -l next
+  ~/bin/sxhkd/monocle-mode && dunstify "Toggle GAP"
 
 super + t
   st-light
@@ -77,11 +77,11 @@ super + m
 super + shift + w
   bspc node -t \~floating
 
-super + alt + w
+super + control + w
   ~/bin/sxhkd/set-wallpaper
 
-super + o
-  ~/bin/sxhkd/toggle-polybar
+super + alt + w
+  bspc desktop -l next && dunstify "Monocle"
 
 # -------------- print ---------------------------
 

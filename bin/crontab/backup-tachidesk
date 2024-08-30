@@ -4,7 +4,7 @@ set -x
 set -e
 
 backup_source="$HOME/.config/tachidesk"
-backup_destination="$HOME/mega/personal/pc/backups/tachidesk"
+backup_destination="$HOME/MEGAsync/personal/pc/backups/tachidesk"
 
 backup() {
   backup_date=$(date +%Y-%m-%d)
@@ -14,25 +14,29 @@ backup() {
   mkdir -p "$backup_folder"
   mkdir -p "$previous_backup"
 
-  rsync -aAXv --delete --progress "$1" --link-dest="$previous_backup" "$backup_source" "$backup_folder"
+  rsync -aAXv --delete --progress $1 "$backup_source/" "$backup_folder"
 
   if [ $? -ne 0 ]; then
-    dunstify "Rsync failed" "backup not completed"
+    dunstify "Rsync failed" "Backup not completed"
     exit 1
   fi
 
   sync
 
   if [ $? -ne 0 ]; then
-    dunstify "Sync failed" "some data might not be written to the disk"
+    dunstify "Sync failed" "Some data might not be written to the disk"
     exit 1
   fi
 
-  dunstify "Backup finalized successfully"
+  dunstify "Backup finalized"
+  send-sound-alert
 }
 
 get_exclude_folders() {
-  exclude_folders="$backup_source/downloads"
+  exclude_folders="
+  downloads/
+  webUI/
+  "
 
   exclude_params=""
   for folder in $exclude_folders; do

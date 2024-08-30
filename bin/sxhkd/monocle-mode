@@ -1,0 +1,29 @@
+#!/usr/bin/sh
+
+BSPWM_GAP_ON=6
+BSPWM_GAP_OFF=0
+
+get_current_gap() {
+  bspc config window_gap
+}
+
+set_gap() {
+  bspc config window_gap "$1"
+}
+
+toggle_bspwm_gap() {
+  CURRENT_GAP=$(get_current_gap)
+
+  if [ "$CURRENT_GAP" -eq "$BSPWM_GAP_ON" ]; then
+    set_gap "$BSPWM_GAP_OFF"
+  else
+    set_gap "$BSPWM_GAP_ON"
+  fi
+}
+
+main() {
+  toggle_bspwm_gap
+}
+
+# Execute the main function
+main

@@ -6,14 +6,6 @@ set -x
 # Base directory containing the scripts
 BASE_DIR="$HOME/bin/rofi"
 
-# Validate if necessary dependencies are installed
-check_dependencies() {
-  if ! command -v rofi >/dev/null 2>&1 || ! command -v dunstify >/dev/null 2>&1; then
-    echo "Error: 'rofi' or 'dunstify' is not installed. Please install both and try again."
-    exit 1
-  fi
-}
-
 # Get the name of the script to execute
 select_script() {
   script_list=$(fd . "$BASE_DIR/" -tf -tl -tx)
@@ -42,7 +34,6 @@ run_script() {
 
 # Main function
 main() {
-  check_dependencies
   script=$(select_script)
   run_script "$script"
 }
