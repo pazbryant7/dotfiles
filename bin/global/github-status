@@ -1,0 +1,38 @@
+#!/bin/env sh
+
+# Function to check for git changes in a directory
+check_git_status() {
+  dir="$1"
+
+  # Check if the directory contains a .git directory
+  if [ -d "$dir/.git" ]; then
+    # Run 'git status --porcelain' to check for uncommitted changes
+    if [ -n "$(git -C "$dir" status --porcelain)" ]; then
+      printf "%s\n" "$dir"
+    fi
+  fi
+}
+
+# Function to traverse directories recursively
+traverse_directories() {
+  root_dir="$1"
+
+  # Iterate over all items in the root directory
+  for item in "$root_dir"/*; do
+    if [ -d "$item" ]; then
+      check_git_status "$item"
+      traverse_directories "$item" # Recursive call for sub directories
+    fi
+  done
+}
+
+# Main function to start the script
+main() {
+  root_path="/home/bryant/documents/github"
+
+  mkdir -p "$root_path"
+
+  traverse_directories "$root_path"
+}
+
+main
