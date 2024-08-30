@@ -36,18 +36,12 @@ super + shift {1-7}
 super + a
   pavucontrol
 
-super + o
-  datagrip
-
 super  + e
   bspc rule -a St -o state=floating follow=on center=true \
     rectangle=800x450+0+0 && st -e zsh -c "yazi"
 
 super + u
   pcmanfm
-
-super + i
-  discord
 
 super + d
   rofi -show drun -show-icons
@@ -86,7 +80,7 @@ super + shift + w
 super + alt + w
   ~/bin/sxhkd/set-wallpaper
 
-super + control + p
+super + o
   ~/bin/sxhkd/toggle-polybar
 
 # -------------- print ---------------------------
