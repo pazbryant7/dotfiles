@@ -36,27 +36,27 @@ super + shift {1-7}
 super + a
   pavucontrol
 
-super  + e
+super + o
+  st
+
+super + e
   bspc rule -a St -o state=floating follow=on center=true \
     rectangle=800x450+0+0 && st -e zsh -c "yazi"
 
 super + u
   pcmanfm
 
+super + i
+  alacritty
+
 super + d
   rofi -show drun -show-icons
 
 super + w
-  ~/bin/sxhkd/monocle-mode && dunstify "Toggle GAP"
+  ~/bin/sxhkd/monocle-mode && dunstify "Gap Toggle"
 
 super + t
   st-light
-
-super + shift + t
-  st
-
-super + alt + t
-  alacritty
 
 super + s
   ~/bin/sxhkd/select_and_execute
@@ -81,7 +81,7 @@ super + control + w
   ~/bin/sxhkd/set-wallpaper
 
 super + alt + w
-  bspc desktop -l next && dunstify "Monocle"
+  bspc desktop -l next && dunstify "Monocle Toggle"
 
 # -------------- print ---------------------------
 
