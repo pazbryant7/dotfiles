@@ -22,7 +22,7 @@ sync_frequency = "1h"
 
 history_filter = [
   "^clear",
-  "^z"
+  "^ls",
 ]
 
 cwd_filter = [

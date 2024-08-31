@@ -1,5 +1,4 @@
 brave-bin 1:1.68.141-1
-cromite-bin 127.0.6533.103-1
 datagrip 2024.2.1-1
 datagrip-jre 2024.2.1-1
 lazydocker 0.23.3-1
