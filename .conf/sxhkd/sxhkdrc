@@ -36,18 +36,12 @@ super + shift {1-7}
 super + a
   pavucontrol
 
-super + o
-  st
-
 super + e
   bspc rule -a St -o state=floating follow=on center=true \
     rectangle=800x450+0+0 && st -e zsh -c "yazi"
 
 super + u
   pcmanfm
-
-super + i
-  alacritty
 
 super + d
   rofi -show drun -show-icons
@@ -56,6 +50,9 @@ super + w
   ~/bin/sxhkd/monocle-mode && dunstify "Gap Toggle"
 
 super + t
+  st
+
+super + shift + t
   st-light
 
 super + s
