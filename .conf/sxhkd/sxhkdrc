@@ -64,7 +64,7 @@ super + Return
 super + shift + Return
   firefox -P Work
   
-super + BackSpace
+super + alt + Return
   firefox -P Personal --private-window 
 
 super + b
