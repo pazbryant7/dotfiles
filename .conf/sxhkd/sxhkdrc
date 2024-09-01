@@ -60,9 +60,12 @@ super + s
 
 super + Return
   firefox -P Personal
-  
+
 super + shift + Return
   firefox -P Work
+  
+super + BackSpace
+  firefox -P Personal --private-window 
 
 super + b
   ~/bin/sxhkd/set-brightness
