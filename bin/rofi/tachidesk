@@ -5,7 +5,7 @@ set -e
 
 START="start"
 STOP="stop"
-TACHIDESK_PATH="$HOME/documents/github/tachidesk"
+TACHIDESK_PATH="$HOME/documents/github/docker-tachidesk"
 
 send_notification() {
   dunstify "Tachidesk" "$1"
