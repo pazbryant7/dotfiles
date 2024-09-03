@@ -6,33 +6,42 @@ set -e
 START="start"
 STOP="stop"
 TACHIDESK_PATH="$HOME/documents/github/docker-tachidesk"
-PROFILE="mihon"
+
+mihon_private="mihon_private"
+mihon_personal="mihon_personal"
+
+select_library_profile() {
+  printf "%s\n%s" "$mihon_private" "$mihon_personal" | rofi -dmenu -i -p "Select option"
+}
 
 send_notification() {
-  dunstify "Mihon" "$1"
+  dunstify "$1" "$2"
   send-sound-alert
 }
 
 is_container_running() {
-  container_name=$(docker ps --filter "name=${PROFILE}" --format "{{.Names}}")
+  container_name=$(docker ps --filter "name=${1}" --format "{{.Names}}")
   [ -n "$container_name" ]
 }
 
 start() {
-  docker compose --project-directory "$TACHIDESK_PATH" --profile "$PROFILE" up -d
-  send_notification "Starting"
+  docker compose --project-directory "$TACHIDESK_PATH" --profile "$1" up -d
+  send_notification "$1" "Starting"
 }
 
 stop() {
-  docker compose --project-directory "$TACHIDESK_PATH" --profile "$PROFILE" down
-  send_notification "Stopping"
+  docker compose --project-directory "$TACHIDESK_PATH" --profile "$1" down
+  send_notification "$1" "Stopping"
 }
 
 toggle() {
+
+  profile=$(select_library_profile)
+
   if is_container_running; then
-    stop
+    stop "$profile"
   else
-    start
+    start "$profile"
   fi
 }
 
