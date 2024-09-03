@@ -1,0 +1,43 @@
+#!/usr/bin/env sh
+
+set -x
+set -e
+
+START="start"
+STOP="stop"
+TACHIDESK_PATH="$HOME/documents/github/docker-tachidesk"
+PROFILE="mihon"
+
+send_notification() {
+  dunstify "Mihon" "$1"
+  send-sound-alert
+}
+
+is_container_running() {
+  container_name=$(docker ps --filter "name=${PROFILE}" --format "{{.Names}}")
+  [ -n "$container_name" ]
+}
+
+start() {
+  docker compose --project-directory "$TACHIDESK_PATH" --profile "$PROFILE" up -d
+  send_notification "Starting"
+}
+
+stop() {
+  docker compose --project-directory "$TACHIDESK_PATH" --profile "$PROFILE" down
+  send_notification "Stopping"
+}
+
+toggle() {
+  if is_container_running; then
+    stop
+  else
+    start
+  fi
+}
+
+main() {
+  toggle
+}
+
+main
