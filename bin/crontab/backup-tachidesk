@@ -49,8 +49,11 @@ get_exclude_folders() {
 main() {
   exclude_params=$(get_exclude_folders)
 
-  backup "tachiyomisy" "$exclude_params"
-  backup "mihon" "$exclude_params"
+  backup "tachiyomisy_private" "$exclude_params"
+  backup "tachiyomisy_personal" "$exclude_params"
+
+  backup "mihon_private" "$exclude_params"
+  backup "mihon_personal" "$exclude_params"
 }
 
 main
