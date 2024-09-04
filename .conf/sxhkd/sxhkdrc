@@ -40,6 +40,10 @@ super + e
   bspc rule -a St -o state=floating follow=on center=true \
     rectangle=800x450+0+0 && st -e zsh -c "yazi"
 
+super + o
+  bspc rule -a St -o state=floating follow=on center=true \
+    rectangle=800x450+0+0 && st -e zsh -c "lazydocker"
+
 super + u
   pcmanfm
 
