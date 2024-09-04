@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+
+install() {
+  docker run --name kavita -p 5000:5000 \
+    -v /home/bryant/documents/books:/books \
+    -v /home/bryant/.config/kavita:/kavita/config \
+    -e TZ=Etc/UTC \
+    -d jvmilazz0/kavita:latest
+}
+
+main() {
+  install
+}
+
+main

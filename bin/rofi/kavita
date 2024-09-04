@@ -1,0 +1,40 @@
+#!/usr/bin/env sh
+
+set -x
+set -e
+
+container="kavita"
+
+send_notification() {
+  dunstify "Kavita" "$1"
+  send-sound-alert
+}
+
+is_container_running() {
+  container_name=$(docker ps --filter "name=${container}" --format "{{.Names}}")
+  [ -n "$container_name" ]
+}
+
+start() {
+  docker start "$container"
+  send_notification "Starting"
+}
+
+stop() {
+  docker stop "$container"
+  send_notification "Stopping"
+}
+
+toggle() {
+  if is_container_running; then
+    stop
+  else
+    start
+  fi
+}
+
+main() {
+  toggle
+}
+
+main
