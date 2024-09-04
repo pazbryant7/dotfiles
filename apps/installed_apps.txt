@@ -20,6 +20,7 @@ dog 0.1.0-5
 dunst 1.11.0-1
 dust 1.1.1-1
 efibootmgr 18-3
+exfat-utils 1.4.0-3
 fastfetch 2.22.0-1
 fd 10.2.0-1
 feh 3.10.3-1

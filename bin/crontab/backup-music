@@ -4,7 +4,7 @@ set -x
 set -e
 
 backup_source="$HOME/MEGAsync/personal/pc/music"
-backup_destination="/run/media/bryant/Ventoy/backups/music"
+backup_destination="/run/media/bryant/tiagovault/backups/music"
 
 backup() {
   backup_date=$(date +%Y-%m-%d)

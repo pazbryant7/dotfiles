@@ -4,7 +4,7 @@ set -x
 set -e
 
 backup_source="$HOME/documents/books"
-backup_destination="/run/media/bryant/Ventoy/backups/books"
+backup_destination="/run/media/bryant/tiagovault/backups/books"
 
 backup() {
   backup_date=$(date +%Y-%m-%d)
