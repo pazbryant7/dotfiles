@@ -9,6 +9,7 @@ bottom 0.10.2-1
 breeze-gtk 6.1.4-1
 breeze-icons 6.5.0-1
 bspwm 0.9.10-4
+calibre 7.17.0-1
 capitaine-cursors 4-3
 cronie 1.7.2-1
 discord 0.0.66-1

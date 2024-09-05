@@ -3,7 +3,7 @@
 set -x
 set -e
 
-backup_source="$HOME/MEGAsync/personal/pc/music"
+backup_source="$HOME/music"
 backup_destination="/run/media/bryant/tiagovault/backups/music"
 
 backup() {
