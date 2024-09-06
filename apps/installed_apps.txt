@@ -31,6 +31,7 @@ fzf 0.54.3-1
 git 2.46.0-2
 go 2:1.23.0-1
 gopass 1.15.14-1
+grex 1.4.5-1
 grub 2:2.12-2
 gst-plugin-pipewire 1:1.2.3-1
 hurl 5.0.1-1
@@ -38,6 +39,7 @@ hyperfine 1.18.0-2
 imagemagick 7.1.1.38-2
 intel-media-driver 24.3.2-1
 intel-ucode 20240813-2
+jaq 1.6.0-1
 jq 1.7.1-2
 just 1.35.0-1
 lazygit 0.43.1-1
