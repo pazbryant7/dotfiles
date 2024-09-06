@@ -7,7 +7,8 @@ alias wg="sudo wg"
 alias sudo="sudo "
 alias pass="gopass"
 alias vi="NVIM_APPNAME='minimal' nvim"
-alias btmd="btm --theme=default"
+alias btm="btm --theme=default"
+alias btml="btm --theme=default-light"
 
 # fihs
 alias sp="systemctl suspend"
