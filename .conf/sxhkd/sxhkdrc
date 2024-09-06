@@ -57,10 +57,11 @@ super + t
   st
 
 super + shift + t
-  tdrop -ma -x '32%' -y '5%' -w '35%' -h '20%' -p 'bspc rule -a St -o state=floating' st 
-
-super + alt + t
   st-light
+
+super + space
+  tdrop -ma -x '32%' -y '5%' -w '35%' -h '20%' \
+  -p 'bspc rule -a St -o state=floating' st 
 
 super + s
   ~/bin/sxhkd/select_and_execute
@@ -78,8 +79,8 @@ super + b
   ~/bin/sxhkd/set-brightness
 
 super + m
-  bspc rule -a St -o state=floating follow=on center=true \
-    rectangle=700x350+0+0 && st -e zsh -c "ncmpcpp"
+  tdrop -ma -x '32%' -y '32%' -w '32%' -h '32%' \
+  -p 'bspc rule -a St -o state=floating' st -T ncmpcpp -e ncmpcpp 
 
 super + shift + w
   bspc node -t \~floating
@@ -127,7 +128,7 @@ super + shift + space
 
 # ---------------- windows --------------------------
 
-super + space
+super + alt + space
   bspc query -N -n .local.window | xargs -I ID bspc node ID -g hidden
 
 super + r
