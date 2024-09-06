@@ -14,7 +14,7 @@ export WM="bspwm"
 export MANPAGER='nvim +Man!'
 export GOPATH="/home/bryant/go/bin"
 export CM_LAUNCHER="rofi"
-export SXHKD_SHELL="sh"
+export SXHKD_SHELL="zsh"
 export GOPASS_NO_NOTIFY=false
 
 # }}
