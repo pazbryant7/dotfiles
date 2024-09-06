@@ -3,6 +3,7 @@
 # main
 alias :q="exit"
 alias cl="clear"
+alias wg="sudo wg"
 alias sudo="sudo "
 alias pass="gopass"
 alias vi="NVIM_APPNAME='minimal' nvim"
