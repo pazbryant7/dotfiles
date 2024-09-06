@@ -57,6 +57,9 @@ super + t
   st
 
 super + shift + t
+  tdrop -ma -x '32%' -y '5%' -w '35%' -h '20%' -p 'bspc rule -a St -o state=floating' st 
+
+super + alt + t
   st-light
 
 super + s

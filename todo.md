@@ -1,11 +1,12 @@
 # What I have to do by myself after install Linux
+
 installed manually list of packages
 installed manually paru and their list of packages
 move manually custom keyboard settings and also set them manually
 symlink manually .config settings
 set zsh as a defalt shell manually
 install manually firefox fix ui theme
-improve megasync script because doest not work 
+improve megasync script because doest not work
 manually downloand github repositories (st,dotfiles,neovim config)
 manually create neovim symlink and also change branches (minimal and normal)
 create manually ssh keys and config file
@@ -24,7 +25,8 @@ manually adding nvim as a default editor in env variables /etc/environment
 manually adding my tachidesk backup script to user crontab
 manually initialize postgress initdb -D /var/lib/postgres/data ( you need to be postgress user to initialize the database )
 install bun manually curl -fsSL https://bun.sh/install | bash
-
+manually enable systemd-resolved service ( also manually download proton vpn configuration file for wireguard)
 
 # I would like to do in the future
+
 manage secrets with some tool
