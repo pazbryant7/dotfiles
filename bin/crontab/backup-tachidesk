@@ -28,7 +28,7 @@ backup() {
     exit 1
   fi
 
-  dunstify "Backup finalized"
+  dunstify "$1" "finalized"
   send-sound-alert
 }
 
