@@ -37,7 +37,6 @@ stop() {
 toggle() {
 
   profile=$(select_library_profile)
-  tachiyomi-docker-port-manager "$profile"
 
   if is_container_running "$profile"; then
     stop "$profile"
