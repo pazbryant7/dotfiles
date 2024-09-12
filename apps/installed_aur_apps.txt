@@ -1,6 +1,7 @@
 datagrip 2024.2.1-1
 datagrip-jre 2024.2.1-1
 lazydocker 0.23.3-1
+obinskit 1.2.11-2
 paru 2.0.3-1
 paru-debug 2.0.3-1
 postman-bin 11.7.0-1
