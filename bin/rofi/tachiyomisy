@@ -3,8 +3,6 @@
 set -x
 set -e
 
-START="start"
-STOP="stop"
 TACHIDESK_PATH="$HOME/documents/github/docker-tachidesk"
 
 tachiyomisy_private="tachiyomisy_private"
