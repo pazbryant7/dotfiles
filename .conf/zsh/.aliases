@@ -4,6 +4,7 @@
 alias :q="exit"
 alias cl="clear"
 alias wg="sudo wg"
+alias zt="zathura"
 alias sudo="sudo "
 alias pass="gopass"
 alias vi="NVIM_APPNAME='minimal' nvim"

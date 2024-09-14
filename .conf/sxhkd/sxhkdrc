@@ -33,19 +33,12 @@ super + shift {1-7}
 
 # -------------- main keys -----------------------
 
-super + a
-  pavucontrol
-
 super + e
+  pcmanfm
+
+super + y
   bspc rule -a St -o state=floating follow=on center=true \
     rectangle=800x450+0+0 && st -e zsh -c "yazi"
-
-super + o
-  bspc rule -a St -o state=floating follow=on center=true \
-    rectangle=900x450+0+0 && st -e zsh -c "lazydocker"
-
-super + u
-  pcmanfm
 
 super + d
   rofi -show drun -show-icons
@@ -84,9 +77,6 @@ super + m
 
 super + shift + w
   bspc node -t \~floating
-
-super + control + w
-  ~/bin/sxhkd/set-wallpaper
 
 super + alt + w
   bspc desktop -l next && dunstify "Monocle Toggle"
