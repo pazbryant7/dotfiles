@@ -37,8 +37,8 @@ super + e
   pcmanfm
 
 super + y
-  bspc rule -a St -o state=floating follow=on center=true \
-    rectangle=800x450+0+0 && st -e zsh -c "yazi"
+  bspc rule -a St -o state=fullscreen follow=on center=true \
+    && st -e zsh -c "yazi"
 
 super + d
   rofi -show drun -show-icons
@@ -53,8 +53,7 @@ super + shift + t
   st-light
 
 super + space
-  tdrop -ma -x '32%' -y '5%' -w '35%' -h '20%' \
-  -p 'bspc rule -a St -o state=floating' st 
+  bspc query -N -n .local.window | xargs -I ID bspc node ID -g hidden
 
 super + s
   ~/bin/sxhkd/select_and_execute
@@ -72,8 +71,8 @@ super + b
   ~/bin/sxhkd/set-brightness
 
 super + m
-  tdrop -ma -x '32%' -y '32%' -w '32%' -h '32%' \
-  -p 'bspc rule -a St -o state=floating' st -T ncmpcpp -e ncmpcpp 
+  bspc rule -a St -o state=floating follow=on center=true \
+    rectangle=800x400+0+0 && st -e zsh -c "ncmpcpp"
 
 super + shift + w
   bspc node -t \~floating
@@ -117,9 +116,6 @@ super + shift + space
   ~/bin/sxhkd/select-keyboard
 
 # ---------------- windows --------------------------
-
-super + alt + space
-  bspc query -N -n .local.window | xargs -I ID bspc node ID -g hidden
 
 super + r
   bspc node @parent -R 90

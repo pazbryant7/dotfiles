@@ -26,7 +26,7 @@ sync_flatpak_apps() {
 }
 
 sync_aur_apps() {
-	paru -Qm | sort >"$1/installed_aur_apps.txt"
+	yay -Qm | sort >"$1/installed_aur_apps.txt"
 }
 
 main() {
