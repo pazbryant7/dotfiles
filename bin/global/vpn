@@ -1,8 +1,8 @@
 #!/bin/sh
 
 send_notification() {
-  local title="$1"
-  local message="$2"
+  title="$1"
+  message="$2"
   dunstify "$title" "$message"
 }
 
@@ -44,7 +44,6 @@ set_interface() {
 }
 
 switch_vpn() {
-  local current_interface
   current_interface=$(get_default_interface)
 
   if [ "$current_interface" != "$WG_INTERFACE" ]; then
