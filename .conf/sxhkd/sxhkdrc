@@ -44,7 +44,7 @@ super + d
   rofi -show drun -show-icons
 
 super + w
-  ~/bin/sxhkd/monocle-mode && dunstify "Gap Toggle"
+  bspc node -t \~floating
 
 super + t
   st
@@ -73,9 +73,6 @@ super + b
 super + m
   bspc rule -a St -o state=floating follow=on center=true \
     rectangle=800x400+0+0 && st -e zsh -c "ncmpcpp"
-
-super + shift + w
-  bspc node -t \~floating
 
 super + alt + w
   bspc desktop -l next && dunstify "Monocle Toggle"

@@ -1,5 +1,7 @@
 #!/bin/sh
-DIR="$HOME/Pictures/Screenshots"
+DIR="$HOME/pictures/screenshots"
+
+mkdir -p "$DIR"
 
 save_cropped_clipboard() {
   maim --select "$DIR/$(date).png"
