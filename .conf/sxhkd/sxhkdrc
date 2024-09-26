@@ -37,8 +37,8 @@ super + e
   pcmanfm
 
 super + y
-  bspc rule -a St -o state=fullscreen follow=on center=true \
-    && st -e zsh -c "yazi"
+  bspc rule -a St -o state=floating follow=on center=true \
+    rectangle=800x400+0+0 && st -e zsh -c "yazi"
 
 super + d
   rofi -show drun -show-icons
