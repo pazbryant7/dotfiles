@@ -74,7 +74,7 @@ super + m
   bspc rule -a St -o state=floating follow=on center=true \
     rectangle=800x400+0+0 && st -e zsh -c "ncmpcpp"
 
-super + alt + w
+super + shift + w
   bspc desktop -l next && dunstify "Monocle Toggle"
 
 # -------------- print ---------------------------
