@@ -13,6 +13,7 @@ buildah 1.37.1-1
 calibre 7.17.0-1
 capitaine-cursors 4-3
 cronie 1.7.2-1
+dbeaver 24.2.1-1
 discord 0.0.69-1
 dive 0.12.0-1
 docker 1:27.3.1-1
@@ -42,6 +43,7 @@ intel-media-driver 24.3.3-1
 intel-ucode 20240910-1
 jaq 1.6.0-1
 jq 1.7.1-2
+jre-openjdk 22.0.2.u9-1
 just 1.35.0-1
 lazygit 0.44.1-1
 less 1:661-1

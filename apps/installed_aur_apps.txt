@@ -1,9 +1,7 @@
 [1m[33m -> [0m[0mAvoid running yay as root/sudo.
-datagrip 2024.2.2-1
-datagrip-jre 2024.2.2-1
+apple-fonts 6-1
 lazydocker 0.23.3-1
 obinskit 1.2.11-2
-paru-debug 2.0.3-1
 postman-bin 11.10.0-1
 python-pip-system-certs 4.0-3
 ttf-maple 6.4-2

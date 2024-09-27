@@ -26,6 +26,7 @@ manually adding my tachidesk backup script to user crontab
 manually initialize postgress initdb -D /var/lib/postgres/data ( you need to be postgress user to initialize the database )
 install bun manually curl -fsSL https://bun.sh/install | bash
 manually enable systemd-resolved service ( also manually download proton vpn configuration file for wireguard)
+manually change the defaul dbeaver desktop application to execute this instead env GTK_THEME=Adwaita:dark dbeaver
 
 # I would like to do in the future
 
