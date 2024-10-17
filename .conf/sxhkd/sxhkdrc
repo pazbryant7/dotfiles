@@ -53,7 +53,7 @@ super + shift + t
   st-light
 
 super + space
-  bspc query -N -n .local.window | xargs -I ID bspc node ID -g hidden
+  ~/bin/sxhkd/select-keyboard
 
 super + s
   ~/bin/sxhkd/select_and_execute
@@ -72,7 +72,7 @@ super + b
 
 super + m
   bspc rule -a St -o state=floating follow=on center=true \
-    rectangle=800x400+0+0 && st -e zsh -c "ncmpcpp"
+    rectangle=700x350+0+0 && st -e zsh -c "ncmpcpp"
 
 super + shift + w
   bspc desktop -l next && dunstify "Monocle Toggle"
@@ -110,7 +110,7 @@ super + alt + k
 # ---------------- switch keyboard ------------------
 
 super + shift + space
-  ~/bin/sxhkd/select-keyboard
+  bspc query -N -n .local.window | xargs -I ID bspc node ID -g hidden
 
 # ---------------- windows --------------------------
 

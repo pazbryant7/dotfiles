@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -x
+
+input_statuses=$(pactl list short sink-inputs | awk '{print $1}')
+
+toggle_playback() {
+  for input in $input_statuses; do
+    playback_state=$(pactl list sink-inputs | grep -A 15 "Sink Input #$input" | grep "State:" | awk '{print $2}')
+
+    echo "here"
+    echo playback_state
+
+    if [ "$playback_state" = "RUNNING" ]; then
+      pactl suspend-sink-input "$input" 1
+    else
+      pactl suspend-sink "$input" 0
+    fi
+  done
+}
+
+toggle_playback

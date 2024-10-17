@@ -28,7 +28,7 @@ bspc rule -a pavucontrol state=floating center=true
 bspc rule -a mpv state=floating center=true rectangle=900x600+0+0
 bspc rule -a vlc state=floating center=true
 
-xset -dpms &                       # stay awake
+xset -dpms &                     # stay awake
 xsetroot -cursor_name left_ptr & # fix mouse
 
 ~/.fehbg &
