@@ -1,0 +1,36 @@
+{
+  "add books dialog dir": "/home/bryant/documents/books/self care",
+  "add books dialog dir-last-used-filter-spec-all-files": false,
+  "confirm-cancel-edit-single-metadata_again": false,
+  "library_delete_books_again": false,
+  "notified-version-updates": {
+    "__class__": "set",
+    "__value__": [
+      "7.18",
+      "7.20"
+    ]
+  },
+  "recursive book import root dir dialog": "/run/media/bryant/tiagovault/backups/books/2024-09-11/novels/The Angel Next Door Spoils Me Rotten",
+  "s_r_search_mode": 0,
+  "save to disk dialog": "/home/bryant/documents/books/self care",
+  "sort_history": [
+    [
+      "series",
+      true
+    ],
+    [
+      "title",
+      true
+    ],
+    [
+      "timestamp",
+      false
+    ],
+    [
+      "timestamp",
+      false
+    ]
+  ],
+  "welcome_wizard_device": "default",
+  "welcome_wizard_was_run": true
+}

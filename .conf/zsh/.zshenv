@@ -3,6 +3,7 @@
 export EDITOR="nvim"
 export VISUAL=$EDITOR
 export TERMINAL="st"
+export TERM="st"
 export SUDO_EDITOR=$EDITOR
 export BROWSER="firefox"
 export VIDEO="mpv"

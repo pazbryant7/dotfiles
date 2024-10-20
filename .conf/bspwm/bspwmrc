@@ -23,10 +23,9 @@ bspc rule -a qBittorrent desktop=^7 follow=off
 bspc rule -a obsidian desktop=^6 follow=off
 
 # app favorite mode
-bspc rule -a feh state=floating center=true
 bspc rule -a pavucontrol state=floating center=true
 bspc rule -a mpv state=floating center=true rectangle=900x600+0+0
-bspc rule -a vlc state=floating center=true
+bspc rule -a vlc state=floating center=true rectangle=900x600+0+0
 
 xset -dpms &                     # stay awake
 xsetroot -cursor_name left_ptr & # fix mouse
