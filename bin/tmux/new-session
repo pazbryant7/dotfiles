@@ -8,11 +8,7 @@ else
     --type d . \
     ~/documents/github/ \
     ~/documents/github/codeeditors/ \
-    ~/documents/github/examples/ \
-    ~/documents/github/royal/ \
-    ~/documents/github/forks/ \
-    ~/mega/personal/pc/ \
-    ~/mega/work/ \
+    ~/documents/github/notes\
     ~/Downloads/ 2>/dev/null | fzf)
 fi
 
