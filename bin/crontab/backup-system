@@ -12,7 +12,7 @@ exclude_folders="
   /home/bryant/MEGAsync /home/bryant/pictures /home/bryant/Calibre Library
   /home/bryant/music /home/bryant/zsh /home/bryant/videos
   /home/bryant/personaldisk /home/bryant/.cache /home/bryant/.tealdeer-cache
-  /home/bryant/.local/share/
+  /home/bryant/.local/share/ /home/bryant/share
 "
 
 additional_excludes="
