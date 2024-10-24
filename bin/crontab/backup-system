@@ -53,8 +53,14 @@ perform_backup() {
   backup_folder="$2"
   excludes="$3"
 
+  error_log=~/.rsync_last_error.log
+
   rsync -aAXv --delete --progress $excludes \
-    --link-dest="$previous_backup" "$backup_source" "$backup_folder"
+    --link-dest="$previous_backup" "$backup_source" "$backup_folder" 2>"$error_log"
+
+  if [ $? -ne 0 ]; then
+    echo "Rsync encountered an error. Check $error_log for details."
+  fi
 }
 
 sync_data() {

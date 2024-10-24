@@ -1,3 +1,5 @@
+#!/bin/env sh
+
 yy() {
   tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
   yazi "$@" --cwd-file="$tmp"
@@ -11,9 +13,12 @@ xevkeys() {
   xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf "%-3s %s\n", $5, $8 }'
 }
 
-# Function to reload the Zsh configuration
 reload() {
-  source /home/bryant/.zshrc
+  if [ -f /home/bryant/.zshrc ]; then
+    . /home/bryant/.zshrc
+  else
+    echo ".zshrc file not found."
+  fi
 }
 
 ignore() {
@@ -47,39 +52,19 @@ arch() {
   echo "$architecture"
 }
 
-# rsync
-synctransfer() {
-  sync
-  echo "Files has been transfered successfully"
+ds() {
+  if [[ -z $1 ]]; then
+    echo "Usage: check_disk_space /dev/sdax"
+    return 1
+  fi
+
+  df -h "$1" | awk 'NR==2 {print "Total space on", $1, ":", $2, "| Free space:", $4}'
 }
 
-rsyncbasic() {
-  rsync -avh --progress "$1" "$2"
-  synctransfer
-}
-
-rsyncbackup() {
-  rsync -avh --progress "$1" "$2/$(date +%Y%m%d)/"
-  synctransfer
-}
-
-rsyncmedia() {
+rmm() {
   rsync -avh --progress --partial --delete "$1" "$2"
-  synctransfer
-}
 
-rsyncmirror() {
-  rsync -avh --delete --progress "$1" "$2"
-  synctransfer
-}
+  sync
 
-# rsyncremote /local/path/ user@remotehost:/remote/path/
-rsyncremote() {
-  rsync -avh --progress "$1" "$2"
-  synctransfer
-}
-
-rsyncdryrun() {
-  rsync -avhn --progress "$1" "$2"
-  synctransfer
+  echo "Files have been transferred successfully"
 }
