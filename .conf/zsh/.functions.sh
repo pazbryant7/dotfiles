@@ -50,18 +50,10 @@ arch() {
 }
 
 ds() {
-  if [[ -z $1 ]]; then
+  if [ -z "$1" ]; then
     echo "Usage: check_disk_space /dev/sdax"
     return 1
   fi
 
   df -h "$1" | awk 'NR==2 {print "Total space on", $1, ":", $2, "| Free space:", $4}'
-}
-
-rmm() {
-  rsync -avh --progress --partial --delete "$1" "$2"
-
-  sync
-
-  echo "Files have been transferred successfully"
 }
