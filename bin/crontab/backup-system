@@ -23,13 +23,7 @@ additional_excludes="
 "
 
 create_directories() {
-  previous_backup="$1"
-  backup_folder="$2"
-
-  mkdir -p "$previous_backup" || {
-    echo "Failed to create directory: $previous_backup"
-    exit 1
-  }
+  backup_folder="$1"
 
   mkdir -p "$backup_folder" || {
     echo "Failed to create directory: $backup_folder"
@@ -49,18 +43,20 @@ construct_excludes() {
 }
 
 perform_backup() {
-  previous_backup="$1"
-  backup_folder="$2"
+  backup_folder="$1"
+  previous_backups="$2"
   excludes="$3"
 
   error_log=~/.rsync_last_error.log
 
   rsync -aAXv --delete --progress $excludes \
-    --link-dest="$previous_backup" "$backup_source" "$backup_folder" 2>"$error_log"
+    --link-dest="$previous_backups" "$backup_source" "$backup_folder" 2>"$error_log"
 
   if [ $? -ne 0 ]; then
     echo "Rsync encountered an error. Check $error_log for details."
   fi
+
+  echo "Backup finalized successfully. Syncing data"
 }
 
 sync_data() {
@@ -69,17 +65,32 @@ sync_data() {
   echo "Data synced successfully."
 }
 
+cleanup_backups() {
+  # Remove the oldest backup if there are more than 3
+  backups=$(fd --type d --max-depth 1 "$backup_destination/arch" | sort)
+
+  # Count number of backups
+  count=$(echo "$backups" | wc -l)
+
+  if [ "$count" -gt 3 ]; then
+    # Remove the oldest backup
+    echo "$backups" | head -n -3 | xargs -r rm -rf
+  fi
+}
+
 # Main function to coordinate the backup process
 main() {
   backup_date=$(date +%Y-%m-%d)
-  previous_backup="$backup_destination/arch/previous"
   backup_folder="$backup_destination/arch/$backup_date"
+  previous_backups="$backup_destination/arch/"
 
-  create_directories "$previous_backup" "$backup_folder"
+  cleanup_backups
+
+  create_directories "$backup_folder"
 
   excludes=$(construct_excludes)
 
-  perform_backup "$previous_backup" "$backup_folder" "$excludes"
+  perform_backup "$backup_folder" "$previous_backups" "$excludes"
 
   sync_data
 

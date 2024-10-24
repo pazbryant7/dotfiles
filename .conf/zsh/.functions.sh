@@ -13,12 +13,9 @@ xevkeys() {
   xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf "%-3s %s\n", $5, $8 }'
 }
 
+# Function to reload the Zsh configuration
 reload() {
-  if [ -f /home/bryant/.zshrc ]; then
-    . /home/bryant/.zshrc
-  else
-    echo ".zshrc file not found."
-  fi
+  . /home/bryant/.zshrc
 }
 
 ignore() {
