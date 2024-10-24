@@ -48,27 +48,38 @@ arch() {
 }
 
 # rsync
+synctransfer() {
+  sync
+  echo "Files has been transfered successfully"
+}
+
 rsyncbasic() {
   rsync -avh --progress "$1" "$2"
+  synctransfer
 }
 
 rsyncbackup() {
   rsync -avh --progress "$1" "$2/$(date +%Y%m%d)/"
+  synctransfer
 }
 
 rsyncmedia() {
   rsync -avh --progress --partial --delete "$1" "$2"
+  synctransfer
 }
 
 rsyncmirror() {
   rsync -avh --delete --progress "$1" "$2"
+  synctransfer
 }
 
 # rsyncremote /local/path/ user@remotehost:/remote/path/
 rsyncremote() {
   rsync -avh --progress "$1" "$2"
+  synctransfer
 }
 
 rsyncdryrun() {
   rsync -avhn --progress "$1" "$2"
+  synctransfer
 }
