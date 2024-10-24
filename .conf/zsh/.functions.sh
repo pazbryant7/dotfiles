@@ -46,3 +46,29 @@ arch() {
 
   echo "$architecture"
 }
+
+# rsync
+rsyncbasic() {
+  rsync -avh --progress "$1" "$2"
+}
+
+rsyncbackup() {
+  rsync -avh --progress "$1" "$2/$(date +%Y%m%d)/"
+}
+
+rsyncmedia() {
+  rsync -avh --progress --partial --delete "$1" "$2"
+}
+
+rsyncmirror() {
+  rsync -avh --delete --progress "$1" "$2"
+}
+
+# rsyncremote /local/path/ user@remotehost:/remote/path/
+rsyncremote() {
+  rsync -avh --progress "$1" "$2"
+}
+
+rsyncdryrun() {
+  rsync -avhn --progress "$1" "$2"
+}

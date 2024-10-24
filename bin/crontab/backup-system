@@ -4,28 +4,15 @@ set -x
 set -e
 
 backup_source="/"
-backup_destination="/home/bryant/external"
+backup_destination="/run/media/bryant/tiagovault/backups"
 
-external_drive="/dev/sda"
-external_mount_point="$backup_destination/"
-
-if ! grep -qs "$external_mount_point" /proc/mounts; then
-  mkdir -p "$external_mount_point"
-  mount "$external_drive" "$external_mount_point"
-
-  if [ $? -eq 0 ]; then
-    echo "Drive mounted successfully."
-  else
-    echo "Failed to mount the drive."
-    exit 1
-  fi
-fi
-
+# Define exclude folders and additional excludes
 exclude_folders="
   /home/bryant/desktop /home/bryant/documents /home/bryant/downloads
-  /home/bryant/mega /home/bryant/pictures /home/bryant/videos
-  /home/bryant/external /home/bryant/.cache /home/bryant/.tealdeer-cache
-  /home/bryant/himmel
+  /home/bryant/MEGAsync /home/bryant/pictures /home/bryant/Calibre Library
+  /home/bryant/music /home/bryant/zsh /home/bryant/videos
+  /home/bryant/personaldisk /home/bryant/.cache /home/bryant/.tealdeer-cache
+  /home/bryant/.local/share/
 "
 
 additional_excludes="
@@ -35,34 +22,64 @@ additional_excludes="
   --exclude=/swapfile --exclude=*/Cache --exclude=*/cache --exclude=*/.cache
 "
 
-backup_date=$(date +%Y-%m-%d)
-previous_backup="$backup_destination/backup/previous"
-backup_folder="$backup_destination/backup/$backup_date"
-mkdir -p "$backup_folder"
-mkdir -p "$previous_backup"
+create_directories() {
+  previous_backup="$1"
+  backup_folder="$2"
 
-exclude_params=""
-for folder in $exclude_folders; do
-  exclude_params="$exclude_params --exclude=$folder"
-done
+  mkdir -p "$previous_backup" || {
+    echo "Failed to create directory: $previous_backup"
+    exit 1
+  }
 
-exclude_params="$exclude_params $additional_excludes"
+  mkdir -p "$backup_folder" || {
+    echo "Failed to create directory: $backup_folder"
+    exit 1
+  }
+}
 
-rsync -aAXv --delete --progress $exclude_params --link-dest="$previous_backup" "$backup_source" "$backup_folder"
+construct_excludes() {
+  excludes=""
 
-if [ $? -ne 0 ]; then
-  echo "rsync failed. Backup not completed."
-  exit 1
-fi
+  for folder in $exclude_folders; do
+    excludes="$excludes --exclude=$folder"
+  done
 
-echo "Syncing data..."
-sync
+  excludes="$excludes $additional_excludes"
+  echo "$excludes"
+}
 
-if [ $? -ne 0 ]; then
-  echo "sync failed. Some data might not be written to the disk."
-  exit 1
-fi
+perform_backup() {
+  previous_backup="$1"
+  backup_folder="$2"
+  excludes="$3"
 
-echo "Backup finalized successfully"
+  rsync -aAXv --delete --progress $excludes \
+    --link-dest="$previous_backup" "$backup_source" "$backup_folder"
+}
 
-exit 0
+sync_data() {
+  echo "Syncing data..."
+  sync
+  echo "Data synced successfully."
+}
+
+# Main function to coordinate the backup process
+main() {
+  backup_date=$(date +%Y-%m-%d)
+  previous_backup="$backup_destination/arch/previous"
+  backup_folder="$backup_destination/arch/$backup_date"
+
+  create_directories "$previous_backup" "$backup_folder"
+
+  excludes=$(construct_excludes)
+
+  perform_backup "$previous_backup" "$backup_folder" "$excludes"
+
+  sync_data
+
+  echo "Backup finalized successfully."
+
+  exit 0
+}
+
+main

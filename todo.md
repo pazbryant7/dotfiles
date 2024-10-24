@@ -27,6 +27,7 @@ manually initialize postgress initdb -D /var/lib/postgres/data ( you need to be 
 install bun manually curl -fsSL https://bun.sh/install | bash
 manually enable systemd-resolved service ( also manually download proton vpn configuration file for wireguard)
 manually change the defaul dbeaver desktop application to execute this instead env GTK_THEME=Adwaita:dark dbeaver
+manually add my second disk to automount at start of my computer using `/etc/fstab` file config
 
 # I would like to do in the future
 
