@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# user available interfaces
+
+# japan
+# usa 
+
 send_notification() {
   title="$1"
   message="$2"

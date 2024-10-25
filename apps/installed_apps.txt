@@ -93,7 +93,6 @@ sd 1.0.0-1
 sl 5.05-5
 sxhkd 0.6.2-4
 syncthing 1.28.0-1
-systemd-resolvconf 256.7-1
 tealdeer 1.7.0-1
 telegram-desktop 5.6.3-1
 terminus-font 4.49.1-7
@@ -106,7 +105,6 @@ ttf-meslo-nerd 3.2.1-2
 udiskie 2.5.3-1
 unclutter 1:1.6-4
 vulkan-intel 1:24.2.5-1
-wireguard-tools 1.0.20210914-2
 wireplumber 0.5.6-1
 xclip 0.13-5
 xcolor 0.5.1-4
