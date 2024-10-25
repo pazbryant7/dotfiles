@@ -9,6 +9,7 @@ else
     ~/documents/github/ \
     ~/documents/github/codeeditors/ \
     ~/documents/github/notes\
+    ~/personaldisk/ \
     ~/Downloads/ 2>/dev/null | fzf)
 fi
 
