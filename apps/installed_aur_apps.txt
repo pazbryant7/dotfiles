@@ -2,11 +2,10 @@
 apple-fonts 6-2
 lazydocker 0.23.3-1
 obinskit 1.2.11-2
-postman-bin 11.17.0-1
+postman-bin 11.18.0-1
 ttf-maple 6.4-2
 turbo-base64 2023.08-2
-ueberzugpp 2.9.6-3
-ungoogled-chromium-bin 130.0.6723.58-1
-ungoogled-chromium-bin-debug 130.0.6723.58-1
+ungoogled-chromium-bin 130.0.6723.69-2
+ungoogled-chromium-bin-debug 130.0.6723.69-2
 ventoy-bin 1.0.99-1
 yay 12.4.2-1

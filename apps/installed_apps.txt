@@ -14,12 +14,12 @@ buildah 1.37.5-1
 calibre 7.17.0-2
 capitaine-cursors 4-3
 cronie 1.7.2-1
-dbeaver 24.2.2-1
+dbeaver 24.2.3-1
 discord 0.0.72-1
 dive 0.12.0-1
 docker 1:27.3.1-1
 docker-buildx 0.17.1-1
-docker-compose 2.29.7-1
+docker-compose 2.30.0-1
 dog 0.1.0-5
 dunst 1.11.0-1
 dust 1.1.1-1
@@ -29,7 +29,7 @@ fastfetch 2.28.0-1
 fd 10.2.0-1
 feh 3.10.3-1
 ffmpegthumbnailer 2.2.3-2
-firefox 131.0.3-1
+firefox 132.0-1
 fzf 0.55.0-1
 git 2.47.0-1
 go 2:1.23.2-1
@@ -40,7 +40,7 @@ hurl 5.0.1-1
 hyperfine 1.18.0-2
 imagemagick 7.1.1.39-1
 intel-media-driver 24.3.3-1
-intel-ucode 20240910-1
+intel-ucode 20241029-1
 jaq 1.6.0-1
 jq 1.7.1-2
 jre-openjdk 23.0.1.u0-1
@@ -57,7 +57,7 @@ luarocks 3.11.1-2
 lxappearance 0.6.3-5
 maim 5.8.0-2
 man-db 2.13.0-1
-mpd 0.23.15-6
+mpd 0.23.15-8
 mpv 1:0.39.0-1
 ncmpcpp 0.10.1-1
 neovim 0.10.2-2
@@ -68,7 +68,7 @@ noto-fonts-emoji 1:2.047-1
 ntfs-3g 2022.10.3-1
 obsidian 1.7.4-1
 openresolv 3.13.2-2
-openssh 9.9p1-1
+openssh 9.9p1-2
 otf-overpass 3.0.5-2
 p7zip 1:17.05-2
 passff-host 1:1.2.4-1
@@ -85,7 +85,7 @@ poppler 24.09.0-4
 postgresql 16.3-4
 procs 0.14.8-1
 python-pipx 1.6.0-1
-qbittorrent 5.0.0-1
+qbittorrent 5.0.1-1
 rclone 1.68.1-1
 ripgrep 14.1.1-1
 rofi 1.7.5-3
@@ -104,6 +104,8 @@ ttf-font-awesome 6.6.0-1
 ttf-jetbrains-mono 2.304-2
 ttf-meslo-nerd 3.2.1-2
 udiskie 2.5.3-1
+ueberzugpp 2.9.6-4
+ufw 0.36.2-4
 unclutter 1:1.6-4
 vulkan-intel 1:24.2.5-1
 wireguard-tools 1.0.20210914-2
@@ -111,7 +113,7 @@ wireplumber 0.5.6-1
 xclip 0.13-5
 xcolor 0.5.1-4
 xh 0.23.0-1
-xorg-server 21.1.13-1
+xorg-server 21.1.14-1
 xorg-xev 1.2.6-1
 xorg-xinit 1.4.2-2
 xorg-xrandr 1.5.2-2
