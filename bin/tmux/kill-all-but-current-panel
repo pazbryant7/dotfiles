@@ -1,0 +1,29 @@
+#!/bin/env sh
+
+# Function to get the current pane ID (the one in focus)
+get_current_pane() {
+  tmux display-message -p '#{pane_id}'
+}
+
+# Function to get all pane IDs in the current window
+get_all_panes() {
+  tmux list-panes -F '#{pane_id}'
+}
+
+# Function to kill all panes except the current one
+kill_other_panes() {
+  current_pane=$(get_current_pane)
+
+  # Get a list of all pane IDs and iterate over them
+  tmux list-panes -F '#{pane_id}' | while IFS= read -r pane; do
+    if [ "$pane" != "$current_pane" ]; then
+      tmux kill-pane -t "$pane"
+    fi
+  done
+}
+
+main() {
+  kill_other_panes
+}
+
+main
