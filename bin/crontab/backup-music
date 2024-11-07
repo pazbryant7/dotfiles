@@ -12,7 +12,7 @@ backup() {
 
   mkdir -p "$backup_folder"
 
-  rsync -aAXv --delete --progress "$1" "$backup_source/" "$backup_folder"
+  rsync -aAXv --delete --progress $1 "$backup_source/" "$backup_folder"
 
   if [ $? -ne 0 ]; then
     dunstify "Rsync failed" "Backup not completed"
