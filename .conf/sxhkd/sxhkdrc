@@ -80,18 +80,13 @@ super + shift + w
 # -------------- print ---------------------------
 
 Print
-  maim --select | xclip -selection clipboard -t image/png \
-    && dunstify "Save selection to clipboard"
+ ~/bin/sxhkd/take-screenshots -m select
 
 super + Print
-  maim | xclip -selection clipboard -t image/png \
-    && dunstify "Save full to clipboard"
-
-alt + Print
-  ~/bin/sxhkd/take-screenshots cropped
+ ~/bin/sxhkd/take-screenshots -m full
 
 shift + Print
-  ~/bin/sxhkd/take-screenshots full
+ ~/bin/sxhkd/take-screenshots -m win
 
 # --------------- resize windows --------------------
 
@@ -128,3 +123,9 @@ super + shift + v
 
 super + {Left,Down,Up,Right}
   bspc node -v {-30 0,0 30,0 -30,30 0}
+
+
+# ---------------- audio control ----------------------
+
+XF86Audio{LowerVolume,RaiseVolume,Mute}
+ ~/bin/sxhkd/volume_dunst {down,up,mute}
