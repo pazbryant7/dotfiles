@@ -18,7 +18,7 @@ reload() {
   . /home/bryant/.zshrc
 }
 
-ignore() {
+gignore() {
   if [ "$#" -eq 0 ]; then
     echo "Usage: ignore language1,language2,..."
     echo "Example: ignore node,python"
@@ -37,7 +37,7 @@ ignore() {
   curl -L -s "https://www.gitignore.io/api/${languages}"
 }
 
-arch() {
+architecture() {
   architecture=""
   case $(uname -m) in
   i386) architecture="386" ;;
