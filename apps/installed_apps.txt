@@ -94,6 +94,7 @@ rsync 3.3.0-2
 screenkey 1.5-4
 sd 1.0.0-1
 sl 5.05-5
+streamlink 7.0.0-1
 sxhkd 0.6.2-4
 syncthing 1.28.0-1
 tealdeer 1.7.0-1

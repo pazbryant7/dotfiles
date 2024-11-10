@@ -57,3 +57,56 @@ ds() {
 
   df -h "$1" | awk 'NR==2 {print "Total space on", $1, ":", $2, "| Free space:", $4}'
 }
+
+play() {
+  if [ -z "$1" ]; then
+    echo "Usage: play <url> <best/worst/low/medium/720/480>" 1>&2
+    echo "Media url was not given"
+    return 1
+  fi
+
+  if [ -z "$2" ]; then
+    echo "Usage: play <url> <best/worst/low/medium/720/480>" 1>&2
+    echo "Quality option was not given"
+    return 1
+  fi
+
+  # Check if streamlink is installed
+  if ! command -v streamlink >/dev/null 2>&1; then
+    echo "Error: streamlink is not installed." 1>&2
+    return 1
+  fi
+
+  # Check if mpv is installed
+  if ! command -v mpv >/dev/null 2>&1; then
+    echo "Error: mpv is not installed." 1>&2
+    return 1
+  fi
+
+  twitch_args=""
+  case "$1" in
+  https://www.twitch.tv/*)
+    twitch_args="--twitch-disable-ads"
+    ;;
+  esac
+
+  # Map custom quality options
+  case "$2" in
+  low)
+    quality="480p30"
+    ;;
+  medium)
+    quality="720p60"
+    ;;
+  best | worst | 480p30 | 720p60)
+    quality="$2"
+    ;;
+  *)
+    echo "Error: Invalid quality option. Use best, worst, low, medium, 480p, or 720p." 1>&2
+    return 1
+    ;;
+  esac
+
+  # Run streamlink with mpv, adding the Twitch argument if needed
+  streamlink "$twitch_args" -p mpv "$1" "$quality"
+}
