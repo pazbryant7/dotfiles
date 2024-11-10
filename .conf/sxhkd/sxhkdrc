@@ -39,7 +39,7 @@ super + e
 super + d
   rofi -show drun -show-icons
 
-super + w
+super + shift + w
   bspc node -t \~floating
 
 super + t
@@ -66,7 +66,7 @@ super + alt + Return
 super + b
   ~/bin/wm/set-brightness
 
-super + shift + w
+super + w
   bspc desktop -l next && dunstify "Monocle Toggle"
 
 # -------- man keys with custom rules -----------
