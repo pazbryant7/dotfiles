@@ -36,10 +36,6 @@ super + shift {1-7}
 super + e
   pcmanfm
 
-super + y
-  bspc rule -a St -o state=floating follow=on center=true \
-    rectangle=800x400+0+0 && st -e zsh -c "yazi"
-
 super + d
   rofi -show drun -show-icons
 
@@ -53,10 +49,10 @@ super + shift + t
   st-light
 
 super + space
-  ~/bin/sxhkd/select-keyboard
+  ~/bin/wm/select-keyboard
 
 super + s
-  ~/bin/sxhkd/select_and_execute
+  ~/bin/wm/select_and_execute
 
 super + Return
   firefox -P Personal
@@ -68,25 +64,31 @@ super + alt + Return
   firefox -P Personal --private-window 
 
 super + b
-  ~/bin/sxhkd/set-brightness
+  ~/bin/wm/set-brightness
+
+super + shift + w
+  bspc desktop -l next && dunstify "Monocle Toggle"
+
+# -------- man keys with custom rules -----------
 
 super + m
   bspc rule -a St -o state=floating follow=on center=true \
     rectangle=700x350+0+0 && st -e zsh -c "ncmpcpp"
 
-super + shift + w
-  bspc desktop -l next && dunstify "Monocle Toggle"
+super + y
+  bspc rule -a St -o state=floating follow=on center=true \
+    rectangle=800x400+0+0 && st -e zsh -c "yazi"
 
 # -------------- print ---------------------------
 
 Print
- ~/bin/sxhkd/take-screenshots -m select
+ ~/bin/wm/take-screenshots -m select
 
 super + Print
- ~/bin/sxhkd/take-screenshots -m full
+ ~/bin/wm/take-screenshots -m full
 
 shift + Print
- ~/bin/sxhkd/take-screenshots -m win
+ ~/bin/wm/take-screenshots -m win
 
 # --------------- resize windows --------------------
 
@@ -128,4 +130,4 @@ super + {Left,Down,Up,Right}
 # ---------------- audio control ----------------------
 
 XF86Audio{LowerVolume,RaiseVolume,Mute}
- ~/bin/sxhkd/volume_dunst {down,up,mute}
+ ~/bin/wm/volume_dunst {down,up,mute}
