@@ -17,7 +17,6 @@ alias sht="shutdown now"
 alias clear="clear; printf '\033[4 q'"
 alias fontcache="sudo fc-cache -f -v"
 alias motivation="mpv ~/MEGAsync/personal/pc/videos/biy/cristiano.mp4"
-alias rel="xrdb merge ~/.Xresources && kill -USR1 \$(pidof st) && kill -USR1 \$(pidof st-light)"
 alias ff="fastfetch"
 
 alias gb="git branch"

@@ -14,7 +14,7 @@ xevkeys() {
 }
 
 # Function to reload the Zsh configuration
-reload() {
+rel() {
   . /home/bryant/.zshrc
 }
 

@@ -1,8 +1,8 @@
 # {{ enviroment variables
 export EDITOR="nvim"
 export VISUAL=$EDITOR
-export TERMINAL="st"
-export TERM="st"
+export TERMINAL="foot"
+export TERM="foot"
 export SUDO_EDITOR=$EDITOR
 export BROWSER="firefox"
 export VIDEO="mpv"
