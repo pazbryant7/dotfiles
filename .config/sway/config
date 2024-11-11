@@ -21,14 +21,18 @@ set $right l
 set $term foot
 # Your preferred application launcher
 set $menu wofi --show run
-set $browser firefox
+set $browser firefox -P Personal
 
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
 output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
-input * xkb_layout us
-input * xkb_variant dvorak
+input * xkb_layout 'bryant-dvorak'
+
+input type:keyboard {
+  repeat_delay 200
+  repeat_rate 40
+}
 
 #
 # Example configuration:
