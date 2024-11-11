@@ -3,15 +3,22 @@
 # Copy this to ~/.config/sway/config and edit it to your liking.
 #
 # Read `man 5 sway` for a complete reference.
+exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+
 font pango: Maple Mono NF Regular 8
 
 gaps inner 0px
 gaps outer 0px
 
+exec mako
+exec_always autotiling
+
 ### Variables
 #
 # Logo key. Use Mod1 for Alt.
 set $mod Mod4
+
+# set xwayland disable
 # Home row direction keys, like vim
 set $left h
 set $down j
@@ -26,7 +33,7 @@ set $browser firefox -P Personal
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+output * bg /home/bryant/Mega/personal/pc/images/wallpapers/sousou_no_frieren/frieren-monument.jpg fill
 input * xkb_layout 'bryant-dvorak'
 
 input type:keyboard {
@@ -95,7 +102,7 @@ input "type:pointer" accel_profile flat
     bindsym $mod+Shift+c reload
 
     # Exit sway (logs you out of your Wayland session)
-    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+    bindsym $mod+Shift+e exec swaymsg exit
 #
 # Moving around:
 #
@@ -124,13 +131,13 @@ input "type:pointer" accel_profile flat
 # Workspaces:
 #
     # Switch to workspace
-    bindsym $mod+1 workspace number 1
-    bindsym $mod+2 workspace number 2
-    bindsym $mod+3 workspace number 3
-    bindsym $mod+4 workspace number 4
-    bindsym $mod+5 workspace number 5
-    bindsym $mod+6 workspace number 6
-    bindsym $mod+7 workspace number 7
+    bindsym $mod+bracketleft workspace number 1
+    bindsym $mod+braceleft workspace number 2
+    bindsym $mod+parenleft workspace number 3
+    bindsym $mod+percent workspace number 4
+    bindsym $mod+equal workspace number 5
+    bindsym $mod+ampersand workspace number 6
+    bindsym $mod+parenright workspace number 7
     bindsym $mod+8 workspace number 8
     bindsym $mod+9 workspace number 9
     bindsym $mod+0 workspace number 10
@@ -227,7 +234,17 @@ bindsym $mod+r mode "resize"
 #
 # Read `man 5 sway-bar` for more information about this section.
 bar {
-    swaybar_command waybar
+    position top
+
+    # When the status_command prints a new line to stdout, swaybar updates.
+    # The default just shows the current date and time.
+    status_command while date +'%Y-%m-%d %X'; do sleep 1; done
+
+    colors {
+        statusline #ffffff
+        background #323232
+        inactive_workspace #32323200 #32323200 #5c5c5c
+    }
 }
 
 include /etc/sway/config.d/*
