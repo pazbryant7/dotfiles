@@ -110,3 +110,7 @@ play() {
   # Run streamlink with mpv, adding the Twitch argument if needed
   streamlink "$twitch_args" -p mpv "$1" "$quality"
 }
+
+updategrub() {
+  sudo grub-mkconfig -o /boot/grub/grub.cfg
+}

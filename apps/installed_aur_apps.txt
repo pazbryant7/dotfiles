@@ -3,3 +3,5 @@ lazydocker-debug 0.23.3-1
 obinskit 1.2.11-2
 postman-bin 11.18.0-1
 ttf-maple 6.4-2
+ventoy-bin 1.0.99-1
+ventoy-bin-debug 1.0.99-1
