@@ -1,0 +1,11 @@
+configuration {
+    modi: "window";
+    terminal: "st";
+    hide-scrollbar: true;
+    display-run: "";
+    display-drun: "";
+    display-window: "";
+    show-match: true;
+ }
+
+@theme "~/.config/rofi/theme.rasi"
