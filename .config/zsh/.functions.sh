@@ -114,3 +114,13 @@ play() {
 updategrub() {
   sudo grub-mkconfig -o /boot/grub/grub.cfg
 }
+
+cheat() {
+  if [ -z "$1" ]; then
+    echo "Usage: cheat <command>"
+    return 1
+  fi
+
+  # Fetch the cheat sheet using curl
+  curl -s "https://cheat.sh/$1" | less
+}

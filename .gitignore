@@ -10,3 +10,7 @@
 .conf/qBittorrent/qBittorrent-data.conf
 .conf/qBittorrent/lockfile
 .conf/qBittorrent/rss
+
+# log
+*.log
+*.logs
