@@ -122,5 +122,5 @@ cheat() {
   fi
 
   # Fetch the cheat sheet using curl
-  curl -s "https://cheat.sh/$1" | less
+  curl -s "https://cheat.sh/$1"
 }
