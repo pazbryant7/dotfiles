@@ -4,8 +4,8 @@
 
 max-history=10
 font=Maple Mono 9
-width=180
-height=300
+width=300
+height=180
 margin=5
 outer-margin=5
 padding=15,15,0

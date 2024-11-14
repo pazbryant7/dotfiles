@@ -7,4 +7,4 @@
 # - "gruvbox-light"
 # - "nord"
 # - "nord-light".
-theme = "default-light"
+theme = "default"

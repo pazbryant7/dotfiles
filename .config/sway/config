@@ -8,6 +8,8 @@ font pango: Maple Mono NF Regular 8
 gaps inner 0px
 gaps outer 0px
 
+corner_radius 5
+
 exec mako
 exec_always autotiling
 
@@ -102,7 +104,7 @@ set $gaps 25
     bindsym $mod+Shift+c reload
 
     # Exit sway (logs you out of your Wayland session)
-    bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
+    bindsym $mod+Shift+e exec swaymsg exit
 #
 # Moving around:
 #
