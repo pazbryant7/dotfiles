@@ -5,28 +5,20 @@
 # Read `man 5 sway` for a complete reference.
 font pango: sans-serif Regular 8.5
 
-exec autotiling
+
 
 ### Variables
-#
-# Logo key. Use Mod1 for Alt.
 set $mod Mod4
 
-# set xwayland disable
-# Home row direction keys, like vim
 set $left h
 set $down j
 set $up k
 set $right l
-# Your preferred terminal emulator
-set $term foot
-# Your preferred application launcher
-set $menu rofi -show drun -show-icons
-set $browser firefox -P Personal
 
-### Output configuration
-#
-# Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
+set $term foot
+set $browser firefox -P Personal
+set $menu rofi -show drun -show-icons
+
 output * bg ~/.bg fill
 input * xkb_layout 'bryant-dvorak'
 
@@ -203,5 +195,14 @@ bar {
         inactive_workspace #32323200 #32323200 #5c5c5c
     }
 }
+
+# starting software
+exec autotiling
+exec pipiwere
+exec pipiwere-pulse
+exec mako
+exec mpd
+exec wireplumber
+exec udiskie
 
 include /etc/sway/config.d/*
