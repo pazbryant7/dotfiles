@@ -111,7 +111,7 @@ play() {
   streamlink "$twitch_args" -p mpv "$1" "$quality"
 }
 
-updategrub() {
+update_grub() {
   sudo grub-mkconfig -o /boot/grub/grub.cfg
 }
 

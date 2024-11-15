@@ -3,15 +3,9 @@
 # Copy this to ~/.config/sway/config and edit it to your liking.
 #
 # Read `man 5 sway` for a complete reference.
-font pango: Maple Mono NF Regular 8
+font pango: sans-serif Regular 8.5
 
-gaps inner 0px
-gaps outer 0px
-
-corner_radius 5
-
-exec mako
-exec_always autotiling
+exec autotiling
 
 ### Variables
 #
@@ -33,7 +27,7 @@ set $browser firefox -P Personal
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-output * bg /home/bryant/Mega/personal/pc/images/wallpapers/sousou_no_frieren/frieren-monument.jpg fill
+output * bg ~/.bg fill
 input * xkb_layout 'bryant-dvorak'
 
 input type:keyboard {

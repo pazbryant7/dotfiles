@@ -2,8 +2,10 @@
 
 set -x
 
-WALLPAPER_DIR="$HOME/MEGAsync/personal/pc/images/wallpapers"
-LAST_WALLPAPER_FILE="$HOME/.fehbg"
+WALLPAPER_DIR="$HOME/Mega/personal/pc/images/wallpapers"
+LAST_WALLPAPER_FILE="$HOME/.bg"
+
+touch "$LAST_WALLPAPER_FILE"
 
 # Function to list folders in the first level of the wallpaper directory
 list_folders() {
@@ -54,12 +56,12 @@ SELECTED_WALLPAPER=$(select_wallpaper "$SELECTED_FOLDER")
   exit 1
 }
 
-# Apply the selected wallpaper using feh
-feh --bg-fill "$WALLPAPER_DIR/$SELECTED_FOLDER/$SELECTED_WALLPAPER"
+# Apply the selected wallpaper using waybg
+full_selected_wallpaper_path=$(WALLPAPER_DIR/SELECTED_FOLDER/SELECTED_WALLPAPER)
 
-# Update the .fehbg file with the new wallpaper path
-sed -i "s|^feh --bg-fill '.*'|feh --bg-fill \
-  '$WALLPAPER_DIR/$SELECTED_FOLDER/$SELECTED_WALLPAPER'|" \
-  "$LAST_WALLPAPER_FILE"
+pkill swaybg &
+swaybg -i "$full_selected_wallpaper_path" -m fill
 
-dunstify "New wallpaper:" "$SELECTED_WALLPAPER"
+echo >>"$full_selected_wallpaper_path"
+
+notify-send "New wallpaper:" "$SELECTED_WALLPAPER"

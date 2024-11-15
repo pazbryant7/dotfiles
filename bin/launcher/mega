@@ -11,7 +11,7 @@ is_pull_force="Pull"
 is_push_force="Push"
 
 select_sync_method() {
-  printf "%s\n%s\n%s" "$is_dual" "$is_pull_force" "$is_push_force" | wofi -dmenu -i -p "Select option"
+  printf "%s\n%s\n%s" "$is_dual" "$is_pull_force" "$is_push_force" | rofi -dmenu -i -p "Select option"
 }
 
 push() {
