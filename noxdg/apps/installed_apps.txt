@@ -45,13 +45,16 @@ mpd 0.23.15-9
 mpv 1:0.39.0-3
 ncmpcpp 0.10.1-1
 neovim 0.10.2-2
+noto-fonts-emoji 1:2.047-1
 nwg-displays 0.3.22-1
 nwg-look 0.2.7-1
 obsidian 1.7.6-1
 openssh 9.9p1-2
 otf-overpass 3.0.5-2
+p7zip 1:17.05-2
 pass 1.7.4-5
 pavucontrol 1:6.1-1
+piper 0.8-1
 pipewire 1:1.2.6-1
 pipewire-alsa 1:1.2.6-1
 pipewire-jack 1:1.2.6-1
@@ -64,6 +67,7 @@ ripgrep 14.1.1-1
 rofi-wayland 1.7.5+wayland3-2
 rsync 3.3.0-2
 rust 1:1.82.0-2
+sl 5.05-5
 slurp 1.5.0-1
 starship 1.21.1-1
 streamlink 7.0.0-1
@@ -78,8 +82,10 @@ udiskie 2.5.3-1
 vi 1:070224-6
 wayland 1.23.1-1
 wev 1.0.0-13
+wget 1.25.0-1
 wireplumber 0.5.6-1
 wl-clipboard 1:2.2.1-2
+wob 0.15.1-2
 xdg-user-dirs 0.18-2
 xh 0.23.0-1
 yazi 0.3.3-1
