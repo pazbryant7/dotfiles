@@ -17,6 +17,7 @@ export GPG_TTY=$(tty)
 export QT_QPA_PLATFORMTHEME=qt5ct
 export XDG_SESSION_TYPE=auto
 export EXPORT_OZONE_PLATFORM_HINT=auto
+export STARSHIP_CONFIG=~/.config/starship/starship.toml
 
 # }}
 

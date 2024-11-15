@@ -1,15 +1,14 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
 add_newline = false
 
 [line_break]
 disabled = true
 
-[directory]
-truncation_length = 2
-
 [character]                            
-success_symbol = "[](bold)"     
-error_symbol = "[!](bold)"
-vimcmd_symbol = "[](bold)"
+success_symbol = "[](green bold)"     
+error_symbol = "[!](green bold)"
+vimcmd_symbol = "[](green bold)"
 
 [git_branch]
 format = "[$branch]($style) "
