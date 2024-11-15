@@ -1,0 +1,43 @@
+#!/bin/env sh
+
+# Exit immediately if any command fails
+set -e
+
+# Debugging output (optional)
+# set -x
+
+# Function to get the currently active layout name
+get_active_layout() {
+  swaymsg -t get_inputs |
+    jq -r '.[] | select(.xkb_active_layout_name) | .xkb_active_layout_name' |
+    head -n 1 |               # Get the first active layout
+    sed -E 's/.*\((.*)\)/\1/' # Extract content inside parentheses
+}
+
+# Function to toggle between layouts
+toggle_layout() {
+  current_layout=$(get_active_layout) # Get current active layout
+  case "$current_layout" in
+  "Bryant Dvorak")
+    new_layout="bryant-dvorak-itl" # If current layout is Bryant Dvorak, set to Bryant Dvorak ITL
+    ;;
+  "Bryant Dvorak International")
+    new_layout="bryant-dvorak" # If current layout is Bryant Dvorak ITL, set to Bryant Dvorak
+    ;;
+  *)
+    echo "Unknown layout: $current_layout"
+    exit 1
+    ;;
+  esac
+
+  swaymsg input "type:keyboard" xkb_layout "$new_layout"
+  notify-send "New keyboard layout" "$new_layout"
+}
+
+# Main function to run the script
+main() {
+  toggle_layout # Toggle the keyboard layout
+}
+
+# Execute the main function
+main

@@ -4,14 +4,14 @@ set -e
 set -x
 
 # Base directory containing the scripts
-BASE_DIR="$HOME/bin/rofi"
+BASE_DIR="$HOME/bin/launcher"
 
 # Get the name of the script to execute
 select_script() {
   script_list=$(fd . "$BASE_DIR/" -tf -tl -tx)
 
   if [ -z "$script_list" ]; then
-    dunstify "No scripts found in $BASE_DIR"
+    notify-send "Info" "No scripts found in $BASE_DIR"
     exit 1
   fi
 
@@ -19,7 +19,7 @@ select_script() {
   script_name=$(echo "$script_names" | rofi -dmenu -p "Choose a script:")
 
   if [ -z "$script_name" ]; then
-    dunstify "No script selected"
+    notify-send "Info" "No script selected"
     exit 1
   fi
 

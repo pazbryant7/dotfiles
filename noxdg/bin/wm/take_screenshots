@@ -19,19 +19,19 @@ Options:
 
 # Parse command-line options
 while getopts "m:s:" opt; do
-  echo opt;
+  echo opt
   case "$opt" in
-    m) mode="$OPTARG" ;;  # `full`, `select`
-    s) store="$OPTARG" ;; # `clip`, `save`, or `clip&save`
-    *)
-      show_help
-      exit 1
-      ;;
+  m) mode="$OPTARG" ;;  # `full`, `select`
+  s) store="$OPTARG" ;; # `clip`, `save`, or `clip&save`
+  *)
+    show_help
+    exit 1
+    ;;
   esac
 done
 
 # Show help if requested
-if [ -z "$mode" ] || [[ "$1" == "-h" || "$1" == "--help" ]]; then
+if [ -z "$mode" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
   show_help
   exit 0
 fi
@@ -41,18 +41,21 @@ mode="${mode:-full}"
 store="${store:-clip&save}"
 
 # Create the directory if it doesn't exist
-mkdir -p "$dir" || { echo "Error: Failed to create directory $dir"; exit 1; }
+mkdir -p "$dir" || {
+  echo "Error: Failed to create directory $dir"
+  exit 1
+}
 
 # Build the maim command
 command="grim -l 9"
 case "$mode" in
-  select) command="$command -g '$(slurp)'" ;;
-  full) ;; # No additional options needed for full screenshot
-  *)
-    echo "Invalid mode: $mode. Valid modes are 'full' or 'select'."
-    show_help
-    exit 1
-    ;;
+select) command="$command -g '$(slurp)'" ;;
+full) ;; # No additional options needed for full screenshot
+*)
+  echo "Invalid mode: $mode. Valid modes are 'full' or 'select'."
+  show_help
+  exit 1
+  ;;
 esac
 command="$command \"$file\""
 

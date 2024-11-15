@@ -14,6 +14,7 @@
     # Super key
     set $mod Mod4
     
+    # Movements key
     set $left h
     set $down j
     set $up k
@@ -52,12 +53,11 @@
 #-- Input configuration: --
 #--------------------------
 
-
-input * xkb_layout 'bryant-dvorak'
-
 input type:keyboard {
   repeat_delay 200
   repeat_rate 40
+  # custom keyboard layout
+  xkb_layout 'bryant-dvorak'
 }
 
 
@@ -84,15 +84,22 @@ input "type:pointer" accel_profile flat
     # Launch file manager:
     bindsym $mod+e exec nemo
 
-    # Save selected area to clipboard
+    # Toggle custom keyboard layouts
+    bindsym $mod+space exec ~/bin/wm/switch_keyboard
+
+    # Select and execute custom scripts
+    bindsym $mod+s exec ~/bin/wm/select_and_execute
+
+    # Save selected area in clipboard
     bindsym Print exec ~/bin/wm/take_screenshots -m select -s clip
     
-    # Save selected area to screenshots dir
+    # Save selected area in screenshots dir
     bindsym $mod+Print exec ~/bin/wm/take_screenshots -m select -s save
     
-    # Save a selected area
+    # Save full screen in clipboard
     bindsym Shift+Print exec ~/bin/wm/take_screenshots -m full -s clip
 
+    # Save full screen in screenshots dir
     bindsym Ctrl+Print exec ~/bin/wm/take_screenshots -m full -s save
     
     
@@ -164,7 +171,7 @@ bindsym $mod+r mode "resize"
 #
     # Special keys to adjust volume via PulseAudio
     bindsym --locked XF86AudioMute exec pactl set-sink-mute \@DEFAULT_SINK@ toggle
-    bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume \@DEFAULT_SINK@ -5%
+    bindsym --locked XF86AudioLowerVolume exec ~/bin/wm/set_volume
     bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume \@DEFAULT_SINK@ +5%
     bindsym --locked XF86AudioMicMute exec pactl set-source-mute \@DEFAULT_SOURCE@ toggle
     # Special keys to adjust brightness via brightnessctl

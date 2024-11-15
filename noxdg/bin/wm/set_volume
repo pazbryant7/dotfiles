@@ -1,0 +1,59 @@
+#!/bin/sh
+
+set -x
+set -e
+
+# Maximum value in pactl, equivalent to 100% in wob
+MAX_PACTL_VOLUME=153
+
+# Get the current volume level (as an integer) for the specific sink
+get_current_volume() {
+  pactl list sinks | rg -A 20 'alsa_output.pci-0000_00_1f.3.analog-stereo' | rg 'Volume' | head -n 1 | awk '{print $5}' | tr -d '%'
+}
+
+# Write the volume level to the /tmp/wobpipe file (as a number between 0 and 100)
+write_to_wobpipe() {
+  echo "$1" >/tmp/wobpipe
+}
+
+# Convert pactl volume to a 0-100 scale for wob
+scale_to_wob() {
+  echo $((($1 * 100) / MAX_PACTL_VOLUME))
+}
+
+# Check if we received a valid key as an argument
+if [ "$#" -ne 1 ]; then
+  echo "Usage: $0 <key>"
+  exit 1
+fi
+
+# Get the current volume in pactl range (0 to 153)
+current_volume=$(get_current_volume)
+
+# Handle the volume change based on the key pressed
+case "$1" in
+XF86AudioLowerVolume)
+  # Decrease volume by 5%
+  new_volume=$((current_volume - 5))
+  if [ "$new_volume" -lt 0 ]; then
+    new_volume=0
+  fi
+  pactl set-sink-volume @DEFAULT_SINK@ "${new_volume}%"
+  ;;
+XF86AudioRaiseVolume)
+  # Increase volume by 5%
+  new_volume=$((current_volume + 5))
+  if [ "$new_volume" -gt "$MAX_PACTL_VOLUME" ]; then
+    new_volume=$MAX_PACTL_VOLUME
+  fi
+  pactl set-sink-volume @DEFAULT_SINK@ "${new_volume}%"
+  ;;
+*)
+  echo "Unknown key: $1"
+  exit 1
+  ;;
+esac
+
+# Convert the updated pactl volume to a 0-100 scale and write it to wobpipe
+scaled_volume=$(scale_to_wob "$new_volume")
+write_to_wobpipe "$scaled_volume"
