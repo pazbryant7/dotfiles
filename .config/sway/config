@@ -170,11 +170,10 @@ bindsym $mod+r mode "resize"
 # Utilities:
 #
     # Special keys to adjust volume via PulseAudio
-    bindsym --locked XF86AudioMute exec pactl set-sink-mute \@DEFAULT_SINK@ toggle
-    bindsym --locked XF86AudioLowerVolume exec ~/bin/wm/set_volume
-    bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume \@DEFAULT_SINK@ +5%
-    bindsym --locked XF86AudioMicMute exec pactl set-source-mute \@DEFAULT_SOURCE@ toggle
-    # Special keys to adjust brightness via brightnessctl
+    bindsym --locked XF86AudioLowerVolume exec ~/bin/wm/set_volume down
+    bindsym --locked XF86AudioRaiseVolume exec ~/bin/wm/set_volume up
+    # bindsym --locked XF86AudioMute exec ~/bin/wm/set_volume
+    # bindsym --locked XF86AudioMicMute exec pactl set-source-mute \@DEFAULT_SOURCE@ toggle
 
 #
 # Status Bar:

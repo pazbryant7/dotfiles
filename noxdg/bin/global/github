@@ -28,7 +28,7 @@ traverse_directories() {
 
 # Main function to start the script
 main() {
-  root_path="/home/bryant/documents/github"
+  root_path="/home/bryant/Documents/github"
 
   mkdir -p "$root_path"
 

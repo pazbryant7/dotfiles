@@ -13,7 +13,7 @@ get_current_volume() {
 
 # Write the volume level to the /tmp/wobpipe file (as a number between 0 and 100)
 write_to_wobpipe() {
-  echo "$1" >/tmp/wobpipe
+  echo "$1" >/tmp/volume.fifo
 }
 
 # Convert pactl volume to a 0-100 scale for wob
@@ -32,7 +32,7 @@ current_volume=$(get_current_volume)
 
 # Handle the volume change based on the key pressed
 case "$1" in
-XF86AudioLowerVolume)
+down)
   # Decrease volume by 5%
   new_volume=$((current_volume - 5))
   if [ "$new_volume" -lt 0 ]; then
@@ -40,7 +40,7 @@ XF86AudioLowerVolume)
   fi
   pactl set-sink-volume @DEFAULT_SINK@ "${new_volume}%"
   ;;
-XF86AudioRaiseVolume)
+up)
   # Increase volume by 5%
   new_volume=$((current_volume + 5))
   if [ "$new_volume" -gt "$MAX_PACTL_VOLUME" ]; then
