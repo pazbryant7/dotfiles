@@ -6,6 +6,7 @@ abbr -a pass "gopass"
 abbr -a bb "btm --basic"
 abbr -a transes "trans en:es"
 abbr -a ani-cli "ani-cli -q 1080"
+abbr -a feh "feh -g 860x600 --scale-down"
 abbr -a ani-cli-dub "ani-cli -q 1080 --dub"
 
 abbr -a ff "fastfetch"

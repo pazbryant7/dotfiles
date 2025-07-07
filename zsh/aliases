@@ -17,6 +17,7 @@ alias p="xclip -selection clipboard -o"
 alias ani-cli="ani-cli -q 1080"
 alias ani-cli-dub="ani-cli -q 1080 --dub"
 alias fishc="cd ~/.config/fish && vi config.fish"
+alias feh="feh -g 860x600 --scale-down"
 
 alias ff="fastfetch"
 alias sht="shutdown now"
