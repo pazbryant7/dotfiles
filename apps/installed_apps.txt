@@ -17,7 +17,6 @@ docker 1:28.3.0-1
 docker-buildx 0.25.0-1
 docker-compose 2.37.3-1
 dunst 1.12.2-1
-dust 1.2.1-1
 efibootmgr 18-3
 eza 0.21.6-1
 fastfetch 2.46.0-1
