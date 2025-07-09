@@ -38,7 +38,7 @@ tab_width = 2
 # Python: Adheres to the PEP 8 style guide, which requires 4 spaces.
 [*.py]
 indent_style = space
-indent_size = 4
+indent_size = 2
 
 # Go: Aligns with the 'gofmt' standard, which uses tabs for indentation.
 # This section is technically redundant given the global default, but it is
@@ -64,22 +64,22 @@ indent_size = 2
 # Rust: Aligns with the 'rustfmt' tool's default, which is 4 spaces.
 [*.rs]
 indent_style = space
-indent_size = 4
+indent_size = 2
 
 # C/C++: While many styles exist, 4 spaces is a modern, readable standard.
 [*.{c,h,cpp,hpp}]
 indent_style = space
-indent_size = 4
+indent_size = 2
 
 # C#: Microsoft's official guidelines recommend 4 spaces.
 [*.cs]
 indent_style = space
-indent_size = 4
+indent_size = 2
 
 # PHP: Adheres to PSR-12, which requires 4 spaces.
 [*.php]
 indent_style = space
-indent_size = 4
+indent_size = 2
 
 # Ruby: The community style guide strongly recommends 2 spaces.
 [*.rb]
@@ -89,17 +89,17 @@ indent_size = 2
 # Lua: Standards vary, but 4 spaces is a common choice for readability.
 [*.lua]
 indent_style = space
-indent_size = 4
+indent_size = 2
 
 # Swift: Apple's official style guide uses 4 spaces.
 [*.swift]
 indent_style = space
-indent_size = 4
+indent_size = 2
 
 # Kotlin: The official convention is 4 spaces.
 [*.{kt,kts}]
 indent_style = space
-indent_size = 4
+indent_size = 2
 
 # Shell Scripts: 2 spaces is a common and readable convention.
 [*.{sh,bash}]
@@ -120,7 +120,7 @@ indent_size = 2
 # Dockerfile: 4 spaces is a readable choice for multi-line instructions.
 [Dockerfile]
 indent_style = space
-indent_size = 4
+indent_size = 2
 
 # Makefile: Recipes require hard tabs. Other parts can be spaces, but to
 # avoid editor confusion, enforcing tabs for the whole file is safest.
