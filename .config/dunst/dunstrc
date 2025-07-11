@@ -19,7 +19,7 @@
     text_icon_padding = 0
     frame_width = 1
     sort = yes
-    font = Inter Display 10
+    font = sans 10
     line_height = 4
     markup = full
     # default
