@@ -33,7 +33,7 @@ dual_sync() {
 }
 
 send_notification() {
-	notify-send "Mega Successfully"
+	notify-send "mega successfully"
 	send-sound-alert
 }
 

@@ -9,7 +9,7 @@ get_current_layout() {
 
 send_notification() {
 	current_layout=$1
-	notify-send "Keyboard $current_layout"
+	notify-send "keyboard $current_layout"
 }
 
 switch_layout() {

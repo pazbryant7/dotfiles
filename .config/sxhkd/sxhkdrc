@@ -2,10 +2,10 @@ super + q
   bspc node -c
 
 super + alt + {e,r}
-	bspc {quit,wm -r} && notify-send "Bspwm reloaded"
+	bspc {quit,wm -r} && notify-send "bspwm reloaded"
 
 super + control + Escape
-	pkill -USR1 -x sxhkd && notify-send "Sxhkd reloaded"
+	pkill -USR1 -x sxhkd && notify-send "sxhkd reloaded"
 
 super + f
   bspc node -t {fullscreen,tiled}
@@ -97,16 +97,16 @@ super + m
 # -------------- print ---------------------------
 
 Print
- ~/bin/wm/take-screenshots -m select -s clip && notify-send "Saved in clipboard"
+ ~/bin/wm/take-screenshots -m select -s clip && notify-send "saved in clipboard"
 
 alt + Print
- ~/bin/wm/take-screenshots -m select -s save && notify-send "Saved in disk"
+ ~/bin/wm/take-screenshots -m select -s save && notify-send "saved in disk"
 
 super + Print
- ~/bin/wm/take-screenshots -m full -s clip && notify-send "Saved in clipboard"
+ ~/bin/wm/take-screenshots -m full -s clip && notify-send "saved in clipboard"
 
 control + Print
- ~/bin/wm/take-screenshots -m full -s save && notify-send "Saved in disk"
+ ~/bin/wm/take-screenshots -m full -s save && notify-send "saved in disk"
 
 # --------------- resize windows --------------------
 

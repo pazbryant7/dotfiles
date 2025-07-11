@@ -4,7 +4,7 @@ set -e
 
 # Function to select a color using xcolor
 select_color() {
-	notify-send "XCOLOR" "Picking color"
+	notify-send "picking color"
 
 	xcolor || {
 		echo "Failed to select color" >&2

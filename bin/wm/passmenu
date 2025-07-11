@@ -64,4 +64,4 @@ if [ -z "$username" ]; then
 	return 0
 fi
 
-notify-send "Login" "$username"
+notify-send "$username"

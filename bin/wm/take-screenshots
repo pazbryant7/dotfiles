@@ -10,7 +10,7 @@ file="$dir/screenshot_$time.png"
 countdown() {
 	sec="$1"
 	while [ "$sec" -gt 0 ]; do
-		notify-send -a "sshot" -t 1000 --replace=699 -i "$file" "Taking shot in: $sec"
+		notify-send -a "sshot" -t 1000 --replace=699 -i "taking shot in: $sec"
 		sec=$((sec - 1)) # Decrement sec (POSIX-compliant)
 		sleep 1
 	done
@@ -73,9 +73,9 @@ command="$command \"$file\""
 
 # Execute the screenshot command
 if eval "$command"; then
-	notify-send -a "sshot" -u normal --replace=699 -i "$file" "Screenshot Successfully"
+	notify-send -a "sshot" -u normal --replace=699 -i "screenshot saved"
 else
-	notify-send -a "sshot" -u normal --replace=699 "Screenshot Failed"
+	notify-send -a "sshot" -u normal --replace=699 "screenshot failed"
 	exit 1
 fi
 
