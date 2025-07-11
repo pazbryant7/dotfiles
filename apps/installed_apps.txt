@@ -80,6 +80,7 @@ rsync 3.4.1-2
 rtkit 0.13-3
 rust 1:1.88.0-1
 screenkey 1.5-5
+sl 5.05-5
 sqlc 1.29.0-1
 starship 1.23.0-1
 stow 2.4.1-1
