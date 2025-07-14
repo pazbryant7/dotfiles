@@ -60,7 +60,7 @@ super + space
   ~/bin/wm/switch-keyboard
 
 super + Return
-	brave
+	firefox
 
 super + b
   ~/bin/wm/set-brightness

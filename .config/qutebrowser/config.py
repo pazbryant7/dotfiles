@@ -42,7 +42,7 @@ config.bind("<Ctrl-w>", "fake-key <Ctrl-Backspace>", "insert")
 config.bind("<Ctrl-k>", "fake-key <Shift-End><Delete>", "insert")
 config.bind("<Ctrl-u>", "fake-key <Shift-Home><Delete>", "insert")
 
-# set default bind imitating brave browser
+# set default bind imitating firefox browser
 config.bind("<Ctrl-h>", "history")
 config.bind("<Ctrl-Shift-n>", "open -p")
 config.bind("<Ctrl-j>", "download-open")

@@ -94,7 +94,7 @@ translate-shell 0.9.7.1-2
 tree 2.2.1-1
 ueberzugpp 2.9.7-2
 ufw 0.36.2-5
-uv 0.7.20-1
+uv 0.7.21-1
 wireplumber 0.5.10-1
 xclip 0.13-6
 xcolor 0.5.1-4
