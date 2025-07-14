@@ -60,10 +60,7 @@ super + space
   ~/bin/wm/switch-keyboard
 
 super + Return
-	brave --profile-directory="personal"
-
-super + shift + Return
-	brave --profile-directory="work"
+	brave
 
 super + b
   ~/bin/wm/set-brightness
