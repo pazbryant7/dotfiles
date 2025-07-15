@@ -3,3 +3,5 @@
 	path = /home/bryant/Documents/github/pass
 [mounts "dev"]
 	path = /home/bryant/Documents/github/pass-dev
+[core]
+	autosync = false
