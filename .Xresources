@@ -9,30 +9,13 @@ Xft.lcdfilter: lcddefault
 *.foreground: #ffffff
 *.cursorColor: #957139
 
-*.color0: #1d1f21
-*.color1: #cc6666
-*.color2: #b5bd68
-*.color3: #f0c674
-*.color4: #81a2be
-*.color5: #b294bb
-*.color6: #8abeb7
-*.color7: #c5c8c6
-*.color8: #666666
-*.color9: #d54e53
-*.color10: #b9ca4a
-*.color11: #e7c547
-*.color12: #7aa6da
-*.color13: #c397d8
-*.color14: #70c0b1
-*.color15: #eaeaea
-
 ! ST specific configurations
-! st.font: Maple Mono:pixelsize=13.5:style:Bold
-! st.font: Maple Mono NL:pixelsize=13.5:style:SemiBold
-! st.font: Maple Mono NL NF:pixelsize=13.5:style:SemiBold
-! st.font: Maple Mono Normal NL NF:pixelsize=13.5:style:SemiBold
-! st.font: Maple Mono Normal NL:pixelsize=13.5:style:SemiBold
-st.font: Recursive Mono Casual Static:pixelsize=13.5:style:SemiBold
+st.font: Maple Mono:pixelsize=13.5:antialias=true:autohint=true:style:Bold
+! st.font: Maple Mono NL:pixelsize=13.5:style:SemiBold:antialias=true:autohint=true
+! st.font: Maple Mono NL NF:pixelsize=13.5:style:SemiBold:antialias=true:autohint=true
+! st.font: Maple Mono Normal NL NF:pixelsize=13.5:style:SemiBold:antialias=true:autohint=true
+! st.font: Maple Mono Normal NL:pixelsize=13.5:style:SemiBold:antialias=true:autohint=true
+! st.font: Recursive Mono Casual Static:pixelsize=13.5:style:SemiBold:antialias=true:autohint=true
 
 
 st.alpha: 0.85
