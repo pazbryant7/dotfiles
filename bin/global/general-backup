@@ -8,6 +8,7 @@ MEDIA_DESTINATION="/run/media/bryant/tiagovault"
 # Paths separated by newlines for safe iteration.
 MEDIA_SOURCES="$HOME/Documents/books
 $HOME/Music
+$HOME/.config/BraveSoftware
 $HOME/Documents/github/ansible-dots/.secrets"
 
 RSYNC_EXCLUDE_OPTS="
