@@ -41,7 +41,7 @@ export PATH="${(j/:/)extra_path}:${PATH}"
 # custom plugin manager
 # function can be found in ~/.zshplugin
 repos=(
-	# hlissner/zsh-autopair
+	hlissner/zsh-autopair
 	# zsh-users/zsh-syntax-highlighting
 )
 
