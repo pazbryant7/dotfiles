@@ -8,6 +8,7 @@ dragon-drop 1.2.0-2
 electron37-bin 37.2.1-1
 lazydocker 0.24.1-1
 litecli 1.15.0-1
+numbat-bin 1.16.0-1
 paru 2.1.0-1
 paru-debug 2.0.4-1
 postman-bin 11.52.5-1
