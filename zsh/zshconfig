@@ -6,10 +6,12 @@ autoload -U url-quote-magic edit-command-line compinit &&
 # zsh widgets
 zle -N edit-command-line
 zle -N copy_terminal_buffer
+zle -N clear-and-redisplay
 
 # custom key binds
 bindkey -e # set to emacs binds
 bindkey '^[e' edit-command-line
+bindkey '^L' clear-and-redisplay
 bindkey '^X' copy_terminal_buffer
 bindkey '^[[Z' reverse-menu-complete
 

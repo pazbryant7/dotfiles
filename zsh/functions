@@ -63,3 +63,8 @@ h() {
 		return 1
 	}
 }
+
+clear-and-redisplay() {
+	clear
+	zle .redisplay
+}

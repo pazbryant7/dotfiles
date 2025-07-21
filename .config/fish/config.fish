@@ -3,18 +3,22 @@ if test -z "$DISPLAY"; and test (tty) = /dev/tty1; and status is-login
 end
 
 set -U fish_user_paths \
-		~/bin/global/ \
-		~/.cargo/bin/ \
-		~/.local/bin/ \
-		~/bin/crontab/ \
-		/usr/local/bin/ \
-		/var/lib/flatpak/exports/bin/ \
-		~/.local/share/nvim/mason/bin/ \
-		~/Documents/github/boilerplate/ \
+    ~/bin/global/ \
+    ~/.cargo/bin/ \
+    ~/.local/bin/ \
+    ~/bin/crontab/ \
+    /usr/local/bin/ \
+    /var/lib/flatpak/exports/bin/ \
+    ~/.local/share/nvim/mason/bin/ \
+    ~/Documents/github/boilerplate/ \
     $fish_user_paths
 
+# CUSTOM BINDS
+# Bind Ctrl+L to the new function
+bind \cl clear_and_redisplay
+
 if command -v fzf >/dev/null
-	fzf --fish | source
+    fzf --fish | source
 end
 
 if command -v atuin >/dev/null
