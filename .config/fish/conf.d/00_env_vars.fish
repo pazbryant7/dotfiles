@@ -1,17 +1,17 @@
-set -gx EDITOR "nvim"
+set -gx EDITOR nvim
 set -gx VISUAL "$EDITOR"
-set -gx TERMINAL "st"
+set -gx TERMINAL st
 set -gx SUDO_EDITOR "$EDITOR"
-set -gx BROWSER "firefox"
-set -gx VIDEO "mpv"
-set -gx COLORTERM "truecolor"
-set -gx OPENER "xdg-open"
-set -gx PAGER "less"
-set -gx WM "dwm"
+set -gx BROWSER firefox
+set -gx VIDEO mpv
+set -gx COLORTERM truecolor
+set -gx OPENER xdg-open
+set -gx PAGER less
+set -gx WM dwm
 set -gx MANPAGER 'nvim +Man!'
-set -gx GOPATH "/home/bryant/go/bin"
-set -gx CM_LAUNCHER "rofi"
-set -gx SXHKD_SHELL "fish"
+set -gx GOPATH /home/bryant/go/bin
+set -gx CM_LAUNCHER rofi
+set -gx SXHKD_SHELL fish
 set -gx STARSHIP_CONFIG "/home/bryant/.config/starship/starship.toml"
 set -gx XDG_CONFIG_HOME "$HOME/.config"
 
@@ -27,7 +27,6 @@ set -gx FZF_DEFAULT_COMMAND "fd \
   --hidden \
   --follow \
   --exclude=.git"
-
 
 set -gx QT_QPA_PLATFORMTHEME qt6ct
 

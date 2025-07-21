@@ -17,7 +17,7 @@ function stow_dots --description "Restow dotfiles using GNU Stow from ~/Document
 
     # Run stow with optional extra args
     command stow --target="/home/$USER" --adopt --restow .
-		# the "." at the end it is important, because stow needs to know which files
-		# you want to add to the "--target" folder. If not, then no dir nor file will
-		# be symlinked
+    # the "." at the end it is important, because stow needs to know which files
+    # you want to add to the "--target" folder. If not, then no dir nor file will
+    # be symlinked
 end
