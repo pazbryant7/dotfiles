@@ -2,7 +2,7 @@
 abbr -a n nvim
 abbr -a yay paru
 abbr -a wg "sudo wg" # for custom vpn
-abbr -a bnr "bun run"
+abbr -a bunr "bun run"
 abbr -a pass gopass
 abbr -a bb "btm --basic"
 abbr -a transes "trans en:es"
