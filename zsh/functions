@@ -25,17 +25,14 @@ stow_dots() {
 	dots="$HOME/Documents/github/dotfiles"
 	mkdir -p "$dots" && cd "$dots" || return
 	stow --dir="$dots" --target=/home/"$USER" --adopt --restow .
+
+	cd - # get back to previous dir
+
 	# the "." at the end it is important, because stow needs to know which files
 	# you want to add to the "--target" folder. If not, then no dir nor file will
 	# be symlinked
 }
 
-# NOTE: this function is used in ~/.zshconfig file
-# is attached to ^X keybind
-copy_terminal_buffer() {
-	echo "$BUFFER" | xclip -selection clipboard
-	zle reset-prompt
-}
 
 # NOTE: this is to refresh DNS cache. I have this because I have
 # blocked all social media and manga websites to avoid get distracted
@@ -44,6 +41,8 @@ flush_dns_cache() {
 	sudo systemd-resolve --flush-caches
 }
 
+# NOTE: this function is used when inside tmux session.
+# this script works along my custom tmux scripts in ~/bin/tmux
 h() {
 	if [ -z "$TMUX" ]; then
 		printf "Not in a tmux session."
@@ -64,7 +63,16 @@ h() {
 	}
 }
 
+# NOTE: this function is used in ~/.zshconfig file
+# is attached to ^L keybind
 clear-and-redisplay() {
 	clear
 	zle .redisplay
+}
+
+# NOTE: this function is used in ~/.zshconfig file
+# is attached to ^X keybind
+copy_terminal_buffer() {
+	echo "$BUFFER" | xclip -selection clipboard
+	zle reset-prompt
 }
