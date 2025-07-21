@@ -8,8 +8,6 @@ else
 		--type=directory \
 		--type=symlink \
 		--follow \
-		~/ \
-		/run/media/bryant/ \
 		~/Documents/github/ \
 		~/Documents/github/temp \
 		~/Downloads/ 2>/dev/null | fzf)
