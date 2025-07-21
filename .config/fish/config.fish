@@ -37,6 +37,14 @@ if command -v zoxide >/dev/null
     zoxide init fish | source
 end
 
+# --- Custom Plugin Manager ---
+# Define the list of plugins to install (user/repo format)
+set -g fish_plugins \
+    'jorgebucaran/autopair.fish'
+
+# Load the plugins from the list above
+plugin load
+
 set -U fish_greeting
 set -U fish_autosuggestion_enabled 0
 
