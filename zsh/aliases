@@ -43,4 +43,4 @@ alias m="cd /run/media"
 
 alias motivation="mpv ~/Documents/github/media/videos/biy/cristiano.mp4"
 
-alias bunr="bun run"
+alias br="bun run"
