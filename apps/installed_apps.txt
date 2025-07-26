@@ -95,6 +95,7 @@ translate-shell
 tree
 ueberzugpp
 ufw
+unclutter
 uv
 wireplumber
 xclip
