@@ -1,7 +1,7 @@
 #!/bin/sh
 
 sync_system_apps() {
-	sudo pacman -Qen | sort >"$1/installed_apps.txt"
+	sudo pacman -Qen | awk '{print $1}' | sort >"$1/installed_apps.txt"
 }
 
 sync_python_apps() {
@@ -21,23 +21,23 @@ sync_go_apps() {
 
 sync_flatpak_apps() {
 	if command -v flatpak >/dev/null 2>&1; then
-		flatpak list | sort >"$1/flatpak_installed.txt"
+		flatpak list | awk '{print $1}' | sort >"$1/flatpak_installed.txt"
 	fi
 }
 
 sync_aur_apps() {
-	paru -Qm | sort >"$1/installed_aur_apps.txt"
+	paru -Qm | awk '{print $1}' | sort >"$1/installed_aur_apps.txt"
 }
 
 main() {
 	dot_path="/home/bryant/Documents/github/dotfiles/apps"
 
-	sync_system_apps $dot_path
-	sync_python_apps $dot_path
-	sync_rust_apps $dot_path
-	sync_go_apps $dot_path
-	sync_flatpak_apps $dot_path
-	sync_aur_apps $dot_path
+	sync_system_apps "$dot_path"
+	sync_python_apps "$dot_path"
+	sync_rust_apps "$dot_path"
+	sync_go_apps "$dot_path"
+	sync_flatpak_apps "$dot_path"
+	sync_aur_apps "$dot_path"
 }
 
 main
