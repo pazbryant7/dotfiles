@@ -43,5 +43,5 @@ SETUVAR fish_pager_color_selected_background:\x2d\x2dreverse
 SETUVAR fish_pager_color_selected_completion:\x1d
 SETUVAR fish_pager_color_selected_description:\x1d
 SETUVAR fish_pager_color_selected_prefix:\x1d
-SETUVAR fish_user_paths:/home/bryant/bin/global/\x1e/home/bryant/\x2ecargo/bin/\x1e/home/bryant/\x2elocal/bin/\x1e/home/bryant/bin/crontab/\x1e/usr/local/bin/\x1e/var/lib/flatpak/exports/bin/\x1e/home/bryant/\x2elocal/share/nvim/mason/bin/\x1e/home/bryant/Documents/github/boilerplate/\x1e/home/bryant/\x2elocal/share/bob/nvim\x2dbin/
+SETUVAR fish_user_paths:/home/bryant/bin/global/\x1e/home/bryant/\x2ecargo/bin/\x1e/home/bryant/\x2elocal/bin/\x1e/home/bryant/bin/crontab/\x1e/usr/local/bin/\x1e/var/lib/flatpak/exports/bin/\x1e/home/bryant/\x2elocal/share/vim/mason/bin/\x1e/home/bryant/\x2elocal/share/nvim/mason/bin/\x1e/home/bryant/Documents/github/boilerplate/
 SETUVAR history_ignore_dups:yes
