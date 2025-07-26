@@ -38,7 +38,7 @@ tab_width = 2
 # Python: Adheres to the PEP 8 style guide, which requires 4 spaces.
 [*.py]
 indent_style = space
-indent_size = 2
+indent_size = 4
 
 # Go: Aligns with the 'gofmt' standard, which uses tabs for indentation.
 # This section is technically redundant given the global default, but it is
