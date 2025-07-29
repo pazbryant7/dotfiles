@@ -12,7 +12,6 @@ numbat-bin
 paru
 paru-debug
 postman-bin
-rofi-greenclip
 ttf-dmcasansserif
 vesktop-bin
 wego
