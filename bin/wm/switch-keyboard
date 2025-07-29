@@ -1,26 +1,51 @@
 #!/bin/sh
 
-set -x
 set -e
 
+DEFAULT_LAYOUT="bryantd"
+DEFAULT_NUMERIC_LAYOUT="bryantdn"
+
+DEFAULT_INTERNATIONAL_LAYOUT="bryantdi"
+DEFAULT_INTERNATIONAL_NUMERIC_LAYOUT="bryantdin"
+
 get_current_layout() {
-	setxkbmap -query | rg layout | awk '{print $2}'
+	setxkbmap -query | grep 'layout:' | awk '{print $2}'
 }
 
 send_notification() {
-	current_layout=$1
-	notify-send "keyboard $current_layout"
+	new_layout=$1
+	display_name=$(echo "$new_layout" | tr '[:lower:]' '[:upper:]')
+	notify-send "keyboard" "$display_name"
 }
 
-switch_layout() {
-	current_layout=$(get_current_layout)
-	if [ "$current_layout" = "bryantd" ]; then
-		setxkbmap bryantdi
+set_layout_and_notify() {
+	layout_to_set=$1
+	setxkbmap "$layout_to_set"
+	send_notification "$layout_to_set"
+}
+
+toggle_layout() {
+	current_layout="$(get_current_layout)"
+
+	main_layout="$1"
+	international_layout="$2"
+
+	if [ "$current_layout" = "$main_layout" ]; then
+		set_layout_and_notify "$international_layout"
 	else
-		setxkbmap bryantd
+		set_layout_and_notify "$main_layout"
 	fi
-	new_layout=$(get_current_layout)
-	send_notification "$new_layout"
+	current_layout="$(get_current_layout)"
 }
 
-switch_layout
+main() {
+	if [ "$1" = "spanish" ]; then
+		toggle_layout "$DEFAULT_INTERNATIONAL_LAYOUT" \
+			"$DEFAULT_INTERNATIONAL_NUMERIC_LAYOUT"
+	else
+		toggle_layout "$DEFAULT_LAYOUT" \
+			"$DEFAULT_NUMERIC_LAYOUT"
+	fi
+}
+
+main "$@"
