@@ -23,10 +23,10 @@ export XDG_CONFIG_HOME="$HOME/.config"
 #{{ fzf
 
 export FZF_DEFAULT_OPTS=" \
---preview-window noborder \
 --height=50% \
---bind 'ctrl-o:execute(xdg-open {})'
---bind 'ctrl-x:execute(xdg-default {})'
+--preview-window noborder \
+--bind 'ctrl-o:execute(xdg-open {})' \
+--bind 'ctrl-x:execute(xdg-default {})' \
 "
 
 export QT_QPA_PLATFORMTHEME=qt6ct
@@ -36,4 +36,5 @@ export FZF_DEFAULT_COMMAND="fd \
   --strip-cwd-prefix \
   --hidden \
   --follow \
-  --exclude=.git"
+  --exclude=.git \
+"

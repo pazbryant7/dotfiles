@@ -26,7 +26,8 @@ set -gx FZF_DEFAULT_COMMAND "fd \
   --strip-cwd-prefix \
   --hidden \
   --follow \
-  --exclude=.git"
+  --exclude=.git \
+"
 
 set -gx QT_QPA_PLATFORMTHEME qt6ct
 
