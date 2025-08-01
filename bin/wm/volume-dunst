@@ -37,9 +37,9 @@ send_notification() {
 	volume="$(get_volume)"
 
 	if is_mute; then
-		icon="✖"
+		icon="󰝟 "
 	else
-		icon="✔"
+		icon=" "
 	fi
 
 	dunst_volume=$(awk "BEGIN {print ($volume / $MAX_VOLUME) * 100}")
@@ -47,7 +47,7 @@ send_notification() {
 	dunstify -h string:x-dunst-stack-tag:volume \
 		-h int:value:"$dunst_volume" \
 		-t 2000 \
-		"$icon system"
+		"$icon   system"
 }
 
 main() {
