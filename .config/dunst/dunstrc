@@ -3,31 +3,40 @@
     height = (0, 300)
     offset = (10, 10)
     word_wrap = true
-    font = "sans Bold 10"
+    font = "Overpass SemiBold 10"
     line_height = 4
     alignment = center
     separator_height = 15
     padding = 15
     horizontal_padding = 15
     frame_width = 1
-    corner_radius = 4
+    corner_radius = 8
     icon_position = off
     history_length = 6
     show_indicators = no
     mouse_right_click = do_action, close_all
-    progress_bar_height = 12
     max_icon_size = 96
+    progress_bar = true
+    progress_bar_height = 10
+    progress_bar_frame_width = 1
+    progress_bar_min_width = 120
+    progress_bar_max_width = 150
+    progress_bar_corner_radius = 4
+    progress_bar_corners = all
 
 [urgency_low]
-    background = "#D5D1BC"
+		highlight = "#000000"
+    background = "#C6B8C6"
     foreground = "#000000"
 
 [urgency_normal]
-    background = "#D5D1BC"
+		highlight = "#000000"
+    background = "#C6B8C6"
     foreground = "#000000"
 
 [urgency_critical]
-    background = "#D5D1BC"
+		highlight = "#000000"
+    background = "#C6B8C6"
     foreground = "#000000"
 
 # vim: ft=cfg
