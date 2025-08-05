@@ -35,13 +35,7 @@ navigate_home() {
 }
 
 main() {
-	if [ -z "$1" ]; then
-		echo "Error: No session name provided." >&2
-		echo "Usage: $0 <session_name>" >&2
-		exit 1
-	fi
-
-	readonly TARGET_SESSION="$1"
+	TARGET_SESSION="$(tmux display-message -p '#{session_name}')"
 
 	ensure_session_exists "$TARGET_SESSION"
 	navigate_home "$TARGET_SESSION" # needs to switch before kill
