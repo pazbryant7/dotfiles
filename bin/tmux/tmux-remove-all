@@ -35,7 +35,12 @@ navigate_home() {
 }
 
 main() {
-	TARGET_SESSION="$(tmux display-message -p '#{session_name}')"
+	TARGET_SESSION=""
+	if [ -z "$1" ]; then
+		TARGET_SESSION="$(tmux display-message -p '#{session_name}')"
+	else
+		TARGET_SESSION="$1"
+	fi
 
 	ensure_session_exists "$TARGET_SESSION"
 	navigate_home "$TARGET_SESSION" # needs to switch before kill
