@@ -1,3 +1,14 @@
 os:
-  open: "st -e nvim {{filename}}"
+  open: "xterm -e nvim {{filename}}"
   edit: "nvim {{filename}}"
+customCommands:
+  - key: "O"
+    description: "Open with 'vim' config in new terminal"
+    command: "xterm -e sh -c 'NVIM_APPNAME=vim nvim {{.SelectedFile.Name}}' > /dev/null 2>&1 &"
+    context: "files"
+    output: terminal
+  - key: "E"
+    description: "Edit with 'vim' config"
+    command: "NVIM_APPNAME=vim nvim {{.SelectedFile.Name}}"
+    context: "files"
+    output: terminal

@@ -1,6 +1,6 @@
 set -gx EDITOR nvim
 set -gx VISUAL "$EDITOR"
-set -gx TERMINAL st
+set -gx TERMINAL xterm
 set -gx SUDO_EDITOR "$EDITOR"
 set -gx BROWSER firefox
 set -gx VIDEO mpv
