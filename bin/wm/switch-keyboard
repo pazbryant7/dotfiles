@@ -3,9 +3,9 @@
 set -e
 
 DEFAULT_LAYOUT="bryantd"
-DEFAULT_NUMERIC_LAYOUT="bryantdn"
-
 DEFAULT_INTERNATIONAL_LAYOUT="bryantdi"
+
+DEFAULT_NUMERIC_LAYOUT="bryantdn"
 DEFAULT_INTERNATIONAL_NUMERIC_LAYOUT="bryantdin"
 
 get_current_layout() {
@@ -27,24 +27,24 @@ set_layout_and_notify() {
 toggle_layout() {
 	current_layout="$(get_current_layout)"
 
-	main_layout="$1"
-	international_layout="$2"
+	layout_1="$1"
+	layout_2="$2"
 
-	if [ "$current_layout" = "$main_layout" ]; then
-		set_layout_and_notify "$international_layout"
+	if [ "$current_layout" = "$layout_1" ]; then
+		set_layout_and_notify "$layout_2"
 	else
-		set_layout_and_notify "$main_layout"
+		set_layout_and_notify "$layout_1"
 	fi
 	current_layout="$(get_current_layout)"
 }
 
 main() {
-	if [ "$1" = "spanish" ]; then
-		toggle_layout "$DEFAULT_INTERNATIONAL_LAYOUT" \
+	if [ "$1" = "numbers" ]; then
+		toggle_layout "$DEFAULT_NUMERIC_LAYOUT" \
 			"$DEFAULT_INTERNATIONAL_NUMERIC_LAYOUT"
 	else
 		toggle_layout "$DEFAULT_LAYOUT" \
-			"$DEFAULT_NUMERIC_LAYOUT"
+			"$DEFAULT_INTERNATIONAL_LAYOUT"
 	fi
 }
 
