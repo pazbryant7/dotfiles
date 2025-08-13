@@ -4,42 +4,51 @@
 # tmux multiplexer terminal
 # translate shell from `soimort`
 
-language_list="$HOME/.tmux/tmux-translate-languages"
-
 safe_print() {
 	printf '%s' "$1"
 }
 
 tmux_translate() {
-	source="$1"
-	paragraph="$2"
+	translate_from="$1"
+	text_to_translate="$2"
 
 	# `man trans` for more details
-	trans_opts="-verbose -no-warn -speak"
+	translate_opts="-verbose -no-warn -speak"
 
-	trans_from=""
-	if [ "$source" = "en:spanish" ]; then
-		trans_from="en:es" # from English to Spanish
-	else
-		trans_from="es:en" # from Spanish to English
-	fi
-	tmux neww sh -c "trans $trans_opts $trans_from '$paragraph'; \
+	tmux neww sh -c "trans $translate_opts $translate_from '$text_to_translate'; \
     echo
     echo
     echo '⚡⚡⚡⚡⚡'; read -n 1"
 }
 
-selected_source=$(cat "$language_list" | fzf)
+main() {
+	translate_from="$1"
 
-if [ -z "$selected_source" ]; then
+	message=""
+	case "$translate_from" in
+	"en:es")
+		message="Translating from English to Spanish"
+		;;
+	"es:en")
+		message="Translating from Spanish to English"
+		;;
+	*)
+		echo "Error: Invalid direction. Please use 'en:es' or 'es:en'."
+		exit 1
+		;;
+	esac
+
+	printf '%s\n\n' "$message"
+	IFS= read -r query
+
+	if [ -z "$query" ]; then
+		printf "\nNo text entered. Exiting."
+		exit 0
+	fi
+
+	tmux_translate "$(safe_print "$translate_from")" "$(safe_print "$query")"
+
 	exit 0
-fi
+}
 
-printf "Enter text: "
-IFS= read -r query
-
-if rg -qs "$selected_source" "$language_list"; then
-	tmux_translate "$(safe_print "$selected_source")" "$(safe_print "$query")"
-fi
-
-exit 0
+main "$@"
