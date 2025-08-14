@@ -94,6 +94,7 @@ terminus-font
 tmux
 translate-shell
 tree
+typescript
 ueberzugpp
 ufw
 unclutter
