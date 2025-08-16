@@ -10,7 +10,7 @@
     padding = 15
     horizontal_padding = 15
     frame_width = 1
-    corner_radius = 8
+    corner_radius = 6
     icon_position = off
     history_length = 6
     show_indicators = no
@@ -26,17 +26,17 @@
 
 [urgency_low]
 		highlight = "#000000"
-    background = "#C6B8C6"
+    background = "#779b81"
     foreground = "#000000"
 
 [urgency_normal]
 		highlight = "#000000"
-    background = "#C6B8C6"
+    background = "#779b81"
     foreground = "#000000"
 
 [urgency_critical]
 		highlight = "#000000"
-    background = "#C6B8C6"
+    background = "#779b81"
     foreground = "#000000"
 
 # vim: ft=cfg
