@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+templates=$(curl -L -s "https://www.toptal.com/developers/gitignore/api/list")
+
+formatted_list=$(echo "$templates" | tr ',' '\n')
+
+selected_languages=$(printf "%s" "$formatted_list" | fzf --multi)
+
+if [ -z "$selected_languages" ]; then
+	echo "No template was selected. Exiting."
+	exit 1
+fi
+
+formatted_languages=$(echo "$selected_languages" | tr '\n' ',')
+
+curl -L -s "https://www.gitignore.io/api/${formatted_languages}" | xclip -selection clipboard

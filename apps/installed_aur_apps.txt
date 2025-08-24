@@ -6,7 +6,6 @@ datagrip
 datagrip-jre
 dragon-drop
 electron37-bin
-lazydocker
 litecli
 numbat-bin
 paru

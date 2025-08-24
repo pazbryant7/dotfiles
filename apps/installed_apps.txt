@@ -36,6 +36,7 @@ gst-plugin-pipewire
 imagemagick
 img2pdf
 jq
+lazydocker
 lazygit
 libnotify
 linux
@@ -58,7 +59,6 @@ noto-fonts-emoji
 nsxiv
 ntfs-3g
 nwg-look
-obsidian
 openresolv
 openssh
 pacman-contrib

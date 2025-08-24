@@ -1,9 +1,0 @@
-#!/usr/bin/env sh
-
-lanuage="$1"
-if [ -z "$lanuage" ]; then
-	echo "Error: no language was specified"
-	return 1
-fi
-
-curl -L -s "https://www.gitignore.io/api/${lanuage}"
