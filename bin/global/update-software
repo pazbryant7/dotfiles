@@ -29,6 +29,10 @@ sync_aur_apps() {
 	paru -Qm | awk '{print $1}' | sort >"$1/installed_aur_apps.txt"
 }
 
+sync_rustup_apps() {
+	rustup component list --installed | awk '{print $1}' | sort >"$1/rustup_installed.txt"
+}
+
 main() {
 	dot_path="/home/bryant/Documents/github/dotfiles/apps"
 
@@ -38,6 +42,7 @@ main() {
 	sync_go_apps "$dot_path"
 	sync_flatpak_apps "$dot_path"
 	sync_aur_apps "$dot_path"
+	sync_rustup_apps "$dot_path"
 }
 
 main
