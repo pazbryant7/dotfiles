@@ -5,15 +5,19 @@ Xft.hintstyle: hintslight
 Xft.lcdfilter: lcddefault
 
 ! Global colors
-*.background: #1e1e2e
-*.foreground: #ffffff
+! *.background: #1e1e2e
+*.background: #eff1f5
+
+! *.foreground: #ffffff
+*.foreground: #4c4f69
+
 *.cursorColor: #779b81
 
 ! ST specific configurations
-st.font: Maple Mono:pixelsize=13.5:antialias=true:autohint=true:style:Bold
-! st.font: Maple Mono NL:pixelsize=13.5:style:SemiBold:antialias=true:autohint=true
-! st.font: Maple Mono NL NF:pixelsize=13.5:style:SemiBold:antialias=true:autohint=true
-! st.font: Maple Mono Normal NL:pixelsize=13.5:style:SemiBold:antialias=true:autohint=true
+! st.font: Maple Mono:pixelsize=13.5:antialias=true:autohint=true:style:Bold
+! st.font: Maple Mono NL:pixelsize=13.5:style:Bold:antialias=true:autohint=true
+! st.font: Maple Mono NL NF:pixelsize=13.5:style:Bold:antialias=true:autohint=true
+! st.font: Maple Mono Normal NL:pixelsize=13.5:style:Bold:antialias=true:autohint=true
 ! st.font: Maple Mono Normal NL NF:pixelsize=13.5:style:SemiBold:antialias=true:autohint=true
 
 ! st.font: Recursive:pixelsize=13.5:style:Bold:antialias=true:autohint=true
@@ -21,12 +25,12 @@ st.font: Maple Mono:pixelsize=13.5:antialias=true:autohint=true:style:Bold
 ! st.font: Rec Mono Casual:pixelsize=14.5:style:Bold:antialias=true:autohint=true
 ! st.font: Rec Mono Linear:pixelsize=13.5:style:Bold:antialias=true:autohint=true
 ! st.font: Rec Mono Semicasual:pixelsize=13.5:style:Bold:antialias=true:autohint=true
-! st.font: Recursive Mono Casual Static:pixelsize=13.5:style:SemiBold:antialias=true:autohint=true
+st.font: Recursive Mono Casual Static:pixelsize=14.5:style:SemiBold:antialias=true:autohint=true
 
 
 
 st.alpha: 1.00
-st.chscale: 1.15
+st.chscale: 1.03
 st.cwscale: 1.03
 st.borderpx: 0px
 
