@@ -22,3 +22,4 @@ application/javascript=nvim.desktop
 text/html=nvim.desktop
 application/octet-stream=nvim.desktop
 audio/x-m4a=mpv.desktop
+text/x-script.python=nvim.desktop
