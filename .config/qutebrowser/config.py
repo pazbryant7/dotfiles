@@ -11,18 +11,18 @@ c.fonts.web.family.fixed = "monospace"
 c.fonts.web.family.fantasy = "monospace"
 c.fonts.web.family.cursive = "monospace"
 
-# yank url to clipboard in obsidian format
-config.bind("<y><o>", "yank inline [{title}]({url})")
-
 # set dark mode as a default
 c.colors.webpage.darkmode.enabled = True
 c.colors.webpage.darkmode.algorithm = "lightness-cielab"
 c.colors.webpage.darkmode.policy.images = "never"
 
+c.auto_save.session = True  # save tabs on quit/restart
+
 # toggle dark mode
 config.bind("<Ctrl+Shift+d>", "config-cycle colors.webpage.darkmode.enabled")
 
-c.auto_save.session = True  # save tabs on quit/restart
+# yank url to clipboard in obsidian format
+config.bind("<y><o>", "yank inline [{title}]({url})")
 
 # set in insert mode emacs key binds
 config.bind("<Ctrl-p>", "fake-key <Up>", "insert")
@@ -49,11 +49,19 @@ config.bind("<Ctrl-j>", "download-open")
 config.bind("<Ctrl-Shift-r>", "reload -f")
 config.bind("<Ctrl-Shift-o>", "bookmark-list")
 config.bind("<Ctrl-Shift-i>", "devtools right")
-config.bind('xt', 'config-cycle tabs.show always never')
-config.bind('<Ctrl-m>', 'hint links spawn mpv {hint-url}')
-config.bind('<Ctrl-t>', 'open -t;; set-cmd-text -s :open ')
-config.bind('xb', 'config-cycle statusbar.show always never')
-config.bind('xx', 'config-cycle statusbar.show always never;; config-cycle tabs.show always never')
+config.bind("xt", "config-cycle tabs.show always never")
+config.bind("<Ctrl-m>", "hint links spawn mpv {hint-url}")
+config.bind("<Ctrl-t>", "open -t;; cmd-set-text -s :open ")
+config.bind("xb", "config-cycle statusbar.show always never")
+config.bind(
+    "xx",
+    "config-cycle statusbar.show always never;; config-cycle tabs.show always never",
+)
+
+# set menu completion up, down and select as neovim like binds
+config.bind("<Ctrl-y>", "command-accept", mode="command")
+config.bind("<Ctrl-p>", "completion-item-focus prev", mode="command")
+config.bind("<Ctrl-n>", "completion-item-focus next", mode="command")
 
 
 # set default search engines
