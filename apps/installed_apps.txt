@@ -37,6 +37,7 @@ gst-plugin-pipewire
 imagemagick
 img2pdf
 jq
+just
 lazydocker
 lazygit
 libnotify
