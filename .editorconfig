@@ -69,7 +69,7 @@ indent_size = 4
 # C/C++: While many styles exist, 4 spaces is a modern, readable standard.
 [*.{c,h,cpp,hpp}]
 indent_style = space
-indent_size = 2
+indent_size = 4
 
 # C#: Microsoft's official guidelines recommend 4 spaces.
 [*.cs]
