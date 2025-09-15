@@ -10,7 +10,7 @@ select_template() {
 		--hidden \
 		--type=file \
 		--exclude="*.md" |
-		fzf --multi --preview "cat --color=always --style=numbers $BOILER_PLATE_DIR/{}" \
+		fzf --multi --preview "bat --color=always --style=numbers $BOILER_PLATE_DIR/{}" \
 			--preview-window=right:60% \
 			--header="Select a template (ESC to exit)"
 
