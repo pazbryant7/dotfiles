@@ -4,54 +4,45 @@ Xft.antialias: 1
 Xft.hintstyle: hintslight
 Xft.lcdfilter: lcddefault
 
-! Global colors
-*.background: #1e1e2e
-*.foreground: #ffffff
-*.cursorColor: #957139
+! st specific
+st.background: #1d1f21
+st.foreground: #ffffff
+st.cursorColor: #f67c65
 
-*.color0:     #1d1f21
-*.color8:     #666666
-*.color1:     #cc6666
-*.color9:     #d54e53
-*.color2:     #b5bd68
-*.color10:    #b9ca4a
-*.color3:     #f0c674
-*.color11:    #e7c547
-*.color4:     #81a2be
-*.color12:    #7aa6da
-*.color5:     #b294bb
-*.color13:    #c397d8
-*.color6:     #8abeb7
-*.color14:    #70c0b1
-*.color7:     #c5c8c6
-*.color15:    #eaeaea
-
-! ST specific configurations
-! st.font: Maple Mono NL:pixelsize=13.5:style:Bold:antialias=true:autohint=true
-! st.font: Maple Mono NL NF:pixelsize=13.5:style:Bold:antialias=true:autohint=true
-! st.font: Maple Mono Normal NL:pixelsize=13.5:style:Bold:antialias=true:autohint=true
-
-! st.font: Recursive:pixelsize=13.5:style:Bold:antialias=true:autohint=true
-! st.font: Rec Mono Duotone:pixelsize=13.5:style:Bold:antialias=true:autohint=true
-! st.font: Rec Mono Linear:pixelsize=13.5:style:Bold:antialias=true:autohint=true
-! st.font: Rec Mono Semicasual:pixelsize=13.5:style:Bold:antialias=true:autohint=true
-! st.font: Recursive Mono Casual Static:pixelsize=14.5:style:SemiBold:antialias=true:autohint=true
-
+st.color0:     #1d1f21
+st.color8:     #666666
+st.color1:     #cc6666
+st.color9:     #d54e53
+st.color2:     #b5bd68
+st.color10:    #b9ca4a
+st.color3:     #f0c674
+st.color11:    #e7c547
+st.color4:     #81a2be
+st.color12:    #7aa6da
+st.color5:     #b294bb
+st.color13:    #c397d8
+st.color6:     #8abeb7
+st.color14:    #70c0b1
+st.color7:     #c5c8c6
+st.color15:    #eaeaea
 
 ! st.font: Maple Mono:pixelsize=13.5:antialias=true:autohint=true:style:Bold
 st.font: Maple Mono Normal NL NF:pixelsize=13.5:style:Bold:antialias=true:autohint=true
-! st.font: Rec Mono Casual:pixelsize=14.5:style:Bold:antialias=true:autohint=true
+! st.font: Rec Mono Casual:pixelsize=14.5:style:SemiBold:antialias=true:autohint=true
 
-
-st.alpha: 1.00
+st.alpha: 0.87
 st.chscale: 1.05
 st.cwscale: 1.05
 st.borderpx: 0px
 
+! Nsxiv specific
+Nsxiv.window.background: #1d1f21
+Nsxiv.window.foreground: #ffffff
+
 ! DWM specific configurations
-dwm.selbgcolor: #957139
+dwm.selbgcolor: #f67c65
 dwm.selfgcolor: #ffffff
 dwm.normbgcolor: #000000
 dwm.normfgcolor: #817f7f
-dwm.selbordercolor: #957139
+dwm.selbordercolor: #f67c65
 dwm.normbordercolor: #817f7f
