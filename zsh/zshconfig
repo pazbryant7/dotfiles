@@ -1,17 +1,18 @@
 #!/usr/bin/env zsh
 
-autoload -U url-quote-magic edit-command-line compinit &&
-  compinit
+autoload -Uz url-quote-magic edit-command-line compinit &&
+	compinit
 
 # zsh widgets
 zle -N edit-command-line
+zle -N smart_help
+zle -N clear_and_redisplay
 zle -N copy_terminal_buffer
-zle -N clear-and-redisplay
 
-# custom key binds
-bindkey -e # set to emacs binds
+bindkey -e
+bindkey '\eh' smart_help
 bindkey '^[e' edit-command-line
-bindkey '^L' clear-and-redisplay
+bindkey '^L' clear_and_redisplay
 bindkey '^X' copy_terminal_buffer
 bindkey '^[[Z' reverse-menu-complete
 

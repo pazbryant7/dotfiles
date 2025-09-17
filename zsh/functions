@@ -26,13 +26,12 @@ stow_dots() {
 	mkdir -p "$dots" && cd "$dots" || return
 	stow --dir="$dots" --target=/home/"$USER" --adopt --restow .
 
-	cd - # get back to previous dir
+	cd - || return # get back to previous dir
 
 	# the "." at the end it is important, because stow needs to know which files
 	# you want to add to the "--target" folder. If not, then no dir nor file will
 	# be symlinked
 }
-
 
 # NOTE: this is to refresh DNS cache. I have this because I have
 # blocked all social media and manga websites to avoid get distracted
@@ -65,7 +64,7 @@ h() {
 
 # NOTE: this function is used in ~/.zshconfig file
 # is attached to ^L keybind
-clear-and-redisplay() {
+clear_and_redisplay() {
 	clear
 	zle .redisplay
 }
@@ -75,4 +74,24 @@ clear-and-redisplay() {
 copy_terminal_buffer() {
 	echo "$BUFFER" | xclip -selection clipboard
 	zle reset-prompt
+}
+
+# NOTE: this function is used in ~/.zshconfig file
+# is attached to ^[h keybind
+smart_help() {
+	cmd="${BUFFER%% *}"
+
+	if [ -z "$cmd" ] || [ -z "$BUFFER" ]; then
+		return
+	fi
+
+	if man -w "$cmd" >/dev/null 2>&1; then
+		BUFFER="MANPAGER='nvim +Man!' man $cmd"
+		zle accept-line
+	elif command -v "$cmd" >/dev/null 2>&1; then
+		BUFFER="$cmd --help | less -F"
+		zle accept-line
+	else
+		printf '\a'
+	fi
 }

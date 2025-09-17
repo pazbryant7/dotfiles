@@ -16,7 +16,7 @@ set -U fish_user_paths \
     $fish_user_paths
 
 # CUSTOM BINDS
-# Bind Ctrl+L to the new function
+bind \eh smart_help
 bind \cl clear_and_redisplay
 
 if command -v fzf >/dev/null
