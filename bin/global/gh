@@ -20,9 +20,13 @@ github() {
 		fi
 	}
 
+	special_dir="/home/bryant/Documents/github/notes"
 	traverse_directories_one_level() {
 		for dir_item in "$1"/*; do
 			if [ -d "$dir_item" ]; then
+				if [ "$dir_item" = "$special_dir" ]; then
+					continue
+				fi
 				check_git_status "$dir_item"
 			fi
 		done
