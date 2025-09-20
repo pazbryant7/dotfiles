@@ -10,7 +10,9 @@ litecli
 numbat-bin
 paru
 paru-debug
+pet-git
 postman-bin
 ttf-dmcasansserif
+ventoy-bin
 vesktop-bin
 wego

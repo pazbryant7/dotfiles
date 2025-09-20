@@ -56,7 +56,6 @@ man-db
 mpc
 mpd
 mpv
-navi
 ncmpcpp
 networkmanager
 noto-fonts-emoji
