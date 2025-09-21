@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+# NOTE: I use lepton as a default
+
 update_firefox() {
 	sh -c "$(curl -fsSL https://raw.githubusercontent.com/black7375/Firefox-UI-Fix/master/install.sh)"
 }
