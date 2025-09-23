@@ -1,0 +1,92 @@
+#!/bin/sh
+
+format_time() {
+	elapsed=$1
+	hours=$((elapsed / 3600))
+	minutes=$(((elapsed % 3600) / 60))
+	seconds=$((elapsed % 60))
+	printf "%02d:%02d:%02d" "$hours" "$minutes" "$seconds"
+}
+
+cleanup() {
+	if [ -n "$timer_pid" ]; then
+		kill "$timer_pid" 2>/dev/null
+		wait "$timer_pid" 2>/dev/null
+	fi
+	printf "\033[?25h"
+	echo ""
+	echo "============================================"
+	if [ -n "$task_title" ]; then
+		echo "Task: $task_title"
+	else
+		echo "Task: (No title specified)"
+	fi
+	echo "Total time elapsed: $(format_time "$final_elapsed")"
+	echo "============================================"
+	exit 0
+}
+
+timer_loop() {
+	start_time=$(date +%s)
+	pause_time=0
+	is_paused=0
+
+	while true; do
+		if [ "$is_paused" -eq 0 ]; then
+			current_time=$(date +%s)
+			elapsed=$((current_time - start_time - pause_time))
+			status_icon="⏱️"
+		else
+			status_icon="⏸️"
+		fi
+
+		printf "\r%s  %s" "$status_icon" "$(format_time "$elapsed")"
+		echo "$elapsed" >/tmp/chrono_elapsed_$$
+
+		if [ -f /tmp/chrono_pause_$$ ]; then
+			rm -f /tmp/chrono_pause_$$
+			if [ "$is_paused" -eq 0 ]; then
+				is_paused=1
+				pause_start=$(date +%s)
+			else
+				is_paused=0
+				pause_end=$(date +%s)
+				pause_time=$((pause_time + pause_end - pause_start))
+			fi
+		fi
+
+		sleep 1
+	done
+}
+
+trap cleanup INT
+
+task_title="$1"
+
+echo "============================================"
+echo "Phone Chronometer Started"
+if [ -n "$task_title" ]; then
+	echo "Task: $task_title"
+fi
+echo "Press 'p' + Enter to pause/resume, Ctrl+C to stop"
+echo "============================================"
+echo ""
+
+printf "\033[?25l"
+
+timer_loop &
+timer_pid=$!
+
+while true; do
+	read -r input
+	case "$input" in
+	p | P)
+		touch /tmp/chrono_pause_$$
+		;;
+	*) ;;
+	esac
+
+	if [ -f /tmp/chrono_elapsed_$$ ]; then
+		final_elapsed=$(cat /tmp/chrono_elapsed_$$)
+	fi
+done
