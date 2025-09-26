@@ -111,6 +111,7 @@ xclip
 xcolor
 xdotool
 xorg-server
+xorg-server-xephyr
 xorg-xev
 xorg-xinit
 xorg-xrandr
