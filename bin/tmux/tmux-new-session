@@ -11,9 +11,6 @@ case "$1" in
 		"$HOME/Documents/github/temp" \
 		"$HOME/Downloads/" 2>/dev/null | fzf)
 	;;
-"working")
-	selection=$(tmux display-message -p '#{pane_current_path}')
-	;;
 *)
 	selection="$1"
 	;;
@@ -23,8 +20,8 @@ if [ -z "$selection" ]; then
 	exit 0
 fi
 
-if [ "$1" = "working" ]; then
-	session_name="working"
+if [ -n "$2" ]; then
+	session_name="$2"
 else
 	session_name=$(basename "$selection" | tr . _)
 fi
@@ -34,7 +31,7 @@ if [ -n "$TMUX" ]; then
 	if [ "$current_session" = "$session_name" ]; then
 		tmux display-message "Already attached to session: $session_name"
 		exit 0
-	elif [ -n "$2" ]; then
+	elif [ -n "$3" ]; then
 		tmux kill-session -t working
 	fi
 fi

@@ -43,7 +43,6 @@ github() {
 	directories="$(traverse_all_directories "$dirs" | sort | uniq)"
 
 	echo "$directories" | fzf --bind "enter:execute($HOME/bin/tmux/tmux-new-session {})"
-
 }
 
 github
