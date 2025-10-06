@@ -30,6 +30,7 @@ firefox
 fish
 fzf
 git
+github-cli
 glow
 go
 gopass
