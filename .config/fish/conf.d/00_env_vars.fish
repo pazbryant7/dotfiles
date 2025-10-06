@@ -16,11 +16,13 @@ set -gx STARSHIP_CONFIG "/home/bryant/.config/starship/starship.toml"
 set -gx XDG_CONFIG_HOME "$HOME/.config"
 
 set -gx FZF_DEFAULT_OPTS "\
---preview-window noborder \
 --height=50% \
+--preview-window noborder \
 --bind 'ctrl-o:execute(xdg-open {})' \
 --bind 'ctrl-x:execute(xdg-default {})' \
+--bind 'ctrl-u:execute($HOME/bin/tmux/tmux-new-session {} working)' \
 "
+
 set -gx FZF_DEFAULT_COMMAND "fd \
   --type f \
   --strip-cwd-prefix \
