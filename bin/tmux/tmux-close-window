@@ -2,24 +2,27 @@
 
 pane_count=$(tmux list-panes | wc -l)
 window_count=$(tmux list-windows | wc -l)
+session_count=$(tmux list-sessions | wc -l)
+current_session=$(tmux display-message -p '#S')
+
+switch_to_last_session() {
+	if [ "$session_count" -gt 1 ]; then
+		tmux switch-client -l 2>/dev/null || {
+			other_session=$(tmux list-sessions -F '#{session_name}' | grep -v "^${current_session}$" | head -n 1)
+			tmux switch-client -t "$other_session"
+		}
+		tmux kill-session -t "$current_session"
+	else
+		tmux kill-session
+	fi
+}
 
 if [ "$pane_count" -gt 1 ]; then
 	tmux kill-pane
 elif [ "$window_count" -gt 1 ]; then
 	tmux kill-window
 else
-	# Check if more than one session exists
-	if [ "$(tmux list-sessions | wc -l)" -gt 1 ]; then
-		# Store the name of the current session to be killed
-		session_to_kill=$(tmux display-message -p '#S')
-
-		# Switch to the last-visited session
-		tmux switch-client -l
-
-		# Kill the original session
-		tmux kill-session -t "$session_to_kill"
-	else
-		# This is the last session, so just kill it
-		tmux kill-session
-	fi
+	switch_to_last_session
 fi
+
+tmux refresh-client -S
