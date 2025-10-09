@@ -60,7 +60,7 @@ start_recording() {
 	printf "Starting recording with profile: %s\n" "$_efr_profile_alias"
 	printf "Output file: %s\n" "$_output_file"
 	printf "FFmpeg command structure:\n"
-	printf "ffmpeg %s %s %s \"%s\" > \"%s\" 2>&1 &\n" \
+	printf "ffmpeg %s %s \"%s\" > \"%s\" 2>&1 &\n" \
 		"$FFMPEG_INPUT_OPTS" "$FFMPEG_PROFILE_OPTS" "$_output_file" "$LOG_FILE"
 
 	# Run ffmpeg in background, redirect output, and capture PID
