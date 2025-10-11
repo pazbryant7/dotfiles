@@ -1,133 +1,30 @@
-# EditorConfig: A Universal Standard for Code Consistency
-# https://editorconfig.org
-
-# This is the top-most EditorConfig file. Stop searching in parent directories.
 root = true
 
-# ==============================================================================
-# Global Settings: A Baseline for All Files
-# ==============================================================================
-# These rules apply to every file unless overridden by a more specific rule.
 [*]
-# Use Unix-style line endings (LF) for cross-platform consistency.
 end_of_line = lf
-
-# Ensure files are saved with UTF-8 encoding to support all characters.
 charset = utf-8
-
-# Remove any whitespace characters at the end of lines before saving.
 trim_trailing_whitespace = true
-
-# Ensure that every file ends with a single newline character on save.
 insert_final_newline = true
 
-# Default indentation preference: use a hard tab character.
-indent_style = tab
-
-# Set the visual width of a tab character to 2 columns.
-# This setting is for visual representation and does not convert tabs to spaces.
-tab_width = 2
-
-
-# ==============================================================================
-# Language-Specific Overrides
-# ==============================================================================
-# These sections override the global settings for specific file types to adhere
-# to their respective community standards and technical requirements.
-
-# Python: Adheres to the PEP 8 style guide, which requires 4 spaces.
 [*.py]
 indent_style = space
 indent_size = 4
 
-# Go: Aligns with the 'gofmt' standard, which uses tabs for indentation.
-# This section is technically redundant given the global default, but it is
-# included for clarity and to explicitly document the standard for Go.
-[*.go]
-indent_style = tab
-
-# Web Stack (JavaScript, TypeScript, HTML, CSS): 2 spaces is the dominant convention.
 [*.{js,ts,tsx,html,css}]
 indent_style = space
 indent_size = 2
 
-# Sass/SCSS: The community standard is 2 spaces.
-[*.{sass,scss}]
+[*.{sass,scss,less}]
 indent_style = space
 indent_size = 2
 
-# YAML & JSON: These formats require spaces. 2 spaces is the standard.
-[*.{yml,yaml,json}]
+[*.{yml,yaml,json,jsonc}]
 indent_style = space
 indent_size = 2
 
-# Rust: Aligns with the 'rustfmt' tool's default, which is 4 spaces.
-[*.rs]
-indent_style = space
-indent_size = 4
-
-# C/C++: While many styles exist, 4 spaces is a modern, readable standard.
-[*.{c,h,cpp,hpp}]
-indent_style = space
-indent_size = 4
-
-# C#: Microsoft's official guidelines recommend 4 spaces.
-[*.cs]
-indent_style = space
-indent_size = 2
-
-# PHP: Adheres to PSR-12, which requires 4 spaces.
-[*.php]
-indent_style = space
-indent_size = 2
-
-# Ruby: The community style guide strongly recommends 2 spaces.
-[*.rb]
-indent_style = space
-indent_size = 2
-
-# Lua: Standards vary, but 4 spaces is a common choice for readability.
-[*.lua]
-indent_style = space
-indent_size = 2
-
-# Swift: Apple's official style guide uses 4 spaces.
-[*.swift]
-indent_style = space
-indent_size = 2
-
-# Kotlin: The official convention is 4 spaces.
-[*.{kt,kts}]
-indent_style = space
-indent_size = 2
-
-# Shell Scripts: 2 spaces is a common and readable convention.
-[*.{sh,bash}]
-indent_style = space
-indent_size = 2
-tab_width = 2
-
-# XML-based files: A 2-space indent is common for readability.
-[*.{xml,csproj,xaml,svg}]
-indent_style = space
-indent_size = 2
-
-# TOML: Often used for configuration, 2 spaces is a common convention.
 [*.toml]
 indent_style = space
 indent_size = 2
 
-# Dockerfile: 4 spaces is a readable choice for multi-line instructions.
-[Dockerfile]
-indent_style = space
-indent_size = 2
-
-# Makefile: Recipes require hard tabs. Other parts can be spaces, but to
-# avoid editor confusion, enforcing tabs for the whole file is safest.
-[Makefile]
-indent_style = tab
-
-# Markdown: Disable trimming of trailing whitespace, as two trailing spaces
-# are used to create hard line breaks in some Markdown processors.
 [*.md]
 trim_trailing_whitespace = false
