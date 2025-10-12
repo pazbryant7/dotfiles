@@ -1,47 +1,90 @@
 #!/bin/env sh
 
-case "$1" in
-"")
-	selection=$(fd . \
+select_session_path() {
+	ssp_input_path="$1"
+
+	if [ -n "$ssp_input_path" ]; then
+		printf '%s' "$ssp_input_path"
+		return 0
+	fi
+
+	fd . \
 		--max-depth 1 \
 		--type=d \
 		--type=l \
 		--follow \
 		"$HOME/Documents/github/" \
 		"$HOME/Documents/github/temp" \
-		"$HOME/Downloads/" 2>/dev/null | fzf)
-	;;
-*)
-	selection="$1"
-	;;
-esac
+		"$HOME/Downloads/" 2>/dev/null | fzf
+}
 
-if [ -z "$selection" ]; then
-	exit 0
-fi
+select_session_name() {
+	ssn_input_name="$1"
+	ssn_path="$2"
 
-if [ -n "$2" ]; then
-	session_name="$2"
-else
-	session_name=$(basename "$selection" | tr . _)
-fi
-
-if [ -n "$TMUX" ]; then
-	current_session=$(tmux display-message -p '#S')
-	if [ "$current_session" = "$session_name" ]; then
-		tmux display-message "Already attached to session: $session_name"
-		exit 0
-	elif [ -n "$3" ]; then
-		tmux kill-session -t working
+	if [ -n "$ssn_input_name" ]; then
+		printf '%s' "$ssn_input_name"
+	else
+		basename "$ssn_path" | tr . _
 	fi
-fi
+}
 
-if ! tmux has-session -t="$session_name" 2>/dev/null; then
-	tmux new-session -ds "$session_name" -c "$selection"
-fi
+switch_session() {
+	ss_session_name="$1"
+	ss_path="$2"
+	ss_nuke_session="$3"
+	ss_default_working_session="working"
 
-if [ -n "$TMUX" ]; then
-	tmux switch-client -t "$session_name"
-else
-	tmux attach-session -t "$session_name"
-fi
+	if [ -z "$ss_session_name" ] || [ -z "$ss_path" ]; then
+		printf 'Error: session name and path are required\n' >&2
+		return 1
+	fi
+
+	if [ -z "$TMUX" ]; then
+		printf 'Error: not inside a tmux session\n' >&2
+		return 1
+	fi
+
+	ss_current_session=$(tmux display-message -p '#S')
+
+	if [ "$ss_session_name" = "$ss_default_working_session" ] && [ -n "$ss_nuke_session" ]; then
+		ss_temp_session="__temp_switch_$$"
+		tmux new-session -ds "$ss_temp_session" -c "$HOME"
+		tmux switch-client -t "$ss_temp_session"
+		tmux kill-session -t "$ss_session_name" 2>/dev/null
+		tmux new-session -ds "$ss_session_name" -c "$ss_path"
+		tmux switch-client -t "$ss_session_name"
+		tmux kill-session -t "$ss_temp_session" 2>/dev/null
+		tmux refresh-client -S # refresh status bar
+		return 0
+	fi
+
+	if [ "$ss_current_session" = "$ss_session_name" ]; then
+		tmux display-message "Already attached to session: $ss_session_name"
+		return 0
+	fi
+
+	if ! tmux has-session -t="$ss_session_name" 2>/dev/null; then
+		tmux new-session -ds "$ss_session_name" -c "$ss_path"
+	fi
+
+	tmux switch-client -t "$ss_session_name"
+}
+
+main() {
+	input_path="$1"
+	input_session_name="$2"
+	input_nuke_session="$3"
+
+	selected_path=$(select_session_path "$input_path") || exit 1
+
+	if [ -z "$selected_path" ]; then
+		printf 'No path selected\n' >&2
+		exit 1
+	fi
+
+	selected_session_name=$(select_session_name "$input_session_name" "$selected_path")
+	switch_session "$selected_session_name" "$selected_path" "$input_nuke_session"
+}
+
+main "$@"
