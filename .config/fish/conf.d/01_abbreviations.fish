@@ -25,6 +25,4 @@ abbr -a ta "tmux attach"
 abbr -a tk "tmux kill-server"
 abbr -a tn "tmux new -s $USER"
 
-abbr -a m "cd /run/media"
-
 abbr -a motivation "mpv ~/Documents/github/media/videos/biy/cristiano.mp4"

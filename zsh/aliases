@@ -42,6 +42,4 @@ alias tn="tmux new -s \$USER"
 
 alias zls="ls \$ZPLUGINDIR"
 
-alias m="cd /run/media"
-
 alias motivation="mpv ~/Documents/github/media/videos/biy/cristiano.mp4"
