@@ -1,3 +1,8 @@
+# override defaults
+alias cd='z'
+alias ls='eza'
+alias cdi='zi'
+
 # main
 alias ls="ls"
 alias :q="exit"

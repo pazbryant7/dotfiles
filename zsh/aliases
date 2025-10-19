@@ -1,5 +1,11 @@
 #!/usr/bin/sh
 
+
+# override defaults
+alias cd='z'
+alias ls='eza'
+alias cdi='zi'
+
 # main
 alias n="nvim"
 alias :q="exit"
