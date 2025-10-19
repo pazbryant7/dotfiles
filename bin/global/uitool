@@ -2,6 +2,15 @@
 
 set -e
 
+# Configuration
+BSPWMRC="$HOME/.config/bspwm/bspwmrc"
+THEME_RASI="$HOME/.config/rofi/theme.rasi"
+TMUX_CONFIG="$HOME/.tmux.conf"
+XRESOURCES="$HOME/.Xresources"
+ALACRITTY_CONFIG="$HOME/.config/alacritty/alacritty.toml"
+DUNSTRC="$HOME/.config/dunst/dunstrc"
+STARSHIP_TOML="$HOME/.config/starship/starship.toml"
+
 # Function to select a color using xcolor
 select_color() {
 	notify-send "picking color"
@@ -12,176 +21,159 @@ select_color() {
 	}
 }
 
-# Function to update config files
+# Function to update config files with better error handling
 update() {
 	file="$1"
 	pattern="$2"
 	replacement="$3"
 
-	if [ -f "$file" ]; then
-		# Using GNU sed -i. For strict POSIX, a temp file and mv would be needed.
-		if sed -i "s|$pattern|$replacement|" "$file"; then
-			return 0
-		else
-			echo "Failed to update $file (sed error)" >&2
-			return 1
-		fi
-	else
+	if [ ! -f "$file" ]; then
 		echo "Warning: File not found: $file" >&2
-		return 1 # File not found is an error for this function's contract
+		return 1
+	fi
+
+	if sed -i "s|$pattern|$replacement|" "$file"; then
+		return 0
+	else
+		echo "Error: Failed to update $file" >&2
+		return 1
 	fi
 }
 
 # Update functions for each configuration file
 overwrite_bspwm_colors() {
 	color="$1"
-	bspwmrc="${HOME}/.config/bspwm/bspwmrc"
-
-	update "$bspwmrc" \
+	update "$BSPWMRC" \
 		'focused_border_color "#[0-9a-fA-F]\{6\}"' \
 		"focused_border_color \"$color\""
 }
 
 overwrite_rofi_colors() {
 	color="$1"
-	theme_rasi="${HOME}/.config/rofi/theme.rasi"
-
-	update "$theme_rasi" \
+	update "$THEME_RASI" \
 		'background-alt:\s*#[0-9a-fA-F]\{6\};' \
 		"background-alt:\t\t\t$color;"
 }
 
 overwrite_tmux_colors() {
 	color="$1"
-	tmux_config_file="${HOME}/.tmux.conf"
-
-	update "$tmux_config_file" \
+	update "$TMUX_CONFIG" \
 		"set-option -g status-style 'bg=#1e1e2e,fg=#[0-9a-fA-F]\{6\}'" \
 		"set-option -g status-style 'bg=#1e1e2e,fg=$color'"
 }
 
 overwrite_xresources_colors() {
 	color="$1"
-	xresources="${HOME}/.Xresources"
-
-	# These updates are considered non-critical if the pattern is not found.
-	update "$xresources" 'st.cursorColor:[[:space:]]*#[0-9a-fA-F]\{6\}' "st.cursorColor: $color" || true
-	update "$xresources" 'dwm.selbgcolor: #[0-9a-fA-F]\{6\}' "dwm.selbgcolor: $color" || true
-	update "$xresources" 'dwm.selbordercolor: #[0-9a-fA-F]\{6\}' "dwm.selbordercolor: $color" || true
+	update "$XRESOURCES" 'st.cursorColor:[[:space:]]*#[0-9a-fA-F]\{6\}' "st.cursorColor: $color" || true
+	update "$XRESOURCES" 'dwm.selbgcolor: #[0-9a-fA-F]\{6\}' "dwm.selbgcolor: $color" || true
+	update "$XRESOURCES" 'dwm.selbordercolor: #[0-9a-fA-F]\{6\}' "dwm.selbordercolor: $color" || true
 }
 
 overwrite_alacritty_colors() {
 	color="$1"
-	alacritty_config="${HOME}/.config/alacritty/alacritty.toml"
-
-	update "$alacritty_config" \
+	update "$ALACRITTY_CONFIG" \
 		'cursor = "#[0-9a-fA-F]\{6\}"' \
 		"cursor = \"$color\""
 }
 
 overwrite_dunst_colors() {
 	color="$1"
-	dunstrc="${HOME}/.config/dunst/dunstrc"
-
-	update "$dunstrc" \
+	update "$DUNSTRC" \
 		'background = "#[0-9a-fA-F]\{6\}"' \
 		"background = \"$color\""
 }
 
 overwrite_starship_colors() {
 	color="$1"
-	starship_toml="${HOME}/.config/starship/starship.toml"
 
-	# These updates are considered non-critical.
-	update "$starship_toml" 'error_symbol = "\[✗\](#[0-9a-fA-F]\{6\})"' "error_symbol = \"[✗]($color)\"" || true
-	update "$starship_toml" 'success_symbol = "\[󰁕\](#[0-9a-fA-F]\{6\})"' "success_symbol = \"[󰁕]($color)\"" || true
+	# Update error_symbol with color in parentheses
+	update "$STARSHIP_TOML" \
+		'error_symbol = "\[✗\](#[0-9a-fA-F]\{6\})"' \
+		"error_symbol = \"[✗]($color)\"" || true
+
+	# Update success_symbol with color in parentheses
+	update "$STARSHIP_TOML" \
+		'success_symbol = "\[󰁕\](#[0-9a-fA-F]\{6\})"' \
+		"success_symbol = \"[󰁕]($color)\"" || true
+
+	# Update vimcmd_symbol with color in parentheses
+	update "$STARSHIP_TOML" \
+		'vimcmd_symbol = "\[#\](#[0-9a-fA-F]\{6\})"' \
+		"vimcmd_symbol = \"[#]($color)\"" || true
+
+	# Update directory style with custom color (detect hex color, keep bold)
+	update "$STARSHIP_TOML" \
+		'style = "bold #[0-9a-fA-F]\{6\}"' \
+		"style = \"bold $color\"" || true
 }
 
 # Reload services after configuration updates
 reload_services() {
-	# Reload Xresources and then signal st terminals if they are running
-	if [ -f "${HOME}/.Xresources" ]; then
-		if xrdb -merge "${HOME}/.Xresources"; then
-			st_pids=$(pgrep -x st)
-			if [ "$st_pids" != "" ]; then
-				echo "$st_pids" | while IFS= read -r pid; do
-					kill -USR1 "$pid" 2>/dev/null || echo "Failed to send USR1 to st PID: $pid (may have exited)"
-				done
-			fi
+	# Reload Xresources and signal st terminals
+	if [ -f "$XRESOURCES" ]; then
+		if xrdb -merge "$XRESOURCES"; then
+			pgrep -x st | while IFS= read -r pid; do
+				kill -USR1 "$pid" 2>/dev/null || echo "Warning: Failed to signal st PID: $pid"
+			done
 		else
-			echo "xrdb -merge failed"
+			echo "Warning: xrdb -merge failed" >&2
 		fi
 	fi
 
-	# Reload qutebrowser after xresources
-	if pgrep -x qutebrowser >/dev/null; then
-		qutebrowser :config-source
-	fi
+	# Reload qutebrowser
+	pgrep -x qutebrowser >/dev/null && qutebrowser :config-source
 
-	# Reload dunst: pkill and rely on bspwmrc to restart it.
-	# This implies bspwm is running and its bspwmrc handles dunst.
+	# Reload dunst
 	if pgrep -x dunst >/dev/null; then
 		pkill dunst
-		# Wait for dunst to terminate before bspwm potentially restarts it
 		while pgrep -x dunst >/dev/null; do
 			sleep 0.1
 		done
 	fi
 
-	# Reload bspwm if running (this may also restart dunst via bspwmrc)
+	# Reload bspwm
 	if pgrep -x bspwm >/dev/null; then
-		(bspc wm -r) || echo "Failed to reload bspwm"
+		bspc wm -r || echo "Warning: Failed to reload bspwm" >&2
 	fi
 
-	# Reload DWM colors if dwm is running
-	if pgrep -x dwm >/dev/null; then
-		# This is a common way to signal DWM to reload colors/settings
-		# Adjust if your DWM uses a different mechanism
-		xsetroot -name "fsignal:1" || echo "Failed to signal dwm via xsetroot"
-	fi
+	# Reload dwm
+	pgrep -x dwm >/dev/null && xsetroot -name "fsignal:1" || echo "Warning: Failed to signal dwm" >&2
 
-	# Reload tmux configuration if tmux server is running
-	if pgrep tmux >/dev/null; then # Adjusted pgrep command
+	if pgrep tmux >/dev/null; then
 		tmux source-file "${HOME}/.tmux.conf" || echo "Failed to reload tmux configuration"
 	fi
+}
+
+# Validate hex color format
+validate_color() {
+	echo "$1" | grep -qE '^#[0-9a-fA-F]{6}$'
 }
 
 # Main function
 main() {
 	selected_color=""
 
-	if [ "$1" != "" ]; then
+	if [ -n "$1" ]; then
 		selected_color="$1"
 	else
-		# Capture output of select_color which is the color hex
-		selected_color_output=$(select_color)
-		# select_color exits on failure, so if we are here, it succeeded
-		# or returned an empty string (e.g. user cancelled xcolor)
-		selected_color="$selected_color_output"
+		selected_color=$(select_color)
 	fi
 
-	if [ "$selected_color" = "" ]; then
-		# This can happen if xcolor returns an empty string (e.g., user pressed Esc)
-		echo "No color selected or provided. Exiting." >&2
+	if [ -z "$selected_color" ]; then
+		echo "Error: No color selected or provided. Exiting." >&2
 		exit 1
 	fi
 
-	# Validate color format (basic hex check)
-	# POSIX sh doesn't have =~ for regex matching in `if` directly.
-	# Using grep for a simple check.
-	if ! echo "$selected_color" | grep -qE '^#[0-9a-fA-F]{6}$'; then
+	if ! validate_color "$selected_color"; then
 		echo "Error: Invalid color format: $selected_color. Expected #RRGGBB." >&2
 		exit 1
 	fi
 
 	# Update all configuration files
-	# The `|| true` on some `update` calls in specific functions like
-	# overwrite_xresources_colors means that a failure for that specific line
-	# (e.g. pattern not found) will not stop the script due to `set -e`.
 	overwrite_rofi_colors "$selected_color"
-	overwrite_bspwm_colors "$selected_color" # Typo fixed here
+	overwrite_bspwm_colors "$selected_color"
 	overwrite_dunst_colors "$selected_color"
-	overwrite_tmux_colors "$selected_color" # Renamed for consistency
+	overwrite_tmux_colors "$selected_color"
 	overwrite_starship_colors "$selected_color"
 	overwrite_alacritty_colors "$selected_color"
 	overwrite_xresources_colors "$selected_color"
@@ -189,7 +181,7 @@ main() {
 	# Reload services
 	reload_services
 
-	echo "Theme update completed successfully for color $selected_color"
+	echo "Theme updated successfully with color $selected_color"
 }
 
 main "$@"
