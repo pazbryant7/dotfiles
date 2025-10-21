@@ -101,6 +101,7 @@ terminus-font
 tmux
 translate-shell
 tree
+ttf-cascadia-code-nerd
 typescript
 ueberzugpp
 ufw
