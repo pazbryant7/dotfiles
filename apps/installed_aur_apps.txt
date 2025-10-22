@@ -7,6 +7,7 @@ litecli
 numbat-bin
 paru
 paru-debug
+thorium-browser-bin
 ttf-dmcasansserif
 ventoy-bin
 wego
