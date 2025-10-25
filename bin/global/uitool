@@ -169,14 +169,17 @@ main() {
 		exit 1
 	fi
 
-	# Update all configuration files
-	overwrite_rofi_colors "$selected_color"
-	overwrite_bspwm_colors "$selected_color"
-	overwrite_dunst_colors "$selected_color"
-	overwrite_tmux_colors "$selected_color"
-	overwrite_starship_colors "$selected_color"
-	overwrite_alacritty_colors "$selected_color"
-	overwrite_xresources_colors "$selected_color"
+	# Update all configuration files in parallel
+	overwrite_rofi_colors "$selected_color" &
+	overwrite_bspwm_colors "$selected_color" &
+	overwrite_dunst_colors "$selected_color" &
+	overwrite_tmux_colors "$selected_color" &
+	overwrite_starship_colors "$selected_color" &
+	overwrite_alacritty_colors "$selected_color" &
+	overwrite_xresources_colors "$selected_color" &
+
+	# Wait for all background jobs to complete
+	wait
 
 	# Reload services
 	reload_services
