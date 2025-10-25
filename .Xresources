@@ -7,7 +7,7 @@ Xft.lcdfilter: lcddefault
 ! st specific
 st.background: #1e1e2e
 st.foreground: #ffffff
-st.cursorColor: #E6D6AD
+st.cursorColor: #9A9A9A
 
 st.color0:     #1e1e2e
 st.color8:     #666666
@@ -27,15 +27,16 @@ st.color7:     #c5c8c6
 st.color15:    #eaeaea
 
 ! st.font: Maple Mono:pixelsize=13.5:antialias=true:autohint=true:style:Bold
-! st.font: Maple Mono Normal NL NF:pixelsize=13.5:style:Medium:antialias=true:autohint=true
-st.font: Maple Mono Normal NL NF:pixelsize=13.5:style:Bold:antialias=true:autohint=true
-! st.font: Maple Mono Normal NL NF ExtraBold:pixelsize=13.5:style:ExtraBold:antialias=true:autohint=true
+! st.font: Maple Mono NL NF:pixelsize=13.5:style:SemiBold:antialias=true:autohint=true
+! st.font: Maple Mono Normal NL NF:pixelsize=13.5:style:SemiBold:antialias=true:autohint=true
 
-! st.font: Rec Mono Casual:pixelsize=14.5:style:SemiBold:antialias=true:autohint=true
-! st.font: Rec Mono Duotone:pixelsize=14.5:style:Bold:antialias=true:autohint=true
+! st.font: Rec Mono Casual:pixelsize=13.5:style:Bold:antialias=true:autohint=true
+st.font: Rec Mono Linear:pixelsize=13.5:style:Bold:antialias=true:autohint=true
+! st.font: Rec Mono SemiCasual:pixelsize=13.5:style:Bold:antialias=true:autohint=true
 
-st.alpha: 0.90
-st.chscale: 1.15
+
+st.alpha: 0.87
+st.chscale: 1.10
 st.cwscale: 1.15
 st.borderpx: 0px
 
@@ -44,9 +45,9 @@ Nsxiv.window.background: #1e1e2e
 Nsxiv.window.foreground: #ffffff
 
 ! DWM specific configurations
-dwm.selbgcolor: #E6D6AD
+dwm.selbgcolor: #9A9A9A
 dwm.selfgcolor: #ffffff
 dwm.normbgcolor: #000000
 dwm.normfgcolor: #817f7f
-dwm.selbordercolor: #E6D6AD
+dwm.selbordercolor: #9A9A9A
 dwm.normbordercolor: #817f7f
