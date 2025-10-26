@@ -17,11 +17,11 @@ rez() {
 	. /home/bryant/.zshrc
 }
 
-update_grub() {
+grubupdate() {
 	sudo grub-mkconfig -o /boot/grub/grub.cfg
 }
 
-stow_dots() {
+stowdots() {
 	dots="$HOME/Documents/github/dotfiles"
 	mkdir -p "$dots" && cd "$dots" || return
 	stow --dir="$dots" --target=/home/"$USER" --adopt --restow .
@@ -36,7 +36,7 @@ stow_dots() {
 # NOTE: this is to refresh DNS cache. I have this because I have
 # blocked all social media and manga websites to avoid get distracted
 # while using my computer
-flush_dns_cache() {
+dnscache() {
 	sudo systemd-resolve --flush-caches
 }
 
