@@ -4,11 +4,11 @@ os:
 customCommands:
   - key: "O"
     description: "Open with 'vim' config in new terminal"
-    command: "xterm -e sh -c 'NVIM_APPNAME=vim nvim {{.SelectedFile.Name}}' > /dev/null 2>&1 &"
+    command: "xterm -e sh -c 'nvim --noplugin {{.SelectedFile.Name}}'"
     context: "files"
     output: terminal
   - key: "E"
     description: "Edit with 'vim' config"
-    command: "NVIM_APPNAME=vim nvim {{.SelectedFile.Name}}"
+    command: "nvim --noplugin {{.SelectedFile.Name}}"
     context: "files"
     output: terminal

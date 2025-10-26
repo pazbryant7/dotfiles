@@ -20,7 +20,7 @@ Use at your own risk!
 
 ## Contents
 
-- vim (NeoVim) config
+- neovim (NeoVim) config
 - tmux config
 - alacritty config
 - kitty config
