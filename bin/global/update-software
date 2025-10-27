@@ -12,7 +12,7 @@ sync_bin_dir() {
 	if command -v fd >/dev/null 2>&1; then
 		fd . -d 1 $fd_flags "$dir" | awk -F/ '{print $NF}' | sort >"$DOT_PATH/$output_file"
 	else
-		ls "$dir" | sort >"$DOT_PATH/$output_file"
+		fd "$dir" | sort >"$DOT_PATH/$output_file"
 	fi
 }
 
@@ -29,9 +29,9 @@ main() {
 	mkdir -p "$DOT_PATH"
 
 	# Binary directories
-	sync_bin_dir "/home/bryant/.local/bin" "pipx_installed.txt" ""
-	sync_bin_dir "/home/bryant/.cargo/bin" "cargo_installed.txt" "-t f"
+	sync_bin_dir "/home/bryant/.local/bin" "uv_installed.txt" ""
 	sync_bin_dir "/home/bryant/go/bin" "go_installed.txt" "-t f"
+	sync_bin_dir "/home/bryant/.cargo/bin" "cargo_installed.txt" "-t f"
 
 	# Package managers
 	sync_command_output "pacman -Qen" "installed_apps.txt"
