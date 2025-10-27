@@ -3,7 +3,6 @@ bun-bin
 datagrip
 datagrip-jre
 dragon-drop
-litecli
 numbat-bin
 paru
 paru-debug
