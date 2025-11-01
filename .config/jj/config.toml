@@ -1,0 +1,6 @@
+[user]
+name = "Bryant Paz"
+email = "pazbryant7@outlook.com"
+
+[ui]
+default-command = "log"
