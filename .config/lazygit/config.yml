@@ -4,7 +4,7 @@ os:
 customCommands:
   - key: "O"
     description: "Open with 'vim' config in new terminal"
-    command: "xterm -e sh -c 'nvim --noplugin {{.SelectedFile.Name}}'"
+    command: "xterm -e sh -c 'nvim --noplugin {{.SelectedFile.Name}}' > /dev/null 2>&1"
     context: "files"
     output: terminal
   - key: "E"
