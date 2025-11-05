@@ -36,6 +36,7 @@ go
 gopass
 grub
 gst-plugin-pipewire
+hurl
 hyperfine
 imagemagick
 img2pdf

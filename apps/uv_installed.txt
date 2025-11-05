@@ -1,3 +1,5 @@
 generate_name
 litecli
+py.test
+pytest
 spotdl
