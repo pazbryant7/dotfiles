@@ -113,6 +113,7 @@ wireplumber
 xclip
 xcolor
 xdotool
+xh
 xorg-server
 xorg-server-xephyr
 xorg-xev
