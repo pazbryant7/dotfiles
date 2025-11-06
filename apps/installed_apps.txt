@@ -90,7 +90,6 @@ rsync
 rtkit
 rustup
 screenkey
-sl
 speedtest-cli
 sqlc
 starship
