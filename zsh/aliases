@@ -1,6 +1,5 @@
 #!/usr/bin/sh
 
-
 # override defaults
 alias cd='z'
 alias ls='eza'
@@ -15,16 +14,17 @@ alias sudo="sudo "
 alias wg="sudo wg"
 alias pass="gopass"
 alias bb="btm --basic"
-alias xr="nvim ~/.Xresources"
+alias vi="nvim --noplugin"
+alias xr="nvim --noplugin ~/.Xresources"
 alias ani-cli="ani-cli -q 1080"
-alias zsha="cd ~/zsh && nvim aliases"
+alias zsha="cd ~/zsh && nvim --noplugin aliases"
 alias leetcode="nvim leetcode.nvim"
 alias c="xclip -selection clipboard"
-alias zshc="cd ~/zsh && nvim zshconfig"
+alias zshc="cd ~/zsh && nvim --noplugin zshconfig"
 alias feh="feh -g 860x600 --scale-down"
 alias p="xclip -selection clipboard -o"
 alias ani-cli-dub="ani-cli -q 1080 --dub"
-alias fishc="cd ~/.config/fish && nvim config.fish"
+alias fishc="cd ~/.config/fish && nvim --noplugin config.fish"
 
 alias ff="fastfetch"
 alias sht="shutdown now"
