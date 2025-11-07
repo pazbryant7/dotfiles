@@ -1,9 +1,9 @@
 configuration {
-	modi:                       "run,drun";
+    modi:                       "run,drun";
     show-icons:                 false;
     display-drun:               "";
     display-run:                "";
-	drun-display-format:        "{name} [<span weight='light' size='small'><i>({generic})</i></span>]";
- }
+    drun-display-format:        "{name} [<span weight='light' size='small'><i>({generic})</i></span>]";
+}
 
 @theme "~/.config/rofi/theme.rasi"
