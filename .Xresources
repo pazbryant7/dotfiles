@@ -7,7 +7,7 @@ Xft.lcdfilter: lcddefault
 ! st specific
 st.background: #1e1e2e
 st.foreground: #ffffff
-st.cursorColor: #956A91
+st.cursorColor: #735793
 
 st.color0:     #1e1e2e
 st.color8:     #666666
@@ -27,15 +27,14 @@ st.color7:     #c5c8c6
 st.color15:    #eaeaea
 
 ! st.font: Maple Mono:pixelsize=13.5:antialias=true:autohint=true:style:Bold
-! st.font: Maple Mono NL NF:pixelsize=13.5:style:SemiBold:antialias=true:autohint=true
-! st.font: Maple Mono Normal NL NF:pixelsize=13.5:style:SemiBold:antialias=true:autohint=true
+st.font: Maple Mono NL NF:pixelsize=13.5:style:SemiBold:antialias=true:autohint=true
 
-st.font: Recursive Mn Csl St SmB:pixelsize=13.5:style:SemiBold:antialias=true:autohint=true
-! st.font: Recursive Mn Csl St:pixelsize=13.5:style:Bold:antialias=true:autohint=true
+! st.font: Recursive Mn Csl St SmB:pixelsize=13.5:style:SemiBold:antialias=true:autohint=true
+! st.font: Recursive Mn Csl St SmB:pixelsize=13.5:style:SemiBold:antialias=true:autohint=true
 
 st.alpha: 0.87
 st.chscale: 1.10
-st.cwscale: 1.10
+st.cwscale: 1.15
 st.borderpx: 0px
 
 ! Nsxiv specific
@@ -43,9 +42,9 @@ Nsxiv.window.background: #1e1e2e
 Nsxiv.window.foreground: #ffffff
 
 ! DWM specific configurations
-dwm.selbgcolor: #956A91
+dwm.selbgcolor: #735793
 dwm.selfgcolor: #ffffff
 dwm.normbgcolor: #000000
 dwm.normfgcolor: #817f7f
-dwm.selbordercolor: #956A91
+dwm.selbordercolor: #735793
 dwm.normbordercolor: #817f7f
