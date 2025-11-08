@@ -197,6 +197,11 @@ else
 	pacnew_files=$(find /etc -name '*.pacnew' -o -name '*.pacsave' 2>/dev/null || true)
 fi
 
+perform "Restart mkinitcpio"
+sudo mkinitcpio -P
+sudo systemctl restart systemd-vconsole-setup.service
+printf "\n"
+
 if [ -n "$pacnew_files" ]; then
 	printf "WARNING: Found .pacnew or .pacsave files that may need manual review:\n"
 	printf "%s\n" "$pacnew_files"
