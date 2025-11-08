@@ -24,14 +24,17 @@ sync_frequency = "1h"
 
 history_filter = [
   "^clear",
-  "^ls",
-  "lzg",
-  "^lzd",
-  "vi",
-  "nvim",
-  "^z",
-  "fzf",
-  "sp",
+  "^ls$",
+  "^lzg$",
+  "^lzd$",
+  "^vi$",
+  "^nvim$",
+  "^z$",
+  "^fzf$",
+  "^sp$",
+  "^xr$",
+  "^rex$",
+  "^y$",
 ]
 
 cwd_filter = ["^/very/secret/area"]
