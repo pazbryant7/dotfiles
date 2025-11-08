@@ -15,3 +15,13 @@ run = [
   'shell -- echo "$@" | xclip -i -selection clipboard -t text/uri-list',
   "yank",
 ]
+
+[[mgr.prepend_keymap]]
+on   = [ "g", "b" ]
+run  = "cd ~/Documents/books"
+desc = "Jump to Books"
+
+[[mgr.prepend_keymap]]
+on   = [ "g", "m" ]
+run  = "cd /run/media"
+desc = "Jump to Media"
