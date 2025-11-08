@@ -68,6 +68,7 @@ nwg-look
 openresolv
 openssh
 pacman-contrib
+pastel
 pavucontrol
 pcmanfm
 perl-image-exiftool
