@@ -42,69 +42,69 @@ update() {
 
 # Update functions for each configuration file
 overwrite_bspwm_colors() {
-	color="$1"
+	accent_color="$1"
 	update "$BSPWMRC" \
 		'focused_border_color "#[0-9a-fA-F]\{6\}"' \
-		"focused_border_color \"$color\""
+		"focused_border_color \"$accent_color\""
 }
 
 overwrite_rofi_colors() {
-	color="$1"
+	accent_color="$1"
 	update "$THEME_RASI" \
 		'background-alt:\s*#[0-9a-fA-F]\{6\};' \
-		"background-alt:\t\t\t$color;"
+		"background-alt:\t\t\t$accent_color;"
 }
 
 overwrite_tmux_colors() {
-	color="$1"
+	accent_color="$1"
 	update "$TMUX_CONFIG" \
 		"set-option -g status-style 'bg=#1e1e2e,fg=#[0-9a-fA-F]\{6\}'" \
-		"set-option -g status-style 'bg=#1e1e2e,fg=$color'"
+		"set-option -g status-style 'bg=#1e1e2e,fg=$accent_color'"
 }
 
 overwrite_xresources_colors() {
-	color="$1"
-	update "$XRESOURCES" 'st.cursorColor:[[:space:]]*#[0-9a-fA-F]\{6\}' "st.cursorColor: $color" || true
-	update "$XRESOURCES" 'dwm.selbgcolor: #[0-9a-fA-F]\{6\}' "dwm.selbgcolor: $color" || true
-	update "$XRESOURCES" 'dwm.selbordercolor: #[0-9a-fA-F]\{6\}' "dwm.selbordercolor: $color" || true
+	accent_color="$1"
+	update "$XRESOURCES" 'st.cursorColor:[[:space:]]*#[0-9a-fA-F]\{6\}' "st.cursorColor: $accent_color" || true
+	update "$XRESOURCES" 'dwm.selbgcolor: #[0-9a-fA-F]\{6\}' "dwm.selbgcolor: $accent_color" || true
+	update "$XRESOURCES" 'dwm.selbordercolor: #[0-9a-fA-F]\{6\}' "dwm.selbordercolor: $accent_color" || true
 }
 
 overwrite_alacritty_colors() {
-	color="$1"
+	accent_color="$1"
 	update "$ALACRITTY_CONFIG" \
 		'cursor = "#[0-9a-fA-F]\{6\}"' \
-		"cursor = \"$color\""
+		"cursor = \"$accent_color\""
 }
 
 overwrite_dunst_colors() {
-	color="$1"
+	accent_color="$1"
 	update "$DUNSTRC" \
 		'background = "#[0-9a-fA-F]\{6\}"' \
-		"background = \"$color\""
+		"background = \"$accent_color\""
 }
 
 overwrite_starship_colors() {
-	color="$1"
+	accent_color="$1"
 
 	# Update error_symbol with color in parentheses
 	update "$STARSHIP_TOML" \
 		'error_symbol = "\[✗\](#[0-9a-fA-F]\{6\})"' \
-		"error_symbol = \"[✗]($color)\"" || true
+		"error_symbol = \"[✗]($accent_color)\"" || true
 
 	# Update success_symbol with color in parentheses
 	update "$STARSHIP_TOML" \
 		'success_symbol = "\[󰁕\](#[0-9a-fA-F]\{6\})"' \
-		"success_symbol = \"[󰁕]($color)\"" || true
+		"success_symbol = \"[󰁕]($accent_color)\"" || true
 
 	# Update vimcmd_symbol with color in parentheses
 	update "$STARSHIP_TOML" \
 		'vimcmd_symbol = "\[#\](#[0-9a-fA-F]\{6\})"' \
-		"vimcmd_symbol = \"[#]($color)\"" || true
+		"vimcmd_symbol = \"[#]($accent_color)\"" || true
 
 	# Update directory style with custom color (detect hex color, keep bold)
 	update "$STARSHIP_TOML" \
 		'style = "bold #[0-9a-fA-F]\{6\}"' \
-		"style = \"bold $color\"" || true
+		"style = \"bold $accent_color\"" || true
 }
 
 # Reload services after configuration updates
@@ -151,32 +151,32 @@ validate_color() {
 
 # Main function
 main() {
-	selected_color=""
+	accent_color=""
 
 	if [ -n "$1" ]; then
-		selected_color="$1"
+		accent_color="$1"
 	else
-		selected_color=$(select_color)
+		accent_color=$(select_color)
 	fi
 
-	if [ -z "$selected_color" ]; then
+	if [ -z "$accent_color" ]; then
 		echo "Error: No color selected or provided. Exiting." >&2
 		exit 1
 	fi
 
-	if ! validate_color "$selected_color"; then
-		echo "Error: Invalid color format: $selected_color. Expected #RRGGBB." >&2
+	if ! validate_color "$accent_color"; then
+		echo "Error: Invalid color format: $accent_color. Expected #RRGGBB." >&2
 		exit 1
 	fi
 
 	# Update all configuration files in parallel
-	overwrite_rofi_colors "$selected_color" &
-	overwrite_bspwm_colors "$selected_color" &
-	overwrite_dunst_colors "$selected_color" &
-	overwrite_tmux_colors "$selected_color" &
-	overwrite_starship_colors "$selected_color" &
-	overwrite_alacritty_colors "$selected_color" &
-	overwrite_xresources_colors "$selected_color" &
+	overwrite_rofi_colors "$accent_color" &
+	overwrite_bspwm_colors "$accent_color" &
+	overwrite_dunst_colors "$accent_color" &
+	overwrite_tmux_colors "$accent_color" &
+	overwrite_starship_colors "$accent_color" &
+	overwrite_alacritty_colors "$accent_color" &
+	overwrite_xresources_colors "$accent_color" &
 
 	# Wait for all background jobs to complete
 	wait
@@ -184,7 +184,7 @@ main() {
 	# Reload services
 	reload_services
 
-	echo "Theme updated successfully with color $selected_color"
+	echo "Theme updated successfully with color $accent_color"
 }
 
 main "$@"
