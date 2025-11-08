@@ -1,3 +1,17 @@
 [[mgr.prepend_keymap]]
 on = "<C-n>"
 run = 'shell -- dragon-drop -x -a -i -T "$@"'
+
+
+[[mgr.prepend_keymap]]
+on = "<C-w>"
+for = "linux"
+run = 'shell -- ~/bin/global/select-background "$1"'
+desc = "Set as wallpaper"
+
+[[mgr.prepend_keymap]]
+on = "y"
+run = [
+  'shell -- echo "$@" | xclip -i -selection clipboard -t text/uri-list',
+  "yank",
+]
