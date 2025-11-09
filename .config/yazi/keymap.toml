@@ -17,11 +17,17 @@ run = [
 ]
 
 [[mgr.prepend_keymap]]
-on   = [ "g", "b" ]
-run  = "cd ~/Documents/books"
-desc = "Jump to Books"
+on = ["g", "b"]
+run = "cd ~/Documents/books"
+desc = "Go to Books"
 
 [[mgr.prepend_keymap]]
-on   = [ "g", "m" ]
-run  = "cd /run/media"
-desc = "Jump to Media"
+on = ["g", "m"]
+run = "cd /run/media"
+desc = "Go to Media"
+
+
+[[mgr.prepend_keymap]]
+on = ["g", "w"]
+run = "cd ~/Documents/github/media/images/wallpapers"
+desc = "Go to wallpapers"
