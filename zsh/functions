@@ -9,7 +9,7 @@ y() {
 	rm -f -- "$tmp"
 }
 
-xevkeys() {
+keys() {
 	xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf "%-3s %s\n", $5, $8 }'
 }
 
@@ -21,7 +21,7 @@ grubupdate() {
 	sudo grub-mkconfig -o /boot/grub/grub.cfg
 }
 
-stowdots() {
+dotsstow() {
 	dots="$HOME/Documents/github/dotfiles"
 	mkdir -p "$dots" && cd "$dots" || return
 	stow --dir="$dots" --target=/home/"$USER" --adopt --restow .
@@ -42,7 +42,7 @@ dnscache() {
 
 # NOTE: this function is used when inside tmux session.
 # this script works along my custom tmux scripts in ~/bin/tmux
-h() {
+home() {
 	if [ -z "$TMUX" ]; then
 		printf "Not in a tmux session."
 		return 1

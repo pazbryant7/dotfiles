@@ -4,7 +4,6 @@ alias ls='eza'
 alias cdi='zi'
 
 # main
-alias ls="ls"
 alias :q="exit"
 alias cl="clear"
 alias vi="nvim --noplugin"

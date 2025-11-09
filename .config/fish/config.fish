@@ -15,7 +15,7 @@ set -U fish_user_paths \
 
 # CUSTOM BINDS
 bind alt-h smart_help
-bind ctrl-l clear_and_redisplay
+bind alt-l clear_and_redisplay
 
 if command -v fzf >/dev/null
     fzf --fish | source
