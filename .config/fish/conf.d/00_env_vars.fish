@@ -32,9 +32,3 @@ set -gx FZF_DEFAULT_COMMAND "fd \
 "
 
 set -gx QT_QPA_PLATFORMTHEME qt6ct
-
-if status --is-interactive
-    stty -ixon
-    stty susp undef
-    set -gx GPG_TTY (tty)
-end

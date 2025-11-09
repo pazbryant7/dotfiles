@@ -1,20 +1,15 @@
 #!/usr/bin/env zsh
 
-autoload -Uz url-quote-magic edit-command-line compinit &&
-	compinit
+autoload -Uz \
+	url-quote-magic \
+	edit-command-line \
+	compinit && compinit
 
 # zsh widgets
 zle -N edit-command-line
 zle -N smart_help
 zle -N clear_and_redisplay
 zle -N copy_terminal_buffer
-
-bindkey -e
-bindkey '\eh' smart_help
-bindkey '^[e' edit-command-line
-bindkey '^[l' clear_and_redisplay
-bindkey '^X' copy_terminal_buffer
-bindkey '^[[Z' reverse-menu-complete
 
 # zsh options
 setopt AUTO_CD HIST_FIND_NO_DUPS HIST_IGNORE_ALL_DUPS
@@ -41,23 +36,35 @@ PROMPT='%F{white}%2~%f '
 extra_path_expanded=$(printf "%s:" "${extra_path[@]}")
 export PATH="${(j/:/)extra_path}:${PATH}"
 
-# custom plugin manager
-# function can be found in ~/.zshplugin
-repos=(
-	hlissner/zsh-autopair
-	# zsh-users/zsh-syntax-highlighting
-)
-
-# load plugins
-plugin-load $repos
-
 # start software
 eval "$(fzf --zsh)"
-
 eval "$(atuin init zsh)"
 eval "$(starship init zsh)"
 eval "$(fnm env --use-on-cd)"
 eval "$(zoxide init zsh)"
+
+
+# custom plugin manager
+# function can be found in ~/.zshplugin
+repos=(
+	hlissner/zsh-autopair
+	jeffreytse/zsh-vi-mode
+	zsh-users/zsh-syntax-highlighting
+)
+
+
+# load plugins
+plugin-load $repos
+
+function zvm_after_init() {
+	zvm_bindkey viins '^R' atuin-search
+	zvm_bindkey vicmd '^R' atuin-search
+	bindkey '\eh' smart_help
+	bindkey '^[e' edit-command-line
+	bindkey '^[l' clear_and_redisplay
+	bindkey '^X' copy_terminal_buffer
+	bindkey '^[[Z' reverse-menu-complete
+}
 
 # disable "c-s delay"
 stty -ixon
