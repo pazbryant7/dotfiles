@@ -12,7 +12,9 @@ zle -N clear_and_redisplay
 zle -N copy_terminal_buffer
 
 # zsh options
-setopt AUTO_CD HIST_FIND_NO_DUPS HIST_IGNORE_ALL_DUPS
+setopt AUTO_CD \
+	HIST_FIND_NO_DUPS \
+	HIST_IGNORE_ALL_DUPS \
 
 # completion configuration
 zstyle ':completion:*' menu select
@@ -39,9 +41,9 @@ export PATH="${(j/:/)extra_path}:${PATH}"
 # start software
 eval "$(fzf --zsh)"
 eval "$(atuin init zsh)"
+eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
 eval "$(fnm env --use-on-cd)"
-eval "$(zoxide init zsh)"
 
 
 # custom plugin manager
@@ -49,7 +51,7 @@ eval "$(zoxide init zsh)"
 repos=(
 	hlissner/zsh-autopair
 	jeffreytse/zsh-vi-mode
-	zsh-users/zsh-syntax-highlighting
+	# zsh-users/zsh-syntax-highlighting
 )
 
 
@@ -57,12 +59,12 @@ repos=(
 plugin-load $repos
 
 function zvm_after_init() {
-	zvm_bindkey viins '^R' atuin-search
-	zvm_bindkey vicmd '^R' atuin-search
 	bindkey '\eh' smart_help
 	bindkey '^[e' edit-command-line
 	bindkey '^[l' clear_and_redisplay
 	bindkey '^X' copy_terminal_buffer
+	zvm_bindkey viins '^R' atuin-search
+	zvm_bindkey vicmd '^R' atuin-search
 	bindkey '^[[Z' reverse-menu-complete
 }
 
