@@ -12,3 +12,8 @@ customCommands:
     command: "nvim --noplugin {{.SelectedFile.Name}}"
     context: "files"
     output: terminal
+keybinding:
+  commits:
+    moveDownCommit: "J"
+    moveUpCommit: "K"
+    openLogMenu: "G"
