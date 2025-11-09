@@ -1,4 +1,4 @@
-set -gx EDITOR nvim
+set -gx EDITOR "$HOME/.local/share/bob/nvim-bin/nvim"
 set -gx VISUAL "$EDITOR"
 set -gx TERMINAL xterm
 set -gx SUDO_EDITOR "$EDITOR"
@@ -8,7 +8,7 @@ set -gx COLORTERM truecolor
 set -gx OPENER xdg-open
 set -gx PAGER bat
 set -gx WM dwm
-set -gx MANPAGER 'nvim +Man!'
+set -gx MANPAGER "$EDITOR +Man!"
 set -gx GOPATH /home/bryant/go/bin
 set -gx CM_LAUNCHER rofi
 set -gx SXHKD_SHELL fish

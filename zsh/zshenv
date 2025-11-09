@@ -1,6 +1,6 @@
 # {{ enviroment variables
 
-export EDITOR="nvim"
+export EDITOR="$HOME/.local/share/bob/nvim-bin/nvim"
 export VISUAL=$EDITOR
 export TERMINAL="xterm"
 export SUDO_EDITOR=$EDITOR
@@ -11,7 +11,7 @@ export OPENER="xdg-open"
 export PAGER="bat"
 export WM="dwm"
 export GPG_TTY=$(tty)
-export MANPAGER='nvim +Man!'
+export MANPAGER="$EDITOR +Man!"
 export GOPATH="/home/bryant/go/bin"
 export CM_LAUNCHER="rofi"
 export SXHKD_SHELL="zsh"

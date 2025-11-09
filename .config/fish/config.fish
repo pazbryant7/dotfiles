@@ -8,10 +8,10 @@ set -U fish_user_paths \
     ~/.cargo/bin/ \
     ~/bin/crontab/ \
     /usr/local/bin/ \
+    ~/.local/share/bob/nvim-bin/ \
     /var/lib/flatpak/exports/bin/ \
     ~/.local/share/nvim/mason/bin/ \
-    ~/Documents/github/boilerplate/ \
-    $fish_user_paths
+    ~/Documents/github/boilerplate/
 
 if command -v fzf >/dev/null
     fzf --fish | source
