@@ -86,25 +86,18 @@ overwrite_dunst_colors() {
 overwrite_starship_colors() {
 	accent_color="$1"
 
-	# Update error_symbol with color in parentheses
 	update "$STARSHIP_TOML" \
-		'error_symbol = "\[✗\](#[0-9a-fA-F]\{6\})"' \
-		"error_symbol = \"[✗]($accent_color)\"" || true
+		'success_symbol = "\[󰁕\](bold #[0-9a-fA-F]\{6\})"' \
+		"success_symbol = \"[󰁕](bold $accent_color)\"" || true
 
-	# Update success_symbol with color in parentheses
-	update "$STARSHIP_TOML" \
-		'success_symbol = "\[󰁕\](#[0-9a-fA-F]\{6\})"' \
-		"success_symbol = \"[󰁕]($accent_color)\"" || true
+	brighter_color=$(
+		pastel lighten 0.25 "$accent_color" |
+			pastel format hex
+	)
 
-	# Update vimcmd_symbol with color in parentheses
-	update "$STARSHIP_TOML" \
-		'vimcmd_symbol = "\[#\](#[0-9a-fA-F]\{6\})"' \
-		"vimcmd_symbol = \"[#]($accent_color)\"" || true
-
-	# Update directory style with custom color (detect hex color, keep bold)
 	update "$STARSHIP_TOML" \
 		'style = "bold #[0-9a-fA-F]\{6\}"' \
-		"style = \"bold $accent_color\"" || true
+		"style = \"bold $brighter_color\"" || true
 }
 
 # Reload services after configuration updates

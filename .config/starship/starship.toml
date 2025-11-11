@@ -8,9 +8,9 @@ $character"""
 [directory]
 truncation_length = 2
 truncate_to_repo = false
-style = "white"
+style = "bold #a48faf"
 
 [character]
-error_symbol = "[󰁕](#A5509F)"
-vimcmd_symbol = "[󰁕](#24c760)"
-success_symbol = "[󰁕](#A5509F)"
+error_symbol = "[󰁕](bold #FF0000)"
+vimcmd_symbol = "[󰁕](bold #24c760)"
+success_symbol = "[󰁕](bold #644F6F)"
