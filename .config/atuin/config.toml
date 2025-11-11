@@ -23,18 +23,20 @@ sync_address = "https://api.atuin.sh"
 sync_frequency = "1h"
 
 history_filter = [
-  "^clear",
+  "^y$",
+  "^z$",
+  "^cd$",
+  "^sp$",
+  "^vi$",
+  "^xr$",
   "^ls$",
   "^lzg$",
-  "^lzd$",
-  "^vi$",
-  "^nvim$",
-  "^z$",
-  "^fzf$",
-  "^sp$",
-  "^xr$",
   "^rex$",
-  "^y$",
+  "^fzf$",
+  "^lzg$",
+  "^lzd$",
+  "^nvim$",
+  "^clear",
 ]
 
 cwd_filter = ["^/very/secret/area"]
