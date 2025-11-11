@@ -15,6 +15,7 @@ breeze-icons
 calibre
 capitaine-cursors
 cronie
+difftastic
 docker
 docker-buildx
 docker-compose
