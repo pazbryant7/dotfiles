@@ -21,7 +21,7 @@ grubupdate() {
 	sudo grub-mkconfig -o /boot/grub/grub.cfg
 }
 
-dotsstow() {
+dots() {
 	dots="$HOME/Documents/github/dotfiles"
 	mkdir -p "$dots" && cd "$dots" || return
 	stow --dir="$dots" --target=/home/"$USER" --adopt --restow .
@@ -42,7 +42,7 @@ dnscache() {
 
 # NOTE: this function is used when inside tmux session.
 # this script works along my custom tmux scripts in ~/bin/tmux
-home() {
+h() {
 	if [ -z "$TMUX" ]; then
 		printf "Not in a tmux session."
 		return 1

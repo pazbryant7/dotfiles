@@ -1,4 +1,4 @@
-function dotsstow --description "Restow dotfiles using GNU Stow from ~/Documents/github/dotfiles"
+function dots --description "Restow dotfiles using GNU Stow from ~/Documents/github/dotfiles"
     set -l dotfiles_dir "$HOME/Documents/github/dotfiles"
 
     # Create the directory if it doesn't exist

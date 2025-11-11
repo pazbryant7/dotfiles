@@ -1,6 +1,6 @@
 # NOTE: this function is used when inside tmux session.
 # this script works along my custom tmux scripts in ~/bin/tmux
-function home
+function h
     if not set -q TMUX
         echo "Not in a tmux session."
         return 1
