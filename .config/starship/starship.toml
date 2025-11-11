@@ -11,6 +11,6 @@ truncate_to_repo = false
 style = "white"
 
 [character]
-error_symbol = "[✗](#957139)"
-vimcmd_symbol = "[](#24c760)"
-success_symbol = "[󰁕](#957139)"
+error_symbol = "[󰁕](#A5509F)"
+vimcmd_symbol = "[󰁕](#24c760)"
+success_symbol = "[󰁕](#A5509F)"
