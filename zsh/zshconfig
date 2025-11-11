@@ -11,6 +11,15 @@ zle -N smart_help
 zle -N clear_and_redisplay
 zle -N copy_terminal_buffer
 
+# custom binds
+bindkey -e # use emacs preset
+
+bindkey '\eh' smart_help
+bindkey '^[e' edit-command-line
+bindkey '^L' clear_and_redisplay
+bindkey '^X' copy_terminal_buffer
+bindkey '^[[Z' reverse-menu-complete
+
 # zsh options
 setopt AUTO_CD \
 	HIST_FIND_NO_DUPS \
@@ -51,26 +60,12 @@ eval "$(fnm env --use-on-cd)"
 # function can be found in ~/.zshplugin
 repos=(
 	hlissner/zsh-autopair
-	jeffreytse/zsh-vi-mode
+	# jeffreytse/zsh-vi-mode
 	# zsh-users/zsh-syntax-highlighting
 )
 
-
 # load plugins
 plugin-load $repos
-
-# share clipboard
-ZVM_SYSTEM_CLIPBOARD_ENABLED=true
-
-function zvm_after_init() {
-	bindkey '\eh' smart_help
-	bindkey '^[e' edit-command-line
-	bindkey '^L' clear_and_redisplay
-	bindkey '^X' copy_terminal_buffer
-	zvm_bindkey viins '^R' atuin-search
-	zvm_bindkey vicmd '^R' atuin-search
-	bindkey '^[[Z' reverse-menu-complete
-}
 
 # disable "c-s delay"
 stty -ixon

@@ -13,6 +13,12 @@ set -U fish_user_paths \
     ~/.local/share/nvim/mason/bin/ \
     ~/Documents/github/boilerplate/
 
+# CUSTOM BINDS
+bind -M insert alt-h smart_help
+bind -M insert ctrl-l clear_and_redisplay
+bind -M insert ctrl-p history-search-backward
+bind -M insert ctrl-n history-search-forward
+
 if command -v fzf >/dev/null
     fzf --fish | source
 end
@@ -35,13 +41,6 @@ end
 
 set -U fish_greeting
 set -U fish_autosuggestion_enabled 0
-set -g fish_key_bindings fish_vi_key_bindings
-
-# CUSTOM BINDS
-bind -M insert alt-h smart_help
-bind -M insert ctrl-l clear_and_redisplay
-bind -M insert ctrl-p history-search-backward
-bind -M insert ctrl-n history-search-forward
 
 # --- Custom Plugin Manager ---
 # Define the list of plugins to install (user/repo format)
