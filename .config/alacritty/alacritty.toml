@@ -12,13 +12,20 @@ size = 10.5
 
 [font.normal]
 family = "Recursive Mn Csl St Smb"
+style = "SemiBold"
+# family = "Annotation Mono"
+# style = "Medium"
 
 [font.bold]
 family = "Recursive Mn Csl St Smb"
+style = "SemiBold"
+# family = "Annotation Mono"
+# style = "Bold"
 
 [font.offset]
-x = 0
-y = 0
+x = 2
+y = 1
+
 
 [[keyboard.bindings]]
 chars = "\u001B[27;5;9~"
@@ -49,19 +56,19 @@ mods = "Control"
 hide_when_typing = true
 
 [window]
-opacity = 0.9
+opacity = 0.85
 dynamic_padding = true
 padding = { x = 0, y = 0 }
 
 
 [colors]
 [colors.primary]
-background = "#1d1f21"
+background = "#1e1e2e"
 foreground = "#ffffff"
 
 [colors.cursor]
 text = "#1d1f21"
-cursor = "#957139"
+cursor = "#644F6F"
 
 [colors.normal]
 black = "#1d1f21"
