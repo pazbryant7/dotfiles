@@ -12,11 +12,6 @@ customCommands:
     command: "nvim --noplugin {{.SelectedFile.Name}}"
     context: "files"
     output: terminal
-keybinding:
-  commits:
-    moveDownCommit: "J"
-    moveUpCommit: "K"
-    openLogMenu: "G"
 git:
   pagers:
     - externalDiffCommand: difft --color=always --display=inline --syntax-highlight=on --tab-width=2
