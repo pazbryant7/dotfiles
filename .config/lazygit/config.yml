@@ -17,3 +17,6 @@ keybinding:
     moveDownCommit: "J"
     moveUpCommit: "K"
     openLogMenu: "G"
+git:
+  pagers:
+    - externalDiffCommand: difft --color=always --display=inline --syntax-highlight=on --tab-width=2
