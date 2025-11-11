@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/env sh
 
 userresources=$HOME/.Xresources
 sysresources=/etc/X11/xinit/.Xresources
