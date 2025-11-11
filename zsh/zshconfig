@@ -65,7 +65,7 @@ ZVM_SYSTEM_CLIPBOARD_ENABLED=true
 function zvm_after_init() {
 	bindkey '\eh' smart_help
 	bindkey '^[e' edit-command-line
-	bindkey '^[l' clear_and_redisplay
+	bindkey '^L' clear_and_redisplay
 	bindkey '^X' copy_terminal_buffer
 	zvm_bindkey viins '^R' atuin-search
 	zvm_bindkey vicmd '^R' atuin-search

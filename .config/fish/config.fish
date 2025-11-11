@@ -39,7 +39,7 @@ set -g fish_key_bindings fish_vi_key_bindings
 
 # CUSTOM BINDS
 bind -M insert alt-h smart_help
-bind -M insert alt-l clear_and_redisplay
+bind -M insert ctrl clear_and_redisplay
 bind -M insert ctrl-p history-search-backward
 bind -M insert ctrl-n history-search-forward
 
