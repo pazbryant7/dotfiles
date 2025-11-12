@@ -30,6 +30,7 @@ ffmpegthumbnailer
 firefox
 fish
 fzf
+gammastep
 git
 github-cli
 glow
