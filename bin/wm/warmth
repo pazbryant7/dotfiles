@@ -1,0 +1,33 @@
+#!/bin/env sh
+
+set -eu
+
+STATE_DIR="/tmp/screen_warmth_active.lock"
+WARM_TEMP=4200 # Comfortable warm tone for coding
+METHOD="randr" # Force Xorg to prevent Wayland errors
+
+enable_warmth() {
+	printf '%s\n' "Enabling warm screen tone..."
+	gammastep -m "$METHOD" -P -O "$WARM_TEMP" >/dev/null 2>&1
+	mkdir -p "$STATE_DIR"
+}
+
+disable_warmth() {
+	printf '%s\n' "Restoring normal color temperature..."
+	gammastep -m "$METHOD" -x >/dev/null 2>&1
+	rmdir "$STATE_DIR" 2>/dev/null || true
+}
+
+toggle_warmth() {
+	if [ -d "$STATE_DIR" ]; then
+		disable_warmth
+	else
+		enable_warmth
+	fi
+}
+
+main() {
+	toggle_warmth
+}
+
+main "$@"
