@@ -60,6 +60,7 @@ eval "$(fnm env --use-on-cd)"
 # function can be found in ~/.zshplugin
 repos=(
 	hlissner/zsh-autopair
+  zsh-users/zsh-completions
 	# jeffreytse/zsh-vi-mode
 	# zsh-users/zsh-syntax-highlighting
 )
