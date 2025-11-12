@@ -6,6 +6,8 @@ autoload -Uz \
 	compinit && compinit
 
 # zsh widgets
+# ./functions should be
+# sourced before
 zle -N edit-command-line
 zle -N smart_help
 zle -N clear_and_redisplay
@@ -30,23 +32,7 @@ zstyle ':completion:*' menu select
 
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 
-# extend path
-extra_path=(
-	~/bin/global/
-	~/.local/bin/
-	~/.cargo/bin/
-	~/bin/crontab/
-	/usr/local/bin/
-	~/.local/share/bob/nvim-bin/
-	/var/lib/flatpak/exports/bin/
-	~/.local/share/nvim/mason/bin/
-	~/Documents/github/boilerplate/
-)
-
 PROMPT='%F{white}%2~%f '
-
-extra_path_expanded=$(printf "%s:" "${extra_path[@]}")
-export PATH="${(j/:/)extra_path}:${PATH}"
 
 # start software
 eval "$(fzf --zsh)"
@@ -54,16 +40,6 @@ eval "$(atuin init zsh)"
 eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
 eval "$(fnm env --use-on-cd)"
-
-
-# custom plugin manager
-# function can be found in ~/.zshplugin
-repos=(
-	hlissner/zsh-autopair
-	# zsh-users/zsh-syntax-highlighting
-)
-# load plugins
-plugin-load $repos
 
 # disable "c-s delay"
 stty -ixon

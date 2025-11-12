@@ -1,0 +1,21 @@
+# extend path
+extra_path=(
+	~/bin/global/
+	~/.local/bin/
+	~/.cargo/bin/
+	~/bin/crontab/
+	/usr/local/bin/
+	~/.local/share/bob/nvim-bin/
+	/var/lib/flatpak/exports/bin/
+	~/.local/share/nvim/mason/bin/
+	~/Documents/github/boilerplate/
+)
+
+extra_path_expanded=$(printf "%s:" "${extra_path[@]}")
+export PATH="${(j/:/)extra_path}:${PATH}"
+
+# extend fpath
+extra_fpath=()
+
+extra_fpath_expanded=$(printf "%s:" "${extra_fpath[@]}")
+FPATH="${(j/:/)extra_fpath}:${FPATH}"
