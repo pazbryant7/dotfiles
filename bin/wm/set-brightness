@@ -1,19 +1,63 @@
-#!/bin/sh
+#!/bin/env sh
 
-brightness=$(rofi -dmenu -p "Enter brightness (0-9 or 0.0-1.0):" -lines 1)
+set -e
 
-# Exit if no input (user cancelled)
-[ -z "$brightness" ] && exit 0
+RANDR_METHOD="randr"
+WARM_COLOR_TEMP="4200K"
+DEFAULT_COLOR_TEMP="6500K"
 
-# POSIX-compliant way to handle the mapping
-case "$brightness" in
-1) brightness="1.00" ;;
-2) brightness="0.80" ;;
-3) brightness="0.60" ;;
-4) brightness="0.40" ;;
-5) brightness="0.30" ;;
-6) brightness="0.20" ;;
-7) brightness="0.10" ;;
-esac
+prompt_brightness() {
+	rofi -dmenu -p "Enter brightness (0-9 or 0.0-1.0):" -lines 1
+}
 
-xrandr --output HDMI-2 --brightness "$brightness"
+normalize_brightness() {
+	brightness="$1"
+
+	case "$brightness" in
+	1) brightness="1.00" ;;
+	2) brightness="0.80" ;;
+	3) brightness="0.60" ;;
+	4) brightness="0.40" ;;
+	5) brightness="0.30" ;;
+	6) brightness="0.20" ;;
+	7) brightness="0.10" ;;
+	esac
+
+	echo "$brightness"
+}
+
+get_current_color_temp() {
+	gamma="$(xrandr --verbose | awk '/Gamma:/ { print $2 }')"
+
+	color_temp="$DEFAULT_COLOR_TEMP"
+	warm_gamma="1.0:1.2:1.5"
+
+	if [ "$gamma" = "$warm_gamma" ]; then
+		color_temp="$WARM_COLOR_TEMP"
+	fi
+
+	echo "$color_temp"
+}
+
+apply_brightness() {
+	brightness="$1"
+	color_temp="$2"
+
+	echo "$brightness"
+	echo "$color_temp"
+
+	gammastep -m "$RANDR_METHOD" -P -O "$color_temp" \
+		-b "$brightness"
+}
+
+main() {
+	brightness="$(prompt_brightness)"
+	[ -z "$brightness" ] && exit 0
+
+	color_temp="$(get_current_color_temp)"
+	brightness="$(normalize_brightness "$brightness")"
+
+	apply_brightness "$brightness" "$color_temp"
+}
+
+main "$@"

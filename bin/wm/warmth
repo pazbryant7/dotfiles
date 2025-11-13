@@ -1,29 +1,41 @@
-#!/bin/env sh
+#!/bin/sh
 
-set -eu
+set -e
 
-STATE_DIR="/tmp/screen_warmth_active.lock"
-WARM_TEMP=4200 # Comfortable warm tone for coding
-METHOD="randr" # Force Xorg to prevent Wayland errors
+STATE_FILE="/tmp/screen_warmth_active.lock"
+WARM_TEMP="4200K"
+METHOD="randr"
+DEFAULT_WARMTH="6500K"
 
 enable_warmth() {
-	printf '%s\n' "Enabling warm screen tone..."
-	gammastep -m "$METHOD" -P -O "$WARM_TEMP" >/dev/null 2>&1
-	mkdir -p "$STATE_DIR"
+	current_brightness="$1"
+
+	gammastep -m "$METHOD" -P -O "$WARM_TEMP" \
+		-b"$current_brightness" \
+		: >/dev/null 2>&1 >"$STATE_FILE"
 }
 
 disable_warmth() {
-	printf '%s\n' "Restoring normal color temperature..."
-	gammastep -m "$METHOD" -x >/dev/null 2>&1
-	rmdir "$STATE_DIR" 2>/dev/null || true
+	current_brightness="$1"
+
+	gammastep -m"$METHOD" -P -O"$DEFAULT_WARMTH" \
+		-b "$current_brightness"
+
+	rm -f "$STATE_FILE"
+}
+
+get_current_brightness() {
+	xrandr --verbose | awk '/Brightness/ { print $2; exit }'
 }
 
 toggle_warmth() {
-	if [ -d "$STATE_DIR" ]; then
-		disable_warmth
+	current_brightness="$(get_current_brightness)"
+	if [ -f "$STATE_FILE" ]; then
+		disable_warmth "$current_brightness"
 	else
-		enable_warmth
+		enable_warmth "$current_brightness"
 	fi
+
 }
 
 main() {
