@@ -1,51 +1,54 @@
-#!/bin/sh
+#!/usr/bin/env sh
+# Close everything except current window or reset to home directory.
+# Does not detach from current tmux session.
 
-ensure_session_exists() {
-	_session_name="$1"
-	if ! tmux has-session -t "$_session_name" 2>/dev/null; then
-		tmux new-session -d -s "$_session_name"
-	fi
+session_exists() {
+	tmux has-session -t "$1" 2>/dev/null
+}
+
+create_session() {
+	tmux new-session -d -s "$1"
+}
+
+get_current_window_id() {
+	tmux display-message -p -t "$1" '#I'
 }
 
 kill_other_sessions() {
-	_target_session="$1"
 	tmux list-sessions -F '#S' | while read -r session; do
-		if [ "$session" != "$_target_session" ]; then
+		if [ "$session" != "$1" ]; then
 			tmux kill-session -t "$session"
 		fi
 	done
 }
 
 kill_other_windows() {
-	_target_session="$1"
-	current_window_id=$(tmux display-message -p -t "$_target_session" '#I')
-	tmux list-windows -t "$_target_session" -F '#I' | while read -r window_id; do
-		if [ "$window_id" != "$current_window_id" ]; then
-			tmux kill-window -t "${_target_session}:${window_id}"
+	session="$1"
+	current_window=$(get_current_window_id "$session")
+
+	tmux list-windows -t "$session" -F '#I' | while read -r window_id; do
+		if [ "$window_id" != "$current_window" ]; then
+			tmux kill-window -t "${session}:${window_id}"
 		fi
 	done
 }
 
-navigate_home() {
-	_target_session="$1"
+switch_to_session() {
 	if [ -n "$TMUX" ]; then
-		tmux switch-client -t "$_target_session"
+		tmux switch-client -t "$1"
 	fi
-	tmux display-message -t "$_target_session" "Cleaned up other sessions and windows."
 }
 
 main() {
-	TARGET_SESSION=""
-	if [ -z "$1" ]; then
-		TARGET_SESSION="$(tmux display-message -p '#{session_name}')"
-	else
-		TARGET_SESSION="$1"
-	fi
+	target_session="${1:-$(tmux display-message -p '#{session_name}')}"
 
-	ensure_session_exists "$TARGET_SESSION"
-	navigate_home "$TARGET_SESSION" # needs to switch before kill
-	kill_other_sessions "$TARGET_SESSION"
-	kill_other_windows "$TARGET_SESSION"
+	session_exists "$target_session" || create_session "$target_session"
+	switch_to_session "$target_session"
+	kill_other_sessions "$target_session"
+	kill_other_windows "$target_session"
+
+	tmux display-message -t "$target_session" \
+		"Cleaned up other sessions and windows."
 }
 
 main "$@"

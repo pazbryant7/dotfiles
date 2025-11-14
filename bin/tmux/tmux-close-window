@@ -1,28 +1,56 @@
 #!/usr/bin/env sh
+# Override default tmux close window behavior.
+# This script prevents session detachment when closing windows in the current session.
+# Instead, it switches to another active session or gracefully exits.
 
-pane_count=$(tmux list-panes | wc -l)
-window_count=$(tmux list-windows | wc -l)
-session_count=$(tmux list-sessions | wc -l)
-current_session=$(tmux display-message -p '#S')
+get_session_count() {
+	tmux list-sessions 2>/dev/null | wc -l
+}
 
-switch_to_last_session() {
+get_current_session() {
+	tmux display-message -p '#S'
+}
+
+get_pane_count() {
+	tmux list-panes 2>/dev/null | wc -l
+}
+
+get_window_count() {
+	tmux list-windows 2>/dev/null | wc -l
+}
+
+get_alternative_session() {
+	tmux list-sessions -F '#{session_name}' 2>/dev/null |
+		grep -v "^$1$" | head -n 1
+}
+
+kill_current_session() {
+	session_count="$1"
+	current_session="$2"
+
 	if [ "$session_count" -gt 1 ]; then
-		tmux switch-client -l 2>/dev/null || {
-			other_session=$(tmux list-sessions -F '#{session_name}' | grep -v "^${current_session}$" | head -n 1)
-			tmux switch-client -t "$other_session"
-		}
+		tmux switch-client -l 2>/dev/null ||
+			tmux switch-client -t "$(get_alternative_session "$current_session")"
+
 		tmux kill-session -t "$current_session"
 	else
 		tmux kill-session
 	fi
 }
 
-if [ "$pane_count" -gt 1 ]; then
-	tmux kill-pane
-elif [ "$window_count" -gt 1 ]; then
-	tmux kill-window
-else
-	switch_to_last_session
-fi
+main() {
+	pane_count=$(get_pane_count)
+	window_count=$(get_window_count)
 
-tmux refresh-client -S
+	if [ "$pane_count" -gt 1 ]; then
+		tmux kill-pane
+	elif [ "$window_count" -gt 1 ]; then
+		tmux kill-window
+	else
+		kill_current_session "$(get_session_count)" "$(get_current_session)"
+	fi
+
+	tmux refresh-client -S
+}
+
+main "$@"

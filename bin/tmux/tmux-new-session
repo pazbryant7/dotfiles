@@ -1,13 +1,12 @@
-#!/bin/env sh
+#!/usr/bin/env sh
+# Inspired by ThePrimeAgen
+# Open, switch, create, and navigate tmux sessions quickly
 
 select_session_path() {
-	ssp_input_path="$1"
-
-	if [ -n "$ssp_input_path" ]; then
-		printf '%s' "$ssp_input_path"
+	if [ -n "$1" ]; then
+		printf '%s' "$1"
 		return 0
 	fi
-
 	fd . \
 		--max-depth 1 \
 		--type=d \
@@ -19,23 +18,49 @@ select_session_path() {
 }
 
 select_session_name() {
-	ssn_input_name="$1"
-	ssn_path="$2"
-
-	if [ -n "$ssn_input_name" ]; then
-		printf '%s' "$ssn_input_name"
+	if [ -n "$1" ]; then
+		printf '%s' "$1"
 	else
-		basename "$ssn_path" | tr . _
+		basename "$2" | tr . _
 	fi
 }
 
-switch_session() {
-	ss_session_name="$1"
-	ss_path="$2"
-	ss_nuke_session="$3"
-	ss_default_working_session="working"
+get_current_session() {
+	tmux display-message -p '#S'
+}
 
-	if [ -z "$ss_session_name" ] || [ -z "$ss_path" ]; then
+session_exists() {
+	tmux has-session -t="$1" 2>/dev/null
+}
+
+create_session() {
+	tmux new-session -ds "$1" -c "$2"
+}
+
+switch_to_session() {
+	tmux switch-client -t "$1"
+}
+
+refresh_status() {
+	tmux refresh-client -S
+}
+
+nuke_and_recreate_session() {
+	session_name="$1"
+	path="$2"
+	temp_session="__temp_switch_$"
+
+	create_session "$temp_session" "$HOME"
+	switch_to_session "$temp_session"
+	tmux kill-session -t "$session_name" 2>/dev/null
+	create_session "$session_name" "$path"
+	switch_to_session "$session_name"
+	tmux kill-session -t "$temp_session" 2>/dev/null
+	refresh_status
+}
+
+validate_session_args() {
+	if [ -z "$1" ] || [ -z "$2" ]; then
 		printf 'Error: session name and path are required\n' >&2
 		return 1
 	fi
@@ -44,31 +69,27 @@ switch_session() {
 		printf 'Error: not inside a tmux session\n' >&2
 		return 1
 	fi
+}
 
-	ss_current_session=$(tmux display-message -p '#S')
+switch_session() {
+	session_name="$1"
+	path="$2"
+	nuke_session="$3"
 
-	if [ "$ss_session_name" = "$ss_default_working_session" ] && [ -n "$ss_nuke_session" ]; then
-		ss_temp_session="__temp_switch_$$"
-		tmux new-session -ds "$ss_temp_session" -c "$HOME"
-		tmux switch-client -t "$ss_temp_session"
-		tmux kill-session -t "$ss_session_name" 2>/dev/null
-		tmux new-session -ds "$ss_session_name" -c "$ss_path"
-		tmux switch-client -t "$ss_session_name"
-		tmux kill-session -t "$ss_temp_session" 2>/dev/null
-		tmux refresh-client -S # refresh status bar
+	validate_session_args "$session_name" "$path" || return 1
+
+	if [ "$session_name" = "working" ] && [ -n "$nuke_session" ]; then
+		nuke_and_recreate_session "$session_name" "$path"
 		return 0
 	fi
 
-	if [ "$ss_current_session" = "$ss_session_name" ]; then
-		tmux display-message "Already attached to session: $ss_session_name"
+	if [ "$(get_current_session)" = "$session_name" ]; then
+		tmux display-message "Already attached to session: $session_name"
 		return 0
 	fi
 
-	if ! tmux has-session -t="$ss_session_name" 2>/dev/null; then
-		tmux new-session -ds "$ss_session_name" -c "$ss_path"
-	fi
-
-	tmux switch-client -t "$ss_session_name"
+	session_exists "$session_name" || create_session "$session_name" "$path"
+	switch_to_session "$session_name"
 }
 
 main() {

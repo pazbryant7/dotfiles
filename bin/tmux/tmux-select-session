@@ -1,21 +1,43 @@
-#!/bin/sh
+#!/usr/bin/env sh
+# Switch between opened tmux sessions
 
-tmux_running=$(pgrep tmux)
-current_attached_session=$(tmux display-message -p '#S')
-selected_session=$(tmux list-sessions | awk -F ':' '{print $1}' | fzf | sort)
+tmux_is_running() {
+	pgrep tmux >/dev/null
+}
 
-if [ -z "$TMUX" ] && [ -z "$tmux_running" ]; then
-	exit 0
-fi
+get_current_session() {
+	tmux display-message -p '#S'
+}
 
-if [ "$current_attached_session" = "$selected_session" ]; then
-	tmux display-message "You are currently attached to this session."
-	exit 1
-fi
+select_session() {
+	tmux list-sessions | awk -F ':' '{print $1}' | fzf | sort
+}
 
-if ! tmux has-session -t="$selected_session" 2>/dev/null; then
-	tmux display-message "The session you selected no longer exists."
-	exit 1
-fi
+session_exists() {
+	tmux has-session -t="$1" 2>/dev/null
+}
 
-tmux switch-client -t "$selected_session"
+main() {
+	if [ -z "$TMUX" ] && ! tmux_is_running; then
+		exit 0
+	fi
+
+	selected=$(select_session)
+	[ -z "$selected" ] && exit 0
+
+	current=$(get_current_session)
+
+	if [ "$current" = "$selected" ]; then
+		tmux display-message "Already attached to this session."
+		exit 1
+	fi
+
+	if ! session_exists "$selected"; then
+		tmux display-message "Session no longer exists."
+		exit 1
+	fi
+
+	tmux switch-client -t "$selected"
+}
+
+main "$@"
