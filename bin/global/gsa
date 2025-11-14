@@ -43,9 +43,16 @@ main() {
 		return 1
 	fi
 
-	dirs="/home/bryant/Documents/github /home/bryant/.config /home/bryant/Documents/temp"
-	directories="$(traverse_all_directories "$dirs" | sort | uniq)"
-	echo "$directories" | fzf --bind "enter:execute($HOME/bin/tmux/tmux-new-session {})"
+	dirs="/home/bryant/Documents/github \
+		/home/bryant/.config \
+		/home/bryant/Documents/temp"
+
+	directories="$(traverse_all_directories \
+		"$dirs" |
+		sort | uniq)"
+
+	echo "$directories" |
+		fzf --bind "enter:execute($HOME/bin/tmux/tmux-new-session {})" || true
 }
 
 main
