@@ -3,7 +3,6 @@
 set -e
 
 # Configuration
-BSPWMRC="$HOME/.config/bspwm/bspwmrc"
 THEME_RASI="$HOME/.config/rofi/theme.rasi"
 TMUX_CONFIG="$HOME/.tmux.conf"
 XRESOURCES="$HOME/.Xresources"
@@ -40,14 +39,6 @@ update() {
 	fi
 }
 
-# Update functions for each configuration file
-overwrite_bspwm_colors() {
-	accent_color="$1"
-	update "$BSPWMRC" \
-		'focused_border_color "#[0-9a-fA-F]\{6\}"' \
-		"focused_border_color \"$accent_color\""
-}
-
 overwrite_rofi_colors() {
 	accent_color="$1"
 	update "$THEME_RASI" \
@@ -64,9 +55,16 @@ overwrite_tmux_colors() {
 
 overwrite_xresources_colors() {
 	accent_color="$1"
-	update "$XRESOURCES" 'st.cursorColor:[[:space:]]*#[0-9a-fA-F]\{6\}' "st.cursorColor: $accent_color" || true
-	update "$XRESOURCES" 'dwm.selbgcolor: #[0-9a-fA-F]\{6\}' "dwm.selbgcolor: $accent_color" || true
-	update "$XRESOURCES" 'dwm.selbordercolor: #[0-9a-fA-F]\{6\}' "dwm.selbordercolor: $accent_color" || true
+	brighter_color="$2"
+
+	update "$XRESOURCES" '*.cursorColor:[[:space:]]*#[0-9a-fA-F]\{6\}' \
+		"*.cursorColor: $brighter_color" || true
+
+	update "$XRESOURCES" 'dwm.selbgcolor: #[0-9a-fA-F]\{6\}' \
+		"dwm.selbgcolor: $accent_color" || true
+
+	update "$XRESOURCES" 'dwm.selbordercolor: #[0-9a-fA-F]\{6\}' \
+		"dwm.selbordercolor: $accent_color" || true
 }
 
 overwrite_alacritty_colors() {
@@ -84,16 +82,11 @@ overwrite_dunst_colors() {
 }
 
 overwrite_starship_colors() {
-	accent_color="$1"
+	brighter_color="$1"
 
 	update "$STARSHIP_TOML" \
 		'success_symbol = "\[󰁕\](bold #[0-9a-fA-F]\{6\})"' \
-		"success_symbol = \"[󰁕](bold $accent_color)\"" || true
-
-	brighter_color=$(
-		pastel lighten 0.25 "$accent_color" |
-			pastel format hex
-	)
+		"success_symbol = \"[󰁕](bold $brighter_color)\"" || true
 
 	update "$STARSHIP_TOML" \
 		'style = "bold #[0-9a-fA-F]\{6\}"' \
@@ -124,11 +117,6 @@ reload_services() {
 		done
 	fi
 
-	# Reload bspwm
-	if pgrep -x bspwm >/dev/null; then
-		bspc wm -r || echo "Warning: Failed to reload bspwm" >&2
-	fi
-
 	# Reload dwm
 	pgrep -x dwm >/dev/null && xsetroot -name "fsignal:1" || echo "Warning: Failed to signal dwm" >&2
 
@@ -140,6 +128,12 @@ reload_services() {
 # Validate hex color format
 validate_color() {
 	echo "$1" | grep -qE '^#[0-9a-fA-F]{6}$'
+}
+
+get_brighter_color() {
+	accent_color="$1"
+	pastel lighten 0.25 "$accent_color" |
+		pastel format hex
 }
 
 # Main function
@@ -162,14 +156,19 @@ main() {
 		exit 1
 	fi
 
+	brighter_color=$(get_brighter_color "$accent_color")
+
 	# Update all configuration files in parallel
 	overwrite_rofi_colors "$accent_color" &
-	overwrite_bspwm_colors "$accent_color" &
 	overwrite_dunst_colors "$accent_color" &
 	overwrite_tmux_colors "$accent_color" &
-	overwrite_starship_colors "$accent_color" &
 	overwrite_alacritty_colors "$accent_color" &
-	overwrite_xresources_colors "$accent_color" &
+
+	echo "$brighter_color"
+
+	overwrite_starship_colors "$brighter_color" &
+	overwrite_xresources_colors "$accent_color" \
+		"$brighter_color" &
 
 	# Wait for all background jobs to complete
 	wait
@@ -177,7 +176,8 @@ main() {
 	# Reload services
 	reload_services
 
-	echo "Theme updated successfully with color $accent_color"
+	echo "Theme updated successfully with color \
+		$accent_color and color $brighter_color"
 }
 
 main "$@"
