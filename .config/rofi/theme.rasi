@@ -9,11 +9,11 @@
 
 /*****----- Global Properties -----*****/
 * {
-background		:     #000000;
-background-alt:			#957139;
-foreground		:     #ffffff;
-selected			:     #000000;
-font					:			"Overpass SemiBold 9.5";
+background			:#000000;
+background-alt:#6E76A4;
+foreground			:#ffffff;
+selected			:#000000;
+font				:"Overpass SemiBold 9.5";
 }
 
 /*****----- Main Window -----*****/
