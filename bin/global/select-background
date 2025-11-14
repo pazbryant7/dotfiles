@@ -4,47 +4,49 @@ set -e
 FOLDER="${HOME}/Documents/github/media/images/wallpapers"
 
 get_palette() {
-	_gp_image_path="$1"
-	if [ -z "${_gp_image_path}" ]; then
+	img="$1"
+
+	[ -n "$img" ] || {
 		echo "Error: No image path provided." >&2
 		return 1
-	fi
-	magick "${_gp_image_path}" +dither -colors 8 -format '%c' histogram:info: |
-		sed -n 's/.*\(#[0-9A-F]\{6\}\).*/\1/p'
+	}
+	magick "$img" +dither -colors 8 -format '%c' histogram:info: |
+		sed -n 's/.*\(#\([0-9A-Fa-f]\{6\}\)\).*/\1/p'
 }
 
 select_image() {
-	nsxiv -rto "${FOLDER}"
+	nsxiv -rto "$FOLDER"
 }
 
 set_background() {
-	if [ -z "$1" ]; then
+	img="$1"
+
+	[ -n "$img" ] || {
 		echo "Error: No image path provided to set_background." >&2
 		return 1
-	fi
-	feh --bg-fill "$1"
-	echo "Background set to: $(basename "$1")"
+	}
+
+	feh --bg-fill "$img"
+	echo "Background set to: $(basename "$img")"
 }
 
 main() {
-
 	if [ -n "$1" ]; then
-		selected_image="$1"
+		selected="$1"
 	else
-		selected_image="$(select_image)" || {
-			echo "No image selected. Exiting."
+		selected=$(select_image) || {
+			echo "No image selected."
 			return 1
 		}
 	fi
 
-	set_background "${selected_image}"
+	set_background "$selected"
+	colors=$(get_palette "$selected") || exit 1
 
-	palete_colors="$(get_palette "${selected_image}")"
-	accent_color="$(echo "$palete_colors" | sed -n '4p')"
+	accent_color=$(printf "%s\n" "$colors" | sed -n '4p')
+	primary_color=$(printf "%s\n" "$colors" | sed -n '6p')
 
-	if [ -n "${accent_color}" ]; then
-		~/bin/global/uitool "$accent_color"
-	fi
+	[ -n "$accent_color" ] && ~/bin/global/uitool "$accent_color" "$primary_color"
 }
 
 main "$@"

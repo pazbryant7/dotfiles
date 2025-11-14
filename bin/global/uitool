@@ -1,8 +1,6 @@
 #!/usr/bin/env sh
-
 set -e
 
-# Configuration
 THEME_RASI="$HOME/.config/rofi/theme.rasi"
 TMUX_CONFIG="$HOME/.tmux.conf"
 XRESOURCES="$HOME/.Xresources"
@@ -10,174 +8,160 @@ ALACRITTY_CONFIG="$HOME/.config/alacritty/alacritty.toml"
 DUNSTRC="$HOME/.config/dunst/dunstrc"
 STARSHIP_TOML="$HOME/.config/starship/starship.toml"
 
-# Function to select a color using xcolor
-select_color() {
-	notify-send "picking color"
+file_exists() { [ -f "$1" ]; }
 
+update_line() {
+	file="$1"
+	pattern="$2"
+	replacement="$3"
+
+	if ! file_exists "$file"; then
+		echo "Warning: file not found: $file" >&2
+		return 1
+	fi
+
+	# Escape special sed characters in replacement string
+	replacement=$(printf '%s\n' "$replacement" | sed -e 's/[\/&]/\\&/g')
+	sed -i "s|$pattern|$replacement|" "$file" || {
+		echo "Failed to update: $file" >&2
+		return 1
+	}
+}
+
+update_starship_block_style() {
+	file="$1"
+	section="$2"
+	color="$3"
+
+	file_exists "$file" || return 1
+
+	if ! sed -i "/^\[$section\]/,/^\[/ s/style = \"bold #[0-9a-fA-F]\{6\}\"/style = \"bold $color\"/" "$file"; then
+		echo "Warning: Failed to update starship section: $section" >&2
+		return 1
+	fi
+}
+
+validate_color() { printf "%s" "$1" | grep -qE '^#[0-9a-fA-F]{6}$'; }
+
+select_color() {
+	notify-send "Picking color"
 	xcolor || {
 		echo "Failed to select color" >&2
 		exit 1
 	}
 }
 
-# Function to update config files with better error handling
-update() {
-	file="$1"
-	pattern="$2"
-	replacement="$3"
-
-	if [ ! -f "$file" ]; then
-		echo "Warning: File not found: $file" >&2
-		return 1
-	fi
-
-	if sed -i "s|$pattern|$replacement|" "$file"; then
-		return 0
-	else
-		echo "Error: Failed to update $file" >&2
-		return 1
-	fi
+lighten_color() {
+	pastel lighten 0.25 "$1" | pastel format hex
 }
 
-overwrite_rofi_colors() {
-	accent_color="$1"
-	update "$THEME_RASI" \
-		'background-alt:\s*#[0-9a-fA-F]\{6\};' \
-		"background-alt:\t\t\t$accent_color;"
+apply_rofi() {
+	accent="$1"
+	update_line "$THEME_RASI" 'background-alt:\s*#[0-9a-fA-F]\{6\};' \
+		"background-alt:$accent;"
 }
 
-overwrite_tmux_colors() {
-	accent_color="$1"
-	update "$TMUX_CONFIG" \
+apply_tmux() {
+	accent="$1"
+	update_line "$TMUX_CONFIG" \
 		"set-option -g status-style 'bg=#1e1e2e,fg=#[0-9a-fA-F]\{6\}'" \
-		"set-option -g status-style 'bg=#1e1e2e,fg=$accent_color'"
+		"set-option -g status-style 'bg=#1e1e2e,fg=$accent'"
 }
 
-overwrite_xresources_colors() {
-	accent_color="$1"
-	brighter_color="$2"
+apply_xresources() {
+	accent="$1"
+	bright="$2"
+	update_line "$XRESOURCES" '*.cursorColor:[[:space:]]*#[0-9a-fA-F]\{6\}' \
+		"*.cursorColor: $bright"
 
-	update "$XRESOURCES" '*.cursorColor:[[:space:]]*#[0-9a-fA-F]\{6\}' \
-		"*.cursorColor: $brighter_color" || true
+	update_line "$XRESOURCES" 'dwm.selbgcolor: #[0-9a-fA-F]\{6\}' \
+		"dwm.selbgcolor: $accent"
 
-	update "$XRESOURCES" 'dwm.selbgcolor: #[0-9a-fA-F]\{6\}' \
-		"dwm.selbgcolor: $accent_color" || true
-
-	update "$XRESOURCES" 'dwm.selbordercolor: #[0-9a-fA-F]\{6\}' \
-		"dwm.selbordercolor: $accent_color" || true
+	update_line "$XRESOURCES" 'dwm.selbordercolor: #[0-9a-fA-F]\{6\}' \
+		"dwm.selbordercolor: $accent"
 }
 
-overwrite_alacritty_colors() {
-	accent_color="$1"
-	update "$ALACRITTY_CONFIG" \
+apply_alacritty() {
+	accent="$1"
+	update_line "$ALACRITTY_CONFIG" \
 		'cursor = "#[0-9a-fA-F]\{6\}"' \
-		"cursor = \"$accent_color\""
+		"cursor = \"$accent\""
 }
 
-overwrite_dunst_colors() {
-	accent_color="$1"
-	update "$DUNSTRC" \
+apply_dunst() {
+	accent="$1"
+	update_line "$DUNSTRC" \
 		'background = "#[0-9a-fA-F]\{6\}"' \
-		"background = \"$accent_color\""
+		"background = \"$accent\""
 }
 
-overwrite_starship_colors() {
-	brighter_color="$1"
-
-	update "$STARSHIP_TOML" \
+apply_starship() {
+	bright="$1"
+	primary="$2"
+	update_line "$STARSHIP_TOML" \
 		'success_symbol = "\[󰁕\](bold #[0-9a-fA-F]\{6\})"' \
-		"success_symbol = \"[󰁕](bold $brighter_color)\"" || true
-
-	update "$STARSHIP_TOML" \
-		'style = "bold #[0-9a-fA-F]\{6\}"' \
-		"style = \"bold $brighter_color\"" || true
+		"success_symbol = \"[󰁕](bold $bright)\""
+	update_starship_block_style "$STARSHIP_TOML" "directory" "$bright"
+	if [ -n "$primary" ]; then
+		update_starship_block_style "$STARSHIP_TOML" "git_branch" "$primary"
+	fi
 }
 
-# Reload services after configuration updates
-reload_services() {
-	# Reload Xresources and signal st terminals
-	if [ -f "$XRESOURCES" ]; then
+reload_all() {
+	if file_exists "$XRESOURCES"; then
 		if xrdb -merge "$XRESOURCES"; then
-			pgrep -x st | while IFS= read -r pid; do
-				kill -USR1 "$pid" 2>/dev/null || echo "Warning: Failed to signal st PID: $pid"
-			done
-		else
-			echo "Warning: xrdb -merge failed" >&2
+			pgrep -x st | xargs -r kill -USR1 2>/dev/null || true
 		fi
 	fi
 
-	# Reload qutebrowser
 	pgrep -x qutebrowser >/dev/null && qutebrowser :config-source
-
-	# Reload dunst
 	if pgrep -x dunst >/dev/null; then
 		pkill dunst
-		while pgrep -x dunst >/dev/null; do
-			sleep 0.1
-		done
+		while pgrep -x dunst >/dev/null; do sleep 0.05; done
 	fi
 
-	# Reload dwm
-	pgrep -x dwm >/dev/null && xsetroot -name "fsignal:1" || echo "Warning: Failed to signal dwm" >&2
+	pgrep -x dwm >/dev/null && xsetroot -name "fsignal:1"
 
 	if pgrep tmux >/dev/null; then
-		tmux source-file "${HOME}/.tmux.conf" || echo "Failed to reload tmux configuration"
+		tmux source-file "$TMUX_CONFIG" || true
 	fi
 }
 
-# Validate hex color format
-validate_color() {
-	echo "$1" | grep -qE '^#[0-9a-fA-F]{6}$'
-}
-
-get_brighter_color() {
-	accent_color="$1"
-	pastel lighten 0.25 "$accent_color" |
-		pastel format hex
-}
-
-# Main function
 main() {
-	accent_color=""
+	accent="$1"
+	primary="$2"
 
-	if [ -n "$1" ]; then
-		accent_color="$1"
-	else
-		accent_color=$(select_color)
-	fi
+	[ -n "$accent" ] || accent=$(select_color)
 
-	if [ -z "$accent_color" ]; then
-		echo "Error: No color selected or provided. Exiting." >&2
+	if ! validate_color "$accent"; then
+		echo "Invalid color: $accent" >&2
 		exit 1
 	fi
 
-	if ! validate_color "$accent_color"; then
-		echo "Error: Invalid color format: $accent_color. Expected #RRGGBB." >&2
+	bright=$(lighten_color "$accent")
+
+	if ! validate_color "$bright"; then
+		echo "Failed to generate bright color from: $accent" >&2
 		exit 1
 	fi
 
-	brighter_color=$(get_brighter_color "$accent_color")
+	if [ -n "$primary" ] && ! validate_color "$primary"; then
+		echo "Invalid primary color: $primary" >&2
+		exit 1
+	fi
 
-	# Update all configuration files in parallel
-	overwrite_rofi_colors "$accent_color" &
-	overwrite_dunst_colors "$accent_color" &
-	overwrite_tmux_colors "$accent_color" &
-	overwrite_alacritty_colors "$accent_color" &
+	apply_rofi "$accent" &
+	apply_dunst "$accent" &
+	apply_tmux "$accent" &
+	apply_alacritty "$accent" &
+	apply_starship "$bright" "$primary" &
+	apply_xresources "$accent" "$bright" &
 
-	echo "$brighter_color"
-
-	overwrite_starship_colors "$brighter_color" &
-	overwrite_xresources_colors "$accent_color" \
-		"$brighter_color" &
-
-	# Wait for all background jobs to complete
 	wait
 
-	# Reload services
-	reload_services
+	reload_all
 
-	echo "Theme updated successfully with color \
-		$accent_color and color $brighter_color"
+	echo "Updated theme with $accent (bright: $bright)"
 }
 
 main "$@"

@@ -1,16 +1,47 @@
 #!/usr/bin/env sh
 
-templates=$(curl -L -s "https://www.toptal.com/developers/gitignore/api/list")
+TEMPLATES_URL="https://www.toptal.com/developers/gitignore/api/list"
+GEN_URL="https://www.gitignore.io/api"
 
-formatted_list=$(echo "$templates" | tr ',' '\n')
+get_templates() {
+	curl -fsSL "$TEMPLATES_URL" | tr ',' '\n'
+}
 
-selected_languages=$(printf "%s" "$formatted_list" | fzf --multi)
+select_template() {
+	printf '%s\n' "$1" | fzf --multi || return 1
+}
 
-if [ -z "$selected_languages" ]; then
-	echo "No template was selected. Exiting."
-	exit 1
-fi
+get_ignore_file() {
+	curl -fsSL "${GEN_URL}/$1"
+}
 
-formatted_languages=$(echo "$selected_languages" | tr '\n' ',')
+export_file() {
+	printf '%s' "$1" >.gitignore
+	echo "Imported .gitignore into current directory"
+}
 
-curl -L -s "https://www.gitignore.io/api/${formatted_languages}" | xclip -selection clipboard
+main() {
+	templates="$(get_templates)" || {
+		echo "Error: Failed to fetch template list." >&2
+		exit 1
+	}
+
+	[ -n "$templates" ] || {
+		echo "Error: No templates received." >&2
+		exit 1
+	}
+
+	selected="$(select_template "$templates")" || {
+		echo "No template selected. Exiting."
+		exit 0
+	}
+
+	ignore_data="$(get_ignore_file "$selected")" || {
+		echo "Error: Failed to fetch .gitignore data." >&2
+		exit 1
+	}
+
+	export_file "$ignore_data"
+}
+
+main
