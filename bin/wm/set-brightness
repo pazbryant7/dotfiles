@@ -2,6 +2,7 @@
 
 set -e
 
+OUTPUT="HDMI-2"
 RANDR_METHOD="randr"
 WARM_COLOR_TEMP="4200K"
 DEFAULT_COLOR_TEMP="6500K"
@@ -46,8 +47,13 @@ apply_brightness() {
 	echo "$brightness"
 	echo "$color_temp"
 
-	gammastep -m "$RANDR_METHOD" -P -O "$color_temp" \
-		-b "$brightness"
+	max_gammastep_brightness="1.00"
+
+	if awk "BEGIN { exit !($brightness > $max_gammastep_brightness) }"; then
+		xrandr --output "$OUTPUT" --brightness "$brightness"
+	else
+		gammastep -m "$RANDR_METHOD" -P -O "$color_temp" -b "$brightness"
+	fi
 }
 
 main() {
