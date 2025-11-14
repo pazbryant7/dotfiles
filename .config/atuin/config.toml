@@ -33,7 +33,6 @@ history_filter = [
   "^lzg$",
   "^rex$",
   "^fzf$",
-  "^lzg$",
   "^lzd$",
   "^nvim$",
   "^clear",
@@ -45,12 +44,33 @@ max_preview_height = 4
 
 show_help = true
 
+
 secrets_filter = true
 
 enter_accept = true
 
-common_subcommands = ["cargo", "go", "git", "npm", "yarn", "tmux"]
+common_subcommands = [
+  "apt",
+  "cargo",
+  "composer",
+  "dnf",
+  "docker",
+  "git",
+  "go",
+  "ip",
+  "kubectl",
+  "nix",
+  "nmcli",
+  "npm",
+  "pecl",
+  "pnpm",
+  "podman",
+  "port",
+  "systemctl",
+  "tmux",
+  "yarn",
+]
 
 common_prefix = ["sudo"]
 
-keymap_mode = "vim-insert"
+keymap_mode = "emacs"

@@ -14,10 +14,14 @@ set -U fish_user_paths \
     ~/Documents/github/boilerplate/
 
 # CUSTOM BINDS
-bind -M insert alt-h smart_help
-bind -M insert ctrl-l clear_and_redisplay
-bind -M insert ctrl-p history-search-backward
-bind -M insert ctrl-n history-search-forward
+bind alt-h smart_help
+bind ctrl-p _atuin_bind_up
+bind ctrl-l clear_and_redisplay
+
+# DEFAULT FISH
+set -U fish_greeting
+set -U fish_autosuggestion_enabled 0
+
 
 if command -v fzf >/dev/null
     fzf --fish | source
@@ -38,9 +42,6 @@ end
 if command -v zoxide >/dev/null
     zoxide init fish | source
 end
-
-set -U fish_greeting
-set -U fish_autosuggestion_enabled 0
 
 # --- Custom Plugin Manager ---
 # Define the list of plugins to install (user/repo format)
