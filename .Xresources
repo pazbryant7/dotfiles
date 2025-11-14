@@ -5,33 +5,30 @@ Xft.hintstyle: hintslight
 Xft.lcdfilter: lcddefault
 
 ! st specific
-st.background: #1e1e2e
-st.foreground: #ffffff
-st.cursorColor: #644F6F
+*.background: #1e1e2e
+*.foreground: #ffffff
+*.cursorColor: #9A6C5C
 
-st.color0:     #1e1e2e
-st.color8:     #666666
-st.color1:     #cc6666
-st.color9:     #d54e53
-st.color2:     #b5bd68
-st.color10:    #b9ca4a
-st.color3:     #f0c674
-st.color11:    #e7c547
-st.color4:     #81a2be
-st.color12:    #7aa6da
-st.color5:     #b294bb
-st.color13:    #c397d8
-st.color6:     #8abeb7
-st.color14:    #70c0b1
-st.color7:     #c5c8c6
-st.color15:    #eaeaea
+*.color0:     #1e1e2e
+*.color8:     #666666
+*.color1:     #cc6666
+*.color9:     #d54e53
+*.color2:     #b5bd68
+*.color10:    #b9ca4a
+*.color3:     #f0c674
+*.color11:    #e7c547
+*.color4:     #81a2be
+*.color12:    #7aa6da
+*.color5:     #b294bb
+*.color13:    #c397d8
+*.color6:     #8abeb7
+*.color14:    #70c0b1
+*.color7:     #c5c8c6
+*.color15:    #eaeaea
 
 st.font: Recursive Mn Csl St SmB:pixelsize=13.5:style:SemiBold:antialias=true:autohint=true
-! st.font: Recursive Mn Csl St SmB:pixelsize=13.5:style:SemiBold:antialias=true:autohint=true
-
 ! st.font: Maple Mono:pixelsize=13.5:antialias=true:autohint=true:style:Bold
-! st.font: Annotation Mono:pixelsize=13.5:antialias=true:autohint=true:style:Medium
-
+! st.font: Annotation Mono:pixelsize=13.5:antialias=true:autohint=true:style:Bold
 
 
 st.alpha: 0.87
@@ -44,9 +41,9 @@ Nsxiv.window.background: #1e1e2e
 Nsxiv.window.foreground: #ffffff
 
 ! DWM specific configurations
-dwm.selbgcolor: #644F6F
+dwm.selbgcolor: #499FBF
 dwm.selfgcolor: #ffffff
 dwm.normbgcolor: #000000
 dwm.normfgcolor: #817f7f
-dwm.selbordercolor: #644F6F
+dwm.selbordercolor: #499FBF
 dwm.normbordercolor: #817f7f
