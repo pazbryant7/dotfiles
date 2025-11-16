@@ -12,6 +12,3 @@ customCommands:
     command: "nvim --noplugin {{.SelectedFile.Name}}"
     context: "files"
     output: terminal
-git:
-  pagers:
-    - externalDiffCommand: difft --color=always --display=inline --syntax-highlight=on --tab-width=2
