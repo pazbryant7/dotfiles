@@ -1,19 +1,21 @@
 set -gx EDITOR "$HOME/.local/share/bob/nvim-bin/nvim"
-set -gx VISUAL "$EDITOR"
-set -gx TERMINAL xterm
-set -gx SUDO_EDITOR "$EDITOR"
-set -gx BROWSER firefox
-set -gx VIDEO mpv
-set -gx COLORTERM truecolor
-set -gx OPENER xdg-open
-set -gx PAGER bat
+
 set -gx WM dwm
-set -gx MANPAGER "$EDITOR +Man!"
-set -gx GOPATH /home/bryant/go/bin
+set -gx VIDEO mpv
+set -gx LESS FRSX
+set -gx TERMINAL xterm
+set -gx BROWSER firefox
+set -gx OPENER xdg-open
+set -gx PAGER "less -R"
+set -gx VISUAL "$EDITOR"
 set -gx CM_LAUNCHER rofi
 set -gx SXHKD_SHELL fish
-set -gx STARSHIP_CONFIG "/home/bryant/.config/starship/starship.toml"
+set -gx COLORTERM truecolor
+set -gx SUDO_EDITOR "$EDITOR"
+set -gx MANPAGER "$EDITOR +Man!"
+set -gx GOPATH /home/bryant/go/bin
 set -gx XDG_CONFIG_HOME "$HOME/.config"
+set -gx STARSHIP_CONFIG "/home/bryant/.config/starship/starship.toml"
 
 set -gx FZF_DEFAULT_OPTS "\
 --height=50% \
