@@ -14,8 +14,6 @@ abbr -a dh "rm ~/.local/share/fish/fish_history"
 
 # git
 abbr -a lzg lazygit
-abbr -a glfv "git ls-files -v"
-abbr -a glc "git rev-list --count HEAD"
 
 # docker
 abbr -a lzd lazydocker

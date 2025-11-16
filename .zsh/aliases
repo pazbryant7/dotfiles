@@ -37,8 +37,7 @@ alias fontcache="sudo fc-cache -f -v"
 alias rex="xrdb -remove && xrdb -merge ~/.Xresources && kill -USR1 \$(pidof st)"
 
 alias lzg="lazygit"
-alias glfv="git ls-files -v"
-alias glc="git rev-list --count HEAD"
+alias g="git log --oneline --decorate --graph --all"
 
 alias lzd="lazydocker"
 
