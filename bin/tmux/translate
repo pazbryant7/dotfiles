@@ -1,0 +1,63 @@
+#!/usr/bin/env sh
+# Fast and simple tmux translator (Spanish <-> English)
+
+TRANSLATE_OPTS="-verbose -no-warn -speak"
+
+center() {
+	text=$1
+	cols=$(tput cols 2>/dev/null || printf 80)
+	len=${#text}
+
+	if [ "$len" -ge "$cols" ]; then
+		printf '%s\n' "$text"
+		return
+	fi
+
+	padding=$(((cols - len) / 2))
+	printf '%*s%s\n' "$padding" '' "$text"
+}
+
+is_valid_direction() {
+	case "$1" in
+	en:es | es:en) return 0 ;;
+	*) return 1 ;;
+	esac
+}
+
+direction_msg() {
+	case "$1" in
+	en:es) printf "English → Spanish" ;;
+	es:en) printf "Spanish → English" ;;
+	esac
+}
+
+translate() {
+	tmux neww sh -c "
+		trans $TRANSLATE_OPTS $1 \"$2\";
+		echo; echo; echo '⚡';
+		read -n 1"
+}
+
+main() {
+	direction=$1
+
+	if ! is_valid_direction "$direction"; then
+		printf 'Invalid direction. Use "en:es" or "es:en".\n' >&2
+		exit 1
+	fi
+
+	while true; do
+		clear
+		center "$(direction_msg "$direction")"
+		printf '\n> '
+
+		IFS= read -r query
+
+		[ -z "$query" ] && exit 0
+
+		center "Translating..."
+		translate "$direction" "$query"
+	done
+}
+
+main "$@"
