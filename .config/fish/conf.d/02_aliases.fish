@@ -5,6 +5,7 @@ alias cdi='zi'
 
 # main
 
+alias g="git"
 alias :q="exit"
 alias cl="clear"
 alias vi="nvim --noplugin"

@@ -35,9 +35,6 @@
 
 [alias]
   st = status
-  co = checkout
-  br = branch
-  cm = commit
   lg = log --oneline --graph --decorate --all
 
 [gc]

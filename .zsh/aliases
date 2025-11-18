@@ -39,6 +39,8 @@ alias rex="xrdb -remove && xrdb -merge ~/.Xresources && kill -USR1 \$(pidof st)"
 
 alias lzg="lazygit"
 
+alias g="git"
+
 alias lzd="lazydocker"
 
 alias ta="tmux attach"
