@@ -2,9 +2,43 @@
   name = Bryant Paz
   email = pazbryant7@outlook.com
   username = pazbryant
+
 [init]
   defaultBranch = main
+
 [core]
   editor = nvim
+  autocrlf = input
+  pager = less -F -X
+
+[color]
+  ui = auto
+
 [pull]
-  rebase = true
+  rebase = false
+
+[push]
+  default = current
+
+[fetch]
+  prune = true              # auto-remove deleted remote branches
+
+[merge]
+  conflictstyle = diff3
+  tool = nvim
+
+[mergetool]
+  prompt = false
+
+[mergetool "nvim"]
+  cmd = nvim -d "$LOCAL" "$BASE" "$REMOTE" +"wincmd w" "$MERGED"
+
+[alias]
+  st = status
+  co = checkout
+  br = branch
+  cm = commit
+  lg = log --oneline --graph --decorate --all
+
+[gc]
+  writeCommitGraph = true
