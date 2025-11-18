@@ -41,6 +41,7 @@ hurl
 hyperfine
 imagemagick
 img2pdf
+imv
 jq
 jujutsu
 just
