@@ -11,14 +11,10 @@ TERM = "xterm-256color"
 size = 10.5
 
 [font.normal]
-# family = "Recursive Mn Csl St Smb"
-# style = "SemiBold"
 family = "Annotation Mono"
 style = "DemiBold"
 
 [font.bold]
-# family = "Recursive Mn Csl St Smb"
-# style = "SemiBold"
 family = "Annotation Mono"
 style = "Bold"
 
@@ -68,7 +64,7 @@ foreground = "#ffffff"
 
 [colors.cursor]
 text = "#1d1f21"
-cursor = "#191E42"
+cursor = "#3BA4A5"
 
 [colors.normal]
 black = "#1d1f21"
