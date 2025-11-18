@@ -35,6 +35,7 @@
 
 [alias]
   st = status
+  co = checkout
   lg = log --oneline --graph --decorate --all
 
 [gc]
