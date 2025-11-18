@@ -21,17 +21,16 @@
   default = current
 
 [fetch]
-  prune = true              # auto-remove deleted remote branches
+  prune = true # auto-remove deleted remote branches
 
 [merge]
-  conflictstyle = diff3
   tool = nvim
 
 [mergetool]
   prompt = false
 
 [mergetool "nvim"]
-  cmd = nvim -d "$LOCAL" "$BASE" "$REMOTE" +"wincmd w" "$MERGED"
+  cmd = nvim
 
 [alias]
   st = status
