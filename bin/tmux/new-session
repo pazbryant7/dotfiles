@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
+
 # Inspired by ThePrimeAgen
 # Open, switch, create, and navigate tmux sessions quickly
 
@@ -41,7 +42,7 @@ switch_to_session() {
 	tmux switch-client -t "$1"
 }
 
-refresh_status() {
+rfresh_status() {
 	tmux refresh-client -S
 }
 
@@ -92,6 +93,10 @@ switch_session() {
 	switch_to_session "$session_name"
 }
 
+destroy_current_pane() {
+	tmux kill-pane
+}
+
 main() {
 	input_path="$1"
 	input_session_name="$2"
@@ -106,6 +111,7 @@ main() {
 
 	selected_session_name=$(select_session_name "$input_session_name" "$selected_path")
 	switch_session "$selected_session_name" "$selected_path" "$input_nuke_session"
+	destroy_current_pane
 }
 
 main "$@"
