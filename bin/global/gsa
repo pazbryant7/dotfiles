@@ -52,7 +52,7 @@ main() {
 		sort | uniq)"
 
 	echo "$directories" |
-		fzf --bind "enter:execute($HOME/bin/tmux/new-session {})" || true
+		fzf --bind "enter:execute($HOME/bin/tmux/new-session {})+abort"
 }
 
 main
