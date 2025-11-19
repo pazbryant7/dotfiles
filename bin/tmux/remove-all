@@ -7,7 +7,13 @@ session_exists() {
 }
 
 create_session() {
-	tmux new-session -d -s "$1"
+	default_dir=""
+
+	if [ "$1" = "bryant" ]; then
+		default_dir="$HOME/"
+	fi
+
+	tmux new-session -d -s "$1" -c "$default_dir"
 }
 
 get_current_window_id() {
