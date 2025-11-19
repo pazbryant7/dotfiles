@@ -29,7 +29,7 @@ export FZF_DEFAULT_OPTS=" \
 --preview-window noborder \
 --bind 'ctrl-o:execute(xdg-open {})' \
 --bind 'ctrl-x:execute(xdg-default {})' \
---bind 'ctrl-u:execute($HOME/bin/tmux/tmux-new-session {} working)' \
+--bind 'ctrl-u:execute($HOME/bin/tmux/new-session {} working)' \
 "
 
 export FZF_DEFAULT_COMMAND="fd \
