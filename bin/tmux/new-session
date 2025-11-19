@@ -3,11 +3,14 @@
 # Inspired by ThePrimeAgen
 # Open, switch, create, and navigate tmux sessions quickly
 
+#!/usr/bin/env sh
+
 select_session_path() {
 	if [ -n "$1" ]; then
 		printf '%s' "$1"
-		return 0
+		return
 	fi
+
 	fd . \
 		--max-depth 1 \
 		--type=d \
@@ -15,7 +18,8 @@ select_session_path() {
 		--follow \
 		"$HOME/Documents/github/" \
 		"$HOME/Documents/github/temp" \
-		"$HOME/Downloads/" 2>/dev/null | fzf
+		"$HOME/Downloads/" 2>/dev/null |
+		fzf
 }
 
 select_session_name() {
@@ -42,24 +46,6 @@ switch_to_session() {
 	tmux switch-client -t "$1"
 }
 
-rfresh_status() {
-	tmux refresh-client -S
-}
-
-nuke_and_recreate_session() {
-	session_name="$1"
-	path="$2"
-	temp_session="__temp_switch_$"
-
-	create_session "$temp_session" "$HOME"
-	switch_to_session "$temp_session"
-	tmux kill-session -t "$session_name" 2>/dev/null
-	create_session "$session_name" "$path"
-	switch_to_session "$session_name"
-	tmux kill-session -t "$temp_session" 2>/dev/null
-	refresh_status
-}
-
 validate_session_args() {
 	if [ -z "$1" ] || [ -z "$2" ]; then
 		printf 'Error: session name and path are required\n' >&2
@@ -75,16 +61,11 @@ validate_session_args() {
 switch_session() {
 	session_name="$1"
 	path="$2"
-	nuke_session="$3"
 
 	validate_session_args "$session_name" "$path" || return 1
 
-	if [ "$session_name" = "working" ] && [ -n "$nuke_session" ]; then
-		nuke_and_recreate_session "$session_name" "$path"
-		return 0
-	fi
-
-	if [ "$(get_current_session)" = "$session_name" ]; then
+	current=$(get_current_session)
+	if [ "$current" = "$session_name" ]; then
 		tmux display-message "Already attached to session: $session_name"
 		return 0
 	fi
@@ -96,7 +77,6 @@ switch_session() {
 main() {
 	path="$1"
 	session_name="$2"
-	nuke_session="$3"
 
 	selected_path=$(select_session_path "$path") || exit 1
 
@@ -106,7 +86,7 @@ main() {
 	fi
 
 	selected_session_name=$(select_session_name "$session_name" "$selected_path")
-	switch_session "$selected_session_name" "$selected_path" "$nuke_session"
+	switch_session "$selected_session_name" "$selected_path"
 }
 
 main "$@"

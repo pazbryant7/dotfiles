@@ -40,14 +40,14 @@ switch_to_session() {
 }
 
 main() {
-	TARGET_SESSION="working"
+	target_session="${1:-$(tmux display-message -p '#{session_name}')}"
 
-	session_exists "$TARGET_SESSION" || create_session "$TARGET_SESSION"
-	switch_to_session "$TARGET_SESSION"
-	kill_other_sessions "$TARGET_SESSION"
-	kill_other_windows "$TARGET_SESSION"
+	session_exists "$target_session" || create_session "$target_session"
+	switch_to_session "$target_session"
+	kill_other_sessions "$target_session"
+	kill_other_windows "$target_session"
 
-	tmux display-message -t "$TARGET_SESSION" \
+	tmux display-message -t "$target_session" \
 		"Cleaned up other sessions and windows."
 }
 
