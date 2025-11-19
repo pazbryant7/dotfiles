@@ -21,6 +21,6 @@ abbr -a lzd lazydocker
 # tmux
 abbr -a ta "tmux attach"
 abbr -a tk "tmux kill-server"
-abbr -a tn "tmux new -s working"
+abbr -a tn "tmux new -s $USER"
 
 abbr -a motivation "mpv ~/Documents/github/media/videos/biy/cristiano.mp4"
