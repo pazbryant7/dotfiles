@@ -15,7 +15,6 @@ set -U fish_user_paths \
 
 # CUSTOM BINDS
 bind alt-h smart_help
-bind ctrl-p _atuin_bind_up
 bind ctrl-l clear_and_redisplay
 
 # DEFAULT FISH
