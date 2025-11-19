@@ -93,25 +93,20 @@ switch_session() {
 	switch_to_session "$session_name"
 }
 
-destroy_current_pane() {
-	tmux kill-pane
-}
-
 main() {
-	input_path="$1"
-	input_session_name="$2"
-	input_nuke_session="$3"
+	path="$1"
+	session_name="$2"
+	nuke_session="$3"
 
-	selected_path=$(select_session_path "$input_path") || exit 1
+	selected_path=$(select_session_path "$path") || exit 1
 
 	if [ -z "$selected_path" ]; then
 		printf 'No path selected\n' >&2
 		exit 1
 	fi
 
-	selected_session_name=$(select_session_name "$input_session_name" "$selected_path")
-	switch_session "$selected_session_name" "$selected_path" "$input_nuke_session"
-	destroy_current_pane
+	selected_session_name=$(select_session_name "$session_name" "$selected_path")
+	switch_session "$selected_session_name" "$selected_path" "$nuke_session"
 }
 
 main "$@"
