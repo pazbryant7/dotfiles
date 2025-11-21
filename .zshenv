@@ -30,7 +30,7 @@ export FZF_DEFAULT_OPTS=" \
 --bind 'ctrl-o:execute(xdg-open {})' \
 --bind 'ctrl-x:execute(xdg-default {})' \
 --bind 'ctrl-s:execute($HOME/bin/tmux/new-session {})+abort' \
---bind 'ctrl-w:execute($HOME/bin/tmux/new-session {} working)+abort' \
+--bind 'ctrl-e:execute($HOME/bin/tmux/new-session {} working)+abort' \
 "
 
 export FZF_DEFAULT_COMMAND="fd \
