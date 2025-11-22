@@ -3,8 +3,6 @@
 # Inspired by ThePrimeAgen
 # Open, switch, create, and navigate tmux sessions quickly
 
-#!/usr/bin/env sh
-
 select_session_path() {
 	if [ -n "$1" ]; then
 		printf '%s' "$1"

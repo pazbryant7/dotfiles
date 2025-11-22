@@ -2,66 +2,66 @@
 
 set -e
 
-typeit=0
-use_otp=0
+get_password_entries() {
+	fd -t f -e gpg --base-directory "$1"
+}
 
-while [ $# -gt 0 ]; do
-	case "$1" in
-	--type)
-		typeit=1
-		;;
-	--otp)
-		use_otp=1
-		;;
-	*)
-		break
-		;;
-	esac
-	shift
-done
+normalize_passwords() {
+	printf '%s\n' "$1" |
+		sed -e 's/\.gpg$//' \
+			-e 's#^pass-dev/#dev/#' \
+			-e 's#^pass/##' |
+		sort
+}
 
-if [ -n "$WAYLAND_DISPLAY" ]; then
-	selector="rofi -dmenu -i -p 'Select item'"
-	typecommand="ydotool type --file -"
-elif [ -n "$DISPLAY" ]; then
-	selector="rofi -dmenu -i -p 'Select item'"
-	typecommand="xdotool type --clearmodifiers --file -"
-else
-	echo "Error: No Wayland or X11 display detected" >&2
-	exit 1
-fi
+get_password_entry() {
+	printf '%s\n' "$1" | rofi -dmenu -i -p 'Select item'
+}
 
-prefix=${PASSWORD_STORE_DIR:-$HOME/Documents/github/pass}
+get_credentials() {
+	if [ "$1" = "otp" ]; then
+		gopass otp "$2" 2>/dev/null
+	else
+		gopass "$2" 2>/dev/null
+	fi
+}
 
-password_files=$(cd "$prefix" && fd -t f -e gpg . --base-directory "$prefix" | sed 's|\.gpg$||' | sort)
+get_password() {
+	printf '%s' "$1" | head -n 1
+}
 
-password=$(printf '%s\n' "$password_files" | eval "$selector")
+get_user_name() {
+	printf '%s' "$1" | rg "username" | awk '{print $2}'
+}
 
-[ -n "$password" ] || exit
+copy_to_clipboard() {
+	printf '%s' "$1" | xclip -selection clipboard
+}
 
-if [ "$use_otp" -eq 1 ]; then
-	retrieve_command="gopass otp \"$password\""
-else
-	retrieve_command="gopass show \"$password\""
-fi
+send_username_notification() {
+	notify-send "$1"
+}
 
-entry=$(eval "$retrieve_command" 2>/dev/null)
+main() {
+	mode="${1:-pass}"
+	passwd_dir="$HOME/Documents/github"
+	entries=$(get_password_entries "$passwd_dir") || exit 1
+	[ -n "$entries" ] || exit 0
 
-password=$(echo "$entry" | head -n 1)
-username=$(echo "$entry" | rg "username" | awk '{print $2}')
+	normalized=$(normalize_passwords "$entries")
+	selected=$(get_password_entry "$normalized") || exit 0
 
-if [ "$typeit" -eq 1 ]; then
-	original_layout=$(setxkbmap -query | awk '/layout/ {print $2}')
-	setxkbmap us
-	trap 'setxkbmap "$original_layout"' EXIT
-	printf '%s' "$password" | $typecommand
-else
-	printf '%s' "$password" | xclip -selection clipboard
-	echo "Password copied to clipboard."
-fi
+	creds=$(get_credentials "$mode" "$selected") || exit 1
+	[ -n "$creds" ] || exit 1
 
-if [ -z "$username" ]; then
-	return 0
-fi
+	password=$(get_password "$creds")
 
-notify-send "$username"
+	username=$(get_user_name "$creds")
+
+	[ -n "$password" ] || exit 1
+
+	copy_to_clipboard "$password"
+	[ -z "$username" ] || send_username_notification "$username"
+}
+
+main "$@"
