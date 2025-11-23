@@ -1,13 +1,17 @@
 #!/usr/bin/env sh
 
-PREFIX_WHEN_ON=" | "
+main() {
+	PREFIX_WHEN_ON=" | "
 
-RECORDING_ICON=" ^c#FFFFFF^[REC]^d^ "
+	RECORDING_ICON=" ^c#FFFFFF^[REC]^d^ "
 
-PID_FILE="/tmp/screen_recorder.pid"
+	PID_FILE="/tmp/screen_recorder.pid"
 
-if [ ! -f "$PID_FILE" ]; then
-	printf " "
-else
-	printf "%s%s" "$RECORDING_ICON" "$PREFIX_WHEN_ON"
-fi
+	if [ ! -f "$PID_FILE" ]; then
+		printf " "
+	else
+		printf "%s%s" "$RECORDING_ICON" "$PREFIX_WHEN_ON"
+	fi
+}
+
+main "$@"
