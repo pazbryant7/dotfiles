@@ -14,6 +14,7 @@ select_session_path() {
 		--type=d \
 		--type=l \
 		--follow \
+		"$HOME/bin" \
 		"$HOME/Documents/github/" \
 		"$HOME/Documents/github/temp" \
 		"$HOME/Downloads/" 2>/dev/null |
