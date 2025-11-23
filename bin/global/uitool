@@ -16,14 +16,14 @@ update_line() {
 	replacement="$3"
 
 	if ! file_exists "$file"; then
-		echo "Warning: file not found: $file" >&2
+		printf '%s' "Warning: file not found: $file" >&2
 		return 1
 	fi
 
 	# Escape special sed characters in replacement string
 	replacement=$(printf '%s\n' "$replacement" | sed -e 's/[\/&]/\\&/g')
 	sed -i "s|$pattern|$replacement|" "$file" || {
-		echo "Failed to update: $file" >&2
+		printf '%s' "Failed to update: $file" >&2
 		return 1
 	}
 }
@@ -36,7 +36,7 @@ update_starship_block_style() {
 	file_exists "$file" || return 1
 
 	if ! sed -i "/^\[$section\]/,/^\[/ s/style = \"bold #[0-9a-fA-F]\{6\}\"/style = \"bold $color\"/" "$file"; then
-		echo "Warning: Failed to update starship section: $section" >&2
+		printf '%s' "Warning: Failed to update starship section: $section" >&2
 		return 1
 	fi
 }
@@ -46,7 +46,7 @@ validate_color() { printf "%s" "$1" | grep -qE '^#[0-9a-fA-F]{6}$'; }
 select_color() {
 	notify-send "Picking color"
 	xcolor || {
-		echo "Failed to select color" >&2
+		printf "Failed to select color" >&2
 		exit 1
 	}
 }
@@ -134,19 +134,19 @@ main() {
 	[ -n "$accent" ] || accent=$(select_color)
 
 	if ! validate_color "$accent"; then
-		echo "Invalid color: $accent" >&2
+		printf '%s' "Invalid color: $accent" >&2
 		exit 1
 	fi
 
 	bright=$(lighten_color "$accent")
 
 	if ! validate_color "$bright"; then
-		echo "Failed to generate bright color from: $accent" >&2
+		printf '%s' "Failed to generate bright color from: $accent" >&2
 		exit 1
 	fi
 
 	if [ -n "$primary" ] && ! validate_color "$primary"; then
-		echo "Invalid primary color: $primary" >&2
+		printf '%s' "Invalid primary color: $primary" >&2
 		exit 1
 	fi
 
@@ -161,7 +161,7 @@ main() {
 
 	reload_all
 
-	echo "Updated theme with $accent (bright: $bright)"
+	printf '%s' "Updated theme with $accent (bright: $bright)"
 }
 
 main "$@"

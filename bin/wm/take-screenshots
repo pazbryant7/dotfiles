@@ -1,90 +1,92 @@
 #!/usr/bin/env sh
-# Take screenshots with maim
 
-# Default directory for storing screenshots
-dir="$HOME/Pictures/screenshots"
-time=$(date +%Y-%m-%d-%H-%M-%S)
-file="$dir/screenshot_$time.png"
+DIR="${HOME}/Pictures/screenshots"
+TIME=$(date +%Y-%m-%d-%H-%M-%S)
+FILE="${DIR}/screenshot_${TIME}.png"
 
-# Countdown function to wait before taking the screenshot
+notify_send() {
+	notify-send -a "sshot" --replace=699 "$@"
+}
+
 countdown() {
 	sec="$1"
 	while [ "$sec" -gt 0 ]; do
-		notify-send -a "sshot" -t 1000 --replace=699 -i "taking shot in: $sec"
-		sec=$((sec - 1)) # Decrement sec (POSIX-compliant)
+		notify_send -t 1000 "taking shot in: $sec"
+		sec=$((sec - 1))
 		sleep 1
 	done
 }
 
-# Display help message
-show_help() {
-	echo "Dependencies:
-    maim dunst xdotool xclip
-Options:
-    -m    Mode to take the screenshot (full|select|win)
-    -s    Way to store the screenshot (clip|save|clip&save)
-    -w    Wait how long to take the screenshot (number, 0 means immediately)"
-}
+build_command() {
+	cmd="maim -u -f png"
 
-# Parse command-line options
-while getopts "m:s:w:" opt; do
-	case "$opt" in
-	m) mode="$OPTARG" ;;      # `full`, `select`, or `win`
-	s) store="$OPTARG" ;;     # `clip`, `save`, or `clip&save`
-	w) wait_time="$OPTARG" ;; # Wait time in seconds
+	case "$mode" in
+	select)
+		cmd="$cmd -s -b 2 -c 0.35,0.55,0.85,0.25 -l"
+		;;
+	win)
+		cmd="$cmd -i $(xdotool getactivewindow)"
+		;;
+	full) ;;
 	*)
-		show_help
-		exit 1
+		echo "Invalid mode: $mode" >&2
+		return 1
 		;;
 	esac
-done
 
-# Show help if requested
-if [ -z "$mode" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-	show_help
-	exit 0
-fi
+	printf '%s' "$cmd"
+	return 0
+}
 
-# Set default values if not provided
-mode="${mode:-full}"
-store="${store:-clip&save}"
-wait_time="${wait_time:-0}"
+execute_screenshot() {
+	cmd=$(build_command) || return 1
+	cmd="${cmd} \"${FILE}\""
 
-# Create the directory if it doesn't exist
-mkdir -p "$dir"
-
-# Countdown if waiting
-if [ "$wait_time" -gt 0 ]; then
-	countdown "$wait_time"
-fi
-
-# Build the maim command
-command="maim -u -f png"
-case "$mode" in
-select) command="$command -s -b 2 -c 0.35,0.55,0.85,0.25 -l" ;;
-win) command="$command -i $(xdotool getactivewindow)" ;;
-full) ;; # No additional options needed for full screenshot
-*)
-	echo "Invalid mode: $mode"
-	exit 1
-	;;
-esac
-command="$command \"$file\""
-
-# Execute the screenshot command
-if eval "$command"; then
-	notify-send -a "sshot" -u normal --replace=699 -i "screenshot saved"
-else
-	notify-send -a "sshot" -u normal --replace=699 "screenshot failed"
-	exit 1
-fi
-
-# Handle storage options
-if [ "$store" = "clip" ] || [ "$store" = "clip&save" ]; then
-	xclip -selection clipboard -t image/png <"$file" # No need for 'cat'
-	if [ "$store" = "clip" ]; then
-		rm "$file"
+	if eval "$cmd"; then
+		notify_send -u normal "screenshot saved"
+		return 0
+	else
+		notify_send -u normal "screenshot failed"
+		return 1
 	fi
-fi
+}
 
-exit 0
+handle_storage() {
+	case "$store" in
+	clip)
+		xclip -selection clipboard -t image/png <"$FILE"
+		rm "$FILE"
+		;;
+	clip\&save)
+		xclip -selection clipboard -t image/png <"$FILE"
+		;;
+	esac
+}
+
+main() {
+	mode="full"
+	store="clip&save"
+	wait_time=0
+
+	while getopts "m:s:w:" opt; do
+		case "$opt" in
+		m) mode="$OPTARG" ;;
+		s) store="$OPTARG" ;;
+		w) wait_time="$OPTARG" ;;
+		*) ;;
+		esac
+	done
+
+	mkdir -p "$DIR"
+
+	if [ "$wait_time" -gt 0 ]; then
+		countdown "$wait_time"
+	fi
+
+	execute_screenshot || exit 1
+	handle_storage
+
+	exit 0
+}
+
+main "$@"

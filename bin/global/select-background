@@ -7,7 +7,7 @@ get_palette() {
 	img="$1"
 
 	[ -n "$img" ] || {
-		echo "Error: No image path provided." >&2
+		printf "Error: No image path provided." >&2
 		return 1
 	}
 	magick "$img" +dither -colors 8 -format '%c' histogram:info: |
@@ -22,12 +22,12 @@ set_background() {
 	img="$1"
 
 	[ -n "$img" ] || {
-		echo "Error: No image path provided to set_background." >&2
+		printf "Error: No image path provided to set_background." >&2
 		return 1
 	}
 
 	feh --bg-fill "$img"
-	echo "Background set to: $(basename "$img")"
+	printf '%s' "Background set to: $(basename "$img")"
 }
 
 main() {
@@ -35,7 +35,7 @@ main() {
 		selected="$1"
 	else
 		selected=$(select_image) || {
-			echo "No image selected."
+			printf "No image selected."
 			return 1
 		}
 	fi

@@ -1,28 +1,39 @@
-#!/bin/env sh
+#!/bin/sh
 
 BAR_NAME="mainbar-bspwm"
 PID_FILE="/tmp/polybar_$BAR_NAME.pid"
+BOTTOM_PADDING=14
+BOTTOM_PADDING_OFF=0
+
+is_polybar_running() {
+	[ -f "$PID_FILE" ] && pgrep -F "$PID_FILE" >/dev/null 2>&1
+}
 
 stop_polybar() {
 	killall -q polybar
 	wait
+	rm -f "$PID_FILE"
+}
+
+set_bottom_padding() {
+	padding="$1"
+	bspc config bottom_padding "$padding"
 }
 
 start_polybar() {
-	for m in $(polybar --list-monitors | cut -d":" -f1); do
-		MONITOR=$m polybar --reload "$BAR_NAME" &
+	polybar --list-monitors | cut -d":" -f1 | while IFS= read -r monitor; do
+		MONITOR="$monitor" polybar --reload "$BAR_NAME" &
 		echo $! >"$PID_FILE"
 	done
 }
 
 toggle_polybar() {
-	if [ -f "$PID_FILE" ] && pgrep -F "$PID_FILE" >/dev/null; then
+	if is_polybar_running; then
 		stop_polybar
-		bspc config bottom_padding 0
-		rm -f "$PID_FILE"
+		set_bottom_padding "$BOTTOM_PADDING_OFF"
 	else
 		start_polybar
-		bspc config bottom_padding 14
+		set_bottom_padding "$BOTTOM_PADDING"
 	fi
 }
 

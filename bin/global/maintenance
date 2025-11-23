@@ -1,14 +1,11 @@
 #!/usr/bin/env sh
 
-# Treat unset variables as an error
 set -u
 
-# Function to perform actions without confirmation (informational)
 perform() {
 	printf "%s\n" "$1"
 }
 
-# Function to prompt for confirmation on critical operations
 confirm() {
 	printf "%s [y/N]: " "$1"
 	read -r response
@@ -22,197 +19,244 @@ confirm() {
 	esac
 }
 
-# --- Initial Checks ---
-if [ "$(id -u)" = 0 ]; then
-	printf "This script should not be run as root. It will use sudo when needed.\n"
-	exit 1
-fi
-
-perform "Starting Arch Linux Maintenance Script..."
-printf "\n"
-
-# --- Core System Maintenance ---
-perform "--- Core System Maintenance ---"
-
-perform "Updating package databases and upgrading system (sudo pacman -Syu)..."
-if sudo pacman -Syu; then
-	perform "System upgrade complete."
-else
-	printf "System upgrade failed or was aborted.\n"
-fi
-printf "\n"
-
-perform "Checking for failed systemd services..."
-systemctl --failed
-printf "\n"
-
-perform "Checking systemd timers..."
-systemctl list-timers --all
-printf "\n"
-
-# --- Package Management & Cleanup ---
-perform "--- Package Management & Cleanup ---"
-
-perform "Identifying and removing orphaned packages..."
-orphans=$(pacman -Qdtq 2>/dev/null || true)
-if [ -n "$orphans" ]; then
-	perform "Found orphaned packages: $orphans"
-	# shellcheck disable=SC2086
-	sudo pacman -Rns $orphans
-else
-	perform "No orphaned packages found."
-fi
-printf "\n"
-
-perform "Cleaning package cache with paccache (keeping last 2 versions)..."
-if command -v paccache >/dev/null 2>&1; then
-	sudo paccache -rk2
-else
-	perform "paccache not found. Consider installing 'pacman-contrib' package."
-fi
-printf "\n"
-
-perform "Removing all cached versions of UNINSTALLED packages with paccache..."
-if command -v paccache >/dev/null 2>&1; then
-	sudo paccache -ruk0
-else
-	perform "paccache not found. Skipping."
-fi
-printf "\n"
-
-# AUR packages cleanup
-perform "Checking for AUR helper and cleaning cache..."
-aur_helper_found=""
-if command -v yay >/dev/null 2>&1; then
-	aur_helper_found="yay"
-elif command -v paru >/dev/null 2>&1; then
-	aur_helper_found="paru"
-fi
-
-if [ -n "$aur_helper_found" ]; then
-	perform "Cleaning up AUR helper ($aur_helper_found) build files/caches..."
-	if [ "$aur_helper_found" = "yay" ]; then
-		yay -Yc
-	elif [ "$aur_helper_found" = "paru" ]; then
-		paru -Sc --aur
+check_root() {
+	if [ "$(id -u)" = 0 ]; then
+		printf "This script should not be run as root. It will use sudo when needed.\n"
+		exit 1
 	fi
-else
-	perform "No common AUR helper (yay or paru) detected. Skipping AUR cleanup."
-fi
-printf "\n"
+}
 
-# --- Filesystem & User Space Cleanup ---
-perform "--- Filesystem & User Space Cleanup ---"
-
-perform "Clearing old files (older than 30 days, max depth 4) from user cache ($HOME/.cache)..."
-if command -v fd >/dev/null 2>&1; then
-	fd --type file --max-depth 4 --changed-before 30d . "$HOME/.cache" -X rm 2>/dev/null || true
-else
-	perform "fd not found. Consider installing 'fd' for better file searching."
-	find "$HOME/.cache" -maxdepth 4 -type f -mtime +30 -delete 2>/dev/null || true
-fi
-printf "\n"
-
-if [ -d /tmp ]; then
-	perform "Clearing old files (older than 2 days) from /tmp..."
-	if command -v fd >/dev/null 2>&1; then
-		fd --type file --changed-before 2d . "/tmp" -X rm 2>/dev/null || true
+upgrade_system() {
+	perform "Updating package databases and upgrading system (sudo pacman -Syu)..."
+	if sudo pacman -Syu; then
+		perform "System upgrade complete."
 	else
-		find "/tmp" -type f -user "$(id -u)" -mtime +2 -delete 2>/dev/null || true
+		printf "System upgrade failed or was aborted.\n"
 	fi
-fi
-printf "\n"
+	printf "\n"
+}
 
-if confirm "Clear ALL user cache ($HOME/.cache)? This is safe but may slow down first app launches."; then
-	rm -rf "${HOME:?}/.cache/"*
-	perform "User cache cleared. Some applications might rebuild their caches on next start."
-else
-	perform "Skipping user cache clearing."
-fi
-printf "\n"
+check_systemd() {
+	perform "Checking for failed systemd services..."
+	systemctl --failed
+	printf "\n"
+	perform "Checking systemd timers..."
+	systemctl list-timers --all
+	printf "\n"
+}
 
-perform "Checking for broken symlinks in $HOME..."
-if command -v fd >/dev/null 2>&1; then
-	fd --type l --base-directory "$HOME" . 2>/dev/null | while IFS= read -r link_path; do
-		full_path="$HOME/$link_path"
-		if ! readlink -e "$full_path" >/dev/null 2>&1; then
-			printf "Broken symlink: %s\n" "$full_path"
+remove_orphans() {
+	perform "Identifying and removing orphaned packages..."
+	orphans=$(pacman -Qdtq 2>/dev/null || true)
+	if [ -n "$orphans" ]; then
+		perform "Found orphaned packages: $orphans"
+		sudo pacman -Rns $orphans
+	else
+		perform "No orphaned packages found."
+	fi
+	printf "\n"
+}
+
+clean_pacman_cache() {
+	perform "Cleaning package cache with paccache (keeping last 2 versions)..."
+	if command -v paccache >/dev/null 2>&1; then
+		sudo paccache -rk2
+	else
+		perform "paccache not found. Consider installing 'pacman-contrib' package."
+	fi
+	printf "\n"
+
+	perform "Removing all cached versions of UNINSTALLED packages with paccache..."
+	if command -v paccache >/dev/null 2>&1; then
+		sudo paccache -ruk0
+	else
+		perform "paccache not found. Skipping."
+	fi
+	printf "\n"
+}
+
+clean_aur_cache() {
+	perform "Checking for AUR helper and cleaning cache..."
+	aur_helper=""
+
+	if command -v yay >/dev/null 2>&1; then
+		aur_helper="yay"
+	elif command -v paru >/dev/null 2>&1; then
+		aur_helper="paru"
+	fi
+
+	if [ -n "$aur_helper" ]; then
+		perform "Cleaning up AUR helper ($aur_helper) build files/caches..."
+		if [ "$aur_helper" = "yay" ]; then
+			yay -Yc
+		elif [ "$aur_helper" = "paru" ]; then
+			paru -Sc --aur
 		fi
-	done
-else
-	find "$HOME" -xtype l 2>/dev/null | while IFS= read -r link_path; do
-		printf "Broken symlink: %s\n" "$link_path"
-	done
-fi
-perform "Broken symlink check complete."
-printf "\n"
-
-perform "Finding top 20 largest files (>100MB) in $HOME..."
-if command -v fd >/dev/null 2>&1; then
-	fd --type file --size +100M --base-directory "$HOME" . -X ls -lh 2>/dev/null | sort -k5,5hr | head -n 20
-else
-	find "$HOME" -type f -size +100M -exec ls -lh {} \; 2>/dev/null | sort -k5,5hr | head -n 20
-fi
-perform "Large file search complete."
-printf "\n"
-
-# --- System Specific Cleanups (Docker, Flatpak) ---
-perform "--- System Specific Cleanups ---"
-
-if command -v docker >/dev/null 2>&1; then
-	if confirm "Clean up Docker (prune all unused images, containers, volumes, networks)? This may remove data."; then
-		docker system prune -a -f --volumes
-		perform "Docker cleanup complete."
 	else
-		perform "Skipping Docker cleanup."
+		perform "No common AUR helper (yay or paru) detected. Skipping AUR cleanup."
 	fi
-else
-	perform "Docker not found. Skipping Docker cleanup."
-fi
-printf "\n"
+	printf "\n"
+}
 
-if command -v flatpak >/dev/null 2>&1; then
-	perform "Cleaning up Flatpak (uninstall unused runtimes/apps)..."
-	flatpak uninstall --unused -y
-else
-	perform "Flatpak not found. Skipping Flatpak cleanup."
-fi
-printf "\n"
+clear_old_cache_files() {
+	perform "Clearing old files (older than 30 days, max depth 4) from user cache ($HOME/.cache)..."
+	if command -v fd >/dev/null 2>&1; then
+		fd --type file --max-depth 4 --changed-before 30d . "$HOME/.cache" -X rm 2>/dev/null || true
+	else
+		perform "fd not found. Consider installing 'fd' for better file searching."
+		find "$HOME/.cache" -maxdepth 4 -type f -mtime +30 -delete 2>/dev/null || true
+	fi
+	printf "\n"
+}
 
-# --- System Information & Final Steps ---
-perform "--- System Information & Final Steps ---"
+clear_old_tmp_files() {
+	if [ -d /tmp ]; then
+		perform "Clearing old files (older than 2 days) from /tmp..."
+		if command -v fd >/dev/null 2>&1; then
+			fd --type file --changed-before 2d . "/tmp" -X rm 2>/dev/null || true
+		else
+			find "/tmp" -type f -user "$(id -u)" -mtime +2 -delete 2>/dev/null || true
+		fi
+	fi
+	printf "\n"
+}
 
-perform "Checking disk usage for / ..."
-df -h /
-printf "\n"
+clear_all_cache() {
+	if confirm "Clear ALL user cache ($HOME/.cache)? This is safe but may slow down first app launches."; then
+		rm -rf "${HOME:?}/.cache/"*
+		perform "User cache cleared. Some applications might rebuild their caches on next start."
+	else
+		perform "Skipping user cache clearing."
+	fi
+	printf "\n"
+}
 
-perform "Cleaning journald log files (vacuum to keep last 2 weeks)..."
-sudo journalctl --vacuum-time=2weeks
-printf "\n"
+check_broken_symlinks() {
+	perform "Checking for broken symlinks in $HOME..."
+	if command -v fd >/dev/null 2>&1; then
+		fd --type l --base-directory "$HOME" . 2>/dev/null | while IFS= read -r link_path; do
+			full_path="$HOME/$link_path"
+			if ! readlink -e "$full_path" >/dev/null 2>&1; then
+				printf "Broken symlink: %s\n" "$full_path"
+			fi
+		done
+	else
+		find "$HOME" -xtype l 2>/dev/null | while IFS= read -r link_path; do
+			printf "Broken symlink: %s\n" "$link_path"
+		done
+	fi
+	perform "Broken symlink check complete."
+	printf "\n"
+}
 
-perform "Checking for .pacnew and .pacsave files in /etc..."
-if command -v fd >/dev/null 2>&1; then
-	pacnew_files=$(fd -H '\.pac(new|save)$' /etc 2>/dev/null || true)
-else
-	pacnew_files=$(find /etc -name '*.pacnew' -o -name '*.pacsave' 2>/dev/null || true)
-fi
+find_large_files() {
+	perform "Finding top 20 largest files (>100MB) in $HOME..."
+	if command -v fd >/dev/null 2>&1; then
+		fd --type file --size +100M --base-directory "$HOME" . -X ls -lh 2>/dev/null | sort -k5,5hr | head -n 20
+	else
+		find "$HOME" -type f -size +100M -exec ls -lh {} \; 2>/dev/null | sort -k5,5hr | head -n 20
+	fi
+	perform "Large file search complete."
+	printf "\n"
+}
 
-perform "Restart mkinitcpio"
-sudo mkinitcpio -P
-sudo systemctl restart systemd-vconsole-setup.service
-printf "\n"
+cleanup_docker() {
+	if command -v docker >/dev/null 2>&1; then
+		if confirm "Clean up Docker (prune all unused images, containers, volumes, networks)? This may remove data."; then
+			docker system prune -a -f --volumes
+			perform "Docker cleanup complete."
+		else
+			perform "Skipping Docker cleanup."
+		fi
+	else
+		perform "Docker not found. Skipping Docker cleanup."
+	fi
+	printf "\n"
+}
 
-if [ -n "$pacnew_files" ]; then
-	printf "WARNING: Found .pacnew or .pacsave files that may need manual review:\n"
-	printf "%s\n" "$pacnew_files"
-	printf "Consider using 'pacdiff' to merge configuration changes.\n"
-else
-	perform "No .pacnew or .pacsave files found."
-fi
-printf "\n"
+cleanup_flatpak() {
+	if command -v flatpak >/dev/null 2>&1; then
+		perform "Cleaning up Flatpak (uninstall unused runtimes/apps)..."
+		flatpak uninstall --unused -y
+	else
+		perform "Flatpak not found. Skipping Flatpak cleanup."
+	fi
+	printf "\n"
+}
 
-printf "IMPORTANT: Remember to check the Arch Linux news for any manual interventions required!\n"
-printf "Visit: https://archlinux.org/news/\n"
-printf "\n"
+check_disk_usage() {
+	perform "Checking disk usage for / ..."
+	df -h /
+	printf "\n"
+}
 
-printf "System maintenance script complete!\n"
+cleanup_journald() {
+	perform "Cleaning journald log files (vacuum to keep last 2 weeks)..."
+	sudo journalctl --vacuum-time=2weeks
+	printf "\n"
+}
+
+handle_pacnew_files() {
+	perform "Checking for .pacnew and .pacsave files in /etc..."
+	if command -v fd >/dev/null 2>&1; then
+		pacnew_files=$(fd -H '\.pac(new|save)$' /etc 2>/dev/null || true)
+	else
+		pacnew_files=$(find /etc -name '*.pacnew' -o -name '*.pacsave' 2>/dev/null || true)
+	fi
+
+	if [ -n "$pacnew_files" ]; then
+		printf "WARNING: Found .pacnew or .pacsave files that may need manual review:\n"
+		printf "%s\n" "$pacnew_files"
+		printf "Consider using 'pacdiff' to merge configuration changes.\n"
+	else
+		perform "No .pacnew or .pacsave files found."
+	fi
+	printf "\n"
+}
+
+rebuild_initcpio() {
+	perform "Restart mkinitcpio"
+	sudo mkinitcpio -P
+	sudo systemctl restart systemd-vconsole-setup.service
+	printf "\n"
+}
+
+main() {
+	check_root
+
+	perform "Starting Arch Linux Maintenance Script..."
+	printf "\n"
+
+	perform "--- Core System Maintenance ---"
+	upgrade_system
+	check_systemd
+
+	perform "--- Package Management & Cleanup ---"
+	remove_orphans
+	clean_pacman_cache
+	clean_aur_cache
+
+	perform "--- Filesystem & User Space Cleanup ---"
+	clear_old_cache_files
+	clear_old_tmp_files
+	clear_all_cache
+	check_broken_symlinks
+	find_large_files
+
+	perform "--- System Specific Cleanups ---"
+	cleanup_docker
+	cleanup_flatpak
+
+	perform "--- System Information & Final Steps ---"
+	check_disk_usage
+	cleanup_journald
+	handle_pacnew_files
+	rebuild_initcpio
+
+	printf "IMPORTANT: Remember to check the Arch Linux news for any manual interventions required!\n"
+	printf "Visit: https://archlinux.org/news/\n"
+	printf "\n"
+	printf "System maintenance script complete!\n"
+}
+
+main

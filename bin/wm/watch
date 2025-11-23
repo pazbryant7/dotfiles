@@ -4,28 +4,23 @@ set -e
 
 VIDEOS_DIR="$HOME/Videos"
 
-# Function to list folders within the books directory
 list_folders() {
 	fd --type directory --max-depth 1 --base-directory "$VIDEOS_DIR" |
 		xargs -I {} basename {}
 }
 
-# Function to list files within a selected folder
 list_files_in_folder() {
 	fd --type f --base-directory "$VIDEOS_DIR/$1" | sort -r
 }
 
-# Function to select a folder using Rofi
 select_folder() {
 	list_folders | rofi -dmenu -i -p "Select book folder"
 }
 
-# Function to select a book file using Rofi
 select_video() {
 	list_files_in_folder "$1" | rofi -dmenu -i -p "Select book"
 }
 
-# Function to handle the main logic
 main() {
 	selected_folder=$(select_folder)
 	if [ -z "$selected_folder" ]; then
@@ -51,5 +46,4 @@ main() {
 	exit 0
 }
 
-# Execute the main function
 main

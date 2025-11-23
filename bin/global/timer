@@ -1,20 +1,18 @@
 #!/bin/sh
 
+ELAPSED_FILE="/tmp/chrono_elapsed_$$"
+PAUSE_FILE="/tmp/chrono_pause_$$"
+
 format_time() {
-	elapsed=$1
+	elapsed="$1"
 	hours=$((elapsed / 3600))
 	minutes=$(((elapsed % 3600) / 60))
 	seconds=$((elapsed % 60))
 	printf "%02d:%02d:%02d" "$hours" "$minutes" "$seconds"
 }
 
-cleanup() {
-	if [ -n "$timer_pid" ]; then
-		kill "$timer_pid" 2>/dev/null
-		wait "$timer_pid" 2>/dev/null
-	fi
-	printf "\033[?25h"
-	echo ""
+print_summary() {
+	printf "\033[?25h\n"
 	echo "============================================"
 	if [ -n "$task_title" ]; then
 		echo "Task: $task_title"
@@ -23,6 +21,19 @@ cleanup() {
 	fi
 	echo "Total time elapsed: $(format_time "$final_elapsed")"
 	echo "============================================"
+}
+
+cleanup_files() {
+	rm -f "$ELAPSED_FILE" "$PAUSE_FILE"
+}
+
+cleanup() {
+	if [ -n "$timer_pid" ]; then
+		kill "$timer_pid" 2>/dev/null
+		wait "$timer_pid" 2>/dev/null
+	fi
+	print_summary
+	cleanup_files
 	exit 0
 }
 
@@ -41,10 +52,10 @@ timer_loop() {
 		fi
 
 		printf "\r%s  %s" "$status_icon" "$(format_time "$elapsed")"
-		echo "$elapsed" >/tmp/chrono_elapsed_$$
+		echo "$elapsed" >"$ELAPSED_FILE"
 
-		if [ -f /tmp/chrono_pause_$$ ]; then
-			rm -f /tmp/chrono_pause_$$
+		if [ -f "$PAUSE_FILE" ]; then
+			rm -f "$PAUSE_FILE"
 			if [ "$is_paused" -eq 0 ]; then
 				is_paused=1
 				pause_start=$(date +%s)
@@ -59,34 +70,47 @@ timer_loop() {
 	done
 }
 
-trap cleanup INT
+handle_input() {
+	while true; do
+		read -r input
+		case "$input" in
+		p | P)
+			touch "$PAUSE_FILE"
+			;;
+		*) ;;
+		esac
 
-task_title="$1"
+		if [ -f "$ELAPSED_FILE" ]; then
+			final_elapsed=$(cat "$ELAPSED_FILE")
+		fi
+	done
+}
 
-echo "============================================"
-echo "Phone Chronometer Started"
-if [ -n "$task_title" ]; then
-	echo "Task: $task_title"
-fi
-echo "Press 'p' + Enter to pause/resume, Ctrl+C to stop"
-echo "============================================"
-echo ""
-
-printf "\033[?25l"
-
-timer_loop &
-timer_pid=$!
-
-while true; do
-	read -r input
-	case "$input" in
-	p | P)
-		touch /tmp/chrono_pause_$$
-		;;
-	*) ;;
-	esac
-
-	if [ -f /tmp/chrono_elapsed_$$ ]; then
-		final_elapsed=$(cat /tmp/chrono_elapsed_$$)
+print_header() {
+	echo "============================================"
+	echo "Phone Chronometer Started"
+	if [ -n "$task_title" ]; then
+		echo "Task: $task_title"
 	fi
-done
+	echo "Press 'p' + Enter to pause/resume, Ctrl+C to stop"
+	echo "============================================"
+	echo ""
+}
+
+main() {
+	task_title="$1"
+	final_elapsed=0
+	timer_pid=""
+
+	trap cleanup INT
+
+	print_header
+	printf "\033[?25l"
+
+	timer_loop &
+	timer_pid=$!
+
+	handle_input
+}
+
+main "$@"

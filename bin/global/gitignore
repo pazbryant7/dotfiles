@@ -17,27 +17,27 @@ get_ignore_file() {
 
 export_file() {
 	printf '%s' "$1" >.gitignore
-	echo "Imported .gitignore into current directory"
+	printf "Imported .gitignore into current directory"
 }
 
 main() {
 	templates="$(get_templates)" || {
-		echo "Error: Failed to fetch template list." >&2
+		printf "Error: Failed to fetch template list." >&2
 		exit 1
 	}
 
 	[ -n "$templates" ] || {
-		echo "Error: No templates received." >&2
+		printf "Error: No templates received." >&2
 		exit 1
 	}
 
 	selected="$(select_template "$templates")" || {
-		echo "No template selected. Exiting."
+		printf "No template selected. Exiting."
 		exit 0
 	}
 
 	ignore_data="$(get_ignore_file "$selected")" || {
-		echo "Error: Failed to fetch .gitignore data." >&2
+		printf "Error: Failed to fetch .gitignore data." >&2
 		exit 1
 	}
 

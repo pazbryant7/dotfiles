@@ -1,10 +1,8 @@
 #!/bin/sh
-
 set -e
 
 DEFAULT_LAYOUT="bryantd"
 DEFAULT_INTERNATIONAL_LAYOUT="bryantdi"
-
 DEFAULT_NUMERIC_LAYOUT="bryantdn"
 DEFAULT_INTERNATIONAL_NUMERIC_LAYOUT="bryantdin"
 
@@ -13,29 +11,23 @@ get_current_layout() {
 }
 
 send_notification() {
-	new_layout=$1
-	display_name=$(echo "$new_layout" | tr '[:lower:]' '[:upper:]')
+	display_name=$(printf '%s' "$1" | tr '[:lower:]' '[:upper:]')
 	notify-send "keyboard" "$display_name"
 }
 
 set_layout_and_notify() {
-	layout_to_set=$1
-	setxkbmap "$layout_to_set"
-	send_notification "$layout_to_set"
+	setxkbmap "$1"
+	send_notification "$1"
 }
 
 toggle_layout() {
-	current_layout="$(get_current_layout)"
+	current_layout=$(get_current_layout)
 
-	layout_1="$1"
-	layout_2="$2"
-
-	if [ "$current_layout" = "$layout_1" ]; then
-		set_layout_and_notify "$layout_2"
+	if [ "$current_layout" = "$1" ]; then
+		set_layout_and_notify "$2"
 	else
-		set_layout_and_notify "$layout_1"
+		set_layout_and_notify "$1"
 	fi
-	current_layout="$(get_current_layout)"
 }
 
 main() {

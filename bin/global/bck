@@ -4,22 +4,10 @@ set -e
 
 BLOCK_DEVICE="/dev/sdb1"
 MEDIA_DESTINATION="/run/media/bryant/tiagovault"
-
-# Paths separated by newlines for safe iteration.
-MEDIA_SOURCES="$HOME/Documents/books
-$HOME/Music
-$HOME/.config/calibre
-$HOME/.config/thorium
-$HOME/Documents/github/ansible-dots/.secrets"
-
-RSYNC_EXCLUDE_OPTS="
-# Sockets and Lockfiles
-*.sock
+RSYNC_EXCLUDE_OPTS="*.sock
 SingletonLock
 SingletonSocket
 SingletonCookie
-
-# General Cache and Temporary Files
 Crashpad/
 Local Cache/
 Cache/
@@ -44,43 +32,51 @@ segment_data/
 system_certs/
 .tmp
 .log
-
-# Common OS/Desktop meta-files
 .DS_Store
 Thumbs.db
 ehthumbs.db
 desktop.ini
 .fuse_hidden*
-.swp
-"
+.swp"
+
+MEDIA_SOURCES="$HOME/Documents/books
+$HOME/Music
+$HOME/.config/calibre
+$HOME/.config/thorium
+$HOME/Documents/github/ansible-dots/.secrets"
+
+is_mounted() {
+	mountpoint -q "$MEDIA_DESTINATION"
+}
 
 mount_disk() {
-	if mountpoint -q "$MEDIA_DESTINATION"; then
+	if is_mounted; then
 		printf '%s\n' "Info: Destination '$MEDIA_DESTINATION' is already a mount point."
 		return 0
 	fi
 
 	printf '%s\n' "Info: Attempting to mount '$BLOCK_DEVICE'..."
-	if ! udisksctl mount -b "$BLOCK_DEVICE"; then
-		printf '%s\n' "Error: Failed to mount '$BLOCK_DEVICE'." >&2
-		return 1
+	if udisksctl mount -b "$BLOCK_DEVICE"; then
+		printf '%s\n' "Success: Mounted '$BLOCK_DEVICE' at '$MEDIA_DESTINATION'."
+		return 0
 	fi
-	printf '%s\n' "Success: Mounted '$BLOCK_DEVICE' at '$MEDIA_DESTINATION'."
-	return 0
+
+	printf '%s\n' "Error: Failed to mount '$BLOCK_DEVICE'." >&2
+	return 1
 }
 
 unmount_disk() {
 	printf '%s\n' "Info: Attempting to unmount '$BLOCK_DEVICE'..."
-	_unmount_output="$(udisksctl unmount -b "$BLOCK_DEVICE" 2>&1)"
-	_unmount_status="$?"
+	unmount_output=$(udisksctl unmount -b "$BLOCK_DEVICE" 2>&1)
+	unmount_status=$?
 
-	if [ ! "$_unmount_status" -eq 0 ]; then
+	if [ "$unmount_status" -ne 0 ]; then
 		printf '%s\n' "Error: Failed to unmount '$BLOCK_DEVICE'." >&2
-		printf '%s\n' "udisksctl output: $_unmount_output" >&2
+		printf '%s\n' "udisksctl output: $unmount_output" >&2
 		return 1
 	fi
 
-	if mountpoint -q "$MEDIA_DESTINATION"; then
+	if is_mounted; then
 		printf '%s\n' "Warning: '$MEDIA_DESTINATION' still appears as a mount point. Please check manually." >&2
 	fi
 
@@ -89,43 +85,76 @@ unmount_disk() {
 }
 
 run_backup() {
-	_source_path="$1"
-	_exclude_file="$2"
-	_source_basename="$(basename "$_source_path")"
-	_target_leaf_name=$(printf '%s\n' "$_source_basename" | tr '[:upper:]' '[:lower:]')
+	source_path="$1"
+	exclude_file="$2"
+	source_basename=$(basename "$source_path")
+	target_name=$(printf '%s\n' "$source_basename" | tr '[:upper:]' '[:lower:]')
+	error_log="/tmp/rsync_errors_$target_name.log"
+	backup_dest="$MEDIA_DESTINATION/backups/$target_name"
 
-	_error_log_file="/tmp/rsync_errors_$_target_leaf_name.log"
-
-	_backup_destination_base="$MEDIA_DESTINATION/backups"
-	_final_destination_path="$_backup_destination_base/$_target_leaf_name"
-
-	if ! mkdir -p "$_final_destination_path"; then
-		printf '%s\n' "Error: Failed to create destination directory '$_final_destination_path'." >&2
+	if ! mkdir -p "$backup_dest"; then
+		printf '%s\n' "Error: Failed to create destination directory '$backup_dest'." >&2
 		return 1
 	fi
 
-	printf '%s\n' "Backing up '$_source_path' to '$_final_destination_path'..."
+	printf '%s\n' "Backing up '$source_path' to '$backup_dest'..."
 
-	if ! rsync -avL --delete --exclude-from="$_exclude_file" "$_source_path/" "$_final_destination_path/" 2>"$_error_log_file"; then
-		printf "Error: rsync failed for source '%s'. See log for details:\n" "$_source_path" >&2
-		printf "  %s\n" "$_error_log_file" >&2
-		return 1
-	else
-		rm -f "$_error_log_file"
+	if rsync -avL --delete --exclude-from="$exclude_file" "$source_path/" "$backup_dest/" 2>"$error_log"; then
+		rm -f "$error_log"
+		return 0
 	fi
 
-	return 0
+	printf "Error: rsync failed for source '%s'. See log for details:\n" "$source_path" >&2
+	printf "  %s\n" "$error_log" >&2
+	return 1
 }
 
 flush_disk_cache() {
-	sync
-	_sync_status="$?"
-
-	if [ ! "$_sync_status" -eq 0 ]; then
-		printf '%s\n' "Error: 'sync' command failed. Data may not be fully written to disk." >&2
-		return 1
+	if sync; then
+		return 0
 	fi
-	return 0
+
+	printf '%s\n' "Error: 'sync' command failed. Data may not be fully written to disk." >&2
+	return 1
+}
+
+prompt_unmount() {
+	printf '%s' "Would you like to unmount the disk $BLOCK_DEVICE (y/n)? "
+	read -r response
+
+	case "$response" in
+	[yY])
+		unmount_disk
+		;;
+	[nN])
+		return 0
+		;;
+	*)
+		printf '%s\n' "WARNING: Invalid response. Assuming 'n' (no unmount)." >&2
+		return 0
+		;;
+	esac
+}
+
+process_sources() {
+	exclude_file="$1"
+
+	echo "$MEDIA_SOURCES" | while read -r source; do
+		if [ -z "$source" ]; then
+			continue
+		fi
+
+		if [ ! -d "$source" ]; then
+			printf "Warning: Source path '%s' does not exist or is not a directory. Skipping.\n" "$source" >&2
+			continue
+		fi
+
+		if ! run_backup "$source" "$exclude_file"; then
+			exit 1
+		fi
+	done
+
+	return $?
 }
 
 main() {
@@ -136,57 +165,26 @@ main() {
 		exit 1
 	fi
 
-	_exclude_file=$(mktemp) || exit 1
-	trap 'rm -f "$_exclude_file"' EXIT INT TERM HUP
-	printf '%s\n' "$RSYNC_EXCLUDE_OPTS" >"$_exclude_file"
+	exclude_file=$(mktemp) || exit 1
+	trap 'rm -f "$exclude_file"' EXIT INT TERM HUP
+	printf '%s\n' "$RSYNC_EXCLUDE_OPTS" >"$exclude_file"
 
-	if ! printf '%s\n' "$MEDIA_SOURCES" | {
-		_subshell_failed=0
-		while read -r source; do
-			if [ "$source" = "" ]; then
-				continue
-			fi
-
-			if [ ! -d "$source" ]; then
-				printf "Warning: Source path '%s' does not exist or is not a directory. Skipping.\n" "$source" >&2
-				continue
-			fi
-
-			if ! run_backup "$source" "$_exclude_file"; then
-				_subshell_failed=1
-			fi
-		done
-		exit "$_subshell_failed"
-	}; then
+	if ! process_sources "$exclude_file"; then
 		printf '%s\n' "Warning: One or more backup tasks failed." >&2
 	fi
 
 	if flush_disk_cache; then
-		printf '%s' "Would you like to unmount the disk $BLOCK_DEVICE (y/n)? "
-		read -r response
-
-		if [ "$response" = "y" ] || [ "$response" = "Y" ]; then
-			if unmount_disk; then
-				printf '%s\n' "=== Disk $BLOCK_DEVICE unmounted successfully. ==="
-				printf '%s\n' "=== General backup has finished. ==="
-				exit 0
-			else
-				printf '%s\n' "ERROR: Failed to unmount disk $BLOCK_DEVICE." >&2
-				exit 1
-			fi
-		elif [ "$response" = "n" ] || [ "$response" = "N" ]; then
+		if prompt_unmount; then
 			printf '%s\n' "=== General backup has finished. ==="
 			exit 0
 		else
-			printf '%s\n' "WARNING: Invalid response. Assuming 'n' (no unmount)." >&2
-			printf '%s\n' "=== General backup has finished. ==="
-			exit 0
+			printf '%s\n' "ERROR: Failed to unmount disk $BLOCK_DEVICE." >&2
+			exit 1
 		fi
 	else
 		printf '%s\n' "ERROR: Disk cache flush failed. Aborting backup." >&2
 		exit 1
 	fi
-
 }
 
 main "$@"

@@ -7,41 +7,62 @@ sync_bin_dir() {
 	output_file="$2"
 	fd_flags="$3"
 
-	[ ! -d "$dir" ] && return
+	if [ ! -d "$dir" ]; then
+		return
+	fi
 
 	if command -v fd >/dev/null 2>&1; then
 		fd . -d 1 $fd_flags "$dir" | awk -F/ '{print $NF}' | sort >"$DOT_PATH/$output_file"
 	else
-		fd "$dir" | sort >"$DOT_PATH/$output_file"
+		find "$dir" -maxdepth 1 -type f | awk -F/ '{print $NF}' | sort >"$DOT_PATH/$output_file"
 	fi
 }
 
 sync_command_output() {
 	command="$1"
 	output_file="$2"
+	cmd_name=$(printf '%s' "$command" | awk '{print $1}')
 
-	if command -v "$(echo "$command" | awk '{print $1}')" >/dev/null 2>&1; then
+	if command -v "$cmd_name" >/dev/null 2>&1; then
 		eval "$command" | awk '{print $1}' | sort >"$DOT_PATH/$output_file"
 	fi
+}
+
+sync_pacman_packages() {
+	sync_command_output "pacman -Qen" "installed_apps.txt"
+}
+
+sync_aur_packages() {
+	sync_command_output "paru -Qm" "installed_aur_apps.txt"
+}
+
+sync_rustup_components() {
+	if command -v rustup >/dev/null 2>&1; then
+		rustup default stable >/dev/null 2>&1
+		rustup component list --installed | awk '{print $1}' | sort >"$DOT_PATH/rustup_installed.txt"
+	fi
+}
+
+sync_flatpak_apps() {
+	if command -v flatpak >/dev/null 2>&1; then
+		flatpak list --app --columns=application | tail -n +2 | sort >"$DOT_PATH/flatpak_installed.txt"
+	fi
+}
+
+sync_binary_directories() {
+	sync_bin_dir "/home/bryant/.local/bin" "uv_installed.txt" ""
+	sync_bin_dir "/home/bryant/go/bin" "go_installed.txt" "-t f"
+	sync_bin_dir "/home/bryant/.cargo/bin" "cargo_installed.txt" "-t f"
 }
 
 main() {
 	mkdir -p "$DOT_PATH"
 
-	# Binary directories
-	sync_bin_dir "/home/bryant/.local/bin" "uv_installed.txt" ""
-	sync_bin_dir "/home/bryant/go/bin" "go_installed.txt" "-t f"
-	sync_bin_dir "/home/bryant/.cargo/bin" "cargo_installed.txt" "-t f"
-
-	# Package managers
-	sync_command_output "pacman -Qen" "installed_apps.txt"
-	sync_command_output "paru -Qm" "installed_aur_apps.txt"
-	sync_command_output "rustup default stable > /dev/null 2>&1 && rustup component list --installed" "rustup_installed.txt"
-
-	# Flatpak (special case)
-	if command -v flatpak >/dev/null 2>&1; then
-		flatpak list --app --columns=application | tail -n +2 | sort >"$DOT_PATH/flatpak_installed.txt"
-	fi
+	sync_binary_directories
+	sync_pacman_packages
+	sync_aur_packages
+	sync_rustup_components
+	sync_flatpak_apps
 }
 
 main

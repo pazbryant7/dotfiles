@@ -1,27 +1,48 @@
 #!/usr/bin/env sh
 
-for product in IntelliJIdea WebStorm DataGrip PhpStorm CLion PyCharm GoLand RubyMine; do
-	rm -rf ~/.config/$product*/eval 2>/dev/null
-	rm -rf ~/.config/JetBrains/$product*/eval 2>/dev/null
-done
+PRODUCTS="IntelliJIdea WebStorm DataGrip PhpStorm CLion PyCharm GoLand RubyMine"
+CONFIG_PATHS=".config JetBrains/.config"
 
-for product in IntelliJIdea WebStorm DataGrip PhpStorm CLion PyCharm GoLand RubyMine; do
-	echo "[+] Resetting trial period for $product"
+remove_eval_directory() {
+	product="$1"
 
-	echo "[+] Removing Evaluation Key..."
-	rm -rf ~/.config/$product*/eval 2>/dev/null
+	for base_path in $CONFIG_PATHS; do
+		path="$HOME/$base_path/$product*/eval"
+		rm -rf "$path" 2>/dev/null
+	done
+}
 
-	# Above path not working on latest version, Fixed below
-	rm -rf ~/.config/JetBrains/$product*/eval 2>/dev/null
+remove_evlsprt_properties() {
+	product="$1"
 
-	echo "[+] Removing all evlsprt properties in options.xml..."
-	sed -i 's/evlsprt//' ~/.config/$product*/options/other.xml 2>/dev/null
+	for base_path in $CONFIG_PATHS; do
+		path="$HOME/$base_path/$product*/options/other.xml"
+		sed -i 's/evlsprt//' "$path" 2>/dev/null
+	done
+}
 
-	# Above path not working on latest version, Fixed below
-	sed -i 's/evlsprt//' ~/.config/JetBrains/$product*/options/other.xml 2>/dev/null
+reset_trial_period() {
+	product="$1"
 
-	echo
-done
+	printf '%s' "[+] Resetting trial period for $product"
+	printf "[+] Removing Evaluation Key..."
+	remove_eval_directory "$product"
+	printf "[+] Removing all evlsprt properties in options.xml..."
+	remove_evlsprt_properties "$product"
+	printf
+}
 
-echo "Removing userPrefs files..."
-rm -rf ~/.java/.userPrefs 2>/dev/null
+cleanup_java_prefs() {
+	printf "Removing userPrefs files..."
+	rm -rf "$HOME/.java/.userPrefs" 2>/dev/null
+}
+
+main() {
+	for product in $PRODUCTS; do
+		reset_trial_period "$product"
+	done
+
+	cleanup_java_prefs
+}
+
+main

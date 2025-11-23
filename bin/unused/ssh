@@ -3,8 +3,7 @@
 SSH_DIR="$HOME/.ssh/private"
 
 get_passphrase() {
-	selected_passphrase=$(pass show "ssh/$1")
-	echo "$selected_passphrase"
+	pass show "ssh/$1"
 }
 
 get_private_key_name() {
@@ -18,42 +17,48 @@ authenticate() {
 		echo "Error: passphrase or key are invalid"
 		return 1
 	fi
+	echo "Identity was added successfully"
+}
 
-	echo "Identity was added susccessfully"
+check_existing_identity() {
+	ssh-add -l | grep -q '@'
+}
+
+get_existing_identity() {
+	ssh-add -l | grep '@' | awk '{print $3}'
+}
+
+prompt_replace_identity() {
+	printf "Would you like change it (y/n)? "
+	read -r response
+	[ "$response" = "y" ]
 }
 
 main() {
-	identity=$(ssh-add -l | rg '@' | awk -F ' ' '{print $3}')
-	if [ -n "$identity" ]; then
+	if check_existing_identity; then
+		identity=$(get_existing_identity)
+		printf "Identity found: %s\n" "$identity"
 
-		printf "Identity found: %s \n" "$identity"
-
-		printf "Would you like change it (y/n)? "
-		read -r response
-
-		if [ "$response" != "y" ]; then
+		if ! prompt_replace_identity; then
 			exit 1
 		fi
 
-		ssh-add -D # remove all identities
+		ssh-add -D
 	fi
 
 	private_key=$(get_private_key_name)
-
 	if [ -z "$private_key" ]; then
 		exit 1
 	fi
 
 	passphrase=$(get_passphrase "$private_key")
-
 	if [ -z "$passphrase" ]; then
 		echo "Passphrase has not been selected or is invalid"
 		exit 1
 	fi
 
 	authenticate "$passphrase" "$private_key"
-
-	unset "$passphrase" # make sure passphrase is not saved in memory
+	unset passphrase
 
 	exit 0
 }
