@@ -51,7 +51,7 @@ main() {
 		"$dirs" |
 		sort | uniq)"
 
-	printf '%s' "$directories"] |
+	printf '%s' "$directories" |
 		fzf --bind "enter:execute($HOME/bin/tmux/new-session {})+abort"
 }
 
