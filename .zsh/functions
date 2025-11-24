@@ -68,7 +68,7 @@ smart_help() {
 		return
 	fi
 	if man -w "$cmd" >/dev/null 2>&1; then
-		BUFFER="MANPAGER='nvim +Man!' man $cmd"
+		BUFFER="man $cmd"
 		zle accept-line
 	elif command -v "$cmd" >/dev/null 2>&1; then
 		BUFFER="$cmd --help | less -F"
