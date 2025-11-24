@@ -66,7 +66,6 @@ networkmanager
 noto-fonts-emoji
 nsxiv
 ntfs-3g
-nwg-look
 openresolv
 openssh
 pacman-contrib
