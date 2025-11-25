@@ -24,13 +24,13 @@
   prune = true # auto-remove deleted remote branches
 
 [merge]
+  ff = false
   tool = nvim
-
-[mergetool]
-  prompt = false
 
 [mergetool "nvim"]
   cmd = nvim
+  prompt = false
+  trustExitCode = true
 
 [alias]
   st = status
