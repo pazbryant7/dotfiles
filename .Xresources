@@ -7,7 +7,7 @@ Xft.lcdfilter: lcddefault
 ! st specific
 *.background: #1e1e2e
 *.foreground: #ffffff
-*.cursorColor: #bcc0d5
+*.cursorColor: #adadc9
 
 *.color0:     #1e1e2e
 *.color8:     #666666
@@ -26,22 +26,22 @@ Xft.lcdfilter: lcddefault
 *.color7:     #c5c8c6
 *.color15:    #eaeaea
 
-! st.font: Recursive Mn Csl St SmB:pixelsize=13.5:style:SemiBold:antialias=true:autohint=true
-! st.font: Maple Mono:pixelsize=13.5:antialias=true:autohint=true:style:Bold
-
 st.alpha: 0.87
-st.chscale: 1.10
+st.chscale: 1.05
 st.cwscale: 1.15
 st.borderpx: 0px
+
+! st.font: Annotation Mono DemiBold:pixelsize=16.5:style:DemiBold:antialias=true:autohint=true
+! st.font: Recursive Mn Csl St SmB:pixelsize=16.5:style:SemiBold:antialias=true:autohint=true
 
 ! Nsxiv specific
 Nsxiv.window.background: #1e1e2e
 Nsxiv.window.foreground: #ffffff
 
 ! DWM specific configurations
-dwm.selbgcolor: #6E76A4
+dwm.selbgcolor: #626295
 dwm.selfgcolor: #ffffff
 dwm.normbgcolor: #000000
 dwm.normfgcolor: #817f7f
-dwm.selbordercolor: #6E76A4
+dwm.selbordercolor: #626295
 dwm.normbordercolor: #817f7f
