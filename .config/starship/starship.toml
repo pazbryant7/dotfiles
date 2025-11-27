@@ -1,16 +1,20 @@
 add_newline = false
 
 format = """
-$directory\
-$character"""
-
-# Directory configuration
-[directory]
-truncation_length = 2
-truncate_to_repo = false
-style = "bold #a48faf"
+$directory$git_branch$character
+"""
 
 [character]
 error_symbol = "[󰁕](bold #FF0000)"
 vimcmd_symbol = "[󰁕](bold #24c760)"
-success_symbol = "[󰁕](bold #644F6F)"
+success_symbol = "[󰁕](bold #ffffff)"
+
+[directory]
+truncation_length = 3
+truncate_to_repo = false
+style = "bold #ffffff"
+
+[git_branch]
+symbol = ""
+style = "bold #D6B1B8"
+format = "[$symbol$branch]($style) "
