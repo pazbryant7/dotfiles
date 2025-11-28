@@ -7,14 +7,14 @@ $directory$git_branch$character
 [character]
 error_symbol = "[󰁕](bold #FF0000)"
 vimcmd_symbol = "[󰁕](bold #24c760)"
-success_symbol = "[󰁕](bold #ffffff)"
+success_symbol = "[󰁕](bold #d2a2cf)"
 
 [directory]
-truncation_length = 3
+truncation_length = 2
 truncate_to_repo = false
-style = "bold #ffffff"
+style = "bold #d2a2cf"
 
 [git_branch]
 symbol = ""
-style = "bold #D6B1B8"
+style = "bold #CBA09D"
 format = "[$symbol$branch]($style) "
