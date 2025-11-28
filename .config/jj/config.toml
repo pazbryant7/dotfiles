@@ -4,3 +4,7 @@ email = "pazbryant7@outlook.com"
 
 [ui]
 default-command = "log"
+
+[aliases]
+push = ["git", "push"]
+tug = ["bookmark", "move", "--from", "heads(::@- & bookmarks())", "--to", "@-"]
