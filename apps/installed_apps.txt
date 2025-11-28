@@ -69,6 +69,7 @@ ntfs-3g
 openresolv
 openssh
 pacman-contrib
+pandoc-cli
 pastel
 pavucontrol
 pcmanfm
