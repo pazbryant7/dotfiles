@@ -22,6 +22,16 @@ run = "cd ~/Documents/books"
 desc = "Go to Books"
 
 [[mgr.prepend_keymap]]
+on = ["g", "s"]
+run = "cd ~/Share"
+desc = "Go to Share"
+
+[[mgr.prepend_keymap]]
+on = ["g", "f"]
+run = "cd /usr/share/fonts/bryant-fonts"
+desc = "Go to Ssytem Fonts"
+
+[[mgr.prepend_keymap]]
 on = ["g", "m"]
 run = "cd /run/media"
 desc = "Go to Media"
