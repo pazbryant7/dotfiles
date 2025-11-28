@@ -52,8 +52,11 @@ h() {
 }
 
 clear_and_redisplay() {
-	clear
-	zle .redisplay
+  if [ -n "$TMUX" ]; then
+    tmux clear-history
+  fi
+
+  zle clear-screen
 }
 
 copy_terminal_buffer() {
