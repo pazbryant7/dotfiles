@@ -27,10 +27,10 @@ Xft.lcdfilter: lcddefault
 *.color15:    #eaeaea
 
 st.alpha: 0.87
-st.chscale: 1.05
-st.cwscale: 1.15
+st.chscale: 1.00
+st.cwscale: 1.10
 st.borderpx: 0px
-st.currentfont: 1
+st.currentfont: 2
 
 ! Nsxiv specific
 Nsxiv.window.background: #1e1e2e
