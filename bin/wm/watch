@@ -1,49 +1,55 @@
-#!/bin/env sh
+#!/usr/bin/env sh
 
 set -e
 
-VIDEOS_DIR="$HOME/Videos"
+VIDEOS_DIR="/home/bryant/Videos/"
+RECORDINGS_DIR="/run/media/bryant/tiagovault/videos/"
+ROFI_CMD='rofi -dmenu -i'
 
-list_folders() {
-	fd --type directory --max-depth 1 --base-directory "$VIDEOS_DIR" |
-		xargs -I {} basename {}
+list_dirs() {
+	fd . --type=d --max-depth 1 "$VIDEOS_DIR" "$RECORDINGS_DIR" 2>/dev/null
 }
 
-list_files_in_folder() {
-	fd --type f --base-directory "$VIDEOS_DIR/$1" | sort -r
+list_files_in_dir() {
+	fd --base-directory "$1" \
+		--glob '*.{mp4,mkv,avi,mov,m4v,webm,flv,wmv,mpeg,mpg}' \
+		2>/dev/null
 }
 
-select_folder() {
-	list_folders | rofi -dmenu -i -p "Select book folder"
+select_dir() {
+	printf '%s\n' "$1" | $ROFI_CMD -p "Select directory"
 }
 
-select_video() {
-	list_files_in_folder "$1" | rofi -dmenu -i -p "Select book"
+select_file() {
+	printf '%s\n' "$1" | $ROFI_CMD -p "Select file"
+}
+
+play() {
+	exec mpv "$1"
 }
 
 main() {
-	selected_folder=$(select_folder)
-	if [ -z "$selected_folder" ]; then
-		echo "No folder selected. Exiting."
-		exit 1
-	fi
+	dirs=$(list_dirs)
+	[ -n "$dirs" ] || exit 1
 
-	videos=$(list_files_in_folder "$selected_folder")
-	if [ -z "$videos" ]; then
-		echo "No videos were found in the selected folder. Exiting."
-		exit 1
-	fi
+	selected_dir=$(select_dir "$dirs")
+	[ -n "$selected_dir" ] || exit 1
+	[ -d "$selected_dir" ] || exit 1
 
-	selected_video=$(select_video "$selected_folder")
-	if [ -z "$selected_video" ]; then
-		echo "No video was selected. Exiting."
-		exit 1
-	fi
+	files=$(list_files_in_dir "$selected_dir")
+	[ -n "$files" ] || exit 1
 
-	selected_video_path="$VIDEOS_DIR/$selected_folder/$selected_video"
-	mpv "$selected_video_path" &
+	selected_file=$(select_file "$files")
+	[ -n "$selected_file" ] || exit 1
 
-	exit 0
+	case "$selected_dir" in
+	*/) full_path="${selected_dir}${selected_file}" ;;
+	*) full_path="${selected_dir}/${selected_file}" ;;
+	esac
+
+	[ -f "$full_path" ] || exit 1
+
+	play "$full_path"
 }
 
 main
