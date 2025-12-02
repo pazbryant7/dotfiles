@@ -1,3 +1,5 @@
 [default]
 ytdl-format=bestvideo[height<=?1080]+bestaudio/best
-script-opts = ytdl_hook-ytdl_path=/usr/bin/yt-dlp
+force-seekable=yes
+demuxer-max-bytes=150000000
+demuxer-max-back-bytes=75000000
