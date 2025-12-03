@@ -3,51 +3,83 @@
 BOOKS_DIR="$HOME/Documents/books"
 LAST_READ_BOOK_PATH="$HOME/.last-read-book"
 
-list_files_in_folder() {
-	fd --type f --base-directory "$BOOKS_DIR"
+list_book_dirs() {
+	fd . "$BOOKS_DIR" \
+		--type d \
+		--min-depth 1 \
+		--max-depth 1 \
+		2>/dev/null
 }
 
-select_book() {
-	list_files_in_folder | rofi -dmenu -i -p "Select book"
+list_books() {
+	fd --type f --base-directory "$1" 2>/dev/null
+}
+
+prompt_book() {
+	printf "%s" "$1" | rofi -dmenu -i -p "Select book"
+}
+
+prompt_dir() {
+	printf "%s" "$1" | rofi -dmenu -i -p "Select dir:"
 }
 
 get_last_book() {
-	[ -f "$LAST_READ_BOOK_PATH" ] && cat "$LAST_READ_BOOK_PATH"
+	cat "$LAST_READ_BOOK_PATH" 2>/dev/null || return 1
 }
 
-update_last_read_book() {
-	echo "$1" >"$LAST_READ_BOOK_PATH"
+save_last_readed() {
+	printf "%s" "$1" >"$LAST_READ_BOOK_PATH" || return 1
 }
 
-prompt_last_read_book() {
-	last_read_book_path=$(get_last_book)
+read_book() {
+	exec zathura "$1"
+}
 
-	if [ -z "$last_read_book_path" ]; then
-		return
-	fi
+prompt_resume() {
+	name=$(basename "$1")
+	printf "Yes\nNo" | rofi -dmenu -i -p "Resume $name:" || printf "No"
+}
 
-	last_read_book_filename=$(basename "$last_read_book_path")
-	read_option=$(printf "Read last book: %s" "$last_read_book_filename" | rofi -dmenu -i -p "Select Action:")
+try_resume() {
+	path=$(get_last_book)
+	[ -z "$path" ] && return
+	[ -f "$path" ] || return
 
-	if [ "$read_option" = "Read last book: $last_read_book_filename" ]; then
-		zathura "$last_read_book_path"
-		exit 0
-	fi
+	choice=$(prompt_resume "$path")
+	[ "$choice" = "Yes" ] && read_book "$path"
+}
+
+build_path() {
+	dir="$1"
+	path="$2"
+
+	case "$dir" in
+	*/) printf '%s%s' "$dir" "$path" ;;
+	*) printf '%s/%s' "$dir" "$path" ;;
+	esac
 }
 
 main() {
-	prompt_last_read_book
+	try_resume || true
 
-	selected_book=$(select_book)
+	dirs=$(list_book_dirs) || exit 1
+	[ -z "$dirs" ] && exit 1
 
-	if [ -z "$selected_book" ]; then
-		echo "No book selected. Exiting." >&2
-		exit 1
-	fi
+	dir=$(prompt_dir "$dirs") || exit 1
+	[ -z "$dir" ] && exit 1
+	[ ! -d "$dir" ] && exit 1
 
-	selected_book_file_path="$BOOKS_DIR/$selected_book"
-	update_last_read_book "$selected_book_file_path"
-	zathura "$selected_book_file_path" &
+	books=$(list_books "$dir") || exit 1
+	[ -z "$books" ] && exit 1
+
+	book=$(prompt_book "$books") || exit 1
+	[ -z "$book" ] && exit 1
+
+	path=$(build_path "$dir" "$book")
+	[ ! -f "$path" ] && exit
+
+	save_last_readed "$path"
+	read_book "$path"
 }
 
 main
