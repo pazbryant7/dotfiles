@@ -4,52 +4,82 @@ set -e
 
 VIDEOS_DIR="/home/bryant/Videos/"
 RECORDINGS_DIR="/run/media/bryant/tiagovault/videos/"
-ROFI_CMD='rofi -dmenu -i'
+LAST_WATCHED_FILE="/home/bryant/.last-watched"
 
-list_dirs() {
+list_video_dirs() {
 	fd . --type=d --max-depth 1 "$VIDEOS_DIR" "$RECORDINGS_DIR" 2>/dev/null
 }
 
-list_files_in_dir() {
+list_videos() {
 	fd --base-directory "$1" \
 		--glob '*.{mp4,mkv,avi,mov,m4v,webm,flv,wmv,mpeg,mpg}' \
 		2>/dev/null
 }
 
-select_dir() {
-	printf '%s\n' "$1" | $ROFI_CMD -p "Select directory"
+prompt_dir() {
+	printf '%s\n' "$1" | rofi -dmenu -i -p "Select directory"
 }
 
-select_file() {
-	printf '%s\n' "$1" | $ROFI_CMD -p "Select file"
+prompt_video() {
+	printf '%s\n' "$1" | rofi -dmenu -i -p "Select file"
 }
 
-play() {
+prompt_resume() {
+	name=$(basename "$1")
+	printf "Yes\nNo" | rofi -dmenu -i -p "Resume? $name:" || echo "No"
+}
+
+play_video() {
 	exec mpv "$1"
 }
 
-main() {
-	dirs=$(list_dirs)
-	[ -n "$dirs" ] || exit 1
+save_last_watched() {
+	printf '%s' "$1" >"$LAST_WATCHED_FILE" || return 1
+}
 
-	selected_dir=$(select_dir "$dirs")
-	[ -n "$selected_dir" ] || exit 1
-	[ -d "$selected_dir" ] || exit 1
+get_last_watched() {
+	cat "$LAST_WATCHED_FILE" 2>/dev/null
+}
 
-	files=$(list_files_in_dir "$selected_dir")
-	[ -n "$files" ] || exit 1
+try_resume() {
+	path=$(get_last_watched) || return
+	[ -z "$path" ] && return
+	[ -f "$path" ] || return
 
-	selected_file=$(select_file "$files")
-	[ -n "$selected_file" ] || exit 1
+	choice=$(prompt_resume "$path")
+	[ "$choice" = "Yes" ] && play_video "$path"
+}
 
-	case "$selected_dir" in
-	*/) full_path="${selected_dir}${selected_file}" ;;
-	*) full_path="${selected_dir}/${selected_file}" ;;
+build_path() {
+	dir="$1"
+	file="$2"
+	case "$dir" in
+	*/) printf '%s%s' "$dir" "$file" ;;
+	*) printf '%s/%s' "$dir" "$file" ;;
 	esac
+}
 
-	[ -f "$full_path" ] || exit 1
+main() {
+	try_resume || true
 
-	play "$full_path"
+	dirs=$(list_video_dirs) || exit 1
+	[ -z "$dirs" ] && exit 1
+
+	dir=$(prompt_dir "$dirs") || exit 1
+	[ -z "$dir" ] && exit 1
+	[ ! -d "$dir" ] && exit 1
+
+	videos=$(list_videos "$dir") || exit 1
+	[ -z "$videos" ] && exit 1
+
+	video=$(prompt_video "$videos") || exit 1
+	[ -z "$video" ] && exit 1
+
+	path=$(build_path "$dir" "$video")
+	[ ! -f "$path" ] && exit 1
+
+	save_last_watched "$path"
+	play_video "$path"
 }
 
 main
