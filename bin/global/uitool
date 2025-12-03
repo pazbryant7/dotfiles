@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
-set -e
 
 THEME_RASI="$HOME/.config/rofi/theme.rasi"
 TMUX_CONFIG="$HOME/.tmux.conf"

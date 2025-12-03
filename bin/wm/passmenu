@@ -1,7 +1,5 @@
 #!/bin/env sh
 
-set -e
-
 get_password_entries() {
 	fd -t f -e gpg --base-directory "$1"
 }

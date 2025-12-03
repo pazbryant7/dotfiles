@@ -1,7 +1,5 @@
 #!/bin/env sh
 
-set -e
-
 check_git_status() {
 	if [ -d "$1/.git" ]; then
 		if [ -n "$(git -C "$1" status --porcelain 2>/dev/null)" ]; then

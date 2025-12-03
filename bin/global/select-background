@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
-set -e
 
 FOLDER="${HOME}/Documents/github/media/images/wallpapers"
 

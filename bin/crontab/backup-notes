@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
 
-set -e
-
 NOTE_REPO="$HOME/Documents/github/notes"
 YOUTUBE_REPO="$HOME/Documents/github/youtube"
 

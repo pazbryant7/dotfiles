@@ -1,7 +1,5 @@
 #!/bin/env sh
 
-set -e
-
 OUTPUT="HDMI-2"
 RANDR_METHOD="randr"
 WARM_COLOR_TEMP="4200K"

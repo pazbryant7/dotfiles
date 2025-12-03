@@ -1,7 +1,5 @@
 #!/bin/sh
 
-set -e
-
 STATE_FILE="/tmp/screen_warmth_active.lock"
 WARM_TEMP="4200K"
 METHOD="randr"

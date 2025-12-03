@@ -1,7 +1,5 @@
 #!/bin/sh
 
-set -e
-
 BLOCK_DEVICE="/dev/sdb1"
 MEDIA_DESTINATION="/run/media/bryant/tiagovault"
 RSYNC_EXCLUDE_OPTS="*.sock

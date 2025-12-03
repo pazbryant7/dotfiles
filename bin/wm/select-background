@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
 
-set -e
-
 main() {
 	~/bin/global/select-background
 }

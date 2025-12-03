@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
 
-set -e
-
 VIDEOS_DIR="/home/bryant/Videos/"
 RECORDINGS_DIR="/run/media/bryant/tiagovault/videos/"
 LAST_WATCHED_FILE="/home/bryant/.last-watched"
