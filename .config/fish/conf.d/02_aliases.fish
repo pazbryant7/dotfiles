@@ -23,5 +23,5 @@ alias rex="xrdb -remove && xrdb -merge ~/.Xresources && kill -USR1 \$(pidof st)"
 # system
 alias sht="shutdown now"
 alias sp="systemctl suspend"
-alias rebootcmd="systemctl reboot"
+alias rbt="systemctl reboot"
 alias fontcache="sudo fc-cache -f -v"

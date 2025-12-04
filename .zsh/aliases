@@ -33,7 +33,7 @@ alias ff="fastfetch"
 alias sht="shutdown now"
 alias dh="rm ~/.history.db"
 alias sp="systemctl suspend"
-alias rebootcmd="systemctl reboot"
+alias rbt="systemctl reboot"
 alias fontcache="sudo fc-cache -f -v"
 alias rex="xrdb -remove && xrdb -merge ~/.Xresources && kill -USR1 \$(pidof st)"
 
