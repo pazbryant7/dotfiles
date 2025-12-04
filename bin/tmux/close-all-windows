@@ -1,0 +1,75 @@
+#!/usr/bin/env sh
+get_window_id() {
+	tmux display-message -p "#{window_id}"
+}
+
+get_pane_id() {
+	tmux display-message -p "#D"
+}
+
+get_session() {
+	tmux display-message -p "#S"
+}
+
+list_window_ids() {
+	tmux list-windows -t "$1" -F "#{window_id}"
+}
+
+list_pane_ids() {
+	name="$1"
+	w_id="$2"
+	tmux list-panes -t "$name:$w_id" -F "#D"
+}
+
+kill_windows() {
+	name="$1"
+	w_ids="$2"
+	curr_w_id="$3"
+	for w_id in $w_ids; do
+		if [ "$w_id" != "$curr_w_id" ]; then
+			tmux kill-window -t "$name:$w_id" || return 1
+		fi
+	done
+}
+
+kill_panes() {
+	p_ids="$1"
+	curr_pane_id="$2"
+	for p_id in $p_ids; do
+		if [ "$p_id" != "$curr_pane_id" ]; then
+			tmux kill-pane -t "$p_id" || return 1
+		fi
+	done
+}
+
+notify() {
+	tmux display-message "All has been closed except current pane"
+}
+
+main() {
+	name="$(get_session)"
+	[ -z "$name" ] && exit 1
+
+	w_ids=$(list_window_ids "$name")
+	[ -z "$w_ids" ] && exit 1
+
+	w_id=$(get_window_id)
+	[ -z "$w_id" ] && exit 1
+
+	kill_windows "$name" "$w_ids" "$w_id" || exit 1
+
+	w_id=$(get_window_id) # window id changes after remove them
+	[ -z "$w_id" ] && exit 1
+
+	p_ids=$(list_pane_ids "$name" "$w_id")
+	[ -z "$p_ids" ] && exit 1
+
+	p_id=$(get_pane_id)
+	[ -z "$p_id" ] && exit 1
+
+	kill_panes "$p_ids" "$p_id" || exit 1
+
+	notify
+}
+
+main "$@"

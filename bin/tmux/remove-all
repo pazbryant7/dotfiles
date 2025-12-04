@@ -1,60 +1,43 @@
 #!/usr/bin/env sh
-# Close everything except current window or reset to home directory.
-# Does not detach from current tmux session.
+# Close all tmux sessions except user's home session.
+# Creates home session if it doesn't exist and switches to it.
 
 session_exists() {
 	tmux has-session -t "$1" 2>/dev/null
 }
 
 create_session() {
-	default_dir=""
-
-	if [ "$1" = "bryant" ]; then
-		default_dir="$HOME/"
-	fi
-
-	tmux new-session -d -s "$1" -c "$default_dir"
+	name="$1"
+	path="$2"
+	tmux new-session -d -s "$name" -c "$path"
 }
 
-get_current_window_id() {
-	tmux display-message -p -t "$1" '#I'
+kill_all_except() {
+	name="$1"
+	tmux kill-session -a -t "$name"
 }
 
-kill_other_sessions() {
-	tmux list-sessions -F '#S' | while read -r session; do
-		if [ "$session" != "$1" ]; then
-			tmux kill-session -t "$session"
-		fi
-	done
+switch_to() {
+	name="$1"
+	tmux switch-client -t "$name"
 }
 
-kill_other_windows() {
-	session="$1"
-	current_window=$(get_current_window_id "$session")
-
-	tmux list-windows -t "$session" -F '#I' | while read -r window_id; do
-		if [ "$window_id" != "$current_window" ]; then
-			tmux kill-window -t "${session}:${window_id}"
-		fi
-	done
-}
-
-switch_to_session() {
-	if [ -n "$TMUX" ]; then
-		tmux switch-client -t "$1"
-	fi
+notify() {
+	tmux display-message "Welcome home $USER, all other sessions removed"
 }
 
 main() {
-	target_session="${1:-$(tmux display-message -p '#{session_name}')}"
+	name="${USER:-user}"
+	path="${HOME:-~/}"
 
-	session_exists "$target_session" || create_session "$target_session"
-	switch_to_session "$target_session"
-	kill_other_sessions "$target_session"
-	kill_other_windows "$target_session"
+	session_exists "$name" || {
+		create_session "$name" "$path" || exit 1
+	}
 
-	tmux display-message -t "$target_session" \
-		"Cleaned up other sessions and windows."
+	switch_to "$name" || exit 1
+	kill_all_except "$name" || exit 1
+
+	notify
 }
 
 main "$@"
