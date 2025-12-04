@@ -1,14 +1,35 @@
 #!/bin/env sh
 
-exec 9>/tmp/screenkey.lock
-if ! flock -n 9; then
+LOCK_FILE="/tmp/screenkey.lock"
+
+lock_descriptor() {
+	exec 9>"$LOCK_FILE"
+}
+
+execute_screen_key() {
+	screenkey --geometry 360x600+1540+490 \
+		--opacity 0.4 \
+		--font "Annotation Mono 25" &
+
+	flock 9
+}
+
+stop_screen_key() {
 	killall screenkey 2>/dev/null
-	notify-send "screen disabled"
-	exit 1
-fi
+}
 
-notify-send "screenkey enabled"
+lock_available() {
+	flock -n 9
+}
 
-screenkey --geometry 360x600+1540+490 \
-	--opacity 0.4 \
-	--font "Maple Mono 25"
+main() {
+	lock_descriptor || exit 1
+
+	if lock_available; then
+		execute_screen_key # only executes is lock is not held by a previous execution
+	else
+		stop_screen_key
+	fi
+}
+
+main "$@"
