@@ -107,12 +107,14 @@ terminus-font
 tmux
 translate-shell
 tree
+tree-sitter-cli
 typescript
 ueberzugpp
 ufw
 unclutter
 uv
 watchexec
+websocat
 wireplumber
 xclip
 xcolor
