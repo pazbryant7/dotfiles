@@ -19,9 +19,12 @@ check_git_status() {
 
 traverse_directories_one_level() {
 	NOTES_DIR="/home/bryant/Documents/github/notes"
+	YOUUBE_DIR="/home/bryant/Documents/github/youtube"
+
 	for dir_item in "$1"/*; do
 		if [ -d "$dir_item" ]; then
-			if [ "$dir_item" = "$NOTES_DIR" ]; then
+			if [ "$dir_item" = "$NOTES_DIR" ] ||
+				[ "$dir_item" = "$YOUUBE_DIR" ]; then
 				continue
 			fi
 			check_git_status "$dir_item"
