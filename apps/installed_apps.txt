@@ -9,7 +9,6 @@ base
 base-devel
 bat
 bob
-bottom
 breeze-gtk
 breeze-icons
 calibre
@@ -41,7 +40,6 @@ hurl
 hyperfine
 imagemagick
 img2pdf
-imv
 jq
 jujutsu
 just
@@ -72,7 +70,6 @@ pacman-contrib
 pandoc-cli
 pastel
 patchelf
-pavucontrol
 pcmanfm
 perl-image-exiftool
 pgcli
@@ -86,7 +83,6 @@ pnpm
 python-pip
 qbittorrent
 qt6ct
-qutebrowser
 rclone
 ripgrep
 rofi
@@ -94,11 +90,9 @@ rsync
 rtkit
 rustup
 screenkey
-speedtest-cli
 sqlc
 starship
 stow
-streamlink
 sudo
 syncthing
 tealdeer

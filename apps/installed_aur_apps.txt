@@ -1,7 +1,4 @@
-ani-cli
 bun-bin
-datagrip
-datagrip-jre
 dragon-drop
 grpcurl-bin
 numbat-bin
@@ -10,4 +7,3 @@ paru-debug
 thorium-browser-bin
 ttf-dmcasansserif
 ventoy-bin
-wego
