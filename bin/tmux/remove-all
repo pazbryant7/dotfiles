@@ -3,7 +3,15 @@
 # Creates home session if it doesn't exist and switches to it.
 
 session_exists() {
-	tmux has-session -t "$1" 2>/dev/null
+	tmux has-session -t "$1"
+}
+
+get_session_name() {
+	tmux display-message -p "#S"
+}
+
+get_path() {
+	tmux display-message -p '#{pane_current_path}'
 }
 
 create_session() {
@@ -27,8 +35,12 @@ notify() {
 }
 
 main() {
-	name="${USER:-user}"
-	path="${HOME:-~/}"
+	name=$(get_session_name)
+	[ -z "$name" ] && exit 1
+
+	path=$(get_path)
+	[ -z "$path" ] && exit 1
+	[ -d "$path" ] || exit 1
 
 	session_exists "$name" || {
 		create_session "$name" "$path" || exit 1
