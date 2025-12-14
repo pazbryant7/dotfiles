@@ -2,8 +2,9 @@ bun-bin
 dragon-drop
 grpcurl-bin
 numbat-bin
-paru
 paru-debug
 thorium-browser-bin
 ttf-dmcasansserif
 ventoy-bin
+yay
+yay-debug
