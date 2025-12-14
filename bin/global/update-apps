@@ -33,7 +33,7 @@ sync_pacman_packages() {
 }
 
 sync_aur_packages() {
-	sync_command_output "paru -Qm" "installed_aur_apps.txt"
+	sync_command_output "yay -Qem" "installed_aur_apps.txt"
 }
 
 sync_rustup_components() {
