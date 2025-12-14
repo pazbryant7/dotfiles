@@ -1,6 +1,6 @@
 # main
 abbr -a n nvim
-abbr -a yay paru
+abbr -a paru yay
 abbr -a wg "sudo wg" # for custom vpn
 abbr -a pass gopass
 abbr -a transes "trans en:es"
