@@ -7,4 +7,3 @@ thorium-browser-bin
 ttf-dmcasansserif
 ventoy-bin
 yay
-yay-debug

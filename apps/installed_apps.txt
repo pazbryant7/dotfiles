@@ -61,6 +61,7 @@ mpd
 mpv
 ncmpcpp
 networkmanager
+noto-fonts-cjk
 noto-fonts-emoji
 nsxiv
 ntfs-3g
