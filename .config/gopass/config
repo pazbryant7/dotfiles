@@ -5,3 +5,8 @@
 	path = /home/bryant/Documents/github/pass-dev
 [core]
 	autosync = false
+[recipients "pass-business"]
+	hash = 7989f4d0c6a87648c8f068b956f82ddccdcb0ca9189e1fed335995736518d201
+[mounts "pass-business"]
+[mounts "business"]
+	path = /home/bryant/Documents/github/pass-business
