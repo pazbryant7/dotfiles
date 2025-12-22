@@ -1,6 +1,4 @@
-[1m[33m
 bun-bin
-bun-bin-debug
 dragon-drop
 grpcurl-bin
 numbat-bin
