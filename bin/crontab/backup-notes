@@ -2,6 +2,7 @@
 
 NOTE_REPO="$HOME/Documents/github/notes"
 YOUTUBE_REPO="$HOME/Documents/github/youtube"
+DELTOCHONOTES="$HOME/Documents/github/deltocho-notes"
 
 is_git_repo() {
 	git -C "$1" rev-parse --is-inside-work-tree >/dev/null 2>&1
@@ -61,6 +62,7 @@ sync_repo() {
 main() {
 	sync_repo "$NOTE_REPO"
 	sync_repo "$YOUTUBE_REPO"
+	sync_repo "$DELTOCHONOTES"
 }
 
 main
