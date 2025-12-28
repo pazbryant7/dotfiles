@@ -1,3 +1,4 @@
+[1m[33m
 bun-bin
 dragon-drop
 grpcurl-bin

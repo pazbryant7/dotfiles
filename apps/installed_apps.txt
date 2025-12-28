@@ -71,6 +71,7 @@ pacman-contrib
 pandoc-cli
 pastel
 patchelf
+pavucontrol
 pcmanfm
 perl-image-exiftool
 pgcli
