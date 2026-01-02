@@ -41,7 +41,7 @@ send_username_notification() {
 
 main() {
 	mode="${1:-pass}"
-	passwd_dir="$HOME/Documents/github"
+	passwd_dir="$HOME/Documents/github/pass"
 	entries=$(get_password_entries "$passwd_dir") || exit 1
 	[ -n "$entries" ] || exit 0
 
