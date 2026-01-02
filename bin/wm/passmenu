@@ -7,8 +7,6 @@ get_password_entries() {
 normalize_passwords() {
 	printf '%s\n' "$1" |
 		sed -e 's/\.gpg$//' \
-			-e 's#^pass-dev/#dev/#' \
-			-e 's#^pass-business/#business/#' \
 			-e 's#^pass/##' |
 		sort
 }
