@@ -124,3 +124,22 @@ database-chart() {
   echo "ChartDB started in background: $container_name"
   echo "Access at: http://localhost:8080"
 }
+
+ytdl() {
+  local url="$1"
+  local cookies_file="$2"
+
+  yt-dlp \
+    --cookies "$cookies_file" \
+    --js-runtimes bun:/usr/bin/bun \
+    --remote-components ejs:github \
+    -f bestaudio \
+    -x \
+    --audio-format m4a \
+    --audio-quality 0 \
+    -o "%(title)s.%(ext)s" \
+    --embed-metadata \
+    --embed-thumbnail \
+    --ppa "ffmpeg:-c:a aac -b:a 320k" \
+    "$url"
+}

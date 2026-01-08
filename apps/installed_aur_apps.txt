@@ -3,6 +3,7 @@ bun-bin
 dragon-drop
 grpcurl-bin
 numbat-bin
+numbat-bin-debug
 thorium-browser-bin
 ttf-dmcasansserif
 ventoy-bin
