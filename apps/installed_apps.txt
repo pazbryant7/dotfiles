@@ -11,6 +11,7 @@ bat
 bob
 breeze-gtk
 breeze-icons
+bun
 calibre
 capitaine-cursors
 ccache
@@ -74,7 +75,6 @@ patchelf
 pavucontrol
 pcmanfm
 perl-image-exiftool
-pgcli
 picom
 piper
 pipewire

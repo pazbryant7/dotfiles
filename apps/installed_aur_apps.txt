@@ -1,10 +1,8 @@
 [1m[33m
-bun-bin
+brave-bin
 dragon-drop
 grpcurl-bin
 numbat-bin
-numbat-bin-debug
-thorium-browser-bin
 ttf-dmcasansserif
 ventoy-bin
 yay
