@@ -19,7 +19,6 @@ inode/directory=yazi.desktop
 application/zip=org.pwmt.zathura-pdf-mupdf.desktop
 application/pdf=org.pwmt.zathura.desktop
 application/epub+zip=org.pwmt.zathura-pdf-mupdf.desktop
-audio/x-m4a=mpv.desktop
 text/x-script.python=nvim.desktop
 
 # x-cheme handlers
@@ -28,3 +27,4 @@ x-scheme-handler/http=firefox.desktop
 x-scheme-handler/https=firefox.desktop
 x-scheme-handler/discord=vesktop.desktop
 x-scheme-handler/postman=Postman.desktop
+audio/x-m4a=ffplay.desktop
