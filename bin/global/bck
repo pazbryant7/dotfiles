@@ -40,6 +40,7 @@ desktop.ini
 MEDIA_SOURCES="$HOME/Documents/books
 $HOME/Music
 $HOME/.config/calibre
+$HOME/.config/BraveSoftware
 $HOME/Documents/github/ansible-dots/.secrets"
 
 is_mounted() {
