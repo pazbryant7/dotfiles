@@ -124,3 +124,32 @@ database-chart() {
   echo "ChartDB started in background: $container_name"
   echo "Access at: http://localhost:8080"
 }
+
+function ytdlp() {
+  local url=$1
+  local cookie_file="$HOME/Downloads/cookies.txt"
+
+  if [[ -z "$url" ]]; then
+      echo "Error: No URL provided."
+      return 1
+  fi
+
+  if [[ ! -f "$cookie_file" ]]; then
+      echo "Error: cookies.txt not found in ~/Downloads/"
+      echo "Please place your cookies.txt file in: $cookie_file"
+      return 1
+  fi
+
+  echo "Downloading best audio quality from $url..."
+
+  yt-dlp -f bestaudio \
+      -x \
+      --verbose \
+      --add-metadata \
+      --audio-quality 0 \
+      --embed-thumbnail \
+      --cookies "$cookie_file" \
+      --js-runtimes bun:/usr/bin/bun \
+      -o "%(artist)s - %(title)s.%(ext)s" \
+      "$url"
+}
