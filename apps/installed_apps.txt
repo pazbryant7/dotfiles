@@ -66,7 +66,6 @@ noto-fonts-cjk
 noto-fonts-emoji
 nsxiv
 ntfs-3g
-openresolv
 openssh
 pacman-contrib
 pandoc-cli
