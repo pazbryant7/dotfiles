@@ -125,6 +125,7 @@ yazi
 yt-dlp
 zathura
 zathura-pdf-mupdf
+zbar
 zoxide
 zram-generator
 zsh

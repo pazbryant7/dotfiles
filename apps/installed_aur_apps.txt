@@ -1,4 +1,5 @@
 [1m[33m
+anki-bin
 brave-bin
 dragon-drop
 grpcurl-bin
