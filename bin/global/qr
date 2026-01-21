@@ -1,0 +1,53 @@
+#!/usr/bin/env sh
+
+log() {
+	printf "[INFO] %s\n" "$*" >&2
+}
+
+die() {
+	printf "[ERROR] %s\n" "$*" >&2
+	exit 1
+}
+
+get_clipboard_cmd() {
+	echo "xclip -selection clipboard -t image/png -o"
+}
+
+scan_qr() {
+	clipboard_cmd="$1"
+	qr_output=$($clipboard_cmd 2>/dev/null | zbarimg -q --raw - 2>/dev/null)
+
+	if [ -z "$qr_output" ]; then
+		return 1
+	fi
+
+	printf "%s" "$qr_output"
+}
+
+update_gopass() {
+	secret_path="$1"
+	qr_data="$2"
+
+	printf "%s\n" "$qr_data" | gopass insert -f -a "$secret_path"
+}
+
+main() {
+	target_secret="$1"
+
+	clipboard_cmd=$(get_clipboard_cmd)
+	log "Reading from clipboard using: ${clipboard_cmd%% *}"
+
+	if ! qr_data=$(scan_qr "$clipboard_cmd"); then
+		die "No QR code found in clipboard or clipboard is empty."
+	fi
+
+	log "QR Code detected. Length: ${#qr_data} chars."
+
+	if update_gopass "$target_secret" "$qr_data"; then
+		log "Successfully stored secret in: $target_secret"
+	else
+		die "Failed to update gopass secret."
+	fi
+}
+
+main "$@"
