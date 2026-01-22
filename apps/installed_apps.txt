@@ -27,7 +27,6 @@ fastfetch
 fd
 feh
 ffmpegthumbnailer
-firefox
 fish
 fzf
 gammastep

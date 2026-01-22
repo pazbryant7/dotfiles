@@ -1,9 +1,9 @@
-[1m[33m
 anki-bin
-brave-bin
 dragon-drop
 grpcurl-bin
+helium-browser-bin
 numbat-bin
 ttf-dmcasansserif
 ventoy-bin
+waterfox-bin
 yay

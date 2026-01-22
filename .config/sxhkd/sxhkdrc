@@ -60,7 +60,7 @@ super + space
   ~/bin/wm/switch-keyboard
 
 super + Return
-	firefox
+	helium-browser
 
 super + b
   ~/bin/wm/set-brightness
