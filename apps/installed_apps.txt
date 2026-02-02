@@ -9,6 +9,7 @@ base
 base-devel
 bat
 bob
+bottom
 breeze-gtk
 breeze-icons
 bun

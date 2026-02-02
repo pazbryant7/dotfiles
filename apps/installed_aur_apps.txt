@@ -1,3 +1,4 @@
+[1m[33m
 anki-bin
 dragon-drop
 grpcurl-bin
