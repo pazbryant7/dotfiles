@@ -11,7 +11,7 @@ get_session_name() {
 }
 
 get_path() {
-	tmux display-message -p '#{pane_current_path}'
+	echo "$HOME"
 }
 
 create_session() {
@@ -35,8 +35,7 @@ notify() {
 }
 
 main() {
-	name=$(get_session_name)
-	[ -z "$name" ] && exit 1
+	name="$USER"
 
 	path=$(get_path)
 	[ -z "$path" ] && exit 1
