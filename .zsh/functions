@@ -125,7 +125,7 @@ database-chart() {
   echo "Access at: http://localhost:8080"
 }
 
-function ytdlp() {
+function d-audio() {
   local url=$1
   local cookie_file="$HOME/Downloads/cookies.txt"
 

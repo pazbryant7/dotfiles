@@ -1,4 +1,4 @@
-function ytdlp --description "Download music from youtube"
+function d-audio --description "Download music from youtube"
   set -l url $argv[1]
   set -l cookie_file "$HOME/Downloads/cookies.txt"
 

@@ -14,8 +14,8 @@ set -U fish_user_paths \
     ~/Documents/github/boilerplate/
 
 # CUSTOM BINDS
-bind alt-h smart_help
-bind ctrl-l clear_and_redisplay
+bind alt-h smart-help
+bind ctrl-l clear-and-redisplay
 
 # DEFAULT FISH
 set -U fish_greeting

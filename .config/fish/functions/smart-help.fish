@@ -1,4 +1,4 @@
-function smart_help
+function smart-help
     set -l buffer (commandline)
 
     set -l cmd (string split ' ' -- $buffer)[1]
