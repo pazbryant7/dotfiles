@@ -1,0 +1,234 @@
+#!/bin/sh
+# record_audio.sh — Record audio on Arch Linux
+# Backend : ffmpeg via PipeWire-pulse
+# Format  : MP3
+# Naming  : date-DDMMYY_HHMMSS-[_My-Title].mp3
+# Usage   : ./record_audio.sh [optional title]
+# Stop    : Ctrl+C  →  saves final file cleanly
+# POSIX compliant — sh, not bash
+
+# ---------------------------------------------------------------------------
+# Configuration
+# ---------------------------------------------------------------------------
+
+OUTPUT_DIR="/home/bryant/Audio/recordings/english"
+APP_NAME="record_audio"
+AUDIO_BITRATE="192k"
+AUDIO_CHANNELS="1" # 1 = mono  |  2 = stereo
+SAMPLE_RATE="44100"
+
+# ---------------------------------------------------------------------------
+# Internal state
+# ---------------------------------------------------------------------------
+
+FFMPEG_PID=""
+TIMER_PID=""
+OUTPUT_FILE=""
+RECORD_START=""
+MICROPHONE=""
+
+# ---------------------------------------------------------------------------
+# Notifications
+# ---------------------------------------------------------------------------
+
+notify_info() {
+	notify-send --app-name="${APP_NAME}" --urgency=normal "$1" "${2:-}"
+}
+
+notify_error() {
+	notify-send --app-name="${APP_NAME}" --urgency=critical "Error" "$1"
+}
+
+# ---------------------------------------------------------------------------
+# Microphone detection via pactl
+# ---------------------------------------------------------------------------
+
+list_sources() {
+	pactl list short sources 2>/dev/null |
+		awk '{ print $2 }' |
+		grep -v '\.monitor$'
+}
+
+count_sources() {
+	count="$(list_sources | grep -c '.' 2>/dev/null)"
+	echo "${count:-0}"
+}
+
+get_default_source() {
+	pactl info 2>/dev/null |
+		grep 'Default Source' |
+		awk -F': ' '{ print $2 }'
+}
+
+is_real_source() {
+	echo "$1" | grep -qv '\.monitor$'
+}
+
+select_source_interactive() {
+	sources="$(list_sources)"
+	echo "" >&2
+	echo "  Available microphones:" >&2
+	echo "${sources}" | nl -ba >&2
+	printf "  Enter number: " >&2
+	read -r choice
+	echo "${sources}" | sed -n "${choice}p"
+}
+
+resolve_microphone() {
+	source_count="$(count_sources)"
+
+	if [ "${source_count}" -eq 0 ]; then
+		notify_error "No microphone detected. Please connect one and try again."
+		echo "ERROR: no microphone found." >&2
+		exit 1
+	fi
+
+	default_source="$(get_default_source)"
+
+	if [ -n "${default_source}" ] && is_real_source "${default_source}"; then
+		MICROPHONE="${default_source}"
+		return
+	fi
+
+	if [ "${source_count}" -eq 1 ]; then
+		MICROPHONE="$(list_sources)"
+		return
+	fi
+
+	MICROPHONE="$(select_source_interactive)"
+
+	if [ -z "${MICROPHONE}" ]; then
+		notify_error "No microphone selected. Aborting."
+		exit 1
+	fi
+}
+
+# ---------------------------------------------------------------------------
+# Output path
+# ---------------------------------------------------------------------------
+
+ensure_output_dir() {
+	mkdir -p "${OUTPUT_DIR}"
+}
+
+sanitize_title() {
+	echo "$1" |
+		tr ' ' '-' |
+		tr -cd 'A-Za-z0-9-_'
+}
+
+build_output_path() {
+	raw_title="$1"
+	date_tag="$(date +%d%m%y)"
+	time_tag="$(date +%H%M%S)"
+	base="date-${date_tag}_${time_tag}"
+
+	if [ -n "${raw_title}" ]; then
+		clean_title="$(sanitize_title "${raw_title}")"
+		filename="${base}_${clean_title}.mp3"
+	else
+		filename="${base}.mp3"
+	fi
+
+	OUTPUT_FILE="${OUTPUT_DIR}/${filename}"
+}
+
+# ---------------------------------------------------------------------------
+# ffmpeg recording
+# ---------------------------------------------------------------------------
+
+start_ffmpeg() {
+	# stderr is filtered to suppress the known "Immediate exit" trailer
+	# messages that appear on clean Ctrl+C shutdown — the file is always
+	# written correctly regardless of those messages.
+	ffmpeg -hide_banner -loglevel error \
+		-f pulse -i "${MICROPHONE}" \
+		-ar "${SAMPLE_RATE}" \
+		-ac "${AUDIO_CHANNELS}" \
+		-b:a "${AUDIO_BITRATE}" \
+		"${OUTPUT_FILE}" 2>&1 |
+		grep -v 'Immediate exit' >&2 &
+	FFMPEG_PID=$!
+}
+
+stop_ffmpeg() {
+	if [ -n "${FFMPEG_PID}" ]; then
+		kill -TERM "${FFMPEG_PID}" 2>/dev/null
+		wait "${FFMPEG_PID}" 2>/dev/null
+		FFMPEG_PID=""
+	fi
+}
+
+# ---------------------------------------------------------------------------
+# Live timer
+# ---------------------------------------------------------------------------
+
+format_duration() {
+	total="$1"
+	h=$((total / 3600))
+	m=$(((total % 3600) / 60))
+	s=$((total % 60))
+	printf '%02d:%02d:%02d' "${h}" "${m}" "${s}"
+}
+
+run_timer() {
+	while true; do
+		elapsed=$(($(date +%s) - RECORD_START))
+		duration="$(format_duration "${elapsed}")"
+		printf '\r  [● REC]  %s  |  Ctrl+C to stop & save  ' "${duration}"
+		sleep 1
+	done
+}
+
+# ---------------------------------------------------------------------------
+# Graceful shutdown (Ctrl+C trap)
+# ---------------------------------------------------------------------------
+
+on_exit() {
+	trap '' INT TERM EXIT
+
+	kill "${TIMER_PID}" 2>/dev/null
+	wait "${TIMER_PID}" 2>/dev/null
+
+	printf '\n'
+	echo "  Stopping…"
+
+	stop_ffmpeg
+
+	elapsed=$(($(date +%s) - RECORD_START))
+	total="$(format_duration "${elapsed}")"
+
+	echo "  Saved    : ${OUTPUT_FILE}"
+	echo "  Duration : ${total}"
+	notify_info "Recording saved" "${OUTPUT_FILE}  (${total})"
+}
+
+# ---------------------------------------------------------------------------
+# Entry point
+# ---------------------------------------------------------------------------
+
+main() {
+	title="${1:-}"
+
+	resolve_microphone
+	ensure_output_dir
+	build_output_path "${title}"
+
+	trap 'on_exit' INT TERM
+
+	RECORD_START="$(date +%s)"
+	start_ffmpeg
+
+	echo ""
+	echo "  Microphone : ${MICROPHONE}"
+	echo "  File       : $(basename "${OUTPUT_FILE}")"
+	echo "  Format     : MP3 @ ${AUDIO_BITRATE}  |  ${SAMPLE_RATE} Hz  |  ch: ${AUDIO_CHANNELS}"
+	echo ""
+
+	run_timer &
+	TIMER_PID=$!
+
+	wait "${FFMPEG_PID}"
+}
+
+main "$@"
