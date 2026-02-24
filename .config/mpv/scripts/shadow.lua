@@ -4,7 +4,7 @@ local mp = require("mp")
 ---@field kill fun(self: MpvTimer)
 
 local PLAY_TIME = 6
-local PAUSE_TIME = 1
+local PAUSE_TIME = 2
 
 local enabled = false
 ---@type MpvTimer|nil
