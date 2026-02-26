@@ -8,6 +8,7 @@ bandwhich
 base
 base-devel
 bat
+bitwarden-cli
 bob
 bottom
 breeze-gtk
