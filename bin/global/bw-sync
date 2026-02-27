@@ -1,0 +1,62 @@
+#!/bin/sh
+
+GPG_RECIPIENT="pazbryant7@outlook.com"
+ENCRYPTED_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/bw_vault.gpg"
+SESSION_FILE="${XDG_RUNTIME_DIR:-/tmp}/bw_session"
+
+load_session() {
+	[ -f "$SESSION_FILE" ] && cat "$SESSION_FILE"
+}
+
+save_session() {
+	printf "%s" "$1" >"$SESSION_FILE"
+	chmod 600 "$SESSION_FILE"
+}
+
+validate_session() {
+	bw status --session "$1" 2>/dev/null | grep -q '"status":"unlocked"'
+}
+
+unlock_vault() {
+	printf "Bitwarden vault is locked, unlocking...\n" >&2
+	bw unlock --raw
+}
+
+get_session() {
+	saved=$(load_session)
+	if [ -n "$saved" ] && validate_session "$saved"; then
+		printf "%s" "$saved"
+		return 0
+	fi
+	token=$(unlock_vault) || return 1
+	save_session "$token"
+	printf "%s" "$token"
+}
+
+sync_vault() {
+	printf "Syncing vault...\n" >&2
+	bw sync --session "$1" >/dev/null
+}
+
+encrypt_vault() {
+	mkdir -p "${ENCRYPTED_FILE%/*}"
+	printf "Fetching and encrypting vault...\n" >&2
+	bw list items --session "$1" |
+		gpg --encrypt --recipient "$GPG_RECIPIENT" --output "$ENCRYPTED_FILE" --yes
+}
+
+report_success() {
+	printf "Saved to %s\n" "$ENCRYPTED_FILE" >&2
+}
+
+main() {
+	session=$(get_session) || {
+		printf "Failed to unlock vault.\n" >&2
+		exit 1
+	}
+	sync_vault "$session" || exit 1
+	encrypt_vault "$session" || exit 1
+	report_success
+}
+
+main "$@"

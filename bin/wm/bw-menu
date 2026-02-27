@@ -1,0 +1,127 @@
+#!/bin/sh
+
+ENCRYPTED_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/bw_vault.gpg"
+CLIPBOARD_TIMEOUT=30
+
+check_vault_exists() {
+	[ -f "$ENCRYPTED_FILE" ] || {
+		notify-send "Bitwarden Error" "Vault not found. Run the sync script first."
+		exit 1
+	}
+}
+
+decrypt_vault() {
+	gpg --decrypt "$ENCRYPTED_FILE" 2>/dev/null
+}
+
+prompt_user() {
+	printf "%s" "$1" | jq -r '
+        .[] |
+        if   .type == 1 then "\(.name) | \(.login.username // "N/A") | \(.id)"
+        elif .type == 2 then "\(.name) | [Secure Note] | \(.id)"
+        else empty end
+    ' | rofi -dmenu -i -p "Search vault:" \
+		-mesg "<b>Enter</b>: Password | <b>Alt+u</b>: Username | <b>Alt+t</b>: TOTP" \
+		-kb-custom-1 "Alt+u" \
+		-kb-custom-2 "Alt+t"
+}
+
+extract_id() {
+	printf "%s" "$1" | awk '{print $NF}'
+}
+
+get_name() {
+	printf "%s" "$1" | jq -r --arg id "$2" \
+		'.[] | select(.id == $id) | .name'
+}
+
+get_password() {
+	printf "%s" "$1" | jq -r --arg id "$2" '
+        .[] | select(.id == $id) |
+        if .type == 1 then .login.password // empty
+        elif .type == 2 then .notes // empty
+        else empty end
+    '
+}
+
+get_username() {
+	printf "%s" "$1" | jq -r --arg id "$2" \
+		'.[] | select(.id == $id) | .login.username // empty'
+}
+
+get_totp() {
+	raw=$(printf "%s" "$1" | jq -r --arg id "$2" \
+		'.[] | select(.id == $id) | .login.totp // empty')
+	[ -z "$raw" ] && return 1
+	seed=$(printf "%s" "$raw" | sed 's/.*secret=\([^&]*\).*/\1/' | tr -d ' ')
+	oathtool --totp -b "$seed" 2>/dev/null
+}
+
+resolve_secret() {
+	vault="$1" id="$2" exit_code="$3"
+	case "$exit_code" in
+	0) get_password "$vault" "$id" ;;
+	10) get_username "$vault" "$id" ;;
+	11) get_totp "$vault" "$id" ;;
+	*) return 1 ;;
+	esac
+}
+
+resolve_label() {
+	case "$1" in
+	0) printf "Password" ;;
+	10) printf "Username" ;;
+	11) printf "TOTP Code" ;;
+	esac
+}
+
+copy_to_clipboard() {
+	printf "%s" "$1" | xclip -selection clipboard
+}
+
+notify() {
+	notify-send "$1" "$2"
+}
+
+schedule_clipboard_clear() {
+	secret="$1"
+	(
+		sleep "$CLIPBOARD_TIMEOUT"
+		current=$(xclip -selection clipboard -o 2>/dev/null)
+		[ "$current" = "$secret" ] && {
+			printf "" | xclip -selection clipboard
+			notify "Bitwarden" "Clipboard cleared."
+		}
+	) &
+}
+
+handle_secret() {
+	secret="$1" label="$2" name="$3"
+	if [ -n "$secret" ]; then
+		copy_to_clipboard "$secret"
+		notify "Bitwarden" "$label for '$name' copied!"
+		schedule_clipboard_clear "$secret"
+	else
+		notify "Bitwarden Error" "No $label found for '$name'."
+	fi
+}
+
+main() {
+	check_vault_exists
+
+	vault=$(decrypt_vault)
+	[ -z "$vault" ] && exit 1
+
+	selected=$(prompt_user "$vault")
+	exit_code=$?
+	[ "$exit_code" -eq 1 ] || [ -z "$selected" ] && exit 0
+
+	id=$(extract_id "$selected")
+	name=$(get_name "$vault" "$id")
+	label=$(resolve_label "$exit_code")
+	secret=$(resolve_secret "$vault" "$id" "$exit_code")
+
+	handle_secret "$secret" "$label" "$name"
+}
+
+main "$@"
