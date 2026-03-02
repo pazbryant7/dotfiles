@@ -1,0 +1,80 @@
+#!/bin/sh
+
+DEFAULT_QUALITY="24"
+DEFAULT_AUDIO_BITRATE="128k"
+MAX_WIDTH="1280"
+MAX_HEIGHT="720"
+
+print_usage() {
+	printf "Usage: %s <input_file> [output_directory]\n" "$1"
+	printf "Example: %s my_video.mkv ./exports\n" "$1"
+}
+
+validate_input() {
+	input_file="$1"
+	if [ -z "$input_file" ]; then
+		printf "Error: Missing input file.\n" >&2
+		return 1
+	fi
+	if [ ! -f "$input_file" ]; then
+		printf "Error: File '%s' not found.\n" "$input_file" >&2
+		return 1
+	fi
+}
+
+prepare_output_path() {
+	input_path="$1"
+	output_dir="${2%/}"
+	target_dir="${output_dir:-.}"
+	mkdir -p "$target_dir" || {
+		printf "Error: Cannot create directory '%s'.\n" "$target_dir" >&2
+		exit 1
+	}
+	filename=$(basename "$input_path")
+	filename_no_ext="${filename%.*}"
+	printf "%s/%s_whatsapp.mp4" "$target_dir" "$filename_no_ext"
+}
+
+convert_video() {
+	in="$1"
+	out="$2"
+	printf "Converting: %s -> %s\n" "$in" "$out"
+	ffmpeg -v error -stats -i "$in" \
+		-c:v libx264 \
+		-profile:v main \
+		-level:v 4.0 \
+		-pix_fmt yuv420p \
+		-vf "scale='min(${MAX_WIDTH},iw)':'min(${MAX_HEIGHT},ih)':force_original_aspect_ratio=decrease" \
+		-crf "$DEFAULT_QUALITY" \
+		-maxrate 2M \
+		-bufsize 4M \
+		-c:a aac \
+		-b:a "$DEFAULT_AUDIO_BITRATE" \
+		-movflags +faststart \
+		-y "$out"
+}
+
+main() {
+	if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+		print_usage "$0"
+		exit 0
+	fi
+
+	if ! validate_input "$1"; then
+		print_usage "$0"
+		exit 1
+	fi
+
+	input_file="$1"
+	output_file=$(prepare_output_path "$1" "$2")
+
+	if convert_video "$input_file" "$output_file"; then
+		size=$(du -h "$output_file" | cut -f1)
+		printf "Success! Saved to: %s (%s)\n" "$output_file" "$size"
+	else
+		printf "Error: Conversion failed.\n" >&2
+		exit 1
+	fi
+}
+
+main "$@"
