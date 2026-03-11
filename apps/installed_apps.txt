@@ -3,6 +3,7 @@ alacritty
 android-tools
 ansible
 ansible-lint
+aria2
 atuin
 bandwhich
 base
