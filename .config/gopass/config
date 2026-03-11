@@ -3,3 +3,5 @@
 
 [mounts]
 	path = /home/bryant/Documents/github/pass
+[mounts "backup"]
+	path = /home/bryant/Documents/github/pass-backup
