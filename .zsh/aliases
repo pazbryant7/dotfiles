@@ -6,15 +6,12 @@ alias ls='eza'
 alias cdi='zi'
 
 # main
-alias n="nvim"
 alias :q="exit"
-alias cl="clear"
 alias paru="yay"
 alias wg="sudo wg"
 alias sudo="sudo "
 alias pass="gopass"
 alias name="generate_name"
-alias vi="nvim"
 alias zshc="nvim ~/.zshrc"
 alias zshe="nvim ~/.zshenv"
 alias jjh="jj bookmark set main"
@@ -27,7 +24,6 @@ alias zsha="cd ~/.zsh && nvim  aliases"
 alias fishc="cd ~/.config/fish && nvim config.fish"
 alias alac="nvim ~/.config/alacritty/alacritty.toml"
 
-alias ff="fastfetch"
 alias sht="shutdown now"
 alias dh="rm ~/.history.db"
 alias sp="systemctl suspend"
@@ -36,8 +32,6 @@ alias fontcache="sudo fc-cache -f -v"
 alias rex="xrdb -remove && xrdb -merge ~/.Xresources && kill -USR1 \$(pidof st)"
 
 alias lzg="lazygit"
-
-alias g="git"
 
 alias lzd="lazydocker"
 

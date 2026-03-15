@@ -5,10 +5,8 @@ alias cdi='zi'
 
 # main
 
-alias g="git"
 alias :q="exit"
 alias cl="clear"
-alias vi="nvim"
 alias name="generate_name"
 alias zshc="nvim ~/.zshrc"
 alias xr="nvim ~/.Xresources"
