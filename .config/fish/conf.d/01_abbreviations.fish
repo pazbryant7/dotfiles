@@ -1,12 +1,10 @@
 # main
-abbr -a n nvim
 abbr -a paru yay
 abbr -a wg "sudo wg" # for custom vpn
 abbr -a pass gopass
 abbr -a transes "trans en:es"
 abbr -a feh "feh -g 860x600 --scale-down"
 
-abbr -a ff fastfetch
 abbr -a dh "rm ~/.local/share/fish/fish_history"
 
 # git
