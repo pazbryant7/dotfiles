@@ -2,7 +2,6 @@
 
 [Default Applications]
 # text editors
-text/html=helium-browser.desktop
 text/plain=nvim.desktop
 inode/x-empty=nvim.desktop
 application/json=nvim.desktop
@@ -26,7 +25,4 @@ x-scheme-handler/bruno=bruno.desktop
 x-scheme-handler/discord=vesktop.desktop
 x-scheme-handler/postman=Postman.desktop
 audio/x-m4a=ffplay.desktop
-x-scheme-handler/http=helium-browser.desktop
-x-scheme-handler/https=helium-browser.desktop
-application/x-extension-htm=helium-browser.desktop
-application/x-extension-html=helium-browser.desktop
+application/x-pem-file=nvim.desktop
