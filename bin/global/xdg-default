@@ -70,8 +70,6 @@ main() {
 	mime_type=$(get_mime_type "$file") || exit 1
 
 	set_default_application "$desktop" "$mime_type" || exit 1
-
-	update_mimeapps_list || exit 1
 }
 
 main "$@"
