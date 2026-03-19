@@ -19,6 +19,8 @@ alias fishc="cd ~/.config/fish && nvim config.fish"
 alias alac="nvim ~/.config/alacritty/alacritty.toml"
 alias rex="xrdb -remove && xrdb -merge ~/.Xresources && kill -USR1 \$(pidof st)"
 
+alias opencode="bunx --bun opencode-ai"
+
 # system
 alias sht="shutdown now"
 alias sp="systemctl suspend"
