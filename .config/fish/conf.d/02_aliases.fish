@@ -21,6 +21,8 @@ alias rex="xrdb -remove && xrdb -merge ~/.Xresources && kill -USR1 \$(pidof st)"
 
 alias opencode="bunx --bun opencode-ai"
 
+alias btm="btm --basic"
+
 # system
 alias sht="shutdown now"
 alias sp="systemctl suspend"

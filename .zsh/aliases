@@ -37,6 +37,8 @@ alias opencode="bunx --bun opencode-ai"
 
 alias lzd="lazydocker"
 
+alias btm="btm --basic"
+
 alias ta="tmux attach"
 alias tk="tmux kill-server"
 alias tn="tmux new -s \$USER"
