@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
-GPG_RECIPIENT="pazbryant7@outlook.com"
 ENCRYPTED_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/bw_vault.gpg"
+TEMPLATE_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/bw_template.json"
 SESSION_FILE="${XDG_RUNTIME_DIR:-/tmp}/bw_session"
 
 load_session() {
@@ -18,18 +18,31 @@ validate_session() {
 }
 
 unlock_vault() {
-	printf "Bitwarden vault is locked, unlocking...\n" >&2
-	bw unlock --raw
+	printf "Bitwarden vault locked. Authenticating via gopass...\n" >&2
+
+	BW_PASSWORD="$(gopass show bitwarden/personal/master | head -n 1)"
+
+	if [ -z "$BW_PASSWORD" ]; then
+		printf "Failed to retrieve password from gopass.\n" >&2
+		return 1
+	fi
+
+	export BW_PASSWORD
+	bw unlock --passwordenv BW_PASSWORD --raw 2>/dev/null
+	unset BW_PASSWORD
 }
 
 get_session() {
 	saved=$(load_session)
+
 	if [ -n "$saved" ] && validate_session "$saved"; then
 		printf "%s" "$saved"
 		return 0
 	fi
+
 	token=$(unlock_vault) || return 1
 	save_session "$token"
+
 	printf "%s" "$token"
 }
 
@@ -39,14 +52,36 @@ sync_vault() {
 }
 
 encrypt_vault() {
+	GPG_RECIPIENT="$(gopass show bitwarden/personal/master | awk '/username/ {print $2}')"
+
 	mkdir -p "${ENCRYPTED_FILE%/*}"
 	printf "Fetching and encrypting vault...\n" >&2
+
 	bw list items --session "$1" |
 		gpg --encrypt --recipient "$GPG_RECIPIENT" --output "$ENCRYPTED_FILE" --yes
 }
 
+cache_template() {
+	printf "Caching item template...\n" >&2
+
+	item_tmpl=$(bw get template item --session "$1" 2>/dev/null)
+	login_tmpl=$(bw get template item.login --session "$1" 2>/dev/null)
+
+	if [ -z "$item_tmpl" ] || [ -z "$login_tmpl" ]; then
+		printf "Warning: could not fetch templates, skipping cache.\n" >&2
+		return 1
+	fi
+
+	printf "%s" "$item_tmpl" | jq \
+		--argjson login "$login_tmpl" \
+		'.login = $login | .secureNote = null | .card = null | .identity = null | .name = null | .notes = null | .login.totp = null' \
+		>"$TEMPLATE_FILE"
+
+	printf "Template cached to %s\n" "$TEMPLATE_FILE" >&2
+}
+
 report_success() {
-	printf "Saved to %s\n" "$ENCRYPTED_FILE" >&2
+	printf "Vault saved to %s\n" "$ENCRYPTED_FILE" >&2
 }
 
 main() {
@@ -54,8 +89,11 @@ main() {
 		printf "Failed to unlock vault.\n" >&2
 		exit 1
 	}
+
 	sync_vault "$session" || exit 1
 	encrypt_vault "$session" || exit 1
+	cache_template "$session"
+
 	report_success
 }
 

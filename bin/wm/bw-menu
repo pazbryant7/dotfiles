@@ -1,11 +1,28 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
+# --- Configuration ---
+
+GPG_RECIPIENT="pazbryant7@outlook.com"
 ENCRYPTED_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/bw_vault.gpg"
+TEMPLATE_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/bw_template.json"
+SYNC_SCRIPT="${HOME}/.local/bin/bw-sync"
+MASTER_PATH="bitwarden/personal/master"
+SESSION_PATH="bitwarden/personal/session"
+TERM_CMD="st -t bitwarden -e"
+EDITOR="${EDITOR:-nvim}"
 CLIPBOARD_TIMEOUT=30
+
+# --- Utilities & UI ---
+
+notify() { notify-send "Bitwarden" "$1"; }
+
+notify_err() { notify-send "Bitwarden Error" "$1"; }
+
+extract_id() { printf "%s" "$1" | awk '{print $NF}'; }
 
 check_vault_exists() {
 	[ -f "$ENCRYPTED_FILE" ] || {
-		notify-send "Bitwarden Error" "Vault not found. Run the sync script first."
+		notify_err "Vault not found. Run a sync first."
 		exit 1
 	}
 }
@@ -14,114 +31,274 @@ decrypt_vault() {
 	gpg --decrypt "$ENCRYPTED_FILE" 2>/dev/null
 }
 
-prompt_user() {
+prompt_rofi() {
 	printf "%s" "$1" | jq -r '
         .[] |
         if   .type == 1 then "\(.name) | \(.login.username // "N/A") | \(.id)"
         elif .type == 2 then "\(.name) | [Secure Note] | \(.id)"
         else empty end
     ' | rofi -dmenu -i -p "Search vault:" \
-		-mesg "<b>Enter</b>: Password | <b>Alt+u</b>: Username | <b>Alt+t</b>: TOTP" \
+		-mesg "<b>Enter</b>: Pass | <b>Alt+u</b>: User | <b>Alt+t</b>: TOTP | <b>Alt+e</b>: Edit | <b>Alt+n</b>: New" \
 		-kb-custom-1 "Alt+u" \
-		-kb-custom-2 "Alt+t"
+		-kb-custom-2 "Alt+t" \
+		-kb-custom-3 "Alt+e" \
+		-kb-custom-4 "Alt+n"
 }
 
-extract_id() {
-	printf "%s" "$1" | awk '{print $NF}'
+files_changed() { ! cmp -s "$1" "$2"; }
+
+# --- Background Auth & Sync ---
+
+ensure_bw_session() {
+	BW_SESSION="$(gopass show "$SESSION_PATH" 2>/dev/null | head -n 1)"
+	export BW_SESSION
+
+	bw status | jq -e '.status == "unlocked"' >/dev/null && return 0
+
+	notify "Vault locked. Authenticating via gopass..."
+	BW_PASSWORD="$(gopass show "$MASTER_PATH" 2>/dev/null | head -n 1)"
+
+	[ -z "$BW_PASSWORD" ] && {
+		notify_err "Master Password not found in gopass."
+		exit 1
+	}
+
+	export BW_PASSWORD
+	NEW_SESSION="$(bw unlock --passwordenv BW_PASSWORD --raw 2>/dev/null)"
+	unset BW_PASSWORD
+
+	[ -z "$NEW_SESSION" ] && {
+		notify_err "Failed to unlock vault. Bad password?"
+		exit 1
+	}
+
+	printf "%s\n" "$NEW_SESSION" | gopass insert -f "$SESSION_PATH" >/dev/null 2>&1
+	BW_SESSION="$NEW_SESSION"
+	export BW_SESSION
 }
 
-get_name() {
-	printf "%s" "$1" | jq -r --arg id "$2" \
-		'.[] | select(.id == $id) | .name'
+bg_sync_and_encrypt() {
+	notify "Syncing with Bitwarden server..."
+	bw sync >/dev/null
+
+	mkdir -p "${ENCRYPTED_FILE%/*}"
+	bw list items | gpg --encrypt --recipient "$GPG_RECIPIENT" --output "$ENCRYPTED_FILE" --yes
+
+	notify "Local vault successfully updated!"
 }
 
-get_password() {
-	printf "%s" "$1" | jq -r --arg id "$2" '
-        .[] | select(.id == $id) |
-        if .type == 1 then .login.password // empty
-        elif .type == 2 then .notes // empty
-        else empty end
-    '
-}
+bg_push() {
+	mode="$1"
+	id="$2"
+	tmp_file="$3"
 
-get_username() {
-	printf "%s" "$1" | jq -r --arg id "$2" \
-		'.[] | select(.id == $id) | .login.username // empty'
-}
-
-get_totp() {
-	raw=$(printf "%s" "$1" | jq -r --arg id "$2" \
-		'.[] | select(.id == $id) | .login.totp // empty')
-	[ -z "$raw" ] && return 1
-	seed=$(printf "%s" "$raw" | sed 's/.*secret=\([^&]*\).*/\1/' | tr -d ' ')
-	oathtool --totp -b "$seed" 2>/dev/null
-}
-
-resolve_secret() {
-	vault="$1" id="$2" exit_code="$3"
-	case "$exit_code" in
-	0) get_password "$vault" "$id" ;;
-	10) get_username "$vault" "$id" ;;
-	11) get_totp "$vault" "$id" ;;
-	*) return 1 ;;
-	esac
-}
-
-resolve_label() {
-	case "$1" in
-	0) printf "Password" ;;
-	10) printf "Username" ;;
-	11) printf "TOTP Code" ;;
-	esac
-}
-
-copy_to_clipboard() {
-	printf "%s" "$1" | xclip -selection clipboard
-}
-
-notify() {
-	notify-send "$1" "$2"
-}
-
-schedule_clipboard_clear() {
-	secret="$1"
 	(
-		sleep "$CLIPBOARD_TIMEOUT"
-		current=$(xclip -selection clipboard -o 2>/dev/null)
-		[ "$current" = "$secret" ] && {
-			printf "" | xclip -selection clipboard
-			notify "Bitwarden" "Clipboard cleared."
-		}
+		ensure_bw_session
+
+		case "$mode" in
+		edit)
+			notify "Uploading changes in background..."
+			if bw encode <"$tmp_file" | bw edit item "$id" >/dev/null 2>&1; then
+				bg_sync_and_encrypt
+			else
+				notify_err "Failed to push edit to server."
+			fi
+			;;
+		create)
+			notify "Creating new entry in background..."
+			if bw encode <"$tmp_file" | bw create item >/dev/null 2>&1; then
+				bg_sync_and_encrypt
+			else
+				notify_err "Failed to create entry."
+			fi
+			;;
+		esac
+
+		rm -f "$tmp_file"
 	) &
 }
 
-handle_secret() {
-	secret="$1" label="$2" name="$3"
-	if [ -n "$secret" ]; then
-		copy_to_clipboard "$secret"
-		notify "Bitwarden" "$label for '$name' copied!"
-		schedule_clipboard_clear "$secret"
+# --- Clipboard Helper ---
+
+copy_password_from_file() {
+	tmp_file="$1"
+	label="$2"
+
+	secret=$(jq -r '.login.password // empty' "$tmp_file" 2>/dev/null)
+	name=$(jq -r '.name // "entry"' "$tmp_file" 2>/dev/null)
+
+	[ -z "$secret" ] && return
+
+	printf "%s" "$secret" | xclip -selection clipboard
+	notify "Password for '$name' $label — copied! Clears in ${CLIPBOARD_TIMEOUT}s."
+
+	(
+		sleep "$CLIPBOARD_TIMEOUT"
+		[ "$(xclip -selection clipboard -o 2>/dev/null)" = "$secret" ] &&
+			printf "" | xclip -selection clipboard
+	) &
+}
+
+# --- Foreground Actions ---
+
+ensure_template() {
+	[ -f "$TEMPLATE_FILE" ] && return 0
+
+	notify "Template missing — running sync to fetch it..."
+	"$SYNC_SCRIPT" >&2
+
+	[ -f "$TEMPLATE_FILE" ] || {
+		notify_err "Sync failed, template still missing. Aborting."
+		return 1
+	}
+}
+
+create_entry() {
+	ensure_template || return
+
+	TMP_FILE=$(mktemp -p /dev/shm bw_new_XXXXXX.json)
+	generated=$(gopass pwgen -y -1 18 1 2>/dev/null | tr -d '[:space:]')
+
+	if [ -n "$generated" ]; then
+		jq --arg pw "$generated" '.login.password = $pw' "$TEMPLATE_FILE" >"$TMP_FILE"
 	else
-		notify "Bitwarden Error" "No $label found for '$name'."
+		notify "Could not generate password, field left blank."
+		cp "$TEMPLATE_FILE" "$TMP_FILE"
+	fi
+
+	cp "$TMP_FILE" "${TMP_FILE}.orig"
+
+	$TERM_CMD "$EDITOR" "$TMP_FILE" 2>/dev/null
+
+	if ! files_changed "$TMP_FILE" "${TMP_FILE}.orig"; then
+		notify "No changes detected. Creation cancelled."
+		rm -f "$TMP_FILE" "${TMP_FILE}.orig"
+		return
+	fi
+
+	rm -f "${TMP_FILE}.orig"
+
+	copy_password_from_file "$TMP_FILE" "created"
+	bg_push create "" "$TMP_FILE"
+}
+
+edit_entry() {
+	id="$1"
+	vault="$2"
+	TMP_FILE=$(mktemp -p /dev/shm bw_edit_XXXXXX.json)
+
+	printf "%s" "$vault" | jq --arg id "$id" '.[] | select(.id == $id)' >"$TMP_FILE"
+	cp "$TMP_FILE" "${TMP_FILE}.orig"
+
+	$TERM_CMD "$EDITOR" "$TMP_FILE" 2>/dev/null
+
+	if ! files_changed "$TMP_FILE" "${TMP_FILE}.orig"; then
+		notify "No changes detected. Edit cancelled."
+		rm -f "$TMP_FILE" "${TMP_FILE}.orig"
+		return
+	fi
+
+	rm -f "${TMP_FILE}.orig"
+
+	copy_password_from_file "$TMP_FILE" "edited"
+	bg_push edit "$id" "$TMP_FILE"
+}
+
+read_and_copy() {
+	exit_code="$1"
+	id="$2"
+	vault="$3"
+
+	item=$(printf "%s" "$vault" | jq --arg id "$id" '.[] | select(.id == $id)')
+	name=$(printf "%s" "$item" | jq -r '.name // "Unknown"')
+
+	case "$exit_code" in
+	0)
+		label="Password"
+		secret=$(printf "%s" "$item" | jq -r 'if .type == 1 then .login.password // empty elif .type == 2 then .notes // empty else empty end')
+		;;
+	10)
+		label="Username"
+		secret=$(printf "%s" "$item" | jq -r '.login.username // empty')
+		;;
+	11)
+		label="TOTP Code"
+		totp_uri=$(printf "%s" "$item" | jq -r '.login.totp // empty')
+
+		if [ -z "$totp_uri" ]; then
+			notify_err "No TOTP secret found for '$name'."
+			return
+		fi
+
+		case "$totp_uri" in
+		otpauth://*) seed=$(printf "%s" "$totp_uri" | sed 's/.*[?&]secret=\([^&]*\).*/\1/') ;;
+		*) seed="$totp_uri" ;;
+		esac
+
+		secret=$(oathtool --totp -b "$seed" 2>/dev/null)
+
+		[ -z "$secret" ] && {
+			notify_err "Failed to generate TOTP for '$name'."
+			return
+		}
+		;;
+	esac
+
+	if [ -n "$secret" ]; then
+		printf "%s" "$secret" | xclip -selection clipboard
+		notify "$label for '$name' copied! Clears in ${CLIPBOARD_TIMEOUT}s."
+
+		(
+			sleep "$CLIPBOARD_TIMEOUT"
+			[ "$(xclip -selection clipboard -o 2>/dev/null)" = "$secret" ] &&
+				printf "" | xclip -selection clipboard
+		) &
+	else
+		notify_err "No $label found for '$name'."
 	fi
 }
+
+route_action() {
+	exit_code="$1"
+	selected="$2"
+	vault="$3"
+
+	case "$exit_code" in
+	1) exit 0 ;;
+	13)
+		create_entry
+		exit 0
+		;;
+	esac
+
+	[ -z "$selected" ] && exit 0
+
+	id=$(extract_id "$selected")
+
+	case "$exit_code" in
+	12) edit_entry "$id" "$vault" ;;
+	0 | 10 | 11) read_and_copy "$exit_code" "$id" "$vault" ;;
+	*) exit 1 ;;
+	esac
+}
+
+# --- Orchestrator ---
 
 main() {
 	check_vault_exists
 
+	if [ "$1" = "new" ]; then
+		create_entry
+		exit 0
+	fi
+
 	vault=$(decrypt_vault)
 	[ -z "$vault" ] && exit 1
 
-	selected=$(prompt_user "$vault")
+	selected=$(prompt_rofi "$vault")
 	exit_code=$?
-	[ "$exit_code" -eq 1 ] || [ -z "$selected" ] && exit 0
 
-	id=$(extract_id "$selected")
-	name=$(get_name "$vault" "$id")
-	label=$(resolve_label "$exit_code")
-	secret=$(resolve_secret "$vault" "$id" "$exit_code")
-
-	handle_secret "$secret" "$label" "$name"
+	route_action "$exit_code" "$selected" "$vault"
 }
 
 main "$@"
