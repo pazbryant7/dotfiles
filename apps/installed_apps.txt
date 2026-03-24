@@ -17,6 +17,7 @@ breeze-icons
 bun
 calibre
 capitaine-cursors
+cargo-cache
 ccache
 cronie
 docker
@@ -43,6 +44,7 @@ hurl
 hyperfine
 imagemagick
 img2pdf
+intel-ucode
 jq
 jre-openjdk
 jujutsu
@@ -89,6 +91,7 @@ python-pip
 qbittorrent
 qt6ct
 rclone
+reflector
 ripgrep
 rofi
 rsync
