@@ -9,17 +9,17 @@ autoload -Uz \
 # ./functions should be
 # sourced before
 zle -N edit-command-line
-zle -N smart_help
-zle -N clear_and_redisplay
-zle -N copy_terminal_buffer
+zle -N smart-help
+zle -N clear-and-redisplay
+zle -N copy-terminal-buffer
 
 # custom binds
 bindkey -e # use emacs preset
 
-bindkey '\eh' smart_help
+bindkey '\eh' smart-help
 bindkey '^[e' edit-command-line
-bindkey '^L' clear_and_redisplay
-bindkey '^X' copy_terminal_buffer
+bindkey '^L' clear-and-redisplay
+bindkey '^X' copy-terminal-buffer
 bindkey '^[[Z' reverse-menu-complete
 
 # zsh options
