@@ -1,0 +1,150 @@
+#!/bin/sh
+# Usage: ./websearch.sh -u "https://site.com/page-{N}" -w "word" [-w "other"] [-c 3]
+# Note: curl only — JS-rendered content is not visible.
+
+UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/120.0 Safari/537.36"
+CONTEXT_LINES=3
+WORDS=""
+
+usage() {
+	grep '^# Usage:' "$0" | sed 's/^# //'
+	exit 1
+}
+
+parse_args() {
+	while getopts "u:w:c:h" opt; do
+		case "$opt" in
+		u) URL_PATTERN="$OPTARG" ;;
+		w) WORDS="$WORDS${WORDS:+||}$OPTARG" ;;
+		c) CONTEXT_LINES="$OPTARG" ;;
+		*) usage ;;
+		esac
+	done
+	if [ -z "$URL_PATTERN" ] || [ -z "$WORDS" ]; then
+		printf 'Error: -u and -w are required.\n' >&2
+		usage
+	fi
+	case "$URL_PATTERN" in
+	*'{N}'*) : ;;
+	*)
+		printf 'Error: URL pattern must contain {N}.\n' >&2
+		exit 1
+		;;
+	esac
+}
+
+build_url() {
+	printf '%s' "$URL_PATTERN" | sed "s/{N}/$1/g"
+}
+
+fetch_page() {
+	curl -sL -A "$UA" --max-time 15 "$1"
+}
+
+strip_html() {
+	sed 's/<[^>]*>//g' |
+		sed 's/&amp;/\&/g; s/&lt;/</g; s/&gt;/>/g; s/&nbsp;/ /g; s/&#[0-9]*;//g' |
+		grep -v '^\s*$'
+}
+
+detect_last_page() {
+	last=$(printf '%s' "$1" |
+		rg -oi 'page[=-](\d+)|page/(\d+)|[?&]page=(\d+)' -r '$1$2$3' |
+		sort -n | tail -1)
+	[ -z "$last" ] || [ "$last" -le 1 ] 2>/dev/null && last=1
+	printf '%d' "$last"
+}
+
+search_in_text() {
+	page="$1"
+	tmpfile=$(mktemp)
+	printf '%s' "$2" >"$tmpfile"
+
+	page_header_printed=0
+
+	# iterate over each keyword (separated by ||)
+	printf '%s' "$WORDS" | tr '|' '\n' | grep -v '^$' | while IFS= read -r word; do
+		matches=$(rg -i -w -C "$CONTEXT_LINES" "$word" "$tmpfile" 2>/dev/null)
+		if [ -n "$matches" ]; then
+			if [ "$page_header_printed" -eq 0 ]; then
+				printf '\n>>> FOUND on page %d <<<\n' "$page"
+				page_header_printed=1
+			fi
+			printf '  [keyword: %s]\n' "$word"
+			printf '%s\n' "$matches" | while IFS= read -r line; do
+				printf '    [p%d] %s\n' "$page" "$line"
+			done
+			printf '  ---\n'
+		fi
+	done
+
+	rm -f "$tmpfile"
+
+	# re-check to return correct exit code (subshell above can't set outer var)
+	rg -i -w -l "$(printf '%s' "$WORDS" | sed 's/||/|/g')" "$tmpfile" 2>/dev/null
+}
+
+process_page() {
+	page="$1"
+	url=$(build_url "$page")
+	printf 'Checking page %d: %s\n' "$page" "$url" >&2
+	html=$(fetch_page "$url")
+	if [ -z "$html" ]; then
+		printf '  [!] No response on page %d\n' "$page" >&2
+		return 2
+	fi
+	text=$(printf '%s' "$html" | strip_html)
+
+	tmpfile=$(mktemp)
+	printf '%s' "$text" >"$tmpfile"
+
+	# print grouped-by-page results
+	page_hit=0
+	printf '%s' "$WORDS" | tr '|' '\n' | grep -v '^$' | while IFS= read -r word; do
+		matches=$(rg -i -w -C "$CONTEXT_LINES" "$word" "$tmpfile" 2>/dev/null)
+		if [ -n "$matches" ]; then
+			if [ "$page_hit" -eq 0 ]; then
+				printf '\n>>> FOUND on page %d <<<\n' "$page"
+				page_hit=1
+			fi
+			printf '  [keyword: %s]\n' "$word"
+			printf '%s\n' "$matches" | while IFS= read -r line; do
+				printf '    [p%d] %s\n' "$page" "$line"
+			done
+			printf '  ---\n'
+		fi
+	done
+
+	# exit code: did any keyword match?
+	pattern=$(printf '%s' "$WORDS" | sed 's/||/|/g')
+	rg -q -i -w "$pattern" "$tmpfile" 2>/dev/null
+	result=$?
+	rm -f "$tmpfile"
+	return $result
+}
+
+main() {
+	parse_args "$@"
+
+	printf 'Fetching page 1 to detect pagination...\n' >&2
+	first_html=$(fetch_page "$(build_url 1)")
+	if [ -z "$first_html" ]; then
+		printf 'Error: Could not fetch page 1.\n' >&2
+		exit 1
+	fi
+
+	last_page=$(detect_last_page "$first_html")
+	keywords=$(printf '%s' "$WORDS" | sed 's/||/, /g')
+	printf 'Scanning %d page(s) for: %s\n\n' "$last_page" "$keywords" >&2
+
+	total_found=0
+	page=1
+	while [ "$page" -le "$last_page" ]; do
+		process_page "$page" && total_found=$((total_found + 1))
+		page=$((page + 1))
+	done
+
+	printf '\nDone. Matched on %d/%d page(s).\n' "$total_found" "$last_page" >&2
+}
+
+main "$@"
