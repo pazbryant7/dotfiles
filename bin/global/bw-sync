@@ -1,8 +1,22 @@
 #!/usr/bin/env sh
 
-ENCRYPTED_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/bw_vault.gpg"
-TEMPLATE_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/bw_template.json"
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}"
+ENCRYPTED_FILE="$CACHE_DIR/bw_vault.gpg"
 SESSION_FILE="${XDG_RUNTIME_DIR:-/tmp}/bw_session"
+TEMPLATE_LOGIN="$CACHE_DIR/bw_login_template.json"
+TEMPLATE_CARD="$CACHE_DIR/bw_card_template.json"
+TEMPLATE_NOTE="$CACHE_DIR/bw_note_template.json"
+
+die() {
+	printf "Error: %s\n" "$1" >&2
+	exit 1
+}
+
+info() { printf "  %-12s %s\n" "$1" "$2" >&2; }
+
+gopass_field() {
+	gopass show bitwarden/personal/master | grep "$1" | awk '{print $2}'
+}
 
 load_session() {
 	[ -f "$SESSION_FILE" ] && cat "$SESSION_FILE"
@@ -18,83 +32,132 @@ validate_session() {
 }
 
 unlock_vault() {
-	printf "Bitwarden vault locked. Authenticating via gopass...\n" >&2
-
 	BW_PASSWORD="$(gopass show bitwarden/personal/master | head -n 1)"
-
-	if [ -z "$BW_PASSWORD" ]; then
-		printf "Failed to retrieve password from gopass.\n" >&2
-		return 1
-	fi
-
+	[ -n "$BW_PASSWORD" ] || die "could not retrieve password from gopass"
 	export BW_PASSWORD
 	bw unlock --passwordenv BW_PASSWORD --raw 2>/dev/null
 	unset BW_PASSWORD
 }
 
 get_session() {
-	saved=$(load_session)
-
-	if [ -n "$saved" ] && validate_session "$saved"; then
-		printf "%s" "$saved"
+	_gs_saved=$(load_session)
+	if [ -n "$_gs_saved" ] && validate_session "$_gs_saved"; then
+		printf "%s" "$_gs_saved"
 		return 0
 	fi
-
-	token=$(unlock_vault) || return 1
-	save_session "$token"
-
-	printf "%s" "$token"
+	info "session" "locked, authenticating..."
+	_gs_token=$(unlock_vault) || return 1
+	save_session "$_gs_token"
+	printf "%s" "$_gs_token"
 }
 
 sync_vault() {
-	printf "Syncing vault...\n" >&2
+	info "sync" "fetching latest vault..."
 	bw sync --session "$1" >/dev/null
 }
 
 encrypt_vault() {
-	GPG_RECIPIENT="$(gopass show bitwarden/personal/master | awk '/username/ {print $2}')"
-
+	_ev_recipient="$(gopass_field username)"
 	mkdir -p "${ENCRYPTED_FILE%/*}"
-	printf "Fetching and encrypting vault...\n" >&2
-
+	info "encrypt" "$ENCRYPTED_FILE"
 	bw list items --session "$1" |
-		gpg --encrypt --recipient "$GPG_RECIPIENT" --output "$ENCRYPTED_FILE" --yes
+		gpg --encrypt --recipient "$_ev_recipient" --output "$ENCRYPTED_FILE" --yes
 }
 
-cache_template() {
-	printf "Caching item template...\n" >&2
-
-	item_tmpl=$(bw get template item --session "$1" 2>/dev/null)
-	login_tmpl=$(bw get template item.login --session "$1" 2>/dev/null)
-
-	if [ -z "$item_tmpl" ] || [ -z "$login_tmpl" ]; then
-		printf "Warning: could not fetch templates, skipping cache.\n" >&2
+fetch_template() {
+	_ft_out="$(bw get template "$1" --session "$2" 2>/dev/null)"
+	[ -n "$_ft_out" ] || {
+		printf "Error: could not fetch template '%s'\n" "$1" >&2
 		return 1
-	fi
-
-	printf "%s" "$item_tmpl" | jq \
-		--argjson login "$login_tmpl" \
-		'.login = $login | .secureNote = null | .card = null | .identity = null | .name = null | .notes = null | .login.totp = null' \
-		>"$TEMPLATE_FILE"
-
-	printf "Template cached to %s\n" "$TEMPLATE_FILE" >&2
+	}
+	printf "%s" "$_ft_out"
 }
 
-report_success() {
-	printf "Vault saved to %s\n" "$ENCRYPTED_FILE" >&2
+write_template() {
+	printf "%s" "$2" | jq . >"$1"
+	info "template" "$1"
+}
+
+template_login() {
+	_tl_item="$(fetch_template item "$1")" || return 1
+	_tl_login="$(fetch_template item.login "$1")" || return 1
+	write_template "$TEMPLATE_LOGIN" "$(
+		printf "%s" "$_tl_item" | jq --argjson login "$_tl_login" '
+			. + {
+				type:  1,
+				name:  "Website or service name (e.g. GitHub)",
+				notes: "Optional notes (e.g. recovery instructions)",
+				login: ($login + {
+					username: "Username or email address",
+					password: "Account password",
+					totp:     "TOTP secret key (leave null if unused)",
+					uris: [{ match: null, uri: "https://example.com" }]
+				}),
+        fields: [
+					{
+						name:  "Custom Field Label",
+						value: "Custom Value",
+						type:  0
+					}
+				],
+        card: null, identity: null, secureNote: null
+			}
+		'
+	)"
+}
+
+template_card() {
+	_tc_item="$(fetch_template item "$1")" || return 1
+	_tc_card="$(fetch_template item.card "$1")" || return 1
+	write_template "$TEMPLATE_CARD" "$(
+		printf "%s" "$_tc_item" | jq --argjson card "$_tc_card" '
+			. + {
+				type:  3,
+				name:  "Card nickname (e.g. Visa Personal)",
+				notes: "Optional notes (e.g. bank contact number)",
+				card: ($card + {
+					cardholderName: "Full name as printed on the card",
+					brand:          "Card brand (e.g. Visa, Mastercard, Amex)",
+					number:         "Card number (16 digits, no spaces)",
+					expMonth:       "Expiry month (1-12)",
+					expYear:        "Expiry year (e.g. 2028)",
+					code:           "Security code / CVV"
+				}),
+				fields: [], login: null, identity: null, secureNote: null
+			}
+		'
+	)"
+}
+
+template_note() {
+	_tn_item="$(fetch_template item "$1")" || return 1
+	_tn_note="$(fetch_template item.secureNote "$1")" || return 1
+	write_template "$TEMPLATE_NOTE" "$(
+		printf "%s" "$_tn_item" | jq --argjson sn "$_tn_note" '
+			. + {
+				type:  2,
+				name:  "Note title (e.g. SSH key passphrase)",
+				notes: "Full content of the secure note goes here",
+				secureNote: ($sn + { type: 0 }),
+				fields: [], login: null, card: null, identity: null
+			}
+		'
+	)"
+}
+
+cache_templates() {
+	info "templates" "caching..."
+	template_login "$1" || return 1
+	template_card "$1" || return 1
+	template_note "$1" || return 1
 }
 
 main() {
-	session=$(get_session) || {
-		printf "Failed to unlock vault.\n" >&2
-		exit 1
-	}
-
-	sync_vault "$session" || exit 1
-	encrypt_vault "$session" || exit 1
-	cache_template "$session"
-
-	report_success
+	_session=$(get_session) || die "failed to unlock vault"
+	sync_vault "$_session" || die "vault sync failed"
+	encrypt_vault "$_session" || die "vault encryption failed"
+	cache_templates "$_session" || die "template caching failed"
+	info "done" "vault ready"
 }
 
 main "$@"
