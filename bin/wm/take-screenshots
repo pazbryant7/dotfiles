@@ -1,92 +1,172 @@
 #!/usr/bin/env sh
 
-DIR="${HOME}/Pictures/screenshots"
-TIME=$(date +%Y-%m-%d-%H-%M-%S)
-FILE="${DIR}/screenshot_${TIME}.png"
+SHOT_DIR="${HOME}/Pictures/screenshots"
+APP_NAME="sshot"
 
-notify_send() {
-	notify-send -a "sshot" --replace=699 "$@"
+MENU_DATA="\
+Select Area (Clipboard)|select|clip|0
+Select Area (Save)|select|save|0
+Select Area (Clip & Save)|select|clip&save|0
+Full Screen (Clipboard)|full|clip|0
+Full Screen (Save)|full|save|0
+Full Screen (Clip & Save)|full|clip&save|0
+Active Window (Clipboard)|win|clip|0
+Active Window (Save)|win|save|0
+Active Window (Clip & Save)|win|clip&save|0
+Full Screen Delay 5s (Save)|full|save|5"
+
+notify() {
+	urgency="$1"
+	timeout="$2"
+	body="$3"
+
+	notify-send \
+		-a "$APP_NAME" \
+		-u "$urgency" \
+		-t "$timeout" \
+		"$body"
 }
 
-countdown() {
-	sec="$1"
-	while [ "$sec" -gt 0 ]; do
-		notify_send -t 1000 "taking shot in: $sec"
-		sec=$((sec - 1))
+notify_info() { notify "normal" 3000 "$1"; }
+notify_countdown() { notify "low" 1100 "Shot in ${1}s..."; }
+notify_success() { notify "normal" 3000 "$1"; }
+notify_error() { notify "critical" 5000 "$1"; }
+
+show_menu() {
+	printf '%s\n' "$MENU_DATA" | cut -d'|' -f1 |
+		rofi -dmenu -i -p "Screenshot:" -l 10
+}
+
+parse_menu_selection() {
+	printf '%s\n' "$MENU_DATA" | grep -F "${1}|" | cut -d'|' -f2-4
+}
+
+handle_menu() {
+	selection=$(show_menu) || exit 0
+	[ -z "$selection" ] && exit 0
+
+	parsed=$(parse_menu_selection "$selection")
+	[ -z "$parsed" ] && {
+		notify_error "Unknown selection"
+		exit 1
+	}
+
+	MODE=$(printf '%s' "$parsed" | cut -d'|' -f1)
+	STORE=$(printf '%s' "$parsed" | cut -d'|' -f2)
+	WAIT=$(printf '%s' "$parsed" | cut -d'|' -f3)
+}
+
+run_countdown() {
+	t="$1"
+	while [ "$t" -gt 0 ]; do
+		notify_countdown "$t"
+		t=$((t - 1))
 		sleep 1
 	done
 }
 
-build_command() {
-	cmd="maim -u -f png"
+capture_select() {
+	maim -u -f png -s -b 2 -c 0.35,0.55,0.85,0.25 -l "$FILE"
+}
 
-	case "$mode" in
-	select)
-		cmd="$cmd -s -b 2 -c 0.35,0.55,0.85,0.25 -l"
-		;;
-	win)
-		cmd="$cmd -i $(xdotool getactivewindow)"
-		;;
-	full) ;;
+capture_window() {
+	sleep 0.3
+	win_id=$(xdotool getactivewindow) || return 1
+	maim -u -f png -i "$win_id" "$FILE"
+}
+
+capture_full() {
+	maim -u -f png "$FILE"
+}
+
+take_screenshot() {
+	mkdir -p "$SHOT_DIR" || {
+		notify_error "Cannot create $SHOT_DIR"
+		return 1
+	}
+
+	case "$MODE" in
+	select) capture_select ;;
+	win) capture_window ;;
+	full) capture_full ;;
 	*)
-		echo "Invalid mode: $mode" >&2
+		notify_error "Unknown mode: $MODE"
 		return 1
 		;;
 	esac
-
-	printf '%s' "$cmd"
-	return 0
 }
 
-execute_screenshot() {
-	cmd=$(build_command) || return 1
-	cmd="${cmd} \"${FILE}\""
+copy_to_clipboard() {
+	xclip -selection clipboard -t image/png <"$FILE"
+}
 
-	if eval "$cmd"; then
-		notify_send -u normal "screenshot saved"
-		return 0
-	else
-		notify_send -u normal "screenshot failed"
-		return 1
-	fi
+save_to_disk() {
+	:
+}
+
+remove_temp_file() {
+	rm -f "$FILE"
+}
+
+destination_label() {
+	case "$STORE" in
+	clip) printf 'clipboard' ;;
+	save) printf 'disk' ;;
+	'clip&save') printf 'disk & clipboard' ;;
+	*) return 1 ;;
+	esac
 }
 
 handle_storage() {
-	case "$store" in
-	clip)
-		xclip -selection clipboard -t image/png <"$FILE"
-		rm "$FILE"
-		;;
-	clip\&save)
-		xclip -selection clipboard -t image/png <"$FILE"
-		;;
+	label=$(destination_label) || {
+		notify_error "Unknown store: $STORE"
+		exit 1
+	}
+
+	case "$STORE" in
+	*clip*) copy_to_clipboard ;;
 	esac
+
+	case "$STORE" in
+	save | 'clip&save') save_to_disk ;;
+	esac
+
+	case "$STORE" in
+	clip) remove_temp_file ;;
+	esac
+
+	notify_success "Saved to $label"
 }
 
-main() {
-	mode="full"
-	store="clip&save"
-	wait_time=0
-
+parse_args() {
 	while getopts "m:s:w:" opt; do
 		case "$opt" in
-		m) mode="$OPTARG" ;;
-		s) store="$OPTARG" ;;
-		w) wait_time="$OPTARG" ;;
+		m) MODE="$OPTARG" ;;
+		s) STORE="$OPTARG" ;;
+		w) WAIT="$OPTARG" ;;
 		*) ;;
 		esac
 	done
+}
 
-	mkdir -p "$DIR"
+main() {
+	MODE="full"
+	STORE="clip&save"
+	WAIT=0
+	FILE="${SHOT_DIR}/screenshot_$(date +%Y-%m-%d-%H-%M-%S).png"
 
-	if [ "$wait_time" -gt 0 ]; then
-		countdown "$wait_time"
+	parse_args "$@"
+
+	[ "$MODE" = "menu" ] && handle_menu
+
+	[ "$WAIT" -gt 0 ] && run_countdown "$WAIT"
+
+	if take_screenshot; then
+		handle_storage
+	else
+		notify_error "Screenshot failed"
+		exit 1
 	fi
-
-	execute_screenshot || exit 1
-	handle_storage
-
-	exit 0
 }
 
 main "$@"
