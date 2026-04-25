@@ -3,6 +3,9 @@ alias cd='z'
 alias ls='eza'
 alias cdi='zi'
 
+# weather
+alias weather='curl -s "wttr.in/Tecoh,Yucatan"'
+
 # main
 
 alias :q="exit"
