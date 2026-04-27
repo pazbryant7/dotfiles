@@ -6,6 +6,9 @@ alias cdi='zi'
 # weather
 alias weather='curl -s "wttr.in/Tecoh,Yucatan"'
 
+# global
+alias gbl="ls ~/bin/global/"
+
 # main
 
 alias :q="exit"
