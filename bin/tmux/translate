@@ -1,63 +1,308 @@
 #!/usr/bin/env sh
-# Fast and simple tmux translator (Spanish <-> English)
+# translate.sh — tmux-based Spanish <-> English translator
+# Usage: translate.sh en:es | translate.sh es:en
 
-TRANSLATE_OPTS="-verbose -no-warn -speak"
+# ── Configuration ────────────────────────────────────────────────────────────
+
+TRANS_OPTS="-verbose -no-warn"
+HIST_FILE="${TMPDIR:-/tmp}/translate_history_$$"
+LAST_FILE="${TMPDIR:-/tmp}/translate_last_$$"
+QUERY_FILE="${TMPDIR:-/tmp}/translate_query_$$"
+TRANS_WIN_PREFIX="trans"
+
+# ── Utilities ────────────────────────────────────────────────────────────────
+
+die() {
+	printf '%s\n' "$*" >&2
+	exit 1
+}
 
 center() {
 	text=$1
-	cols=$(tput cols 2>/dev/null || printf 80)
+	cols=$(tput cols 2>/dev/null || printf '80')
 	len=${#text}
-
-	if [ "$len" -ge "$cols" ]; then
+	[ "$len" -ge "$cols" ] && {
 		printf '%s\n' "$text"
 		return
-	fi
-
+	}
 	padding=$(((cols - len) / 2))
 	printf '%*s%s\n' "$padding" '' "$text"
 }
 
-is_valid_direction() {
+separator() {
+	cols=$(tput cols 2>/dev/null || printf '80')
+	awk -v n="$cols" 'BEGIN { for (i=0;i<n;i++) printf "─"; printf "\n" }'
+}
+
+# ── Direction helpers ─────────────────────────────────────────────────────────
+
+validate_direction() {
 	case "$1" in
 	en:es | es:en) return 0 ;;
 	*) return 1 ;;
 	esac
 }
 
-direction_msg() {
+direction_label() {
 	case "$1" in
-	en:es) printf "English → Spanish" ;;
-	es:en) printf "Spanish → English" ;;
+	en:es) printf 'English → Spanish' ;;
+	es:en) printf 'Spanish → English' ;;
 	esac
 }
 
-translate() {
-	tmux neww sh -c "
-		trans $TRANSLATE_OPTS $1 \"$2\";
-		echo; echo; echo '⚡';
-		read -n 1"
+swap_direction() {
+	case "$1" in
+	en:es) printf 'es:en' ;;
+	es:en) printf 'en:es' ;;
+	esac
+}
+
+# ── History ───────────────────────────────────────────────────────────────────
+
+history_add() {
+	query=$1
+	# Avoid consecutive duplicates
+	last=$(tail -1 "$HIST_FILE" 2>/dev/null)
+	[ "$query" = "$last" ] && return
+	printf '%s\n' "$query" >>"$HIST_FILE"
+}
+
+history_get() {
+	# $1 = line offset from end (1 = last, 2 = second-to-last, ...)
+	offset=${1:-1}
+	total=$(wc -l <"$HIST_FILE" 2>/dev/null || printf '0')
+	[ "$total" -eq 0 ] && return 1
+	line=$((total - offset + 1))
+	[ "$line" -lt 1 ] && return 1
+	sed -n "${line}p" "$HIST_FILE"
+}
+
+# ── Translation pane ──────────────────────────────────────────────────────────
+
+# Build the shell script that runs inside the tmux window.
+# We write it to a tempfile so quoting stays clean.
+build_pane_script() {
+	direction=$1
+	query=$2
+	script_file=$(mktemp "${TMPDIR:-/tmp}/translate_pane_XXXXXX.sh")
+
+	cat >"$script_file" <<PANE_EOF
+#!/usr/bin/env sh
+TRANS_OPTS="$TRANS_OPTS"
+LAST_FILE="$LAST_FILE"
+HIST_FILE="$HIST_FILE"
+QUERY="$query"
+DIRECTION="$direction"
+
+play_audio() {
+    trans -speak "\$DIRECTION" "\$QUERY" > /dev/null 2>&1
+}
+
+replay_audio() {
+    printf '\n🔊 Replaying audio...\n'
+    play_audio
+}
+
+copy_clip() {
+    if command -v pbcopy > /dev/null 2>&1; then
+        printf '%s' "\$QUERY" | pbcopy && printf '📋 Copied to clipboard.\n'
+    elif command -v xclip > /dev/null 2>&1; then
+        printf '%s' "\$QUERY" | xclip -selection clipboard && printf '📋 Copied to clipboard.\n'
+    elif command -v xsel > /dev/null 2>&1; then
+        printf '%s' "\$QUERY" | xsel --clipboard --input && printf '📋 Copied to clipboard.\n'
+    else
+        printf '⚠️  No clipboard tool found (pbcopy / xclip / xsel).\n'
+    fi
+}
+
+separator_line() {
+    cols=\$(tput cols 2>/dev/null || printf '80')
+    awk -v n="\$cols" 'BEGIN { for (i=0;i<n;i++) printf "─"; printf "\n" }'
+}
+
+show_menu() {
+    printf '\n'
+    separator_line
+    printf '  [r] Replay audio   [c] Copy to clipboard   [q] Close\n'
+    separator_line
+    printf '> '
+}
+
+run_translation() {
+    clear
+    printf '\n'
+    trans \$TRANS_OPTS "\$DIRECTION" "\$QUERY"
+    printf '\n'
+    play_audio
+}
+
+run_translation
+
+while true; do
+    show_menu
+    read -r choice
+    case "\$choice" in
+        r|R) replay_audio ;;
+        c|C) copy_clip ;;
+        q|Q|'') break ;;
+        *) printf '  Unknown option.\n' ;;
+    esac
+done
+
+printf '\n👋 Closed.\n'
+sleep 0.4
+PANE_EOF
+
+	printf '%s' "$script_file"
+}
+
+open_translation_pane() {
+	direction=$1
+	query=$2
+	win_name="${TRANS_WIN_PREFIX}:$(direction_label "$direction")"
+	script_file=$(build_pane_script "$direction" "$query")
+	tmux new-window -n "$win_name" "sh '$script_file'; rm -f '$script_file'"
+}
+
+# ── Input loop ────────────────────────────────────────────────────────────────
+
+# read_query — reads a line with raw tty handling.
+# Result is written to QUERY_FILE. Returns 1 on Ctrl-C/Ctrl-D.
+read_query() {
+	hist_offset=0
+	input=''
+
+	if [ -t 1 ] && command -v stty >/dev/null 2>&1; then
+		old_tty=$(stty -g </dev/tty)
+		stty -echo -icanon min 1 time 0 </dev/tty
+
+		restore_tty() { stty "$old_tty" </dev/tty; }
+
+		while true; do
+			char=$(dd bs=1 count=1 </dev/tty 2>/dev/null)
+
+			case "$char" in
+			# Enter (CR or LF)
+			"$(printf '\r')" | "$(printf '\n')")
+				restore_tty
+				printf '\n' >/dev/tty
+				printf '%s' "$input" >"$QUERY_FILE"
+				return 0
+				;;
+			# Ctrl-C / Ctrl-D — quit
+			"$(printf '\003')" | "$(printf '\004')")
+				restore_tty
+				printf '\n' >/dev/tty
+				return 1
+				;;
+			# Backspace (^H) or DEL (127)
+			"$(printf '\010')" | "$(printf '\177')")
+				if [ -n "$input" ]; then
+					input="${input%?}"
+					printf '\b \b' >/dev/tty
+				fi
+				;;
+			# ESC — arrow-key sequence
+			"$(printf '\033')")
+				seq2=$(dd bs=1 count=1 </dev/tty 2>/dev/null)
+				seq3=$(dd bs=1 count=1 </dev/tty 2>/dev/null)
+				case "${seq2}${seq3}" in
+				'[A') # Up — go back in history
+					hist_offset=$((hist_offset + 1))
+					prev=$(history_get "$hist_offset")
+					if [ $? -eq 0 ] && [ -n "$prev" ]; then
+						cols=$(tput cols 2>/dev/null || printf '80')
+						printf '\r%*s\r> ' "$cols" '' >/dev/tty
+						input="$prev"
+						printf '%s' "$input" >/dev/tty
+					else
+						hist_offset=$((hist_offset - 1))
+					fi
+					;;
+				'[B') # Down — go forward in history
+					[ "$hist_offset" -gt 0 ] && hist_offset=$((hist_offset - 1))
+					cols=$(tput cols 2>/dev/null || printf '80')
+					printf '\r%*s\r> ' "$cols" '' >/dev/tty
+					if [ "$hist_offset" -eq 0 ]; then
+						input=''
+					else
+						prev=$(history_get "$hist_offset")
+						[ $? -eq 0 ] && input="$prev"
+						printf '%s' "$input" >/dev/tty
+					fi
+					;;
+				esac
+				;;
+			*)
+				input="${input}${char}"
+				printf '%s' "$char" >/dev/tty
+				;;
+			esac
+		done
+	else
+		# Fallback: plain POSIX read (no arrow-key support)
+		IFS= read -r input || return 1
+		printf '%s' "$input" >"$QUERY_FILE"
+	fi
+}
+
+# ── Main loop ─────────────────────────────────────────────────────────────────
+
+print_header() {
+	direction=$1
+	clear
+	printf '\n'
+	center "$(direction_label "$direction")  •  [s] swap  [!] repeat last  [q] quit"
+	separator
+	printf '\n'
+}
+
+cleanup() {
+	rm -f "$HIST_FILE" "$LAST_FILE" "$QUERY_FILE"
 }
 
 main() {
 	direction=$1
-
-	if ! is_valid_direction "$direction"; then
-		printf 'Invalid direction. Use "en:es" or "es:en".\n' >&2
-		exit 1
-	fi
+	validate_direction "$direction" || die 'Usage: translate.sh en:es | translate.sh es:en'
+	trap cleanup INT TERM HUP
 
 	while true; do
-		clear
-		center "$(direction_msg "$direction")"
-		printf '\n> '
+		print_header "$direction"
+		printf '> '
 
-		IFS= read -r query
+		read_query || break
+		query=$(cat "$QUERY_FILE" 2>/dev/null)
+		[ -z "$query" ] && continue
 
-		[ -z "$query" ] && exit 0
+		# ── Special single-char commands ──────────────────────────────────
+		case "$query" in
+		s | S)
+			direction=$(swap_direction "$direction")
+			continue
+			;;
+		'!')
+			last=$(cat "$LAST_FILE" 2>/dev/null)
+			if [ -z "$last" ]; then
+				printf '  ⚠️  No previous translation.\n'
+				sleep 1
+				continue
+			fi
+			query="$last"
+			;;
+		q | Q)
+			break
+			;;
+		esac
 
+		# ── Real translation ──────────────────────────────────────────────
+		history_add "$query"
+		printf '%s' "$query" >"$LAST_FILE"
 		center "Translating..."
-		translate "$direction" "$query"
+		open_translation_pane "$direction" "$query"
 	done
+
+	cleanup
+	printf '\n👋 Goodbye.\n'
 }
 
 main "$@"
