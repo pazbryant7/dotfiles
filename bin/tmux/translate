@@ -1,308 +1,403 @@
-#!/usr/bin/env sh
-# translate.sh — tmux-based Spanish <-> English translator
-# Usage: translate.sh en:es | translate.sh es:en
+#!/usr/bin/env python3
+"""
+translate.py — tmux-based Spanish <-> English translator
+Usage:
+    translate.py en:es
+    translate.py es:en
+    translate.py --pane <direction> <query>   (internal, called by tmux)
+"""
 
-# ── Configuration ────────────────────────────────────────────────────────────
+from __future__ import annotations
 
-TRANS_OPTS="-verbose -no-warn"
-HIST_FILE="${TMPDIR:-/tmp}/translate_history_$$"
-LAST_FILE="${TMPDIR:-/tmp}/translate_last_$$"
-QUERY_FILE="${TMPDIR:-/tmp}/translate_query_$$"
-TRANS_WIN_PREFIX="trans"
+import os
+import shutil
+import subprocess
+import sys
+import termios
+import tty
 
-# ── Utilities ────────────────────────────────────────────────────────────────
+# ── Constants ─────────────────────────────────────────────────────────────────
 
-die() {
-	printf '%s\n' "$*" >&2
-	exit 1
+SCRIPT_PATH = os.path.abspath(__file__)
+TRANS_OPTS = ["-verbose", "-no-warn"]
+
+DIRECTIONS = {
+    "en:es": "English → Spanish",
+    "es:en": "Spanish → English",
 }
 
-center() {
-	text=$1
-	cols=$(tput cols 2>/dev/null || printf '80')
-	len=${#text}
-	[ "$len" -ge "$cols" ] && {
-		printf '%s\n' "$text"
-		return
-	}
-	padding=$(((cols - len) / 2))
-	printf '%*s%s\n' "$padding" '' "$text"
+SWAP = {
+    "en:es": "es:en",
+    "es:en": "en:es",
 }
 
-separator() {
-	cols=$(tput cols 2>/dev/null || printf '80')
-	awk -v n="$cols" 'BEGIN { for (i=0;i<n;i++) printf "─"; printf "\n" }'
+COMMANDS = {
+    "s": "swap direction",
+    "!": "repeat last",
+    "q": "quit",
 }
+
+
+# ── Data types ────────────────────────────────────────────────────────────────
+
+
+class History:
+    """Append-only in-memory translation history with offset-based recall."""
+
+    def __init__(self) -> None:
+        self._entries: list[str] = []
+
+    def add(self, entry: str) -> None:
+        if not self._entries or self._entries[-1] != entry:
+            self._entries.append(entry)
+
+    def get(self, offset: int) -> str | None:
+        """Return entry at offset from end (1 = last). None if out of range."""
+        index = len(self._entries) - offset
+        return self._entries[index] if 0 <= index < len(self._entries) else None
+
+    def __len__(self) -> int:
+        return len(self._entries)
+
+
+# ── Terminal helpers ───────────────────────────────────────────────────────────
+
+
+def terminal_width() -> int:
+    return shutil.get_terminal_size().columns
+
+
+def center(text: str) -> str:
+    return text.center(terminal_width())
+
+
+def separator() -> str:
+    return "─" * terminal_width()
+
+
+def clear_screen() -> None:
+    print("\033[2J\033[H", end="", flush=True)
+
+
+def print_centered(text: str) -> None:
+    print(center(text))
+
+
+def print_separator() -> None:
+    print(separator())
+
 
 # ── Direction helpers ─────────────────────────────────────────────────────────
 
-validate_direction() {
-	case "$1" in
-	en:es | es:en) return 0 ;;
-	*) return 1 ;;
-	esac
-}
 
-direction_label() {
-	case "$1" in
-	en:es) printf 'English → Spanish' ;;
-	es:en) printf 'Spanish → English' ;;
-	esac
-}
+def validate_direction(direction: str) -> bool:
+    return direction in DIRECTIONS
 
-swap_direction() {
-	case "$1" in
-	en:es) printf 'es:en' ;;
-	es:en) printf 'en:es' ;;
-	esac
-}
 
-# ── History ───────────────────────────────────────────────────────────────────
+def direction_label(direction: str) -> str:
+    return DIRECTIONS[direction]
 
-history_add() {
-	query=$1
-	# Avoid consecutive duplicates
-	last=$(tail -1 "$HIST_FILE" 2>/dev/null)
-	[ "$query" = "$last" ] && return
-	printf '%s\n' "$query" >>"$HIST_FILE"
-}
 
-history_get() {
-	# $1 = line offset from end (1 = last, 2 = second-to-last, ...)
-	offset=${1:-1}
-	total=$(wc -l <"$HIST_FILE" 2>/dev/null || printf '0')
-	[ "$total" -eq 0 ] && return 1
-	line=$((total - offset + 1))
-	[ "$line" -lt 1 ] && return 1
-	sed -n "${line}p" "$HIST_FILE"
-}
+def swap_direction(direction: str) -> str:
+    return SWAP[direction]
 
-# ── Translation pane ──────────────────────────────────────────────────────────
 
-# Build the shell script that runs inside the tmux window.
-# We write it to a tempfile so quoting stays clean.
-build_pane_script() {
-	direction=$1
-	query=$2
-	script_file=$(mktemp "${TMPDIR:-/tmp}/translate_pane_XXXXXX.sh")
+# ── External tool calls ───────────────────────────────────────────────────────
 
-	cat >"$script_file" <<PANE_EOF
-#!/usr/bin/env sh
-TRANS_OPTS="$TRANS_OPTS"
-LAST_FILE="$LAST_FILE"
-HIST_FILE="$HIST_FILE"
-QUERY="$query"
-DIRECTION="$direction"
 
-play_audio() {
-    trans -speak "\$DIRECTION" "\$QUERY" > /dev/null 2>&1
-}
+def run_translation(direction: str, query: str) -> None:
+    """Run `trans` and print output to stdout."""
+    subprocess.run(["trans", *TRANS_OPTS, direction, query], check=False)
 
-replay_audio() {
-    printf '\n🔊 Replaying audio...\n'
-    play_audio
-}
 
-copy_clip() {
-    if command -v pbcopy > /dev/null 2>&1; then
-        printf '%s' "\$QUERY" | pbcopy && printf '📋 Copied to clipboard.\n'
-    elif command -v xclip > /dev/null 2>&1; then
-        printf '%s' "\$QUERY" | xclip -selection clipboard && printf '📋 Copied to clipboard.\n'
-    elif command -v xsel > /dev/null 2>&1; then
-        printf '%s' "\$QUERY" | xsel --clipboard --input && printf '📋 Copied to clipboard.\n'
-    else
-        printf '⚠️  No clipboard tool found (pbcopy / xclip / xsel).\n'
-    fi
-}
+def play_audio(direction: str, query: str) -> None:
+    """Speak the query using `trans -speak`."""
+    subprocess.run(
+        ["trans", "-speak", direction, query],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=False,
+    )
 
-separator_line() {
-    cols=\$(tput cols 2>/dev/null || printf '80')
-    awk -v n="\$cols" 'BEGIN { for (i=0;i<n;i++) printf "─"; printf "\n" }'
-}
 
-show_menu() {
-    printf '\n'
-    separator_line
-    printf '  [r] Replay audio   [c] Copy to clipboard   [q] Close\n'
-    separator_line
-    printf '> '
-}
+def copy_to_clipboard(text: str) -> str:
+    """Copy text to clipboard. Returns a status message."""
+    for tool, args in [
+        ("pbcopy", ["pbcopy"]),
+        ("xclip", ["xclip", "-selection", "clipboard"]),
+        ("xsel", ["xsel", "--clipboard", "--input"]),
+    ]:
+        if shutil.which(tool):
+            subprocess.run(args, input=text.encode(), check=False)
+            return "📋 Copied to clipboard."
+    return "⚠️  No clipboard tool found (pbcopy / xclip / xsel)."
 
-run_translation() {
-    clear
-    printf '\n'
-    trans \$TRANS_OPTS "\$DIRECTION" "\$QUERY"
-    printf '\n'
-    play_audio
-}
 
-run_translation
+# ── Pane mode (runs inside tmux window) ───────────────────────────────────────
 
-while true; do
-    show_menu
-    read -r choice
-    case "\$choice" in
-        r|R) replay_audio ;;
-        c|C) copy_clip ;;
-        q|Q|'') break ;;
-        *) printf '  Unknown option.\n' ;;
-    esac
-done
 
-printf '\n👋 Closed.\n'
-sleep 0.4
-PANE_EOF
+def pane_menu(direction: str, query: str) -> None:
+    """Interactive post-translation menu inside the tmux pane."""
+    actions = {
+        "r": lambda: (print("\n🔊 Replaying audio..."), play_audio(direction, query)),
+        "c": lambda: print(copy_to_clipboard(query)),
+    }
+    while True:
+        print()
+        print_separator()
+        print("  [r] Replay audio   [c] Copy to clipboard   [q] Close")
+        print_separator()
+        choice = input("> ").strip().lower()
+        if choice in ("q", ""):
+            break
+        action = actions.get(choice)
+        if action:
+            action()
+        else:
+            print("  Unknown option.")
 
-	printf '%s' "$script_file"
-}
 
-open_translation_pane() {
-	direction=$1
-	query=$2
-	win_name="${TRANS_WIN_PREFIX}:$(direction_label "$direction")"
-	script_file=$(build_pane_script "$direction" "$query")
-	tmux new-window -n "$win_name" "sh '$script_file'; rm -f '$script_file'"
-}
+def run_pane(direction: str, query: str) -> None:
+    """
+    Entry point when this script is invoked as a tmux pane.
+    Renders the translation, plays audio, then shows the menu.
+    """
+    clear_screen()
+    print()
+    run_translation(direction, query)
+    print()
+    play_audio(direction, query)
+    pane_menu(direction, query)
+    print("\n👋 Closed.")
 
-# ── Input loop ────────────────────────────────────────────────────────────────
 
-# read_query — reads a line with raw tty handling.
-# Result is written to QUERY_FILE. Returns 1 on Ctrl-C/Ctrl-D.
-read_query() {
-	hist_offset=0
-	input=''
+# ── Tmux integration ──────────────────────────────────────────────────────────
 
-	if [ -t 1 ] && command -v stty >/dev/null 2>&1; then
-		old_tty=$(stty -g </dev/tty)
-		stty -echo -icanon min 1 time 0 </dev/tty
 
-		restore_tty() { stty "$old_tty" </dev/tty; }
+def open_translation_pane(direction: str, query: str) -> None:
+    """Open a new tmux window that re-invokes this script in pane mode."""
+    window_name = f"trans:{direction_label(direction)}"
+    pane_cmd = f"python3 {SCRIPT_PATH} --pane {direction} {query!r}"
+    subprocess.run(
+        ["tmux", "new-window", "-n", window_name, pane_cmd],
+        check=False,
+    )
 
-		while true; do
-			char=$(dd bs=1 count=1 </dev/tty 2>/dev/null)
 
-			case "$char" in
-			# Enter (CR or LF)
-			"$(printf '\r')" | "$(printf '\n')")
-				restore_tty
-				printf '\n' >/dev/tty
-				printf '%s' "$input" >"$QUERY_FILE"
-				return 0
-				;;
-			# Ctrl-C / Ctrl-D — quit
-			"$(printf '\003')" | "$(printf '\004')")
-				restore_tty
-				printf '\n' >/dev/tty
-				return 1
-				;;
-			# Backspace (^H) or DEL (127)
-			"$(printf '\010')" | "$(printf '\177')")
-				if [ -n "$input" ]; then
-					input="${input%?}"
-					printf '\b \b' >/dev/tty
-				fi
-				;;
-			# ESC — arrow-key sequence
-			"$(printf '\033')")
-				seq2=$(dd bs=1 count=1 </dev/tty 2>/dev/null)
-				seq3=$(dd bs=1 count=1 </dev/tty 2>/dev/null)
-				case "${seq2}${seq3}" in
-				'[A') # Up — go back in history
-					hist_offset=$((hist_offset + 1))
-					prev=$(history_get "$hist_offset")
-					if [ $? -eq 0 ] && [ -n "$prev" ]; then
-						cols=$(tput cols 2>/dev/null || printf '80')
-						printf '\r%*s\r> ' "$cols" '' >/dev/tty
-						input="$prev"
-						printf '%s' "$input" >/dev/tty
-					else
-						hist_offset=$((hist_offset - 1))
-					fi
-					;;
-				'[B') # Down — go forward in history
-					[ "$hist_offset" -gt 0 ] && hist_offset=$((hist_offset - 1))
-					cols=$(tput cols 2>/dev/null || printf '80')
-					printf '\r%*s\r> ' "$cols" '' >/dev/tty
-					if [ "$hist_offset" -eq 0 ]; then
-						input=''
-					else
-						prev=$(history_get "$hist_offset")
-						[ $? -eq 0 ] && input="$prev"
-						printf '%s' "$input" >/dev/tty
-					fi
-					;;
-				esac
-				;;
-			*)
-				input="${input}${char}"
-				printf '%s' "$char" >/dev/tty
-				;;
-			esac
-		done
-	else
-		# Fallback: plain POSIX read (no arrow-key support)
-		IFS= read -r input || return 1
-		printf '%s' "$input" >"$QUERY_FILE"
-	fi
-}
+# ── Raw character input ───────────────────────────────────────────────────────
+
+
+def read_char(fd: int) -> str:
+    """Read a single raw character from a file descriptor."""
+    return os.read(fd, 1).decode("utf-8", errors="replace")
+
+
+def read_escape_sequence(fd: int) -> str:
+    """Read the two bytes following an ESC character."""
+    return read_char(fd) + read_char(fd)
+
+
+def apply_backspace(buf: str) -> tuple[str, str]:
+    """Return (new_buffer, terminal_output) for a backspace keypress."""
+    if buf:
+        return buf[:-1], "\b \b"
+    return buf, ""
+
+
+def apply_history(buf: str, offset: int, history: History) -> tuple[str, int, str]:
+    """
+    Return (new_buffer, new_offset, terminal_output) after a history navigation.
+    """
+    entry = history.get(offset)
+    if entry is None:
+        return buf, offset - 1, ""
+    cols = terminal_width()
+    clear_line = f"\r{' ' * cols}\r> "
+    return entry, offset, clear_line + entry
+
+
+def read_query(history: History) -> str | None:
+    """
+    Read a line from the terminal with raw character handling.
+    Supports backspace and up/down arrow history navigation.
+    Returns the entered string, or None on Ctrl-C / Ctrl-D.
+    """
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+
+    buf = ""
+    hist_offset = 0
+
+    try:
+        tty.setraw(fd)
+        while True:
+            ch = read_char(fd)
+
+            if ch in ("\r", "\n"):
+                sys.stdout.write("\n")
+                sys.stdout.flush()
+                return buf
+
+            if ch in ("\x03", "\x04"):  # Ctrl-C / Ctrl-D
+                sys.stdout.write("\n")
+                sys.stdout.flush()
+                return None
+
+            if ch in ("\x7f", "\x08"):  # Backspace / DEL
+                buf, output = apply_backspace(buf)
+                sys.stdout.write(output)
+                sys.stdout.flush()
+                continue
+
+            if ch == "\x1b":  # Escape sequence (arrow keys)
+                seq = read_escape_sequence(fd)
+                if seq == "[A":  # Up arrow
+                    hist_offset += 1
+                    buf, hist_offset, output = apply_history(buf, hist_offset, history)
+                    sys.stdout.write(output)
+                    sys.stdout.flush()
+                elif seq == "[B":  # Down arrow
+                    if hist_offset > 0:
+                        hist_offset -= 1
+                    if hist_offset == 0:
+                        cols = terminal_width()
+                        sys.stdout.write(f"\r{' ' * cols}\r> ")
+                        buf = ""
+                    else:
+                        buf, hist_offset, output = apply_history(
+                            buf, hist_offset, history
+                        )
+                        sys.stdout.write(output)
+                    sys.stdout.flush()
+                continue
+
+            buf += ch
+            sys.stdout.write(ch)
+            sys.stdout.flush()
+
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+
+
+# ── Special command handling ──────────────────────────────────────────────────
+
+
+def handle_swap(direction: str) -> tuple[str, bool]:
+    """Return (new_direction, should_continue)."""
+    return swap_direction(direction), True
+
+
+def handle_repeat(last: str | None) -> tuple[str | None, bool]:
+    """Return (query_to_use, should_continue). None query means show warning."""
+    if last is None:
+        return None, True
+    return last, False
+
+
+def resolve_query(
+    raw: str,
+    direction: str,
+    last: str | None,
+) -> tuple[str | None, str, bool]:
+    """
+    Parse a raw input line into (query, direction, skip).
+    skip=True means no translation should run this iteration.
+    query=None means a warning was shown and we should loop.
+    """
+    lowered = raw.strip().lower()
+
+    if lowered == "s":
+        new_dir = swap_direction(direction)
+        return None, new_dir, True
+
+    if lowered == "q":
+        return None, direction, False  # signal to exit
+
+    if lowered == "!":
+        if last is None:
+            print("  ⚠️  No previous translation.")
+            return None, direction, True
+        return last, direction, False
+
+    return raw, direction, False
+
+
+# ── Header / UI ───────────────────────────────────────────────────────────────
+
+
+def print_header(direction: str) -> None:
+    clear_screen()
+    print()
+    print_centered(
+        f"{direction_label(direction)}  •  [s] swap  [!] repeat last  [q] quit"
+    )
+    print_separator()
+    print()
+
 
 # ── Main loop ─────────────────────────────────────────────────────────────────
 
-print_header() {
-	direction=$1
-	clear
-	printf '\n'
-	center "$(direction_label "$direction")  •  [s] swap  [!] repeat last  [q] quit"
-	separator
-	printf '\n'
-}
 
-cleanup() {
-	rm -f "$HIST_FILE" "$LAST_FILE" "$QUERY_FILE"
-}
+def main_loop(direction: str) -> None:
+    history = History()
+    last: str | None = None
 
-main() {
-	direction=$1
-	validate_direction "$direction" || die 'Usage: translate.sh en:es | translate.sh es:en'
-	trap cleanup INT TERM HUP
+    while True:
+        print_header(direction)
+        print("> ", end="", flush=True)
 
-	while true; do
-		print_header "$direction"
-		printf '> '
+        raw = read_query(history)
 
-		read_query || break
-		query=$(cat "$QUERY_FILE" 2>/dev/null)
-		[ -z "$query" ] && continue
+        if raw is None or raw.strip().lower() == "q":
+            break
 
-		# ── Special single-char commands ──────────────────────────────────
-		case "$query" in
-		s | S)
-			direction=$(swap_direction "$direction")
-			continue
-			;;
-		'!')
-			last=$(cat "$LAST_FILE" 2>/dev/null)
-			if [ -z "$last" ]; then
-				printf '  ⚠️  No previous translation.\n'
-				sleep 1
-				continue
-			fi
-			query="$last"
-			;;
-		q | Q)
-			break
-			;;
-		esac
+        if not raw.strip():
+            continue
 
-		# ── Real translation ──────────────────────────────────────────────
-		history_add "$query"
-		printf '%s' "$query" >"$LAST_FILE"
-		center "Translating..."
-		open_translation_pane "$direction" "$query"
-	done
+        query, direction, skip = resolve_query(raw, direction, last)
 
-	cleanup
-	printf '\n👋 Goodbye.\n'
-}
+        if skip:
+            if query is None:
+                import time
 
-main "$@"
+                time.sleep(1)
+            continue
+
+        if query is None:
+            break
+
+        history.add(query)
+        last = query
+
+        print_centered("Translating...")
+        open_translation_pane(direction, query)
+
+
+def main(argv: list[str]) -> int:
+    if len(argv) < 2:
+        print(f"Usage: {argv[0]} en:es | {argv[0]} es:en", file=sys.stderr)
+        return 1
+
+    if argv[1] == "--pane":
+        if len(argv) < 4:
+            print("--pane requires <direction> <query>", file=sys.stderr)
+            return 1
+        run_pane(direction=argv[2], query=argv[3])
+        return 0
+
+    direction = argv[1]
+    if not validate_direction(direction):
+        print(f"Invalid direction '{direction}'. Use en:es or es:en.", file=sys.stderr)
+        return 1
+
+    try:
+        main_loop(direction)
+    except KeyboardInterrupt:
+        pass
+
+    print("\n👋 Goodbye.")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))
