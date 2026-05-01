@@ -1,0 +1,49 @@
+#!/usr/bin/env sh
+
+. "$(dirname "$0")/lib/search"
+
+EDITOR="${EDITOR:-nvim}"
+
+select_file() {
+	if [ -n "$1" ]; then
+		printf '%s' "$1"
+		return
+	fi
+
+	pick_with_fzf "$FILE_DIRS" ". --type f --follow --hidden \
+    --exclude node_modules \
+    --exclude .git \
+    --exclude .cache \
+    --exclude dist \
+    --exclude build"
+}
+
+open_file() {
+	file_path="$1"
+	session_name=$(session_name_from_path "$file_path")
+	dir=$(dirname "$file_path")
+	current=$(current_session)
+
+	if [ "$current" = "$session_name" ]; then
+		notify "Already on session: $session_name"
+		exit 0
+	fi
+
+	session_exists "$session_name" || create_session "$session_name" "$dir"
+	switch_to_session "$session_name"
+	tmux send-keys -t "$session_name" "$EDITOR $file_path" Enter
+}
+
+main() {
+	require_tmux || exit 1
+
+	selected_file=$(select_file "$1") || exit 1
+	if [ -z "$selected_file" ]; then
+		printf 'No file selected\n' >&2
+		exit 1
+	fi
+
+	open_file "$selected_file"
+}
+
+main "$@"
