@@ -10,10 +10,12 @@ Usage:
 from __future__ import annotations
 
 import os
+import select
 import shutil
 import subprocess
 import sys
 import termios
+import time
 import tty
 
 # ── Constants ─────────────────────────────────────────────────────────────────
@@ -142,17 +144,52 @@ def pane_menu(direction: str, query: str) -> None:
         "r": lambda: (print("\n🔊 Replaying audio..."), play_audio(direction, query)),
         "c": lambda: print(copy_to_clipboard(query)),
     }
+
+    TIMEOUT = 5
+
     while True:
         print()
         print_separator()
-        print("  [r] Replay audio   [c] Copy to clipboard   [q] Close")
+        print(
+            f"  [r] Replay audio   [c] Copy to clipboard   [q] Close  (auto-close in {TIMEOUT}s)"
+        )
         print_separator()
-        choice = input("> ").strip().lower()
+        print("> ", end="", flush=True)
+
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        choice = ""
+        try:
+            tty.setraw(fd)
+            deadline = time.monotonic() + TIMEOUT
+            while True:
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    print("\n  ⏱️  Auto-closing...")
+                    return
+                ready, _, _ = select.select([sys.stdin], [], [], remaining)
+                if ready:
+                    ch = os.read(fd, 1).decode("utf-8", errors="replace")
+                    if ch in ("\r", "\n"):
+                        choice = ""
+                        break
+                    if ch in ("\x03", "\x04", "q", ""):
+                        choice = "q"
+                        break
+                    choice = ch.lower()
+                    break
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+
+        sys.stdout.write("\n")
+        sys.stdout.flush()
+
         if choice in ("q", ""):
             break
         action = actions.get(choice)
         if action:
             action()
+            TIMEOUT = 5  # reset timeout after a successful action
         else:
             print("  Unknown option.")
 
