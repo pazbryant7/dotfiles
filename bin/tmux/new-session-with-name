@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+main() {
+	tmux command-prompt -p "Session name:" "run-shell 'tmux neww ~/bin/tmux/new-session \"\" \"%1\"'"
+}
+
+main "$@"
