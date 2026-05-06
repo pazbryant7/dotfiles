@@ -1,0 +1,77 @@
+#!/bin/sh
+# himalaya-auth-url
+# Generates the Microsoft OAuth2 authorization URL using PKCE.
+# Run this first. Open the printed URL in your browser, sign in,
+# then copy the full redirect URL for himalaya-get-tokens.
+
+REDIRECT_URI="http://localhost"
+SCOPE="https://outlook.office.com/IMAP.AccessAsUser.All https://outlook.office.com/SMTP.Send offline_access"
+VERIFIER_FILE="/tmp/himalaya_code_verifier"
+
+# --- functions ---
+
+die() {
+	echo "error: $1" >&2
+	exit 1
+}
+
+read_client_id() {
+	gopass -o azure/personal/himalaya/client-id || die "could not read client-id from pass"
+}
+
+check_dependencies() {
+	for cmd in openssl python3; do
+		command -v "$cmd" >/dev/null 2>&1 || die "'$cmd' is required but not installed"
+	done
+}
+
+generate_code_verifier() {
+	openssl rand -base64 64 | tr -d '=+/' | cut -c1-64
+}
+
+generate_code_challenge() {
+	verifier="$1"
+	printf '%s' "$verifier" |
+		openssl dgst -sha256 -binary |
+		base64 |
+		tr -d '=' |
+		tr '+/' '-_'
+}
+
+url_encode() {
+	python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.argv[1]))" "$1"
+}
+
+save_verifier() {
+	printf '%s' "$1" >"$VERIFIER_FILE" || die "could not save code verifier to $VERIFIER_FILE"
+}
+
+print_auth_url() {
+	code_challenge="$1"
+	encoded_redirect=$(url_encode "$REDIRECT_URI")
+	encoded_scope=$(url_encode "$SCOPE")
+
+	url="https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
+	url="${url}?client_id=$(read_client_id)"
+	url="${url}&response_type=code"
+	url="${url}&redirect_uri=${encoded_redirect}"
+	url="${url}&scope=${encoded_scope}"
+	url="${url}&code_challenge=${code_challenge}"
+	url="${url}&code_challenge_method=S256"
+
+	echo ""
+	echo "Open this URL in your browser, sign in, then copy the full redirect URL:"
+	echo ""
+	echo "$url"
+	echo ""
+}
+
+# --- main ---
+
+check_dependencies
+
+code_verifier=$(generate_code_verifier)
+code_challenge=$(generate_code_challenge "$code_verifier")
+
+save_verifier "$code_verifier"
+print_auth_url "$code_challenge"

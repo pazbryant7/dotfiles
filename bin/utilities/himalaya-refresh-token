@@ -1,0 +1,72 @@
+#!/bin/sh
+# himalaya-refresh-token
+# Uses the stored refresh token to obtain a new access token.
+# Run this before using himalaya, since access tokens expire in ~1 hour.
+# If this fails, your refresh token has expired — run the full auth flow again.
+
+CLIENT_ID="006fe53f-dce4-45e1-9097-91b937b46caf"
+TOKEN_URL="https://login.microsoftonline.com/common/oauth2/v2.0/token"
+SCOPE="https://outlook.office.com/IMAP.AccessAsUser.All https://outlook.office.com/SMTP.Send offline_access"
+
+# --- functions ---
+
+die() {
+    echo "error: $1" >&2
+    exit 1
+}
+
+check_dependencies() {
+    for cmd in curl jq gopass; do
+        command -v "$cmd" > /dev/null 2>&1 || die "'$cmd' is required but not installed"
+    done
+}
+
+read_from_gopass() {
+    key="$1"
+    gopass -o "$key" || die "could not read '$key' from gopass"
+}
+
+request_new_tokens() {
+    client_secret="$1"
+    refresh_token="$2"
+
+    curl -s -X POST "$TOKEN_URL" \
+        -H "Content-Type: application/x-www-form-urlencoded" \
+        -d "client_id=${CLIENT_ID}" \
+        -d "client_secret=${client_secret}" \
+        -d "grant_type=refresh_token" \
+        -d "refresh_token=${refresh_token}" \
+        -d "scope=${SCOPE}"
+}
+
+parse_token() {
+    response="$1"
+    field="$2"
+    value=$(printf '%s' "$response" | jq -r ".$field")
+    [ -n "$value" ] && [ "$value" != "null" ] || die "could not parse '$field'. Refresh token may have expired — run the full auth flow again."
+    printf '%s' "$value"
+}
+
+store_token() {
+    key="$1"
+    value="$2"
+    printf '%s' "$value" | gopass insert -f "$key" || die "could not store '$key' in gopass"
+}
+
+# --- main ---
+
+check_dependencies
+
+client_secret=$(read_from_gopass "azure/personal/himalaya/secret")
+refresh_token=$(read_from_gopass "azure/personal/himalaya/refresh-token")
+
+echo "Refreshing access token..."
+response=$(request_new_tokens "$client_secret" "$refresh_token")
+
+access_token=$(parse_token "$response" "access_token")
+new_refresh_token=$(parse_token "$response" "refresh_token")
+
+store_token "azure/personal/himalaya/access-token" "$access_token"
+store_token "azure/personal/himalaya/refresh-token" "$new_refresh_token"
+
+echo "Tokens refreshed successfully."

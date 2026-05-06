@@ -1,0 +1,103 @@
+#!/bin/sh
+# himalaya-get-tokens
+# Exchanges the authorization code from the redirect URL for access
+# and refresh tokens, then stores them in gopass.
+# Run this after himalaya-auth-url and signing in via browser.
+
+REDIRECT_URI="http://localhost"
+TOKEN_URL="https://login.microsoftonline.com/common/oauth2/v2.0/token"
+VERIFIER_FILE="/tmp/himalaya_code_verifier"
+
+# --- functions ---
+
+die() {
+	echo "error: $1" >&2
+	exit 1
+}
+
+read_client_id() {
+	gopass azure/personal/himalaya/client-id || die "could not read client-id from pass"
+}
+
+check_dependencies() {
+	for cmd in curl jq gopass; do
+		command -v "$cmd" >/dev/null 2>&1 || die "'$cmd' is required but not installed"
+	done
+}
+
+read_verifier() {
+	[ -f "$VERIFIER_FILE" ] || die "code verifier not found. Run himalaya-auth-url first."
+	cat "$VERIFIER_FILE"
+}
+
+read_client_secret() {
+	gopass -o azure/personal/himalaya/secret || die "could not read client secret from gopass"
+}
+
+prompt_redirect_url() {
+	printf "Paste the full redirect URL from your browser: "
+	read -r url
+	printf '%s' "$url"
+}
+
+extract_code() {
+	redirect_url="$1"
+	code=$(printf '%s' "$redirect_url" | grep -oP '(?<=code=)[^&]+')
+	[ -n "$code" ] || die "could not extract authorization code from URL"
+	printf '%s' "$code"
+}
+
+request_tokens() {
+	code="$1"
+	client_secret="$2"
+	code_verifier="$3"
+
+	curl -s -X POST "$TOKEN_URL" \
+		-H "Content-Type: application/x-www-form-urlencoded" \
+		-d "client_id=$(read_client_id)" \
+		-d "client_secret=${client_secret}" \
+		-d "grant_type=authorization_code" \
+		-d "code=${code}" \
+		-d "redirect_uri=${REDIRECT_URI}" \
+		-d "code_verifier=${code_verifier}"
+}
+
+parse_token() {
+	response="$1"
+	field="$2"
+	value=$(printf '%s' "$response" | jq -r ".$field")
+	[ -n "$value" ] && [ "$value" != "null" ] || die "could not parse '$field' from response:\n$response"
+	printf '%s' "$value"
+}
+
+store_token() {
+	key="$1"
+	value="$2"
+	printf '%s' "$value" | gopass insert -f "$key" || die "could not store '$key' in gopass"
+}
+
+cleanup() {
+	rm -f "$VERIFIER_FILE"
+}
+
+# --- main ---
+
+check_dependencies
+
+code_verifier=$(read_verifier)
+client_secret=$(read_client_secret)
+redirect_url=$(prompt_redirect_url)
+code=$(extract_code "$redirect_url")
+
+echo "Exchanging authorization code for tokens..."
+response=$(request_tokens "$code" "$client_secret" "$code_verifier")
+
+access_token=$(parse_token "$response" "access_token")
+refresh_token=$(parse_token "$response" "refresh_token")
+
+store_token "azure/personal/himalaya/access-token" "$access_token"
+store_token "azure/personal/himalaya/refresh-token" "$refresh_token"
+
+cleanup
+
+echo "Tokens stored successfully."
