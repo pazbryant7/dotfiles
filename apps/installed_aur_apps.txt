@@ -1,3 +1,4 @@
+[1m[33m
 dragon-drop
 grpcurl-bin
 helium-browser-bin
