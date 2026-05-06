@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """
-translate.py — tmux-based Spanish <-> English translator
+translate.py — Spanish <-> English translator
 Usage:
     translate.py en:es
     translate.py es:en
-    translate.py --pane <direction> <query>   (internal, called by tmux)
 """
 
 from __future__ import annotations
@@ -20,7 +19,6 @@ import tty
 
 # ── Constants ─────────────────────────────────────────────────────────────────
 
-SCRIPT_PATH = os.path.abspath(__file__)
 TRANS_OPTS = ["-verbose", "-no-warn"]
 
 DIRECTIONS = {
@@ -33,11 +31,7 @@ SWAP = {
     "es:en": "en:es",
 }
 
-COMMANDS = {
-    "s": "swap direction",
-    "!": "repeat last",
-    "q": "quit",
-}
+POST_MENU_TIMEOUT = 10
 
 
 # ── Data types ────────────────────────────────────────────────────────────────
@@ -58,19 +52,12 @@ class History:
         index = len(self._entries) - offset
         return self._entries[index] if 0 <= index < len(self._entries) else None
 
-    def __len__(self) -> int:
-        return len(self._entries)
 
-
-# ── Terminal helpers ───────────────────────────────────────────────────────────
+# ── Terminal helpers ──────────────────────────────────────────────────────────
 
 
 def terminal_width() -> int:
     return shutil.get_terminal_size().columns
-
-
-def center(text: str) -> str:
-    return text.center(terminal_width())
 
 
 def separator() -> str:
@@ -82,38 +69,21 @@ def clear_screen() -> None:
 
 
 def print_centered(text: str) -> None:
-    print(center(text))
+    print(text.center(terminal_width()))
 
 
 def print_separator() -> None:
     print(separator())
 
 
-# ── Direction helpers ─────────────────────────────────────────────────────────
-
-
-def validate_direction(direction: str) -> bool:
-    return direction in DIRECTIONS
-
-
-def direction_label(direction: str) -> str:
-    return DIRECTIONS[direction]
-
-
-def swap_direction(direction: str) -> str:
-    return SWAP[direction]
-
-
 # ── External tool calls ───────────────────────────────────────────────────────
 
 
 def run_translation(direction: str, query: str) -> None:
-    """Run `trans` and print output to stdout."""
     subprocess.run(["trans", *TRANS_OPTS, direction, query], check=False)
 
 
 def play_audio(direction: str, query: str) -> None:
-    """Speak the query using `trans -speak`."""
     subprocess.run(
         ["trans", "-speak", direction, query],
         stdout=subprocess.DEVNULL,
@@ -123,7 +93,6 @@ def play_audio(direction: str, query: str) -> None:
 
 
 def copy_to_clipboard(text: str) -> str:
-    """Copy text to clipboard. Returns a status message."""
     for tool, args in [
         ("pbcopy", ["pbcopy"]),
         ("xclip", ["xclip", "-selection", "clipboard"]),
@@ -131,137 +100,25 @@ def copy_to_clipboard(text: str) -> str:
     ]:
         if shutil.which(tool):
             subprocess.run(args, input=text.encode(), check=False)
-            return "📋 Copied to clipboard."
-    return "⚠️  No clipboard tool found (pbcopy / xclip / xsel)."
-
-
-# ── Pane mode (runs inside tmux window) ───────────────────────────────────────
-
-
-def pane_menu(direction: str, query: str) -> None:
-    """Interactive post-translation menu inside the tmux pane."""
-    actions = {
-        "r": lambda: (print("\n🔊 Replaying audio..."), play_audio(direction, query)),
-        "c": lambda: print(copy_to_clipboard(query)),
-    }
-
-    TIMEOUT = 5
-
-    while True:
-        print()
-        print_separator()
-        print(
-            f"  [r] Replay audio   [c] Copy to clipboard   [q] Close  (auto-close in {TIMEOUT}s)"
-        )
-        print_separator()
-        print("> ", end="", flush=True)
-
-        fd = sys.stdin.fileno()
-        old_settings = termios.tcgetattr(fd)
-        choice = ""
-        try:
-            tty.setraw(fd)
-            deadline = time.monotonic() + TIMEOUT
-            while True:
-                remaining = deadline - time.monotonic()
-                if remaining <= 0:
-                    print("\n  ⏱️  Auto-closing...")
-                    return
-                ready, _, _ = select.select([sys.stdin], [], [], remaining)
-                if ready:
-                    ch = os.read(fd, 1).decode("utf-8", errors="replace")
-                    if ch in ("\r", "\n"):
-                        choice = ""
-                        break
-                    if ch in ("\x03", "\x04", "q", ""):
-                        choice = "q"
-                        break
-                    choice = ch.lower()
-                    break
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-
-        sys.stdout.write("\n")
-        sys.stdout.flush()
-
-        if choice in ("q", ""):
-            break
-        action = actions.get(choice)
-        if action:
-            action()
-            TIMEOUT = 5  # reset timeout after a successful action
-        else:
-            print("  Unknown option.")
-
-
-def run_pane(direction: str, query: str) -> None:
-    """
-    Entry point when this script is invoked as a tmux pane.
-    Renders the translation, plays audio, then shows the menu.
-    """
-    clear_screen()
-    print()
-    run_translation(direction, query)
-    print()
-    play_audio(direction, query)
-    pane_menu(direction, query)
-    print("\n👋 Closed.")
-
-
-# ── Tmux integration ──────────────────────────────────────────────────────────
-
-
-def open_translation_pane(direction: str, query: str) -> None:
-    """Open a new tmux window that re-invokes this script in pane mode."""
-    window_name = f"trans:{direction_label(direction)}"
-    pane_cmd = f"python3 {SCRIPT_PATH} --pane {direction} {query!r}"
-    subprocess.run(
-        ["tmux", "new-window", "-n", window_name, pane_cmd],
-        check=False,
-    )
+            return "📋  Copied to clipboard."
+    return "⚠️   No clipboard tool found (pbcopy / xclip / xsel)."
 
 
 # ── Raw character input ───────────────────────────────────────────────────────
 
 
 def read_char(fd: int) -> str:
-    """Read a single raw character from a file descriptor."""
     return os.read(fd, 1).decode("utf-8", errors="replace")
-
-
-def read_escape_sequence(fd: int) -> str:
-    """Read the two bytes following an ESC character."""
-    return read_char(fd) + read_char(fd)
-
-
-def apply_backspace(buf: str) -> tuple[str, str]:
-    """Return (new_buffer, terminal_output) for a backspace keypress."""
-    if buf:
-        return buf[:-1], "\b \b"
-    return buf, ""
-
-
-def apply_history(buf: str, offset: int, history: History) -> tuple[str, int, str]:
-    """
-    Return (new_buffer, new_offset, terminal_output) after a history navigation.
-    """
-    entry = history.get(offset)
-    if entry is None:
-        return buf, offset - 1, ""
-    cols = terminal_width()
-    clear_line = f"\r{' ' * cols}\r> "
-    return entry, offset, clear_line + entry
 
 
 def read_query(history: History) -> str | None:
     """
-    Read a line from the terminal with raw character handling.
+    Read a line with raw character handling.
     Supports backspace and up/down arrow history navigation.
-    Returns the entered string, or None on Ctrl-C / Ctrl-D.
+    Returns None on Ctrl-C / Ctrl-D.
     """
     fd = sys.stdin.fileno()
-    old_settings = termios.tcgetattr(fd)
-
+    old = termios.tcgetattr(fd)
     buf = ""
     hist_offset = 0
 
@@ -275,36 +132,43 @@ def read_query(history: History) -> str | None:
                 sys.stdout.flush()
                 return buf
 
-            if ch in ("\x03", "\x04"):  # Ctrl-C / Ctrl-D
+            if ch in ("\x03", "\x04"):
                 sys.stdout.write("\n")
                 sys.stdout.flush()
                 return None
 
-            if ch in ("\x7f", "\x08"):  # Backspace / DEL
-                buf, output = apply_backspace(buf)
-                sys.stdout.write(output)
-                sys.stdout.flush()
+            if ch in ("\x7f", "\x08"):
+                if buf:
+                    buf = buf[:-1]
+                    sys.stdout.write("\b \b")
+                    sys.stdout.flush()
                 continue
 
-            if ch == "\x1b":  # Escape sequence (arrow keys)
-                seq = read_escape_sequence(fd)
-                if seq == "[A":  # Up arrow
+            if ch == "\x1b":
+                seq = read_char(fd) + read_char(fd)
+                cols = terminal_width()
+
+                if seq == "[A":  # Up
                     hist_offset += 1
-                    buf, hist_offset, output = apply_history(buf, hist_offset, history)
-                    sys.stdout.write(output)
-                    sys.stdout.flush()
-                elif seq == "[B":  # Down arrow
+                    entry = history.get(hist_offset)
+                    if entry is None:
+                        hist_offset -= 1
+                    else:
+                        buf = entry
+                        sys.stdout.write(f"\r{' ' * cols}\r> {buf}")
+                        sys.stdout.flush()
+
+                elif seq == "[B":  # Down
                     if hist_offset > 0:
                         hist_offset -= 1
                     if hist_offset == 0:
-                        cols = terminal_width()
-                        sys.stdout.write(f"\r{' ' * cols}\r> ")
                         buf = ""
+                        sys.stdout.write(f"\r{' ' * cols}\r> ")
                     else:
-                        buf, hist_offset, output = apply_history(
-                            buf, hist_offset, history
-                        )
-                        sys.stdout.write(output)
+                        entry = history.get(hist_offset)
+                        if entry:
+                            buf = entry
+                            sys.stdout.write(f"\r{' ' * cols}\r> {buf}")
                     sys.stdout.flush()
                 continue
 
@@ -313,62 +177,69 @@ def read_query(history: History) -> str | None:
             sys.stdout.flush()
 
     finally:
-        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        termios.tcsetattr(fd, termios.TCSADRAIN, old)
 
 
-# ── Special command handling ──────────────────────────────────────────────────
+def read_single_key(timeout: float) -> str:
+    """Read one raw keypress with a timeout. Returns '' on timeout."""
+    fd = sys.stdin.fileno()
+    old = termios.tcgetattr(fd)
+    try:
+        tty.setraw(fd)
+        ready, _, _ = select.select([sys.stdin], [], [], timeout)
+        if not ready:
+            return ""
+        return os.read(fd, 1).decode("utf-8", errors="replace")
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old)
 
 
-def handle_swap(direction: str) -> tuple[str, bool]:
-    """Return (new_direction, should_continue)."""
-    return swap_direction(direction), True
+# ── Post-translation menu ─────────────────────────────────────────────────────
 
 
-def handle_repeat(last: str | None) -> tuple[str | None, bool]:
-    """Return (query_to_use, should_continue). None query means show warning."""
-    if last is None:
-        return None, True
-    return last, False
+def post_menu(direction: str, query: str) -> None:
+    """Show options after a translation. Auto-returns after timeout."""
+    timeout = POST_MENU_TIMEOUT
+
+    while True:
+        print()
+        print_separator()
+        print(f"  [r] Replay audio   [c] Copy   [↵ / q] Next  (auto in {timeout}s)")
+        print_separator()
+        print("> ", end="", flush=True)
+
+        ch = read_single_key(timeout)
+        sys.stdout.write("\n")
+        sys.stdout.flush()
+
+        if ch in ("", "\r", "\n", "q", "\x03", "\x04"):
+            break
+
+        ch = ch.lower()
+
+        if ch == "r":
+            print("\n  🔊  Replaying audio...")
+            play_audio(direction, query)
+            timeout = POST_MENU_TIMEOUT  # reset
+
+        elif ch == "c":
+            print(f"\n  {copy_to_clipboard(query)}")
+            timeout = POST_MENU_TIMEOUT
+
+        else:
+            print("  Unknown option.")
 
 
-def resolve_query(
-    raw: str,
-    direction: str,
-    last: str | None,
-) -> tuple[str | None, str, bool]:
-    """
-    Parse a raw input line into (query, direction, skip).
-    skip=True means no translation should run this iteration.
-    query=None means a warning was shown and we should loop.
-    """
-    lowered = raw.strip().lower()
-
-    if lowered == "s":
-        new_dir = swap_direction(direction)
-        return None, new_dir, True
-
-    if lowered == "q":
-        return None, direction, False  # signal to exit
-
-    if lowered == "!":
-        if last is None:
-            print("  ⚠️  No previous translation.")
-            return None, direction, True
-        return last, direction, False
-
-    return raw, direction, False
-
-
-# ── Header / UI ───────────────────────────────────────────────────────────────
+# ── Header ────────────────────────────────────────────────────────────────────
 
 
 def print_header(direction: str) -> None:
     clear_screen()
     print()
-    print_centered(
-        f"{direction_label(direction)}  •  [s] swap  [!] repeat last  [q] quit"
-    )
-    print_separator()
+    print_centered("━" * 40)
+    print_centered(DIRECTIONS[direction])
+    print_centered("[s] swap direction   [!] repeat   [q] quit")
+    print_centered("━" * 40)
     print()
 
 
@@ -385,29 +256,44 @@ def main_loop(direction: str) -> None:
 
         raw = read_query(history)
 
-        if raw is None or raw.strip().lower() == "q":
+        if raw is None:
             break
 
-        if not raw.strip():
+        stripped = raw.strip()
+
+        if not stripped:
             continue
 
-        query, direction, skip = resolve_query(raw, direction, last)
+        lowered = stripped.lower()
 
-        if skip:
-            if query is None:
-                import time
+        if lowered == "q":
+            break
 
+        if lowered == "s":
+            direction = SWAP[direction]
+            time.sleep(0.3)
+            continue
+
+        if lowered == "!":
+            if last is None:
+                print("  ⚠️   Nothing to repeat.")
                 time.sleep(1)
-            continue
-
-        if query is None:
-            break
+                continue
+            query = last
+        else:
+            query = stripped
 
         history.add(query)
         last = query
 
-        print_centered("Translating...")
-        open_translation_pane(direction, query)
+        print()
+        print_separator()
+        run_translation(direction, query)
+        play_audio(direction, query)
+        post_menu(direction, query)
+
+
+# ── Entry point ───────────────────────────────────────────────────────────────
 
 
 def main(argv: list[str]) -> int:
@@ -415,15 +301,8 @@ def main(argv: list[str]) -> int:
         print(f"Usage: {argv[0]} en:es | {argv[0]} es:en", file=sys.stderr)
         return 1
 
-    if argv[1] == "--pane":
-        if len(argv) < 4:
-            print("--pane requires <direction> <query>", file=sys.stderr)
-            return 1
-        run_pane(direction=argv[2], query=argv[3])
-        return 0
-
     direction = argv[1]
-    if not validate_direction(direction):
+    if direction not in DIRECTIONS:
         print(f"Invalid direction '{direction}'. Use en:es or es:en.", file=sys.stderr)
         return 1
 
@@ -432,7 +311,7 @@ def main(argv: list[str]) -> int:
     except KeyboardInterrupt:
         pass
 
-    print("\n👋 Goodbye.")
+    print("\n👋  Goodbye.")
     return 0
 
 
