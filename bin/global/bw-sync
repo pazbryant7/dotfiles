@@ -15,7 +15,7 @@ die() {
 info() { printf "  %-12s %s\n" "$1" "$2" >&2; }
 
 gopass_field() {
-	gopass show bitwarden/personal/master | grep "$1" | awk '{print $2}'
+	gopass show bitwarden/personal/secret | grep "$1" | awk '{print $2}'
 }
 
 load_session() {
@@ -32,7 +32,7 @@ validate_session() {
 }
 
 unlock_vault() {
-	BW_PASSWORD="$(gopass show bitwarden/personal/master | head -n 1)"
+	BW_PASSWORD="$(gopass -o bitwarden/personal/secret)"
 	[ -n "$BW_PASSWORD" ] || die "could not retrieve password from gopass"
 	export BW_PASSWORD
 	bw unlock --passwordenv BW_PASSWORD --raw 2>/dev/null

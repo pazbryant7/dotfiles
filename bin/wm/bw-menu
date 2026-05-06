@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
 
-set -x
-
 GPG_RECIPIENT="pazbryant7@outlook.com"
 CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}"
 ENCRYPTED_FILE="$CACHE_DIR/bw_vault.gpg"
@@ -9,7 +7,7 @@ TEMPLATE_LOGIN="$CACHE_DIR/bw_login_template.json"
 TEMPLATE_CARD="$CACHE_DIR/bw_card_template.json"
 TEMPLATE_NOTE="$CACHE_DIR/bw_note_template.json"
 SYNC_SCRIPT="${HOME}/.local/bin/bw-sync"
-MASTER_PATH="bitwarden/personal/master"
+MASTER_PATH="bitwarden/personal/secret"
 SESSION_PATH="bitwarden/personal/session"
 TERM_CMD="st -t bitwarden -e"
 EDITOR="${EDITOR:-nvim}"
@@ -47,13 +45,13 @@ prompt_rofi() {
 }
 
 ensure_bw_session() {
-	BW_SESSION="$(gopass show "$SESSION_PATH" 2>/dev/null | head -n 1)"
+	BW_SESSION="$(gopass -o "$SESSION_PATH" 2>/dev/null)"
 	export BW_SESSION
 
 	bw status | jq -e '.status == "unlocked"' >/dev/null && return 0
 
 	notify "Vault locked. Authenticating via gopass..."
-	BW_PASSWORD="$(gopass show "$MASTER_PATH" 2>/dev/null | head -n 1)"
+	BW_PASSWORD="$(gopass -o "$MASTER_PATH" 2>/dev/null)"
 
 	[ -z "$BW_PASSWORD" ] && {
 		notify_err "Master password not found in gopass."
