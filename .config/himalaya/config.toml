@@ -1,0 +1,44 @@
+[accounts.outlook]
+default = true
+email = "pazbryant7@outlook.com"
+display-name = "Bryant Paz"
+downloads-dir = "/home/bryant/Downloads"
+
+backend.type = "imap"
+backend.host = "outlook.office365.com"
+backend.port = 993
+backend.login = "pazbryant7@outlook.com"
+backend.auth.type = "oauth2"
+backend.auth.method = "xoauth2"
+backend.auth.pkce = true
+backend.auth.client-id = "006fe53f-dce4-45e1-9097-91b937b46caf"
+backend.auth.client-secret.cmd = "gopass -o azure/personal/himalaya/secret"
+backend.auth.access-token.cmd = "gopass -o azure/personal/himalaya/access-token"
+backend.auth.refresh-token.cmd = "gopass -o azure/personal/himalaya/refresh-token"
+backend.auth.auth-url = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
+backend.auth.token-url = "https://login.microsoftonline.com/common/oauth2/v2.0/token"
+backend.auth.scopes = [
+  "https://outlook.office.com/IMAP.AccessAsUser.All",
+  "https://outlook.office.com/SMTP.Send",
+  "offline_access",
+]
+
+message.send.backend.type = "smtp"
+message.send.backend.host = "smtp-mail.outlook.com"
+message.send.backend.port = 587
+message.send.backend.starttls = true
+message.send.backend.login = "pazbryant7@outlook.com"
+message.send.backend.auth.type = "oauth2"
+message.send.backend.auth.method = "xoauth2"
+message.send.backend.auth.pkce = true
+message.send.backend.auth.client-id = "006fe53f-dce4-45e1-9097-91b937b46caf"
+message.send.backend.auth.client-secret.cmd = "gopass -o azure/personal/himalaya/secret"
+message.send.backend.auth.access-token.cmd = "gopass -o azure/personal/himalaya/access-token"
+message.send.backend.auth.refresh-token.cmd = "gopass -o azure/personal/himalaya/refresh-token"
+message.send.backend.auth.auth-url = "https://login.microsoftonline.com/common/oauth2/v2.0/authorize"
+message.send.backend.auth.token-url = "https://login.microsoftonline.com/common/oauth2/v2.0/token"
+message.send.backend.auth.scopes = [
+  "https://outlook.office.com/IMAP.AccessAsUser.All",
+  "https://outlook.office.com/SMTP.Send",
+  "offline_access",
+]
