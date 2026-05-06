@@ -16,7 +16,7 @@ die() {
 }
 
 read_client_id() {
-	gopass azure/personal/himalaya/client-id || die "could not read client-id from pass"
+	gopass -o azure/personal/himalaya/client-id || die "could not read client-id from pass"
 }
 
 check_dependencies() {

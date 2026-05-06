@@ -1,0 +1,46 @@
+#!/usr/bin/env sh
+# himalaya-cron-refresh
+# Wrapper for himalaya-refresh-token intended to be run from cron.
+# Ensures the GPG agent is reachable in the stripped cron environment.
+
+REFRESH_SCRIPT="${HOME}/Documents/github/dotfiles/bin/utilities/himalaya-refresh-token"
+
+# --- functions ---
+
+die() {
+	printf 'error: %s\n' "$1" >&2
+	exit 1
+}
+
+setup_gpg_env() {
+	export GNUPGHOME="${GNUPGHOME:-${HOME}/.gnupg}"
+
+	agent_socket=$(gpgconf --list-dirs agent-socket 2>/dev/null)
+
+	if [ -z "$agent_socket" ]; then
+		die "gpgconf failed — is gnupg installed?"
+	fi
+
+	if [ ! -S "$agent_socket" ]; then
+		die "gpg-agent socket not found at '$agent_socket' — is gpg-agent running?"
+	fi
+
+	export GPG_AGENT_INFO="${agent_socket}:0:1"
+}
+
+check_refresh_script() {
+	if [ ! -f "$REFRESH_SCRIPT" ]; then
+		die "refresh script not found at '$REFRESH_SCRIPT'"
+	fi
+
+	if [ ! -x "$REFRESH_SCRIPT" ]; then
+		die "refresh script is not executable: '$REFRESH_SCRIPT'"
+	fi
+}
+
+# --- main ---
+
+setup_gpg_env
+check_refresh_script
+
+exec "$REFRESH_SCRIPT"
