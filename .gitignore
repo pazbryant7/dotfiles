@@ -4,3 +4,5 @@
 .config/fish/plugins
 .config/ncmpcpp/error.log
 .config/jj/repos
+/.config/mpd/mpd.log
+/.config/mpd/mpdstate
