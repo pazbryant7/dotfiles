@@ -10,10 +10,10 @@
 /*****----- Global Properties -----*****/
 * {
 background			:#000000;
-background-alt:#6E76A4;
+background-alt:#7C826F;
 foreground			:#ffffff;
 selected			:#000000;
-font				:"Overpass SemiBold 9.5";
+font				:"Annotation Mono SemiBold 11.5";
 }
 
 /*****----- Main Window -----*****/
