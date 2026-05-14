@@ -36,6 +36,7 @@ fzf
 gammastep
 git
 github-cli
+glow
 go
 gopass
 grub
