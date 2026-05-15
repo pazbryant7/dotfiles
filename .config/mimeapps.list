@@ -26,3 +26,4 @@ x-scheme-handler/discord=vesktop.desktop
 x-scheme-handler/postman=Postman.desktop
 audio/x-m4a=ffplay.desktop
 application/x-pem-file=nvim.desktop
+text/html=nvim.desktop
