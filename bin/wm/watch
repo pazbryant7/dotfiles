@@ -1,11 +1,14 @@
 #!/usr/bin/env sh
 
-VIDEOS_DIR="/home/bryant/Videos/"
-RECORDINGS_DIR="/run/media/bryant/tiagovault/videos/"
+VIDEO_DIRS="
+/home/bryant/Videos/
+/run/media/bryant/tiagovault/videos/
+"
 LAST_WATCHED_FILE="/home/bryant/.last-watched"
 
 list_video_dirs() {
-	fd . --type=d --max-depth 1 "$VIDEOS_DIR" "$RECORDINGS_DIR" 2>/dev/null
+	# shellcheck disable=SC2086
+	fd . --type=d --max-depth 1 $VIDEO_DIRS 2>/dev/null
 }
 
 list_videos() {
