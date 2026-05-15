@@ -13,6 +13,9 @@ zle -N smart-help
 zle -N clear-and-redisplay
 zle -N copy-terminal-buffer
 
+# path autocompletion
+compdef _directories new
+
 # custom binds
 bindkey -e # use emacs preset
 
