@@ -1,25 +1,24 @@
 # main
 abbr -a paru yay
-abbr -a wg "sudo wg" # for custom vpn
 abbr -a pass gopass
-abbr -a transes "trans en:es"
-abbr -a feh "feh -g 860x600 --scale-down"
+abbr -a transes trans en:es
+abbr -a feh feh -g 860x600 --scale-down
 
-abbr -a dh "rm ~/.local/share/fish/fish_history"
+abbr -a dh rm "~/.local/share/fish/fish_history"
 
 # git
 abbr -a lzg lazygit
 
 # himalaya
-abbr hm="himalaya"
-abbr hmj="himalaya envelop list --folder Junk"
+abbr -a hm himalaya
+abbr -a hmj himalaya envelop list --folder Junk
 
 # docker
 abbr -a lzd lazydocker
 
 # tmux
-abbr -a ta "tmux attach"
-abbr -a tk "tmux kill-server"
-abbr -a tn "tmux new -s $USER"
+abbr -a ta tmux attach
+abbr -a tk tmux kill-server
+abbr -a tn tmux new -s $USER
 
-abbr -a motivation "mpv ~/Documents/github/media/videos/biy/cristiano.mp4"
+abbr -a motivation mpv "~/Documents/github/media/videos/biy/cristiano.mp4"
