@@ -19,12 +19,6 @@ read_client_id() {
 	gopass -o azure/personal/himalaya/client-id || die "could not read client-id from pass"
 }
 
-check_dependencies() {
-	for cmd in openssl python3; do
-		command -v "$cmd" >/dev/null 2>&1 || die "'$cmd' is required but not installed"
-	done
-}
-
 generate_code_verifier() {
 	openssl rand -base64 64 | tr -d '=+/' | cut -c1-64
 }
@@ -66,12 +60,12 @@ print_auth_url() {
 	echo ""
 }
 
-# --- main ---
+main() {
+	code_verifier=$(generate_code_verifier)
+	code_challenge=$(generate_code_challenge "$code_verifier")
 
-check_dependencies
+	save_verifier "$code_verifier"
+	print_auth_url "$code_challenge"
+}
 
-code_verifier=$(generate_code_verifier)
-code_challenge=$(generate_code_challenge "$code_verifier")
-
-save_verifier "$code_verifier"
-print_auth_url "$code_challenge"
+main "$@"

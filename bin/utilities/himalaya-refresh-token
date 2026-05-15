@@ -13,18 +13,10 @@ die() {
 	exit 1
 }
 
-check_dependencies() {
-	for cmd in curl jq gopass; do
-		command -v "$cmd" >/dev/null 2>&1 || die "'$cmd' is required but not installed"
-	done
-}
-
 read_secret() {
 	key="$1"
-	value=$(gopass -o "$key" 2>/dev/null)
-	if [ -z "$value" ]; then
-		die "could not read '$key' from gopass"
-	fi
+	value=$(gopass -o "$key" 2>/dev/null) || die "could not read '$key' from gopass"
+	[ -n "$value" ] || die "empty value for '$key' in gopass"
 	printf '%s' "$value"
 }
 
@@ -39,10 +31,14 @@ request_new_tokens() {
 		--data-urlencode "client_secret=${client_secret}" \
 		--data-urlencode "grant_type=refresh_token" \
 		--data-urlencode "refresh_token=${refresh_token}" \
-		--data-urlencode "scope=${SCOPE}")
+		--data-urlencode "scope=${SCOPE}") || die "curl failed — check your internet connection"
 
-	if [ -z "$response" ]; then
-		die "empty response from token endpoint — check your internet connection"
+	[ -n "$response" ] || die "empty response from token endpoint — check your internet connection"
+
+	error=$(printf '%s' "$response" | jq -r '.error // empty')
+	if [ -n "$error" ]; then
+		error_description=$(printf '%s' "$response" | jq -r '.error_description // empty')
+		die "token endpoint error: ${error}: ${error_description}"
 	fi
 
 	printf '%s' "$response"
@@ -51,41 +47,31 @@ request_new_tokens() {
 parse_token() {
 	response="$1"
 	field="$2"
-
 	value=$(printf '%s' "$response" | jq -r ".$field // empty")
-
-	if [ -z "$value" ]; then
-		die "could not parse '$field' — refresh token may have expired, run the full auth flow again"
-	fi
-
+	[ -n "$value" ] || die "could not parse '$field' — refresh token may have expired, run the full auth flow again"
 	printf '%s' "$value"
 }
 
 store_secret() {
 	key="$1"
 	value="$2"
-
-	printf '%s' "$value" | gopass insert -f "$key" 2>/dev/null
-
-	if [ $? -ne 0 ]; then
-		die "could not store '$key' in gopass"
-	fi
+	printf '%s' "$value" | gopass insert -f "$key" 2>/dev/null || die "could not store '$key' in gopass"
 }
 
-# --- main ---
+main() {
+	client_id=$(read_secret "azure/personal/himalaya/client-id") || exit 1
+	client_secret=$(read_secret "azure/personal/himalaya/secret") || exit 1
+	refresh_token=$(read_secret "azure/personal/himalaya/refresh-token") || exit 1
 
-check_dependencies
+	response=$(request_new_tokens "$client_id" "$client_secret" "$refresh_token") || exit 1
 
-client_id=$(read_secret "azure/personal/himalaya/client-id")
-client_secret=$(read_secret "azure/personal/himalaya/secret")
-refresh_token=$(read_secret "azure/personal/himalaya/refresh-token")
+	access_token=$(parse_token "$response" "access_token") || exit 1
+	new_refresh_token=$(parse_token "$response" "refresh_token") || exit 1
 
-response=$(request_new_tokens "$client_id" "$client_secret" "$refresh_token")
+	store_secret "azure/personal/himalaya/access-token" "$access_token" || exit 1
+	store_secret "azure/personal/himalaya/refresh-token" "$new_refresh_token" || exit 1
 
-access_token=$(parse_token "$response" "access_token")
-new_refresh_token=$(parse_token "$response" "refresh_token")
+	printf 'tokens refreshed successfully\n'
+}
 
-store_secret "azure/personal/himalaya/access-token" "$access_token"
-store_secret "azure/personal/himalaya/refresh-token" "$new_refresh_token"
-
-printf 'tokens refreshed successfully\n'
+main "$@"

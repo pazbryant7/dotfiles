@@ -1,11 +1,10 @@
 #!/usr/bin/env sh
+
 # himalaya-cron-refresh
 # Wrapper for himalaya-refresh-token intended to be run from cron.
 # Ensures the GPG agent is reachable in the stripped cron environment.
 
 REFRESH_SCRIPT="${HOME}/Documents/github/dotfiles/bin/utilities/himalaya-refresh-token"
-
-# --- functions ---
 
 die() {
 	printf 'error: %s\n' "$1" >&2
@@ -38,9 +37,11 @@ check_refresh_script() {
 	fi
 }
 
-# --- main ---
+main() {
+	setup_gpg_env
+	check_refresh_script
 
-setup_gpg_env
-check_refresh_script
+	exec "$REFRESH_SCRIPT"
+}
 
-exec "$REFRESH_SCRIPT"
+main "$@"
