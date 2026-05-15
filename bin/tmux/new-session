@@ -1,6 +1,41 @@
 #!/usr/bin/env sh
 
-. "$(dirname "$0")/lib/search"
+# shellcheck disable=SC2034
+SESSION_DIRS="
+$HOME/Documents/github
+$HOME/Documents/github/temp
+"
+
+current_session() {
+	tmux display-message -p '#S'
+}
+
+session_exists() {
+	tmux has-session -t="$1" 2>/dev/null
+}
+
+create_session() {
+	tmux new-session -ds "$1" -c "$2"
+}
+
+switch_to_session() {
+	tmux switch-client -t "$1"
+}
+
+notify() {
+	tmux display-message "$1"
+}
+
+pick_with_fzf() {
+	dirs="$1"
+	shift
+	# shellcheck disable=SC2068,SC2086
+	fd $@ $dirs 2>/dev/null | fzf
+}
+
+session_name_from_path() {
+	basename "$1" | tr . _
+}
 
 select_directory() {
 	if [ -n "$1" ]; then
@@ -11,8 +46,6 @@ select_directory() {
 }
 
 main() {
-	require_tmux || exit 1
-
 	selected_path=$(select_directory "$1") || exit 1
 	if [ -z "$selected_path" ]; then
 		printf 'No directory selected\n' >&2
