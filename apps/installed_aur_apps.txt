@@ -5,5 +5,4 @@ helium-browser-bin
 numbat-bin
 ttf-dmcasansserif
 ventoy-bin
-waterfox-bin
 yay

@@ -1,6 +1,5 @@
 7zip
 alacritty
-android-tools
 ansible
 ansible-lint
 aria2
@@ -11,7 +10,6 @@ base-devel
 bat
 bitwarden-cli
 bob
-bottom
 breeze-gtk
 breeze-icons
 bun
@@ -41,17 +39,14 @@ go
 gopass
 grub
 gst-plugin-pipewire
-hurl
 hyperfine
 imagemagick
 img2pdf
 intel-ucode
 jq
-jre-openjdk
 jujutsu
 just
 lazydocker
-lazygit
 libnotify
 linux
 linux-firmware
@@ -75,11 +70,9 @@ ntfs-3g
 oath-toolkit
 openssh
 pacman-contrib
-pandoc-cli
 pastel
 patchelf
 pavucontrol
-pcmanfm
 perl-image-exiftool
 picom
 piper
@@ -99,7 +92,6 @@ rsync
 rtkit
 rustup
 screenkey
-sqlc
 starship
 stow
 sudo
@@ -115,13 +107,11 @@ ueberzugpp
 ufw
 unclutter
 uv
-watchexec
 websocat
 wireplumber
 xclip
 xcolor
 xdotool
-xh
 xorg-server
 xorg-server-xephyr
 xorg-xev
