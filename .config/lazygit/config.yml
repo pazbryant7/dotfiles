@@ -1,3 +1,0 @@
-os:
-  open: "xterm -e nvim {{filename}}"
-  editPreset: "nvim-remote"
