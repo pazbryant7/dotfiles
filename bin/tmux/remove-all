@@ -1,23 +1,9 @@
 #!/usr/bin/env sh
-# Close all tmux sessions except user's home session.
-# Creates home session if it doesn't exist and switches to it.
 
-session_exists() {
-	tmux has-session -t "$1"
-}
+# Creates home session if it doesn't exist and switches to it.
 
 get_session_name() {
 	tmux display-message -p "#S"
-}
-
-get_path() {
-	echo "$HOME"
-}
-
-create_session() {
-	name="$1"
-	path="$2"
-	tmux new-session -d -s "$name" -c "$path"
 }
 
 kill_all_except() {
@@ -25,27 +11,14 @@ kill_all_except() {
 	tmux kill-session -a -t "$name"
 }
 
-switch_to() {
-	name="$1"
-	tmux switch-client -t "$name"
-}
-
 notify() {
 	tmux display-message "Welcome home $USER, all other sessions removed"
 }
 
 main() {
-	name="$USER"
+	name=$(get_session_name)
+	[ -z "$name" ] && exit 1
 
-	path=$(get_path)
-	[ -z "$path" ] && exit 1
-	[ -d "$path" ] || exit 1
-
-	session_exists "$name" || {
-		create_session "$name" "$path" || exit 1
-	}
-
-	switch_to "$name" || exit 1
 	kill_all_except "$name" || exit 1
 
 	notify
