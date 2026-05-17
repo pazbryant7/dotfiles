@@ -37,10 +37,14 @@ alias rbt="systemctl reboot"
 alias fontcache="sudo fc-cache -f -v"
 alias rex="xrdb -remove && xrdb -merge ~/.Xresources && kill -USR1 \$(pidof st)"
 
+alias lzg="lazygit"
+
 alias hm="himalaya"
 alias hmj="himalaya envelop list --folder Junk"
 
 alias opencode="bunx --bun opencode-ai"
+
+alias lzd="lazydocker"
 
 alias btm="btm --basic"
 
