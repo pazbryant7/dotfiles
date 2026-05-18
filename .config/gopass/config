@@ -2,7 +2,3 @@
 	autosync = false
 [mounts]
 	path = /home/bryant/Documents/github/pass
-[mounts "local"]
-	path = /home/bryant/.local/share/gopass/stores/local
-[recipients "local"]
-	hash = 7989f4d0c6a87648c8f068b956f82ddccdcb0ca9189e1fed335995736518d201

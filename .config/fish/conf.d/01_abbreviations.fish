@@ -9,10 +9,6 @@ abbr -a dh rm "~/.local/share/fish/fish_history"
 # git
 abbr -a lzg lazygit
 
-# himalaya
-abbr -a hm himalaya
-abbr -a hmj himalaya envelop list --folder Junk
-
 # docker
 abbr -a lzd lazydocker
 
