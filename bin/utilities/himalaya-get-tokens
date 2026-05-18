@@ -25,11 +25,11 @@ read_verifier() {
 }
 
 read_client_id() {
-	gopass -o azure/personal/himalaya/client-id || die "could not read client-id from gopass"
+	gopass -o local/azure/personal/himalaya/client-id || die "could not read client-id from gopass"
 }
 
 read_client_secret() {
-	gopass -o azure/personal/himalaya/secret || die "could not read client secret from gopass"
+	gopass -o local/azure/personal/himalaya/secret || die "could not read client secret from gopass"
 }
 
 prompt_redirect_url() {
@@ -106,8 +106,8 @@ main() {
 	refresh_token=$(parse_token "$response" "refresh_token") || exit 1
 
 	# Store in gopass
-	store_token "azure/personal/himalaya/access-token" "$access_token"
-	store_token "azure/personal/himalaya/refresh-token" "$refresh_token"
+	store_token "local/azure/personal/himalaya/access-token" "$access_token"
+	store_token "local/azure/personal/himalaya/refresh-token" "$refresh_token"
 
 	cleanup
 

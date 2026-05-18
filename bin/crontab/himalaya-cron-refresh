@@ -1,8 +1,9 @@
 #!/usr/bin/env sh
-
 # himalaya-cron-refresh
 # Wrapper for himalaya-refresh-token intended to be run from cron.
-# Ensures the GPG agent is reachable in the stripped cron environment.
+# Ensures correct PATH and GPG agent are reachable in the stripped cron environment.
+
+export PATH="/usr/local/bin:/usr/bin:/bin:${HOME}/.local/bin:${HOME}/go/bin"
 
 REFRESH_SCRIPT="${HOME}/Documents/github/dotfiles/bin/utilities/himalaya-refresh-token"
 
@@ -14,33 +15,27 @@ die() {
 setup_gpg_env() {
 	export GNUPGHOME="${GNUPGHOME:-${HOME}/.gnupg}"
 
-	agent_socket=$(gpgconf --list-dirs agent-socket 2>/dev/null)
+	runtime_dir="/run/user/$(id -u)"
+	export XDG_RUNTIME_DIR="$runtime_dir"
 
-	if [ -z "$agent_socket" ]; then
-		die "gpgconf failed — is gnupg installed?"
-	fi
-
+	# prefer the user runtime socket, fall back to gpgconf
+	agent_socket="${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent"
 	if [ ! -S "$agent_socket" ]; then
-		die "gpg-agent socket not found at '$agent_socket' — is gpg-agent running?"
+		agent_socket=$(gpgconf --list-dirs agent-socket 2>/dev/null)
 	fi
 
+	[ -S "$agent_socket" ] || die "gpg-agent socket not found — is gpg-agent running?"
 	export GPG_AGENT_INFO="${agent_socket}:0:1"
 }
 
 check_refresh_script() {
-	if [ ! -f "$REFRESH_SCRIPT" ]; then
-		die "refresh script not found at '$REFRESH_SCRIPT'"
-	fi
-
-	if [ ! -x "$REFRESH_SCRIPT" ]; then
-		die "refresh script is not executable: '$REFRESH_SCRIPT'"
-	fi
+	[ -f "$REFRESH_SCRIPT" ] || die "refresh script not found at '$REFRESH_SCRIPT'"
+	[ -x "$REFRESH_SCRIPT" ] || die "refresh script is not executable: '$REFRESH_SCRIPT'"
 }
 
 main() {
 	setup_gpg_env
 	check_refresh_script
-
 	exec "$REFRESH_SCRIPT"
 }
 

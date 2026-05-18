@@ -16,7 +16,7 @@ die() {
 }
 
 read_client_id() {
-	gopass -o azure/personal/himalaya/client-id || die "could not read client-id from pass"
+	gopass -o local/azure/personal/himalaya/client-id || die "could not read client-id from pass"
 }
 
 generate_code_verifier() {
