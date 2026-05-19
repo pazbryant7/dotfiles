@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+main() {
+	target="$1"
+
+	if [ -z "$target" ]; then
+		printf "No target was selected"
+		exit 1
+	fi
+
+	st -t translate -e ~/bin/global/translate "$target"
+}
+
+main "$@"
