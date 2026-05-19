@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+main() {
+	dir="$HOME/Documents/github/notes"
+	"$HOME/bin/tmux/new-session" "$dir" &&
+		tmux send-keys -t "$(basename "$dir")" "nvim todo.md" Enter
+}
+
+main "$@"
