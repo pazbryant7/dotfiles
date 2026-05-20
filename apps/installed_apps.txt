@@ -69,6 +69,7 @@ noto-fonts-emoji
 nsxiv
 ntfs-3g
 oath-toolkit
+openresolv
 openssh
 pacman-contrib
 pastel
