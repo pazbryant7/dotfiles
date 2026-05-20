@@ -1,0 +1,134 @@
+#!/usr/bin/env sh
+
+# Usage:
+#   chrono.sh                   stopwatch (counts up)
+#   chrono.sh 25                countdown 25 minutes
+#   chrono.sh 1h 30m            countdown 1 hour 30 minutes
+#   chrono.sh 2h                countdown 2 hours
+#   chrono.sh 45m               countdown 45 minutes
+
+TICK=1
+CLEAR='\033[2K\r'
+SOUND='/home/bryant/Documents/github/media/audio/notifications/senjougahara-hehehehe-sound.mp3'
+
+notify() {
+	msg=$1
+	notify-send "Chrono" "$msg"
+	[ -n "$SOUND" ] && paplay "$SOUND" >/dev/null 2>&1
+}
+
+fmt_time() {
+	total=$1
+	h=$((total / 3600))
+	m=$(((total % 3600) / 60))
+	s=$((total % 60))
+	if [ "$h" -gt 0 ]; then
+		printf '%02d:%02d:%02d' "$h" "$m" "$s"
+	else
+		printf '%02d:%02d' "$m" "$s"
+	fi
+}
+
+parse_duration() {
+	total=0
+	found=0
+	for token in "$@"; do
+		case $token in
+		*h)
+			val=${token%h}
+			case $val in '' | *[!0-9]*)
+				printf 'Error: invalid hour value: "%s"\n' "$val"
+				return 1
+				;;
+			esac
+			total=$((total + val * 3600))
+			found=1
+			;;
+		*m)
+			val=${token%m}
+			case $val in '' | *[!0-9]*)
+				printf 'Error: invalid minute value: "%s"\n' "$val"
+				return 1
+				;;
+			esac
+			total=$((total + val * 60))
+			found=1
+			;;
+		*[0-9])
+			case $token in '' | *[!0-9]*)
+				printf 'Error: invalid value: "%s"\n' "$token"
+				return 1
+				;;
+			esac
+			total=$((total + token * 60))
+			found=1
+			;;
+		*)
+			printf 'Error: unrecognised token: "%s"\n' "$token"
+			return 1
+			;;
+		esac
+	done
+	if [ "$found" -eq 0 ]; then
+		printf 'Error: no duration given\n'
+		return 1
+	fi
+	if [ "$total" -le 0 ]; then
+		printf 'Error: duration must be greater than zero\n'
+		return 1
+	fi
+	printf '%d' "$total"
+}
+
+run_stopwatch() {
+	elapsed=0
+	printf 'Stopwatch started. Press Ctrl+C to stop.\n'
+	while true; do
+		printf '%b  Elapsed: %s  ' "$CLEAR" "$(fmt_time "$elapsed")"
+		sleep "$TICK"
+		elapsed=$((elapsed + TICK))
+	done
+}
+
+run_countdown() {
+	remaining=$1
+	printf 'Countdown: %s. Press Ctrl+C to abort.\n' "$(fmt_time "$remaining")"
+	while [ "$remaining" -gt 0 ]; do
+		printf '%b  Remaining: %s  ' "$CLEAR" "$(fmt_time "$remaining")"
+		sleep "$TICK"
+		remaining=$((remaining - TICK))
+	done
+	printf '%b  Time'\''s up!\n' "$CLEAR"
+	notify "Time's up! Study session finished."
+}
+
+print_usage() {
+	printf 'Usage:\n'
+	printf '  %s                 stopwatch (counts up)\n' "$0"
+	printf '  %s <minutes>       countdown, e.g.: %s 25\n' "$0" "$0"
+	printf '  %s <h> [<m>]       countdown, e.g.: %s 1h 30m\n' "$0" "$0"
+	printf '  %s <h>             countdown, e.g.: %s 2h\n' "$0" "$0"
+	printf '  %s <m>             countdown, e.g.: %s 45m\n' "$0" "$0"
+}
+
+cleanup() {
+	printf '\n'
+	exit 0
+}
+
+main() {
+	trap cleanup INT TERM
+
+	if [ "$#" -eq 0 ]; then
+		run_stopwatch
+		return
+	fi
+
+	seconds=$(parse_duration "$@") || {
+		print_usage
+		exit 1
+	}
+	run_countdown "$seconds"
+}
+
+main "$@"
