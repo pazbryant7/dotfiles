@@ -1,0 +1,30 @@
+#!/usr/bin/env sh
+
+IMAGE="ghcr.io/chartdb/chartdb:latest"
+PORT="8080"
+
+generate_container_name() {
+	printf 'chartdb-%s' "$(date +%s)"
+}
+
+start_container() {
+	docker run \
+		--rm \
+		--name "$1" \
+		-p "${PORT}:80" \
+		-d \
+		"$IMAGE"
+}
+
+print_info() {
+	printf 'ChartDB started in background: %s\n' "$1"
+	printf 'Access at: http://localhost:%s\n' "$PORT"
+}
+
+main() {
+	container_name=$(generate_container_name)
+	start_container "$container_name"
+	print_info "$container_name"
+}
+
+main "$@"

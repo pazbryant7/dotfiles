@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+
+DOTS_DIR="$HOME/Documents/github/dotfiles"
+
+create_dots_dir() {
+	mkdir -p "$DOTS_DIR"
+}
+
+stow_dots() {
+	stow --dir="$DOTS_DIR" --target="$HOME" --adopt --restow .
+}
+
+main() {
+	create_dots_dir
+	cd "$DOTS_DIR" || return 1
+	stow_dots
+	cd - || return 1
+}
+
+main "$@"
