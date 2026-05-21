@@ -52,6 +52,11 @@ main() {
 		"$dirs" |
 		sort | uniq)"
 
+	if [ -z "$directories" ]; then
+		printf "Nothing new"
+		exit 0
+	fi
+
 	printf '%s' "$directories" |
 		fzf --bind "enter:execute($HOME/bin/tmux/new-session {})+abort"
 }
