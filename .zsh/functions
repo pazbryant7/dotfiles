@@ -38,11 +38,10 @@ h() {
 # Shell functions for binds
 
 clear-and-redisplay() {
+	zle clear-screen
 	if [ -n "$TMUX" ]; then
 		tmux clear-history
 	fi
-
-	zle clear-screen
 }
 
 copy-terminal-buffer() {
