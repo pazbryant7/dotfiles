@@ -701,24 +701,24 @@ check_arch_news() {
 # =============================================================================
 
 print_summary() {
-	printf "\n${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}\n"
-	printf "${BOLD}  Maintenance Complete — Summary${NC}\n"
-	printf "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}\n\n"
-	printf "  ${GREEN}✔ Passed  :${NC} $STEPS_OK\n"
-	printf "  ${YELLOW}⚠ Warnings:${NC} $WARNINGS\n"
-	printf "  ${RED}✖ Errors  :${NC} $ERRORS\n\n"
-	printf "  ${DIM}Full log saved to: $LOG_FILE${NC}\n\n"
+	printf "%s" "\n${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}\n"
+	printf "%s" "${BOLD}  Maintenance Complete — Summary${NC}\n"
+	printf "%s" "${BOLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}\n\n"
+	printf "%s" "  ${GREEN}✔ Passed  :${NC} $STEPS_OK\n"
+	printf "%s" "  ${YELLOW}⚠ Warnings:${NC} $WARNINGS\n"
+	printf "%s" "  ${RED}✖ Errors  :${NC} $ERRORS\n\n"
+	printf "%s" "  ${DIM}Full log saved to: $LOG_FILE${NC}\n\n"
 
 	if [ "$ERRORS" -gt 0 ]; then
-		printf "  ${RED}Action required — check errors above.${NC}\n"
+		printf "%s" "  ${RED}Action required — check errors above.${NC}\n"
 	elif [ "$WARNINGS" -gt 0 ]; then
-		printf "  ${YELLOW}Review warnings above for optional improvements.${NC}\n"
+		printf "%s" "  ${YELLOW}Review warnings above for optional improvements.${NC}\n"
 	else
-		printf "  ${GREEN}All checks passed. System is in good shape!${NC}\n"
+		printf "%s" "  ${GREEN}All checks passed. System is in good shape!${NC}\n"
 	fi
 
-	printf "\n  ${CYAN}Remember to check Arch news for manual interventions:${NC}\n"
-	printf "  ${CYAN}https://archlinux.org/news/${NC}\n\n"
+	printf "%s" "\n  ${CYAN}Remember to check Arch news for manual interventions:${NC}\n"
+	printf "%s" "  ${CYAN}https://archlinux.org/news/${NC}\n\n"
 
 	_log_raw "=== SUMMARY: OK=$STEPS_OK WARN=$WARNINGS ERR=$ERRORS ==="
 }
@@ -734,11 +734,11 @@ main() {
 	printf "# Arch Linux Maintenance Log\n# Started: %s\n# User: %s\n\n" \
 		"$(_timestamp)" "$(whoami)" >"$LOG_FILE"
 
-	printf "\n${BOLD}╔══════════════════════════════════════════════════╗${NC}\n"
-	printf "${BOLD}║     Arch Linux System Maintenance Script          ║${NC}\n"
-	printf "${BOLD}╚══════════════════════════════════════════════════╝${NC}\n\n"
-	printf "  Started: $(_timestamp)\n"
-	printf "  Log:     $LOG_FILE\n"
+	printf "%s" "\n${BOLD}╔══════════════════════════════════════════════════╗${NC}\n"
+	printf "%s" "${BOLD}║     Arch Linux System Maintenance Script          ║${NC}\n"
+	printf "%s" "${BOLD}╚══════════════════════════════════════════════════╝${NC}\n\n"
+	printf "%s" "  Started: $(_timestamp)\n"
+	printf  "  Log:     $LOG_FILE\n"
 
 	check_internet
 
