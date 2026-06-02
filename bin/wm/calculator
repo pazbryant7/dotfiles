@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+main() {
+	st -t "numbat" -e numbat
+}
+
+main
