@@ -1,17 +1,18 @@
 #!/usr/bin/env sh
 
+RECORDING_ICON="^c#FFFFFF^[REC]^d^"
+PID_FILE="/tmp/screen_recorder.pid"
+
+is_recording() {
+	[ -f "$PID_FILE" ]
+}
+
+format_recording() {
+	printf "%s | " "$RECORDING_ICON"
+}
+
 main() {
-	PREFIX_WHEN_ON=" | "
-
-	RECORDING_ICON=" ^c#FFFFFF^[REC]^d^ "
-
-	PID_FILE="/tmp/screen_recorder.pid"
-
-	if [ ! -f "$PID_FILE" ]; then
-		printf " "
-	else
-		printf "%s%s" "$RECORDING_ICON" "$PREFIX_WHEN_ON"
-	fi
+	is_recording && format_recording
 }
 
 main "$@"
