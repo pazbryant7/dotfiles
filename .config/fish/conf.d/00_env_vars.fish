@@ -4,7 +4,7 @@ set -gx WM dwm
 set -gx VIDEO mpv
 set -gx LESS FRSX
 set -gx TERMINAL xterm
-set -gx BROWSER helium-browser
+set -gx BROWSER brave-origin
 set -gx OPENER xdg-open
 set -gx PAGER "less -R"
 set -gx VISUAL "$EDITOR"
