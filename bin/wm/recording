@@ -51,15 +51,15 @@ fhd_q|Full HD, high quality|-c:v libx264 -preset slow -crf 18 -g 15 -bf 2 -pix_f
 # ---------------------------------------------------------------------------
 
 notify() {
-	urgency="$1"
-	summary="$2"
-	body="$3"
-	if command -v notify-send >/dev/null 2>&1; then
-		notify-send -u "$urgency" "Screen Recorder" "${summary}${body:+
+  urgency="$1"
+  summary="$2"
+  body="$3"
+  if command -v notify-send >/dev/null 2>&1; then
+    notify-send -u "$urgency" "Screen Recorder" "${summary}${body:+
 $body}"
-	else
-		printf "[notify:%s] %s %s\n" "$urgency" "$summary" "$body" >&2
-	fi
+  else
+    printf "[notify:%s] %s %s\n" "$urgency" "$summary" "$body" >&2
+  fi
 }
 
 # ---------------------------------------------------------------------------
@@ -67,28 +67,28 @@ $body}"
 # ---------------------------------------------------------------------------
 
 check_dependencies() {
-	missing=""
-	for cmd in ffmpeg rofi pactl; do
-		command -v "$cmd" >/dev/null 2>&1 || missing="${missing} ${cmd}"
-	done
-	if [ -n "$missing" ]; then
-		printf "Error: required tools not found:%s\n" "$missing" >&2
-		notify critical "Missing dependencies" "Required:$missing"
-		return 1
-	fi
+  missing=""
+  for cmd in ffmpeg rofi pactl; do
+    command -v "$cmd" >/dev/null 2>&1 || missing="${missing} ${cmd}"
+  done
+  if [ -n "$missing" ]; then
+    printf "Error: required tools not found:%s\n" "$missing" >&2
+    notify critical "Missing dependencies" "Required:$missing"
+    return 1
+  fi
 }
 
 check_output_dir() {
-	if ! mkdir -p "$OUTPUT_DIR"; then
-		printf "Error: Could not create output directory %s\n" "$OUTPUT_DIR" >&2
-		notify critical "Cannot create output dir" "$OUTPUT_DIR"
-		return 1
-	fi
-	if [ ! -w "$OUTPUT_DIR" ]; then
-		printf "Error: Output directory is not writable: %s\n" "$OUTPUT_DIR" >&2
-		notify critical "Output dir not writable" "$OUTPUT_DIR"
-		return 1
-	fi
+  if ! mkdir -p "$OUTPUT_DIR"; then
+    printf "Error: Could not create output directory %s\n" "$OUTPUT_DIR" >&2
+    notify critical "Cannot create output dir" "$OUTPUT_DIR"
+    return 1
+  fi
+  if [ ! -w "$OUTPUT_DIR" ]; then
+    printf "Error: Output directory is not writable: %s\n" "$OUTPUT_DIR" >&2
+    notify critical "Output dir not writable" "$OUTPUT_DIR"
+    return 1
+  fi
 }
 
 # ---------------------------------------------------------------------------
@@ -96,7 +96,7 @@ check_output_dir() {
 # ---------------------------------------------------------------------------
 
 refresh_status_bar() {
-	pkill -RTMIN+1 slstatus 2>/dev/null || true
+  pkill -RTMIN+1 slstatus 2>/dev/null || true
 }
 
 # ---------------------------------------------------------------------------
@@ -104,30 +104,30 @@ refresh_status_bar() {
 # ---------------------------------------------------------------------------
 
 prompt_profile() {
-	# Dynamically generate the Rofi menu from the PROFILES string
-	printf '%s\n' "$PROFILES" | awk -F'|' '{printf "%s - %s\n", $1, $2}' |
-		rofi -dmenu -p "Select recording profile"
+  # Dynamically generate the Rofi menu from the PROFILES string
+  printf '%s\n' "$PROFILES" | awk -F'|' '{printf "%s - %s\n", $1, $2}' |
+    rofi -dmenu -p "Select recording profile"
 }
 
 set_profile_opts() {
-	alias="$1"
-	# Extract the 3rd column (ffmpeg args) where the 1st column matches the alias
-	FFMPEG_PROFILE_OPTS=$(printf '%s\n' "$PROFILES" | awk -F'|' -v a="$alias" '$1==a {print $3}')
+  alias="$1"
+  # Extract the 3rd column (ffmpeg args) where the 1st column matches the alias
+  FFMPEG_PROFILE_OPTS=$(printf '%s\n' "$PROFILES" | awk -F'|' -v a="$alias" '$1==a {print $3}')
 
-	if [ -z "$FFMPEG_PROFILE_OPTS" ]; then
-		printf "Error: Profile '%s' not found.\n" "$alias" >&2
-		return 1
-	fi
+  if [ -z "$FFMPEG_PROFILE_OPTS" ]; then
+    printf "Error: Profile '%s' not found.\n" "$alias" >&2
+    return 1
+  fi
 }
 
 set_input_opts() {
-	FFMPEG_INPUT_OPTS="-f x11grab -draw_mouse 1 -i $1"
+  FFMPEG_INPUT_OPTS="-f x11grab -draw_mouse 1 -i $1"
 }
 
 select_profile() {
-	raw=$(prompt_profile) || return 1
-	[ -z "$raw" ] && return 1
-	printf '%s' "$raw" | awk '{print $1}'
+  raw=$(prompt_profile) || return 1
+  [ -z "$raw" ] && return 1
+  printf '%s' "$raw" | awk '{print $1}'
 }
 
 # ---------------------------------------------------------------------------
@@ -135,13 +135,13 @@ select_profile() {
 # ---------------------------------------------------------------------------
 
 list_pulse_sources() {
-	pactl list short sources 2>/dev/null | awk '{print $2}' | grep -v "\.monitor$" || true
+  pactl list short sources 2>/dev/null | awk '{print $2}' | grep -v "\.monitor$" || true
 }
 
 list_alsa_sources() {
-	command -v arecord >/dev/null 2>&1 || return 1
-	arecord -l 2>/dev/null |
-		awk -F'[,:]' '/^card/{
+  command -v arecord >/dev/null 2>&1 || return 1
+  arecord -l 2>/dev/null |
+    awk -F'[,:]' '/^card/{
 			card=$1; sub(/^card /,"",card)
 			dev=$2; sub(/^ device /,"",dev)
 			printf "hw:%s,%s\n", card, dev
@@ -149,11 +149,11 @@ list_alsa_sources() {
 }
 
 pulse_source_exists() {
-	pactl list short sources 2>/dev/null | awk '{print $2}' | grep -qxF "$1"
+  pactl list short sources 2>/dev/null | awk '{print $2}' | grep -qxF "$1"
 }
 
 alsa_source_exists() {
-	arecord -l 2>/dev/null | grep -q "$(printf '%s' "$1" | sed 's/hw:/card /')"
+  arecord -l 2>/dev/null | grep -q "$(printf '%s' "$1" | sed 's/hw:/card /')"
 }
 
 # ---------------------------------------------------------------------------
@@ -161,50 +161,50 @@ alsa_source_exists() {
 # ---------------------------------------------------------------------------
 
 read_last_audio() {
-	[ -f "$LAST_AUDIO_FILE" ] && cat "$LAST_AUDIO_FILE"
+  [ -f "$LAST_AUDIO_FILE" ] && cat "$LAST_AUDIO_FILE"
 }
 
 save_last_audio() {
-	mkdir -p "$(dirname "$LAST_AUDIO_FILE")" 2>/dev/null || true
-	printf '%s' "$1" >"$LAST_AUDIO_FILE"
+  mkdir -p "$(dirname "$LAST_AUDIO_FILE")" 2>/dev/null || true
+  printf '%s' "$1" >"$LAST_AUDIO_FILE"
 }
 
 discover_audio_sources() {
-	pulse=$(list_pulse_sources)
-	if [ -n "$pulse" ]; then
-		printf '%s' "$pulse"
-		return 0
-	fi
-	alsa=$(list_alsa_sources)
-	if [ -n "$alsa" ]; then
-		printf '%s' "$alsa"
-		return 1
-	fi
-	return 2
+  pulse=$(list_pulse_sources)
+  if [ -n "$pulse" ]; then
+    printf '%s' "$pulse"
+    return 0
+  fi
+  alsa=$(list_alsa_sources)
+  if [ -n "$alsa" ]; then
+    printf '%s' "$alsa"
+    return 1
+  fi
+  return 2
 }
 
 build_audio_menu() {
-	sources="$1"
-	menu="none - No audio (screen only)"
-	if [ -n "$sources" ]; then
-		while IFS= read -r src; do
-			[ -z "$src" ] && continue
-			menu="${menu}
+  sources="$1"
+  menu="none - No audio (screen only)"
+  if [ -n "$sources" ]; then
+    while IFS= read -r src; do
+      [ -z "$src" ] && continue
+      menu="${menu}
 ${src}"
-		done <<EOF
+    done <<EOF
 $sources
 EOF
-	fi
-	printf '%s' "$menu"
+  fi
+  printf '%s' "$menu"
 }
 
 prompt_audio_device() {
-	menu="$1"
-	last="$2"
-	select_arg=""
-	[ -n "$last" ] && select_arg="-select $last"
-	# shellcheck disable=SC2086
-	printf '%s' "$menu" | rofi -dmenu -p "Select audio input" ${select_arg}
+  menu="$1"
+  last="$2"
+  select_arg=""
+  [ -n "$last" ] && select_arg="-select $last"
+  # shellcheck disable=SC2086
+  printf '%s' "$menu" | rofi -dmenu -p "Select audio input" ${select_arg}
 }
 
 # ---------------------------------------------------------------------------
@@ -212,43 +212,43 @@ prompt_audio_device() {
 # ---------------------------------------------------------------------------
 
 select_audio_device() {
-	sources=$(discover_audio_sources)
-	backend_code=$?
-	last=$(read_last_audio)
-	menu=$(build_audio_menu "$sources")
-	chosen=$(prompt_audio_device "$menu" "$last") || return 1
-	[ -z "$chosen" ] && return 1
+  sources=$(discover_audio_sources)
+  backend_code=$?
+  last=$(read_last_audio)
+  menu=$(build_audio_menu "$sources")
+  chosen=$(prompt_audio_device "$menu" "$last") || return 1
+  [ -z "$chosen" ] && return 1
 
-	device=$(printf '%s' "$chosen" | awk '{print $1}')
-	# Pass both values back via a delimited string instead of temp files
-	printf '%s|%d\n' "$device" "$backend_code"
+  device=$(printf '%s' "$chosen" | awk '{print $1}')
+  # Pass both values back via a delimited string instead of temp files
+  printf '%s|%d\n' "$device" "$backend_code"
 }
 
 apply_audio_opts() {
-	device="$1"
-	backend_code="$2"
+  device="$1"
+  backend_code="$2"
 
-	if [ "$device" = "none" ]; then
-		FFMPEG_AUDIO_OPTS="-an"
-		AUDIO_BACKEND="none"
-		return 0
-	fi
+  if [ "$device" = "none" ]; then
+    FFMPEG_AUDIO_OPTS="-an"
+    AUDIO_BACKEND="none"
+    return 0
+  fi
 
-	if [ "$backend_code" -eq 0 ]; then
-		if ! pulse_source_exists "$device"; then
-			notify critical "Audio device not found" "$device"
-			return 1
-		fi
-		FFMPEG_AUDIO_OPTS="-f pulse -i $device -c:a aac -b:a 192k"
-		AUDIO_BACKEND="pulse"
-	else
-		if ! alsa_source_exists "$device"; then
-			notify critical "Audio device not found" "$device"
-			return 1
-		fi
-		FFMPEG_AUDIO_OPTS="-f alsa -i $device -c:a aac -b:a 192k"
-		AUDIO_BACKEND="alsa"
-	fi
+  if [ "$backend_code" -eq 0 ]; then
+    if ! pulse_source_exists "$device"; then
+      notify critical "Audio device not found" "$device"
+      return 1
+    fi
+    FFMPEG_AUDIO_OPTS="-f pulse -i $device -c:a aac -b:a 192k"
+    AUDIO_BACKEND="pulse"
+  else
+    if ! alsa_source_exists "$device"; then
+      notify critical "Audio device not found" "$device"
+      return 1
+    fi
+    FFMPEG_AUDIO_OPTS="-f alsa -i $device -c:a aac -b:a 192k"
+    AUDIO_BACKEND="alsa"
+  fi
 }
 
 # ---------------------------------------------------------------------------
@@ -256,20 +256,20 @@ apply_audio_opts() {
 # ---------------------------------------------------------------------------
 
 write_state() {
-	printf '%s' "$1" >"$AUDIO_FILE"
-	printf '%s' "$2" >"$AUDIO_BACKEND_FILE"
+  printf '%s' "$1" >"$AUDIO_FILE"
+  printf '%s' "$2" >"$AUDIO_BACKEND_FILE"
 }
 
 clear_state() {
-	rm -f "$PID_FILE" "$AUDIO_FILE" "$AUDIO_BACKEND_FILE" "$WATCHDOG_PID_FILE"
+  rm -f "$PID_FILE" "$AUDIO_FILE" "$AUDIO_BACKEND_FILE" "$WATCHDOG_PID_FILE"
 }
 
 read_pid() {
-	[ -f "$PID_FILE" ] && cat "$PID_FILE"
+  [ -f "$PID_FILE" ] && cat "$PID_FILE"
 }
 
 read_audio_device() {
-	[ -f "$AUDIO_FILE" ] && cat "$AUDIO_FILE"
+  [ -f "$AUDIO_FILE" ] && cat "$AUDIO_FILE"
 }
 
 # ---------------------------------------------------------------------------
@@ -277,39 +277,39 @@ read_audio_device() {
 # ---------------------------------------------------------------------------
 
 launch_ffmpeg() {
-	output_file="$1"
-	# Replaced brittle sh -c interpolation with direct background execution
-	ffmpeg $FFMPEG_INPUT_OPTS $FFMPEG_AUDIO_OPTS $FFMPEG_PROFILE_OPTS "$output_file" >"$LOG_FILE" 2>&1 &
-	printf '%s\n' "$!" >"$PID_FILE"
+  output_file="$1"
+  # Replaced brittle sh -c interpolation with direct background execution
+  ffmpeg $FFMPEG_INPUT_OPTS $FFMPEG_AUDIO_OPTS $FFMPEG_PROFILE_OPTS "$output_file" >"$LOG_FILE" 2>&1 &
+  printf '%s\n' "$!" >"$PID_FILE"
 }
 
 launch_ffmpeg_no_audio() {
-	output_file="$1"
-	ffmpeg $FFMPEG_INPUT_OPTS -an $FFMPEG_PROFILE_OPTS "$output_file" >>"$LOG_FILE" 2>&1 &
-	printf '%s\n' "$!" >"$PID_FILE"
+  output_file="$1"
+  ffmpeg $FFMPEG_INPUT_OPTS -an $FFMPEG_PROFILE_OPTS "$output_file" >>"$LOG_FILE" 2>&1 &
+  printf '%s\n' "$!" >"$PID_FILE"
 }
 
 wait_for_pid_alive() {
-	pid="$1"
-	max_seconds="$2"
-	count=0
-	# Use kill -0 instead of ps for standard POSIX process liveliness check
-	while kill -0 "$pid" 2>/dev/null; do
-		sleep 1
-		count=$((count + 1))
-		[ "$count" -gt "$max_seconds" ] && return 1
-	done
-	return 0
+  pid="$1"
+  max_seconds="$2"
+  count=0
+  # Use kill -0 instead of ps for standard POSIX process liveliness check
+  while kill -0 "$pid" 2>/dev/null; do
+    sleep 1
+    count=$((count + 1))
+    [ "$count" -gt "$max_seconds" ] && return 1
+  done
+  return 0
 }
 
 kill_graceful_then_force() {
-	pid="$1"
-	kill -INT "$pid" 2>/dev/null || true
-	if ! wait_for_pid_alive "$pid" 10; then
-		printf "PID %s did not stop after 10s. Sending SIGKILL.\n" "$pid" >&2
-		notify critical "Force-killed ffmpeg" "PID $pid did not exit in 10 s"
-		kill -KILL "$pid" 2>/dev/null || true
-	fi
+  pid="$1"
+  kill -INT "$pid" 2>/dev/null || true
+  if ! wait_for_pid_alive "$pid" 10; then
+    printf "PID %s did not stop after 10s. Sending SIGKILL.\n" "$pid" >&2
+    notify critical "Force-killed ffmpeg" "PID $pid did not exit in 10 s"
+    kill -KILL "$pid" 2>/dev/null || true
+  fi
 }
 
 # ---------------------------------------------------------------------------
@@ -317,92 +317,92 @@ kill_graceful_then_force() {
 # ---------------------------------------------------------------------------
 
 watchdog_device_alive() {
-	device="$1"
-	backend="$2"
-	case "$backend" in
-	pulse) pulse_source_exists "$device" ;;
-	alsa) alsa_source_exists "$device" ;;
-	*) return 0 ;;
-	esac
+  device="$1"
+  backend="$2"
+  case "$backend" in
+  pulse) pulse_source_exists "$device" ;;
+  alsa) alsa_source_exists "$device" ;;
+  *) return 0 ;;
+  esac
 }
 
 watchdog_restart_without_audio() {
-	output_dir="$1"
-	filename_prefix="$2"
-	timestamp=$(date '+%Y-%m-%d_%H-%M-%S')
-	new_output="${output_dir}/${filename_prefix}_${timestamp}_no_audio.mkv"
+  output_dir="$1"
+  filename_prefix="$2"
+  timestamp=$(date '+%Y-%m-%d_%H-%M-%S')
+  new_output="${output_dir}/${filename_prefix}_${timestamp}_no_audio.mkv"
 
-	launch_ffmpeg_no_audio "$new_output"
-	sleep 1
-	new_pid=$(read_pid)
+  launch_ffmpeg_no_audio "$new_output"
+  sleep 1
+  new_pid=$(read_pid)
 
-	if [ -n "$new_pid" ] && kill -0 "$new_pid" 2>/dev/null; then
-		notify normal "Recording resumed (screen only)" "$new_output"
-		return 0
-	fi
+  if [ -n "$new_pid" ] && kill -0 "$new_pid" 2>/dev/null; then
+    notify normal "Recording resumed (screen only)" "$new_output"
+    return 0
+  fi
 
-	notify critical "Watchdog: failed to restart ffmpeg" "Check $LOG_FILE"
-	rm -f "$PID_FILE"
-	return 1
+  notify critical "Watchdog: failed to restart ffmpeg" "Check $LOG_FILE"
+  rm -f "$PID_FILE"
+  return 1
 }
 
 watchdog_handle_device_loss() {
-	device="$1"
-	output_dir="$2"
-	filename_prefix="$3"
-	notify critical "Audio device lost — continuing without audio" "$device disconnected"
+  device="$1"
+  output_dir="$2"
+  filename_prefix="$3"
+  notify critical "Audio device lost — continuing without audio" "$device disconnected"
 
-	old_pid=$(read_pid)
-	[ -n "$old_pid" ] && kill_graceful_then_force "$old_pid"
-	watchdog_restart_without_audio "$output_dir" "$filename_prefix"
+  old_pid=$(read_pid)
+  [ -n "$old_pid" ] && kill_graceful_then_force "$old_pid"
+  watchdog_restart_without_audio "$output_dir" "$filename_prefix"
 }
 
 run_watchdog() {
-	watched_device="$1"
-	ffmpeg_pid_file="$2"
-	audio_backend="$3"
-	output_dir="$4"
-	filename_prefix="$5"
+  watched_device="$1"
+  ffmpeg_pid_file="$2"
+  audio_backend="$3"
+  output_dir="$4"
+  filename_prefix="$5"
 
-	[ "$audio_backend" = "none" ] || [ "$watched_device" = "none" ] && exit 0
+  [ "$audio_backend" = "none" ] || [ "$watched_device" = "none" ] && exit 0
 
-	device_lost=0
-	while true; do
-		[ ! -f "$ffmpeg_pid_file" ] && exit 0
+  device_lost=0
+  while true; do
+    [ ! -f "$ffmpeg_pid_file" ] && exit 0
 
-		# Prevent orphaned watchdogs: check if parent/ffmpeg is still alive
-		current_pid=$(cat "$ffmpeg_pid_file" 2>/dev/null)
-		if [ -n "$current_pid" ] && ! kill -0 "$current_pid" 2>/dev/null; then
-			exit 0
-		fi
+    # Prevent orphaned watchdogs: check if parent/ffmpeg is still alive
+    current_pid=$(cat "$ffmpeg_pid_file" 2>/dev/null)
+    if [ -n "$current_pid" ] && ! kill -0 "$current_pid" 2>/dev/null; then
+      exit 0
+    fi
 
-		if ! watchdog_device_alive "$watched_device" "$audio_backend"; then
-			if [ "$device_lost" -eq 0 ]; then
-				device_lost=1
-				watchdog_handle_device_loss "$watched_device" "$output_dir" "$filename_prefix" || exit 1
-			fi
-		fi
-		sleep 3
-	done
+    if ! watchdog_device_alive "$watched_device" "$audio_backend"; then
+      if [ "$device_lost" -eq 0 ]; then
+        device_lost=1
+        watchdog_handle_device_loss "$watched_device" "$output_dir" "$filename_prefix" || exit 1
+      fi
+    fi
+    sleep 3
+  done
 }
 
 launch_watchdog() {
-	audio_device="$1"
-	audio_backend="$2"
-	"$0" --watchdog \
-		"$audio_device" \
-		"$PID_FILE" \
-		"$audio_backend" \
-		"$OUTPUT_DIR" \
-		"$FILENAME_PREFIX" \
-		>/dev/null 2>&1 &
-	printf '%s\n' "$!" >"$WATCHDOG_PID_FILE"
+  audio_device="$1"
+  audio_backend="$2"
+  "$0" --watchdog \
+    "$audio_device" \
+    "$PID_FILE" \
+    "$audio_backend" \
+    "$OUTPUT_DIR" \
+    "$FILENAME_PREFIX" \
+    >/dev/null 2>&1 &
+  printf '%s\n' "$!" >"$WATCHDOG_PID_FILE"
 }
 
 stop_watchdog() {
-	[ -f "$WATCHDOG_PID_FILE" ] || return
-	kill "$(cat "$WATCHDOG_PID_FILE")" 2>/dev/null || true
-	rm -f "$WATCHDOG_PID_FILE"
+  [ -f "$WATCHDOG_PID_FILE" ] || return
+  kill "$(cat "$WATCHDOG_PID_FILE")" 2>/dev/null || true
+  rm -f "$WATCHDOG_PID_FILE"
 }
 
 # ---------------------------------------------------------------------------
@@ -410,58 +410,58 @@ stop_watchdog() {
 # ---------------------------------------------------------------------------
 
 is_recording() {
-	pid=$(read_pid)
-	[ -n "$pid" ] && kill -0 "$pid" 2>/dev/null
+  pid=$(read_pid)
+  [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null
 }
 
 make_output_path() {
-	timestamp=$(date '+%Y-%m-%d_%H-%M-%S')
-	printf '%s/%s_%s.mkv' "$OUTPUT_DIR" "$FILENAME_PREFIX" "$timestamp"
+  timestamp=$(date '+%Y-%m-%d_%H-%M-%S')
+  printf '%s/%s_%s.mkv' "$OUTPUT_DIR" "$FILENAME_PREFIX" "$timestamp"
 }
 
 start_recording() {
-	profile_alias="$1"
-	audio_device="$2"
-	audio_backend="$3"
-	output_file=$(make_output_path)
+  profile_alias="$1"
+  audio_device="$2"
+  audio_backend="$3"
+  output_file=$(make_output_path)
 
-	launch_ffmpeg "$output_file"
-	sleep 1
+  launch_ffmpeg "$output_file"
+  sleep 1
 
-	recorded_pid=$(read_pid)
-	if [ -n "$recorded_pid" ] && kill -0 "$recorded_pid" 2>/dev/null; then
-		write_state "$audio_device" "$audio_backend"
-		refresh_status_bar
-		notify normal "Recording started" "Profile: $profile_alias — Audio: ${audio_device:-none}"
-		launch_watchdog "$audio_device" "$audio_backend"
-		return 0
-	fi
+  recorded_pid=$(read_pid)
+  if [ -n "$recorded_pid" ] && kill -0 "$recorded_pid" 2>/dev/null; then
+    write_state "$audio_device" "$audio_backend"
+    refresh_status_bar
+    notify normal "Recording started" "Profile: $profile_alias — Audio: ${audio_device:-none}"
+    launch_watchdog "$audio_device" "$audio_backend"
+    return 0
+  fi
 
-	notify critical "Failed to start recording" "See $LOG_FILE"
-	rm -f "$PID_FILE"
-	return 1
+  notify critical "Failed to start recording" "See $LOG_FILE"
+  rm -f "$PID_FILE"
+  return 1
 }
 
 stop_recording() {
-	if ! is_recording; then
-		return 1
-	fi
-	stop_watchdog
-	pid=$(read_pid)
-	kill_graceful_then_force "$pid"
-	clear_state
-	refresh_status_bar
-	notify normal "Recording stopped" ""
+  if ! is_recording; then
+    return 1
+  fi
+  stop_watchdog
+  pid=$(read_pid)
+  kill_graceful_then_force "$pid"
+  clear_state
+  refresh_status_bar
+  notify normal "Recording stopped" ""
 }
 
 cleanup_stale_pid() {
-	[ -f "$PID_FILE" ] || return
-	pid=$(read_pid)
-	if [ -z "$pid" ] || ! kill -0 "$pid" 2>/dev/null; then
-		stop_watchdog
-		clear_state
-		refresh_status_bar
-	fi
+  [ -f "$PID_FILE" ] || return
+  pid=$(read_pid)
+  if [ -z "$pid" ] || ! kill -0 "$pid" 2>/dev/null; then
+    stop_watchdog
+    clear_state
+    refresh_status_bar
+  fi
 }
 
 # ---------------------------------------------------------------------------
@@ -469,36 +469,36 @@ cleanup_stale_pid() {
 # ---------------------------------------------------------------------------
 
 main() {
-	if [ "$1" = "--watchdog" ]; then
-		shift
-		run_watchdog "$@"
-		exit $?
-	fi
+  if [ "$1" = "--watchdog" ]; then
+    shift
+    run_watchdog "$@"
+    exit $?
+  fi
 
-	check_dependencies || exit 1
+  check_dependencies || exit 1
 
-	if is_recording; then
-		stop_recording
-		exit $?
-	fi
+  if is_recording; then
+    stop_recording
+    exit $?
+  fi
 
-	cleanup_stale_pid
-	check_output_dir || exit 1
+  cleanup_stale_pid
+  check_output_dir || exit 1
 
-	profile=$(select_profile) || exit 1
+  profile=$(select_profile) || exit 1
 
-	# Parse the delimited string to avoid temp files
-	audio_result=$(select_audio_device) || exit 1
-	audio_device="${audio_result%|*}"
-	audio_backend_code="${audio_result#*|}"
+  # Parse the delimited string to avoid temp files
+  audio_result=$(select_audio_device) || exit 1
+  audio_device="${audio_result%|*}"
+  audio_backend_code="${audio_result#*|}"
 
-	apply_audio_opts "$audio_device" "$audio_backend_code" || exit 1
-	save_last_audio "$audio_device"
+  apply_audio_opts "$audio_device" "$audio_backend_code" || exit 1
+  save_last_audio "$audio_device"
 
-	set_input_opts "$PREDEFINED_MONITOR"
-	set_profile_opts "$profile" || exit 1
+  set_input_opts "$PREDEFINED_MONITOR"
+  set_profile_opts "$profile" || exit 1
 
-	start_recording "$profile" "$audio_device" "$AUDIO_BACKEND" || exit 1
+  start_recording "$profile" "$audio_device" "$AUDIO_BACKEND" || exit 1
 }
 
 main "$@"

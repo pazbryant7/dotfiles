@@ -3,64 +3,64 @@
 COOKIE_FILE="$HOME/Downloads/cookies.txt"
 
 die() {
-	printf 'Error: %s\n' "$1" >&2
-	exit 1
+  printf 'Error: %s\n' "$1" >&2
+  exit 1
 }
 
 validate_url() {
-	[ -z "$1" ] && die "No URL provided.\nUsage: download-audio [--mp3] <url>"
+  [ -z "$1" ] && die "No URL provided.\nUsage: download-audio [--mp3] <url>"
 }
 
 validate_cookie_file() {
-	[ ! -f "$COOKIE_FILE" ] && die "cookies.txt not found. Place it at: $COOKIE_FILE"
+  [ ! -f "$COOKIE_FILE" ] && die "cookies.txt not found. Place it at: $COOKIE_FILE"
 }
 
 parse_args() {
-	mp3=false
-	url=""
+  mp3=false
+  url=""
 
-	while [ $# -gt 0 ]; do
-		case "$1" in
-		-m | --mp3)
-			mp3=true
-			shift
-			;;
-		-*) die "Unknown flag: $1" ;;
-		*)
-			url="$1"
-			shift
-			;;
-		esac
-	done
+  while [ $# -gt 0 ]; do
+    case "$1" in
+    -m | --mp3)
+      mp3=true
+      shift
+      ;;
+    -*) die "Unknown flag: $1" ;;
+    *)
+      url="$1"
+      shift
+      ;;
+    esac
+  done
 }
 
 download() {
-	if $mp3; then
-		printf 'Downloading as MP3: %s\n' "$url"
-		set -- --audio-format mp3
-	else
-		printf 'Downloading best audio: %s\n' "$url"
-		set --
-	fi
+  if $mp3; then
+    printf 'Downloading as MP3: %s\n' "$url"
+    set -- --audio-format mp3
+  else
+    printf 'Downloading best audio: %s\n' "$url"
+    set --
+  fi
 
-	yt-dlp -f bestaudio \
-		-x \
-		--verbose \
-		--add-metadata \
-		--audio-quality 0 \
-		--embed-thumbnail \
-		--cookies "$COOKIE_FILE" \
-		--js-runtimes "bun:/usr/bin/bun" \
-		-o "%(title)s.%(ext)s" \
-		"$@" \
-		"$url"
+  yt-dlp -f bestaudio \
+    -x \
+    --verbose \
+    --add-metadata \
+    --audio-quality 0 \
+    --embed-thumbnail \
+    --cookies "$COOKIE_FILE" \
+    --js-runtimes "bun:/usr/bin/bun" \
+    -o "%(title)s.%(ext)s" \
+    "$@" \
+    "$url"
 }
 
 main() {
-	parse_args "$@"
-	validate_url "$url"
-	validate_cookie_file
-	download
+  parse_args "$@"
+  validate_url "$url"
+  validate_cookie_file
+  download
 }
 
 main "$@"

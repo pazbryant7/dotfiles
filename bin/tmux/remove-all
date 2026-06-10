@@ -3,25 +3,25 @@
 # Creates home session if it doesn't exist and switches to it.
 
 get_session_name() {
-	tmux display-message -p "#S"
+  tmux display-message -p "#S"
 }
 
 kill_all_except() {
-	name="$1"
-	tmux kill-session -a -t "$name"
+  name="$1"
+  tmux kill-session -a -t "$name"
 }
 
 notify() {
-	tmux display-message "Welcome home $USER, all other sessions removed"
+  tmux display-message "Welcome home $USER, all other sessions removed"
 }
 
 main() {
-	name=$(get_session_name)
-	[ -z "$name" ] && exit 1
+  name=$(get_session_name)
+  [ -z "$name" ] && exit 1
 
-	kill_all_except "$name" || exit 1
+  kill_all_except "$name" || exit 1
 
-	notify
+  notify
 }
 
 main "$@"

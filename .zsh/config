@@ -1,9 +1,9 @@
 #!/usr/bin/env zsh
 
 autoload -Uz \
-	url-quote-magic \
-	edit-command-line \
-	compinit && compinit
+  url-quote-magic \
+  edit-command-line \
+  compinit && compinit
 
 # zsh widgets
 # ./functions should be
@@ -27,9 +27,9 @@ bindkey '^[[Z' reverse-menu-complete
 
 # zsh options
 setopt \
-	AUTO_CD \
-	HIST_FIND_NO_DUPS \
-	HIST_IGNORE_ALL_DUPS
+  AUTO_CD \
+  HIST_FIND_NO_DUPS \
+  HIST_IGNORE_ALL_DUPS
 
 # disable native zsh history file
 export HISTFILE=/dev/null

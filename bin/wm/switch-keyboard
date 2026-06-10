@@ -6,37 +6,37 @@ DEFAULT_NUMERIC_LAYOUT="bryantdn"
 DEFAULT_INTERNATIONAL_NUMERIC_LAYOUT="bryantdin"
 
 get_current_layout() {
-	setxkbmap -query | grep 'layout:' | awk '{print $2}'
+  setxkbmap -query | grep 'layout:' | awk '{print $2}'
 }
 
 send_notification() {
-	display_name=$(printf '%s' "$1" | tr '[:lower:]' '[:upper:]')
-	notify-send "keyboard" "$display_name"
+  display_name=$(printf '%s' "$1" | tr '[:lower:]' '[:upper:]')
+  notify-send "keyboard" "$display_name"
 }
 
 set_layout_and_notify() {
-	setxkbmap "$1"
-	send_notification "$1"
+  setxkbmap "$1"
+  send_notification "$1"
 }
 
 toggle_layout() {
-	current_layout=$(get_current_layout)
+  current_layout=$(get_current_layout)
 
-	if [ "$current_layout" = "$1" ]; then
-		set_layout_and_notify "$2"
-	else
-		set_layout_and_notify "$1"
-	fi
+  if [ "$current_layout" = "$1" ]; then
+    set_layout_and_notify "$2"
+  else
+    set_layout_and_notify "$1"
+  fi
 }
 
 main() {
-	if [ "$1" = "numbers" ]; then
-		toggle_layout "$DEFAULT_NUMERIC_LAYOUT" \
-			"$DEFAULT_INTERNATIONAL_NUMERIC_LAYOUT"
-	else
-		toggle_layout "$DEFAULT_LAYOUT" \
-			"$DEFAULT_INTERNATIONAL_LAYOUT"
-	fi
+  if [ "$1" = "numbers" ]; then
+    toggle_layout "$DEFAULT_NUMERIC_LAYOUT" \
+      "$DEFAULT_INTERNATIONAL_NUMERIC_LAYOUT"
+  else
+    toggle_layout "$DEFAULT_LAYOUT" \
+      "$DEFAULT_INTERNATIONAL_LAYOUT"
+  fi
 }
 
 main "$@"

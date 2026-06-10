@@ -2,26 +2,26 @@
 # Switch to the last attached session
 
 get_current_session() {
-	tmux display-message -p '#S'
+  tmux display-message -p '#S'
 }
 
 get_last_session() {
-	current="$1"
-	tmux list-sessions -F "#{session_last_attached} #{session_name}" |
-		sort -rn |
-		awk -v cur="$current" '$2 != cur {print $2; exit}'
+  current="$1"
+  tmux list-sessions -F "#{session_last_attached} #{session_name}" |
+    sort -rn |
+    awk -v cur="$current" '$2 != cur {print $2; exit}'
 }
 
 main() {
-	current=$(get_current_session)
-	target=$(get_last_session "$current")
+  current=$(get_current_session)
+  target=$(get_last_session "$current")
 
-	if [ -z "$target" ]; then
-		tmux display-message "No other sessions to switch to."
-		exit 0
-	fi
+  if [ -z "$target" ]; then
+    tmux display-message "No other sessions to switch to."
+    exit 0
+  fi
 
-	tmux switch-client -t "$target"
+  tmux switch-client -t "$target"
 }
 
 main "$@"

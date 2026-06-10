@@ -32,11 +32,11 @@ MICROPHONE=""
 # ---------------------------------------------------------------------------
 
 notify_info() {
-	notify-send --app-name="${APP_NAME}" --urgency=normal "$1" "${2:-}"
+  notify-send --app-name="${APP_NAME}" --urgency=normal "$1" "${2:-}"
 }
 
 notify_error() {
-	notify-send --app-name="${APP_NAME}" --urgency=critical "Error" "$1"
+  notify-send --app-name="${APP_NAME}" --urgency=critical "Error" "$1"
 }
 
 # ---------------------------------------------------------------------------
@@ -44,63 +44,63 @@ notify_error() {
 # ---------------------------------------------------------------------------
 
 list_sources() {
-	pactl list short sources 2>/dev/null |
-		awk '{ print $2 }' |
-		grep -v '\.monitor$'
+  pactl list short sources 2>/dev/null |
+    awk '{ print $2 }' |
+    grep -v '\.monitor$'
 }
 
 count_sources() {
-	count="$(list_sources | grep -c '.' 2>/dev/null)"
-	echo "${count:-0}"
+  count="$(list_sources | grep -c '.' 2>/dev/null)"
+  echo "${count:-0}"
 }
 
 get_default_source() {
-	pactl info 2>/dev/null |
-		grep 'Default Source' |
-		awk -F': ' '{ print $2 }'
+  pactl info 2>/dev/null |
+    grep 'Default Source' |
+    awk -F': ' '{ print $2 }'
 }
 
 is_real_source() {
-	echo "$1" | grep -qv '\.monitor$'
+  echo "$1" | grep -qv '\.monitor$'
 }
 
 select_source_interactive() {
-	sources="$(list_sources)"
-	echo "" >&2
-	echo "  Available microphones:" >&2
-	echo "${sources}" | nl -ba >&2
-	printf "  Enter number: " >&2
-	read -r choice
-	echo "${sources}" | sed -n "${choice}p"
+  sources="$(list_sources)"
+  echo "" >&2
+  echo "  Available microphones:" >&2
+  echo "${sources}" | nl -ba >&2
+  printf "  Enter number: " >&2
+  read -r choice
+  echo "${sources}" | sed -n "${choice}p"
 }
 
 resolve_microphone() {
-	source_count="$(count_sources)"
+  source_count="$(count_sources)"
 
-	if [ "${source_count}" -eq 0 ]; then
-		notify_error "No microphone detected. Please connect one and try again."
-		echo "ERROR: no microphone found." >&2
-		exit 1
-	fi
+  if [ "${source_count}" -eq 0 ]; then
+    notify_error "No microphone detected. Please connect one and try again."
+    echo "ERROR: no microphone found." >&2
+    exit 1
+  fi
 
-	default_source="$(get_default_source)"
+  default_source="$(get_default_source)"
 
-	if [ -n "${default_source}" ] && is_real_source "${default_source}"; then
-		MICROPHONE="${default_source}"
-		return
-	fi
+  if [ -n "${default_source}" ] && is_real_source "${default_source}"; then
+    MICROPHONE="${default_source}"
+    return
+  fi
 
-	if [ "${source_count}" -eq 1 ]; then
-		MICROPHONE="$(list_sources)"
-		return
-	fi
+  if [ "${source_count}" -eq 1 ]; then
+    MICROPHONE="$(list_sources)"
+    return
+  fi
 
-	MICROPHONE="$(select_source_interactive)"
+  MICROPHONE="$(select_source_interactive)"
 
-	if [ -z "${MICROPHONE}" ]; then
-		notify_error "No microphone selected. Aborting."
-		exit 1
-	fi
+  if [ -z "${MICROPHONE}" ]; then
+    notify_error "No microphone selected. Aborting."
+    exit 1
+  fi
 }
 
 # ---------------------------------------------------------------------------
@@ -108,29 +108,29 @@ resolve_microphone() {
 # ---------------------------------------------------------------------------
 
 ensure_output_dir() {
-	mkdir -p "${OUTPUT_DIR}"
+  mkdir -p "${OUTPUT_DIR}"
 }
 
 sanitize_title() {
-	echo "$1" |
-		tr ' ' '-' |
-		tr -cd 'A-Za-z0-9-_'
+  echo "$1" |
+    tr ' ' '-' |
+    tr -cd 'A-Za-z0-9-_'
 }
 
 build_output_path() {
-	raw_title="$1"
-	date_tag="$(date +%d%m%y)"
-	time_tag="$(date +%H%M%S)"
-	base="date-${date_tag}_${time_tag}"
+  raw_title="$1"
+  date_tag="$(date +%d%m%y)"
+  time_tag="$(date +%H%M%S)"
+  base="date-${date_tag}_${time_tag}"
 
-	if [ -n "${raw_title}" ]; then
-		clean_title="$(sanitize_title "${raw_title}")"
-		filename="${base}_${clean_title}.mp3"
-	else
-		filename="${base}.mp3"
-	fi
+  if [ -n "${raw_title}" ]; then
+    clean_title="$(sanitize_title "${raw_title}")"
+    filename="${base}_${clean_title}.mp3"
+  else
+    filename="${base}.mp3"
+  fi
 
-	OUTPUT_FILE="${OUTPUT_DIR}/${filename}"
+  OUTPUT_FILE="${OUTPUT_DIR}/${filename}"
 }
 
 # ---------------------------------------------------------------------------
@@ -138,25 +138,25 @@ build_output_path() {
 # ---------------------------------------------------------------------------
 
 start_ffmpeg() {
-	# stderr is filtered to suppress the known "Immediate exit" trailer
-	# messages that appear on clean Ctrl+C shutdown — the file is always
-	# written correctly regardless of those messages.
-	ffmpeg -hide_banner -loglevel error \
-		-f pulse -i "${MICROPHONE}" \
-		-ar "${SAMPLE_RATE}" \
-		-ac "${AUDIO_CHANNELS}" \
-		-b:a "${AUDIO_BITRATE}" \
-		"${OUTPUT_FILE}" 2>&1 |
-		grep -v 'Immediate exit' >&2 &
-	FFMPEG_PID=$!
+  # stderr is filtered to suppress the known "Immediate exit" trailer
+  # messages that appear on clean Ctrl+C shutdown — the file is always
+  # written correctly regardless of those messages.
+  ffmpeg -hide_banner -loglevel error \
+    -f pulse -i "${MICROPHONE}" \
+    -ar "${SAMPLE_RATE}" \
+    -ac "${AUDIO_CHANNELS}" \
+    -b:a "${AUDIO_BITRATE}" \
+    "${OUTPUT_FILE}" 2>&1 |
+    grep -v 'Immediate exit' >&2 &
+  FFMPEG_PID=$!
 }
 
 stop_ffmpeg() {
-	if [ -n "${FFMPEG_PID}" ]; then
-		kill -TERM "${FFMPEG_PID}" 2>/dev/null
-		wait "${FFMPEG_PID}" 2>/dev/null
-		FFMPEG_PID=""
-	fi
+  if [ -n "${FFMPEG_PID}" ]; then
+    kill -TERM "${FFMPEG_PID}" 2>/dev/null
+    wait "${FFMPEG_PID}" 2>/dev/null
+    FFMPEG_PID=""
+  fi
 }
 
 # ---------------------------------------------------------------------------
@@ -164,20 +164,20 @@ stop_ffmpeg() {
 # ---------------------------------------------------------------------------
 
 format_duration() {
-	total="$1"
-	h=$((total / 3600))
-	m=$(((total % 3600) / 60))
-	s=$((total % 60))
-	printf '%02d:%02d:%02d' "${h}" "${m}" "${s}"
+  total="$1"
+  h=$((total / 3600))
+  m=$(((total % 3600) / 60))
+  s=$((total % 60))
+  printf '%02d:%02d:%02d' "${h}" "${m}" "${s}"
 }
 
 run_timer() {
-	while true; do
-		elapsed=$(($(date +%s) - RECORD_START))
-		duration="$(format_duration "${elapsed}")"
-		printf '\r  [● REC]  %s  |  Ctrl+C to stop & save  ' "${duration}"
-		sleep 1
-	done
+  while true; do
+    elapsed=$(($(date +%s) - RECORD_START))
+    duration="$(format_duration "${elapsed}")"
+    printf '\r  [● REC]  %s  |  Ctrl+C to stop & save  ' "${duration}"
+    sleep 1
+  done
 }
 
 # ---------------------------------------------------------------------------
@@ -185,22 +185,22 @@ run_timer() {
 # ---------------------------------------------------------------------------
 
 on_exit() {
-	trap '' INT TERM EXIT
+  trap '' INT TERM EXIT
 
-	kill "${TIMER_PID}" 2>/dev/null
-	wait "${TIMER_PID}" 2>/dev/null
+  kill "${TIMER_PID}" 2>/dev/null
+  wait "${TIMER_PID}" 2>/dev/null
 
-	printf '\n'
-	echo "  Stopping…"
+  printf '\n'
+  echo "  Stopping…"
 
-	stop_ffmpeg
+  stop_ffmpeg
 
-	elapsed=$(($(date +%s) - RECORD_START))
-	total="$(format_duration "${elapsed}")"
+  elapsed=$(($(date +%s) - RECORD_START))
+  total="$(format_duration "${elapsed}")"
 
-	echo "  Saved    : ${OUTPUT_FILE}"
-	echo "  Duration : ${total}"
-	notify_info "Recording saved" "${OUTPUT_FILE}  (${total})"
+  echo "  Saved    : ${OUTPUT_FILE}"
+  echo "  Duration : ${total}"
+  notify_info "Recording saved" "${OUTPUT_FILE}  (${total})"
 }
 
 # ---------------------------------------------------------------------------
@@ -208,27 +208,27 @@ on_exit() {
 # ---------------------------------------------------------------------------
 
 main() {
-	title="${1:-}"
+  title="${1:-}"
 
-	resolve_microphone
-	ensure_output_dir
-	build_output_path "${title}"
+  resolve_microphone
+  ensure_output_dir
+  build_output_path "${title}"
 
-	trap 'on_exit' INT TERM
+  trap 'on_exit' INT TERM
 
-	RECORD_START="$(date +%s)"
-	start_ffmpeg
+  RECORD_START="$(date +%s)"
+  start_ffmpeg
 
-	echo ""
-	echo "  Microphone : ${MICROPHONE}"
-	echo "  File       : $(basename "${OUTPUT_FILE}")"
-	echo "  Format     : MP3 @ ${AUDIO_BITRATE}  |  ${SAMPLE_RATE} Hz  |  ch: ${AUDIO_CHANNELS}"
-	echo ""
+  echo ""
+  echo "  Microphone : ${MICROPHONE}"
+  echo "  File       : $(basename "${OUTPUT_FILE}")"
+  echo "  Format     : MP3 @ ${AUDIO_BITRATE}  |  ${SAMPLE_RATE} Hz  |  ch: ${AUDIO_CHANNELS}"
+  echo ""
 
-	run_timer &
-	TIMER_PID=$!
+  run_timer &
+  TIMER_PID=$!
 
-	wait "${FFMPEG_PID}"
+  wait "${FFMPEG_PID}"
 }
 
 main "$@"

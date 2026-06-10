@@ -1,34 +1,34 @@
 #!/usr/bin/env sh
 
 session_name() {
-	printf '%s' "$USER"
+  printf '%s' "$USER"
 }
 
 session_exists() {
-	tmux has-session -t "$1" 2>/dev/null
+  tmux has-session -t "$1" 2>/dev/null
 }
 
 ensure_session() {
-	_name="$1"
-	if ! session_exists "$_name"; then
-		tmux new-session -d -s "$_name" -c "$HOME"
-	fi
+  _name="$1"
+  if ! session_exists "$_name"; then
+    tmux new-session -d -s "$_name" -c "$HOME"
+  fi
 }
 
 new_window() {
-	_name="$1"
-	tmux new-window -t "$_name" -c "$HOME"
+  _name="$1"
+  tmux new-window -t "$_name" -c "$HOME"
 }
 
 switch_to_session() {
-	tmux switch-client -t "$1"
+  tmux switch-client -t "$1"
 }
 
 main() {
-	_session="$(session_name)"
-	ensure_session "$_session"
-	new_window "$_session"
-	switch_to_session "$_session"
+  _session="$(session_name)"
+  ensure_session "$_session"
+  new_window "$_session"
+  switch_to_session "$_session"
 }
 
 main

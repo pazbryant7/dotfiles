@@ -3,49 +3,49 @@
 FOLDER="${HOME}/Documents/github/media/images/wallpapers"
 
 get_palette() {
-	img="$1"
+  img="$1"
 
-	[ -n "$img" ] || {
-		printf "Error: No image path provided." >&2
-		return 1
-	}
-	magick "$img" +dither -colors 8 -format '%c' histogram:info: |
-		sed -n 's/.*\(#\([0-9A-Fa-f]\{6\}\)\).*/\1/p'
+  [ -n "$img" ] || {
+    printf "Error: No image path provided." >&2
+    return 1
+  }
+  magick "$img" +dither -colors 8 -format '%c' histogram:info: |
+    sed -n 's/.*\(#\([0-9A-Fa-f]\{6\}\)\).*/\1/p'
 }
 
 select_image() {
-	nsxiv -rto "$FOLDER"
+  nsxiv -rto "$FOLDER"
 }
 
 set_background() {
-	img="$1"
+  img="$1"
 
-	[ -n "$img" ] || {
-		printf "Error: No image path provided to set_background." >&2
-		return 1
-	}
+  [ -n "$img" ] || {
+    printf "Error: No image path provided to set_background." >&2
+    return 1
+  }
 
-	feh --bg-fill "$img"
-	printf '%s' "Background set to: $(basename "$img")"
+  feh --bg-fill "$img"
+  printf '%s' "Background set to: $(basename "$img")"
 }
 
 main() {
-	if [ -n "$1" ]; then
-		selected="$1"
-	else
-		selected=$(select_image) || {
-			printf "No image selected."
-			return 1
-		}
-	fi
+  if [ -n "$1" ]; then
+    selected="$1"
+  else
+    selected=$(select_image) || {
+      printf "No image selected."
+      return 1
+    }
+  fi
 
-	set_background "$selected"
-	colors=$(get_palette "$selected") || exit 1
+  set_background "$selected"
+  colors=$(get_palette "$selected") || exit 1
 
-	accent_color=$(printf "%s\n" "$colors" | sed -n '4p')
-	primary_color=$(printf "%s\n" "$colors" | sed -n '6p')
+  accent_color=$(printf "%s\n" "$colors" | sed -n '4p')
+  primary_color=$(printf "%s\n" "$colors" | sed -n '6p')
 
-	[ -n "$accent_color" ] && ~/bin/global/uitool "$accent_color" "$primary_color"
+  [ -n "$accent_color" ] && ~/bin/global/uitool "$accent_color" "$primary_color"
 }
 
 main "$@"

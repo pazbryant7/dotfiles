@@ -1,64 +1,64 @@
 #!/bin/env sh
 
 check_git_status() {
-	if [ -d "$1/.git" ]; then
-		if [ -n "$(git -C "$1" status --porcelain 2>/dev/null)" ]; then
-			printf "%s\n" "$1"
-			return
-		fi
+  if [ -d "$1/.git" ]; then
+    if [ -n "$(git -C "$1" status --porcelain 2>/dev/null)" ]; then
+      printf "%s\n" "$1"
+      return
+    fi
 
-		if git -C "$1" remote get-url origin >/dev/null 2>/dev/null; then
-			if git -C "$1" rev-parse --abbrev-ref '@{u}' >/dev/null 2>/dev/null; then
-				if [ -n "$(git -C "$1" log '@{u}'..HEAD --oneline 2>/dev/null)" ]; then
-					printf "%s\n" "$1"
-				fi
-			fi
-		fi
-	fi
+    if git -C "$1" remote get-url origin >/dev/null 2>/dev/null; then
+      if git -C "$1" rev-parse --abbrev-ref '@{u}' >/dev/null 2>/dev/null; then
+        if [ -n "$(git -C "$1" log '@{u}'..HEAD --oneline 2>/dev/null)" ]; then
+          printf "%s\n" "$1"
+        fi
+      fi
+    fi
+  fi
 }
 
 traverse_directories_one_level() {
-	NOTES_DIR="/home/bryant/Documents/github/notes"
-	YOUUBE_DIR="/home/bryant/Documents/github/youtube"
+  NOTES_DIR="/home/bryant/Documents/github/notes"
+  YOUUBE_DIR="/home/bryant/Documents/github/youtube"
 
-	for dir_item in "$1"/*; do
-		if [ -d "$dir_item" ]; then
-			if [ "$dir_item" = "$NOTES_DIR" ] ||
-				[ "$dir_item" = "$YOUUBE_DIR" ]; then
-				continue
-			fi
-			check_git_status "$dir_item"
-		fi
-	done
+  for dir_item in "$1"/*; do
+    if [ -d "$dir_item" ]; then
+      if [ "$dir_item" = "$NOTES_DIR" ] ||
+        [ "$dir_item" = "$YOUUBE_DIR" ]; then
+        continue
+      fi
+      check_git_status "$dir_item"
+    fi
+  done
 }
 
 traverse_all_directories() {
-	for parent_dir_item in $dirs; do
-		traverse_directories_one_level "$parent_dir_item"
-	done
+  for parent_dir_item in $dirs; do
+    traverse_directories_one_level "$parent_dir_item"
+  done
 }
 
 main() {
-	if [ -z "$TMUX" ]; then
-		printf "Not in a tmux session."
-		return 1
-	fi
+  if [ -z "$TMUX" ]; then
+    printf "Not in a tmux session."
+    return 1
+  fi
 
-	dirs="/home/bryant/Documents/github \
+  dirs="/home/bryant/Documents/github \
 		/home/bryant/.config \
 		/home/bryant/Documents/temp"
 
-	directories="$(traverse_all_directories \
-		"$dirs" |
-		sort | uniq)"
+  directories="$(traverse_all_directories \
+    "$dirs" |
+    sort | uniq)"
 
-	if [ -z "$directories" ]; then
-		printf "Nothing new"
-		exit 0
-	fi
+  if [ -z "$directories" ]; then
+    printf "Nothing new"
+    exit 0
+  fi
 
-	printf '%s' "$directories" |
-		fzf --bind "enter:execute($HOME/bin/tmux/new-session {})+abort"
+  printf '%s' "$directories" |
+    fzf --bind "enter:execute($HOME/bin/tmux/new-session {})+abort"
 }
 
 main

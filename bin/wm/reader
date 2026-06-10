@@ -4,82 +4,82 @@ BOOKS_DIR="$HOME/Documents/books"
 LAST_READ_BOOK_PATH="$HOME/.last-read-book"
 
 list_book_dirs() {
-	fd . "$BOOKS_DIR" \
-		--type d \
-		--min-depth 1 \
-		--max-depth 1 \
-		2>/dev/null
+  fd . "$BOOKS_DIR" \
+    --type d \
+    --min-depth 1 \
+    --max-depth 1 \
+    2>/dev/null
 }
 
 list_books() {
-	fd --type f --base-directory "$1" 2>/dev/null
+  fd --type f --base-directory "$1" 2>/dev/null
 }
 
 prompt_book() {
-	printf "%s" "$1" | rofi -dmenu -i -p "Select book"
+  printf "%s" "$1" | rofi -dmenu -i -p "Select book"
 }
 
 prompt_dir() {
-	printf "%s" "$1" | rofi -dmenu -i -p "Select dir:"
+  printf "%s" "$1" | rofi -dmenu -i -p "Select dir:"
 }
 
 get_last_book() {
-	cat "$LAST_READ_BOOK_PATH" 2>/dev/null || return 1
+  cat "$LAST_READ_BOOK_PATH" 2>/dev/null || return 1
 }
 
 save_last_readed() {
-	printf "%s" "$1" >"$LAST_READ_BOOK_PATH" || return 1
+  printf "%s" "$1" >"$LAST_READ_BOOK_PATH" || return 1
 }
 
 read_book() {
-	exec zathura "$1"
+  exec zathura "$1"
 }
 
 prompt_resume() {
-	name=$(basename "$1")
-	printf "Yes\nNo" | rofi -dmenu -i -p "Resume $name:" || printf "No"
+  name=$(basename "$1")
+  printf "Yes\nNo" | rofi -dmenu -i -p "Resume $name:" || printf "No"
 }
 
 try_resume() {
-	path=$(get_last_book)
-	[ -z "$path" ] && return
-	[ -f "$path" ] || return
+  path=$(get_last_book)
+  [ -z "$path" ] && return
+  [ -f "$path" ] || return
 
-	choice=$(prompt_resume "$path")
-	[ "$choice" = "Yes" ] && read_book "$path"
+  choice=$(prompt_resume "$path")
+  [ "$choice" = "Yes" ] && read_book "$path"
 }
 
 build_path() {
-	dir="$1"
-	path="$2"
+  dir="$1"
+  path="$2"
 
-	case "$dir" in
-	*/) printf '%s%s' "$dir" "$path" ;;
-	*) printf '%s/%s' "$dir" "$path" ;;
-	esac
+  case "$dir" in
+  */) printf '%s%s' "$dir" "$path" ;;
+  *) printf '%s/%s' "$dir" "$path" ;;
+  esac
 }
 
 main() {
-	try_resume || true
+  try_resume || true
 
-	dirs=$(list_book_dirs) || exit 1
-	[ -z "$dirs" ] && exit 1
+  dirs=$(list_book_dirs) || exit 1
+  [ -z "$dirs" ] && exit 1
 
-	dir=$(prompt_dir "$dirs") || exit 1
-	[ -z "$dir" ] && exit 1
-	[ ! -d "$dir" ] && exit 1
+  dir=$(prompt_dir "$dirs") || exit 1
+  [ -z "$dir" ] && exit 1
+  [ ! -d "$dir" ] && exit 1
 
-	books=$(list_books "$dir") || exit 1
-	[ -z "$books" ] && exit 1
+  books=$(list_books "$dir") || exit 1
+  [ -z "$books" ] && exit 1
 
-	book=$(prompt_book "$books") || exit 1
-	[ -z "$book" ] && exit 1
+  book=$(prompt_book "$books") || exit 1
+  [ -z "$book" ] && exit 1
 
-	path=$(build_path "$dir" "$book")
-	[ ! -f "$path" ] && exit
+  path=$(build_path "$dir" "$book")
+  [ ! -f "$path" ] && exit
 
-	save_last_readed "$path"
-	read_book "$path"
+  save_last_readed "$path"
+  read_book "$path"
 }
 
 main

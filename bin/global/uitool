@@ -10,157 +10,157 @@ STARSHIP_TOML="$HOME/.config/starship/starship.toml"
 file_exists() { [ -f "$1" ]; }
 
 update_line() {
-	file="$1"
-	pattern="$2"
-	replacement="$3"
+  file="$1"
+  pattern="$2"
+  replacement="$3"
 
-	if ! file_exists "$file"; then
-		printf '%s' "Warning: file not found: $file" >&2
-		return 1
-	fi
+  if ! file_exists "$file"; then
+    printf '%s' "Warning: file not found: $file" >&2
+    return 1
+  fi
 
-	# Escape special sed characters in replacement string
-	replacement=$(printf '%s\n' "$replacement" | sed -e 's/[\/&]/\\&/g')
-	sed -i "s|$pattern|$replacement|" "$file" || {
-		printf '%s' "Failed to update: $file" >&2
-		return 1
-	}
+  # Escape special sed characters in replacement string
+  replacement=$(printf '%s\n' "$replacement" | sed -e 's/[\/&]/\\&/g')
+  sed -i "s|$pattern|$replacement|" "$file" || {
+    printf '%s' "Failed to update: $file" >&2
+    return 1
+  }
 }
 
 update_starship_block_style() {
-	file="$1"
-	section="$2"
-	color="$3"
+  file="$1"
+  section="$2"
+  color="$3"
 
-	file_exists "$file" || return 1
+  file_exists "$file" || return 1
 
-	if ! sed -i "/^\[$section\]/,/^\[/ s/style = \"bold #[0-9a-fA-F]\{6\}\"/style = \"bold $color\"/" "$file"; then
-		printf '%s' "Warning: Failed to update starship section: $section" >&2
-		return 1
-	fi
+  if ! sed -i "/^\[$section\]/,/^\[/ s/style = \"bold #[0-9a-fA-F]\{6\}\"/style = \"bold $color\"/" "$file"; then
+    printf '%s' "Warning: Failed to update starship section: $section" >&2
+    return 1
+  fi
 }
 
 validate_color() { printf "%s" "$1" | grep -qE '^#[0-9a-fA-F]{6}$'; }
 
 select_color() {
-	notify-send "Picking color"
-	xcolor || {
-		printf "Failed to select color" >&2
-		exit 1
-	}
+  notify-send "Picking color"
+  xcolor || {
+    printf "Failed to select color" >&2
+    exit 1
+  }
 }
 
 lighten_color() {
-	pastel lighten 0.25 "$1" | pastel format hex
+  pastel lighten 0.25 "$1" | pastel format hex
 }
 
 apply_rofi() {
-	accent="$1"
-	update_line "$THEME_RASI" 'background-alt:\s*#[0-9a-fA-F]\{6\};' \
-		"background-alt:$accent;"
+  accent="$1"
+  update_line "$THEME_RASI" 'background-alt:\s*#[0-9a-fA-F]\{6\};' \
+    "background-alt:$accent;"
 }
 
 apply_tmux() {
-	accent="$1"
-	update_line "$TMUX_CONFIG" \
-		"set-option -g status-style 'bg=#1e1e2e,fg=#[0-9a-fA-F]\{6\}'" \
-		"set-option -g status-style 'bg=#1e1e2e,fg=$accent'"
+  accent="$1"
+  update_line "$TMUX_CONFIG" \
+    "set-option -g status-style 'bg=#1e1e2e,fg=#[0-9a-fA-F]\{6\}'" \
+    "set-option -g status-style 'bg=#1e1e2e,fg=$accent'"
 }
 
 apply_xresources() {
-	accent="$1"
-	bright="$2"
-	update_line "$XRESOURCES" '*.cursorColor:[[:space:]]*#[0-9a-fA-F]\{6\}' \
-		"*.cursorColor: $bright"
+  accent="$1"
+  bright="$2"
+  update_line "$XRESOURCES" '*.cursorColor:[[:space:]]*#[0-9a-fA-F]\{6\}' \
+    "*.cursorColor: $bright"
 
-	update_line "$XRESOURCES" 'dwm.selbgcolor: #[0-9a-fA-F]\{6\}' \
-		"dwm.selbgcolor: $accent"
+  update_line "$XRESOURCES" 'dwm.selbgcolor: #[0-9a-fA-F]\{6\}' \
+    "dwm.selbgcolor: $accent"
 
-	update_line "$XRESOURCES" 'dwm.selbordercolor: #[0-9a-fA-F]\{6\}' \
-		"dwm.selbordercolor: $accent"
+  update_line "$XRESOURCES" 'dwm.selbordercolor: #[0-9a-fA-F]\{6\}' \
+    "dwm.selbordercolor: $accent"
 }
 
 apply_alacritty() {
-	accent="$1"
-	update_line "$ALACRITTY_CONFIG" \
-		'cursor = "#[0-9a-fA-F]\{6\}"' \
-		"cursor = \"$accent\""
+  accent="$1"
+  update_line "$ALACRITTY_CONFIG" \
+    'cursor = "#[0-9a-fA-F]\{6\}"' \
+    "cursor = \"$accent\""
 }
 
 apply_dunst() {
-	accent="$1"
-	update_line "$DUNSTRC" \
-		'background = "#[0-9a-fA-F]\{6\}"' \
-		"background = \"$accent\""
+  accent="$1"
+  update_line "$DUNSTRC" \
+    'background = "#[0-9a-fA-F]\{6\}"' \
+    "background = \"$accent\""
 }
 
 apply_starship() {
-	bright="$1"
-	primary="$2"
-	update_line "$STARSHIP_TOML" \
-		'success_symbol = "\[󰁕\](bold #[0-9a-fA-F]\{6\})"' \
-		"success_symbol = \"[󰁕](bold $bright)\""
-	update_starship_block_style "$STARSHIP_TOML" "directory" "$bright"
-	if [ -n "$primary" ]; then
-		update_starship_block_style "$STARSHIP_TOML" "git_branch" "$primary"
-	fi
+  bright="$1"
+  primary="$2"
+  update_line "$STARSHIP_TOML" \
+    'success_symbol = "\[󰁕\](bold #[0-9a-fA-F]\{6\})"' \
+    "success_symbol = \"[󰁕](bold $bright)\""
+  update_starship_block_style "$STARSHIP_TOML" "directory" "$bright"
+  if [ -n "$primary" ]; then
+    update_starship_block_style "$STARSHIP_TOML" "git_branch" "$primary"
+  fi
 }
 
 reload_all() {
-	if file_exists "$XRESOURCES"; then
-		if xrdb -merge "$XRESOURCES"; then
-			pgrep -x st | xargs -r kill -USR1 2>/dev/null || true
-		fi
-	fi
+  if file_exists "$XRESOURCES"; then
+    if xrdb -merge "$XRESOURCES"; then
+      pgrep -x st | xargs -r kill -USR1 2>/dev/null || true
+    fi
+  fi
 
-	pgrep -x qutebrowser >/dev/null && qutebrowser :config-source
-	if pgrep -x dunst >/dev/null; then
-		pkill dunst
-		while pgrep -x dunst >/dev/null; do sleep 0.05; done
-	fi
+  pgrep -x qutebrowser >/dev/null && qutebrowser :config-source
+  if pgrep -x dunst >/dev/null; then
+    pkill dunst
+    while pgrep -x dunst >/dev/null; do sleep 0.05; done
+  fi
 
-	pgrep -x dwm >/dev/null && xsetroot -name "fsignal:1"
+  pgrep -x dwm >/dev/null && xsetroot -name "fsignal:1"
 
-	if pgrep tmux >/dev/null; then
-		tmux source-file "$TMUX_CONFIG" || true
-	fi
+  if pgrep tmux >/dev/null; then
+    tmux source-file "$TMUX_CONFIG" || true
+  fi
 }
 
 main() {
-	accent="$1"
-	primary="$2"
+  accent="$1"
+  primary="$2"
 
-	[ -n "$accent" ] || accent=$(select_color)
+  [ -n "$accent" ] || accent=$(select_color)
 
-	if ! validate_color "$accent"; then
-		printf '%s' "Invalid color: $accent" >&2
-		exit 1
-	fi
+  if ! validate_color "$accent"; then
+    printf '%s' "Invalid color: $accent" >&2
+    exit 1
+  fi
 
-	bright=$(lighten_color "$accent")
+  bright=$(lighten_color "$accent")
 
-	if ! validate_color "$bright"; then
-		printf '%s' "Failed to generate bright color from: $accent" >&2
-		exit 1
-	fi
+  if ! validate_color "$bright"; then
+    printf '%s' "Failed to generate bright color from: $accent" >&2
+    exit 1
+  fi
 
-	if [ -n "$primary" ] && ! validate_color "$primary"; then
-		printf '%s' "Invalid primary color: $primary" >&2
-		exit 1
-	fi
+  if [ -n "$primary" ] && ! validate_color "$primary"; then
+    printf '%s' "Invalid primary color: $primary" >&2
+    exit 1
+  fi
 
-	apply_rofi "$accent" &
-	apply_dunst "$accent" &
-	apply_tmux "$accent" &
-	apply_alacritty "$accent" &
-	apply_starship "$bright" "$primary" &
-	apply_xresources "$accent" "$bright" &
+  apply_rofi "$accent" &
+  apply_dunst "$accent" &
+  apply_tmux "$accent" &
+  apply_alacritty "$accent" &
+  apply_starship "$bright" "$primary" &
+  apply_xresources "$accent" "$bright" &
 
-	wait
+  wait
 
-	reload_all
+  reload_all
 
-	printf '%s' "Updated theme with $accent (bright: $bright)"
+  printf '%s' "Updated theme with $accent (bright: $bright)"
 }
 
 main "$@"

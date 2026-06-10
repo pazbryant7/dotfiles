@@ -1,99 +1,99 @@
 #!/usr/bin/env zsh
 
 keys() {
-	xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf "%-3s %s\n", $5, $8 }'
+  xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf "%-3s %s\n", $5, $8 }'
 }
 
 rez() {
-	. /home/bryant/.zshrc
+  . /home/bryant/.zshrc
 }
 
 y() {
-	tmp="$(mktemp -t "yazi-cwd.XXXXXX")" || return
-	yazi "$@" --cwd-file="$tmp"
-	if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-		cd -- "$cwd" || return
-	fi
-	rm -f -- "$tmp"
+  tmp="$(mktemp -t "yazi-cwd.XXXXXX")" || return
+  yazi "$@" --cwd-file="$tmp"
+  if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+    cd -- "$cwd" || return
+  fi
+  rm -f -- "$tmp"
 }
 
 h() {
-	if [ -z "$TMUX" ]; then
-		printf "Not in a tmux session.\n" >&2
-		return 1
-	fi
-	local tmux_current_pane_path tmux_current_session_path
-	tmux_current_pane_path="$(tmux display-message -p '#{pane_current_path}')" || return 1
-	tmux_current_session_path="$(tmux display-message -p '#{session_path}')" || return 1
-	if [ "$tmux_current_pane_path" = "$tmux_current_session_path" ]; then
-		tmux display-message "You are already in your session root directory"
-		return 0
-	fi
-	cd "$tmux_current_session_path" || {
-		tmux display-message "Error: Could not change to session root: $tmux_current_session_path"
-		return 1
-	}
+  if [ -z "$TMUX" ]; then
+    printf "Not in a tmux session.\n" >&2
+    return 1
+  fi
+  local tmux_current_pane_path tmux_current_session_path
+  tmux_current_pane_path="$(tmux display-message -p '#{pane_current_path}')" || return 1
+  tmux_current_session_path="$(tmux display-message -p '#{session_path}')" || return 1
+  if [ "$tmux_current_pane_path" = "$tmux_current_session_path" ]; then
+    tmux display-message "You are already in your session root directory"
+    return 0
+  fi
+  cd "$tmux_current_session_path" || {
+    tmux display-message "Error: Could not change to session root: $tmux_current_session_path"
+    return 1
+  }
 }
 
 # Shell functions for binds
 
 clear-and-redisplay() {
-	zle clear-screen
-	if [ -n "$TMUX" ]; then
-		tmux clear-history
-	fi
+  zle clear-screen
+  if [ -n "$TMUX" ]; then
+    tmux clear-history
+  fi
 }
 
 copy-terminal-buffer() {
-	echo "$BUFFER" | xclip -selection clipboard
-	zle reset-prompt
+  echo "$BUFFER" | xclip -selection clipboard
+  zle reset-prompt
 }
 
 smart-help() {
-	local cmd
-	cmd="${BUFFER%% *}"
-	if [ -z "$cmd" ] || [ -z "$BUFFER" ]; then
-		return
-	fi
-	if man -w "$cmd" >/dev/null 2>&1; then
-		BUFFER="man $cmd"
-		zle accept-line
-	elif command -v "$cmd" >/dev/null 2>&1; then
-		BUFFER="$cmd --help | less -F"
-		zle accept-line
-	else
-		printf '\a'
-	fi
+  local cmd
+  cmd="${BUFFER%% *}"
+  if [ -z "$cmd" ] || [ -z "$BUFFER" ]; then
+    return
+  fi
+  if man -w "$cmd" >/dev/null 2>&1; then
+    BUFFER="man $cmd"
+    zle accept-line
+  elif command -v "$cmd" >/dev/null 2>&1; then
+    BUFFER="$cmd --help | less -F"
+    zle accept-line
+  else
+    printf '\a'
+  fi
 }
 
 # Plugin manager
 
 plugin-load() {
-	(($#)) || { echo >&2 "Usage: plugin-load <repo> [<repo> ...]" && return 1; }
-	local repo plugdir initfile initfiles
-	: ${ZPLUGINDIR:=${ZDOTDIR:-~/.config/zsh}/plugins}
-	for repo in "$@"; do
-		plugdir=$ZPLUGINDIR/${repo:t}
-		initfile=$plugdir/${repo:t}.plugin.zsh
-		if [[ ! -d $plugdir ]]; then
-			echo "Cloning $repo..."
-			git clone -q --depth 1 --recursive --shallow-submodules \
-				https://github.com/$repo "$plugdir" || return
-		fi
-		if [[ ! -e $initfile ]]; then
-			initfiles=($plugdir/*.{plugin.zsh,zsh-theme,zsh,sh}(N))
-			(($#initfiles)) || { echo >&2 "No init file found for '$repo'." && continue; }
-			ln -sf "$initfiles[1]" "$initfile"
-		fi
-		fpath+=$plugdir
-		(($+functions[zsh - defer])) && zsh-defer . "$initfile" || . "$initfile"
-	done
+  (($#)) || { echo >&2 "Usage: plugin-load <repo> [<repo> ...]" && return 1; }
+  local repo plugdir initfile initfiles
+  : ${ZPLUGINDIR:=${ZDOTDIR:-~/.config/zsh}/plugins}
+  for repo in "$@"; do
+    plugdir=$ZPLUGINDIR/${repo:t}
+    initfile=$plugdir/${repo:t}.plugin.zsh
+    if [[ ! -d $plugdir ]]; then
+      echo "Cloning $repo..."
+      git clone -q --depth 1 --recursive --shallow-submodules \
+        https://github.com/$repo "$plugdir" || return
+    fi
+    if [[ ! -e $initfile ]]; then
+      initfiles=($plugdir/*.{plugin.zsh,zsh-theme,zsh,sh}(N))
+      (($#initfiles)) || { echo >&2 "No init file found for '$repo'." && continue; }
+      ln -sf "$initfiles[1]" "$initfile"
+    fi
+    fpath+=$plugdir
+    (($+functions[zsh - defer])) && zsh-defer . "$initfile" || . "$initfile"
+  done
 }
 
 plugin-update() {
-	local ZPLUGINDIR=${ZPLUGINDIR:-$HOME/.config/zsh/plugins}
-	for d in $ZPLUGINDIR/*/.git(/); do
-		echo "Updating ${d:h:t}..."
-		command git -C "${d:h}" pull --ff --recurse-submodules --depth 1 --rebase --autostash || return
-	done
+  local ZPLUGINDIR=${ZPLUGINDIR:-$HOME/.config/zsh/plugins}
+  for d in $ZPLUGINDIR/*/.git(/); do
+    echo "Updating ${d:h:t}..."
+    command git -C "${d:h}" pull --ff --recurse-submodules --depth 1 --rebase --autostash || return
+  done
 }

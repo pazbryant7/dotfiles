@@ -4,53 +4,53 @@
 # Instead, it switches to another active session or gracefully exits.
 
 get_session_count() {
-	tmux list-sessions 2>/dev/null | wc -l
+  tmux list-sessions 2>/dev/null | wc -l
 }
 
 get_current_session() {
-	tmux display-message -p '#S'
+  tmux display-message -p '#S'
 }
 
 get_pane_count() {
-	tmux list-panes 2>/dev/null | wc -l
+  tmux list-panes 2>/dev/null | wc -l
 }
 
 get_window_count() {
-	tmux list-windows 2>/dev/null | wc -l
+  tmux list-windows 2>/dev/null | wc -l
 }
 
 get_alternative_session() {
-	tmux list-sessions -F '#{session_name}' 2>/dev/null |
-		grep -v "^$1$" | head -n 1
+  tmux list-sessions -F '#{session_name}' 2>/dev/null |
+    grep -v "^$1$" | head -n 1
 }
 
 kill_current_session() {
-	session_count="$1"
-	current_session="$2"
+  session_count="$1"
+  current_session="$2"
 
-	if [ "$session_count" -gt 1 ]; then
-		tmux switch-client -l 2>/dev/null ||
-			tmux switch-client -t "$(get_alternative_session "$current_session")"
+  if [ "$session_count" -gt 1 ]; then
+    tmux switch-client -l 2>/dev/null ||
+      tmux switch-client -t "$(get_alternative_session "$current_session")"
 
-		tmux kill-session -t "$current_session"
-	else
-		tmux kill-session
-	fi
+    tmux kill-session -t "$current_session"
+  else
+    tmux kill-session
+  fi
 }
 
 main() {
-	pane_count=$(get_pane_count)
-	window_count=$(get_window_count)
+  pane_count=$(get_pane_count)
+  window_count=$(get_window_count)
 
-	if [ "$pane_count" -gt 1 ]; then
-		tmux kill-pane
-	elif [ "$window_count" -gt 1 ]; then
-		tmux kill-window
-	else
-		kill_current_session "$(get_session_count)" "$(get_current_session)"
-	fi
+  if [ "$pane_count" -gt 1 ]; then
+    tmux kill-pane
+  elif [ "$window_count" -gt 1 ]; then
+    tmux kill-window
+  else
+    kill_current_session "$(get_session_count)" "$(get_current_session)"
+  fi
 
-	tmux refresh-client -S
+  tmux refresh-client -S
 }
 
 main "$@"

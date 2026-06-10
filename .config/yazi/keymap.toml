@@ -11,10 +11,7 @@ desc = "Set as wallpaper"
 
 [[mgr.prepend_keymap]]
 on = "y"
-run = [
-  'shell -- echo "$@" | xclip -i -selection clipboard -t text/uri-list',
-  "yank",
-]
+run = ['shell -- echo "$@" | xclip -i -selection clipboard -t text/uri-list', "yank"]
 
 [[mgr.prepend_keymap]]
 on = ["g", "b"]

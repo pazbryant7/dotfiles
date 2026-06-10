@@ -33,18 +33,18 @@
 
 ## 📦 Supported File Types
 
-| Extension     | Default Command   | 7z Command     | Bsdtar Command (Win10+ & Unix) |
-| ------------- | ----------------- | -------------- | ------------------------------ |
-| `.zip`        | `zip -r`          | `7z a -tzip`   | `tar -caf`                     |
-| `.7z`         | `7z a`            | `7z a`         |                                |
-| `.rar`        | `rar a`           |                |                                |
-| `.tar`        | `tar rpf`         |                | `tar rpf`                      |
-| `.tar.gz`     | `tar rpf + gzip`  | `7z a -tgzip`  | `tar -czf`                     |
-| `.tar.xz`     | `tar rpf + xz`    | `7z a -txz`    | `tar -cJf`                     |
-| `.tar.bz2`    | `tar rpf + bzip2` | `7z a -tbzip2` | `tar -cjf`                     |
-| `.tar.zst`    | `tar rpf + zstd`  |                | `tar --zstd -cf`               |
-| `.tar.lz4`    | `tar rpf + lz4`   |                |                                |
-| `.tar.lha`    | `tar rpf + lha`   |                |                                |
+| Extension  | Default Command   | 7z Command     | Bsdtar Command (Win10+ & Unix) |
+| ---------- | ----------------- | -------------- | ------------------------------ |
+| `.zip`     | `zip -r`          | `7z a -tzip`   | `tar -caf`                     |
+| `.7z`      | `7z a`            | `7z a`         |                                |
+| `.rar`     | `rar a`           |                |                                |
+| `.tar`     | `tar rpf`         |                | `tar rpf`                      |
+| `.tar.gz`  | `tar rpf + gzip`  | `7z a -tgzip`  | `tar -czf`                     |
+| `.tar.xz`  | `tar rpf + xz`    | `7z a -txz`    | `tar -cJf`                     |
+| `.tar.bz2` | `tar rpf + bzip2` | `7z a -tbzip2` | `tar -cjf`                     |
+| `.tar.zst` | `tar rpf + zstd`  |                | `tar --zstd -cf`               |
+| `.tar.lz4` | `tar rpf + lz4`   |                |                                |
+| `.tar.lha` | `tar rpf + lha`   |                |                                |
 
 ---
 
@@ -87,7 +87,6 @@ To enable additional compression formats and features on Windows, follow these s
 
 Add this to your `keymap.toml`:
 
-
 ```toml
 [[mgr.prepend_keymap]]
 on   = [ "c", "a", "a" ]
@@ -129,7 +128,7 @@ desc = "Archive selected files (password+header+level)"
    - <kbd>u</kbd> for all options together
 4. **Type a name** for your archive (or leave blank for suggested name).
 5. **Enter password** and/or **compression level** if prompted.
-6. **Overwrite protect** if a file already exists, the new file will be given a suffix _#.
+6. **Overwrite protect** if a file already exists, the new file will be given a suffix \_#.
 7. Enjoy your shiny new archive!
 
 ---
@@ -144,6 +143,7 @@ desc = "Archive selected files (password+header+level)"
 - `<extention>` Specify a default extention (eg., `7z`, `tar.gz`)
 
 #### Combining multiple flags:
+
 ```toml
 [[mgr.prepend_keymap]]
 on   = [ "c", "a", "7" ]

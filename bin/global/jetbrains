@@ -4,45 +4,45 @@ PRODUCTS="IntelliJIdea WebStorm DataGrip PhpStorm CLion PyCharm GoLand RubyMine"
 CONFIG_PATHS=".config JetBrains/.config"
 
 remove_eval_directory() {
-	product="$1"
+  product="$1"
 
-	for base_path in $CONFIG_PATHS; do
-		path="$HOME/$base_path/$product*/eval"
-		rm -rf "$path" 2>/dev/null
-	done
+  for base_path in $CONFIG_PATHS; do
+    path="$HOME/$base_path/$product*/eval"
+    rm -rf "$path" 2>/dev/null
+  done
 }
 
 remove_evlsprt_properties() {
-	product="$1"
+  product="$1"
 
-	for base_path in $CONFIG_PATHS; do
-		path="$HOME/$base_path/$product*/options/other.xml"
-		sed -i 's/evlsprt//' "$path" 2>/dev/null
-	done
+  for base_path in $CONFIG_PATHS; do
+    path="$HOME/$base_path/$product*/options/other.xml"
+    sed -i 's/evlsprt//' "$path" 2>/dev/null
+  done
 }
 
 reset_trial_period() {
-	product="$1"
+  product="$1"
 
-	printf '%s' "[+] Resetting trial period for $product"
-	printf "[+] Removing Evaluation Key..."
-	remove_eval_directory "$product"
-	printf "[+] Removing all evlsprt properties in options.xml..."
-	remove_evlsprt_properties "$product"
-	printf
+  printf '%s' "[+] Resetting trial period for $product"
+  printf "[+] Removing Evaluation Key..."
+  remove_eval_directory "$product"
+  printf "[+] Removing all evlsprt properties in options.xml..."
+  remove_evlsprt_properties "$product"
+  printf
 }
 
 cleanup_java_prefs() {
-	printf "Removing userPrefs files..."
-	rm -rf "$HOME/.java/.userPrefs" 2>/dev/null
+  printf "Removing userPrefs files..."
+  rm -rf "$HOME/.java/.userPrefs" 2>/dev/null
 }
 
 main() {
-	for product in $PRODUCTS; do
-		reset_trial_period "$product"
-	done
+  for product in $PRODUCTS; do
+    reset_trial_period "$product"
+  done
 
-	cleanup_java_prefs
+  cleanup_java_prefs
 }
 
 main

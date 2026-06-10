@@ -6,38 +6,38 @@ METHOD="randr"
 DEFAULT_WARMTH="6500K"
 
 enable_warmth() {
-	current_brightness="$1"
+  current_brightness="$1"
 
-	gammastep -m "$METHOD" -P -O "$WARM_TEMP" \
-		-b"$current_brightness" \
-		: >/dev/null 2>&1 >"$STATE_FILE"
+  gammastep -m "$METHOD" -P -O "$WARM_TEMP" \
+    -b"$current_brightness" \
+    : >/dev/null 2>&1 >"$STATE_FILE"
 }
 
 disable_warmth() {
-	current_brightness="$1"
+  current_brightness="$1"
 
-	gammastep -m"$METHOD" -P -O"$DEFAULT_WARMTH" \
-		-b "$current_brightness"
+  gammastep -m"$METHOD" -P -O"$DEFAULT_WARMTH" \
+    -b "$current_brightness"
 
-	rm -f "$STATE_FILE"
+  rm -f "$STATE_FILE"
 }
 
 get_current_brightness() {
-	xrandr --verbose | awk '/Brightness/ { print $2; exit }'
+  xrandr --verbose | awk '/Brightness/ { print $2; exit }'
 }
 
 toggle_warmth() {
-	current_brightness="$(get_current_brightness)"
-	if [ -f "$STATE_FILE" ]; then
-		disable_warmth "$current_brightness"
-	else
-		enable_warmth "$current_brightness"
-	fi
+  current_brightness="$(get_current_brightness)"
+  if [ -f "$STATE_FILE" ]; then
+    disable_warmth "$current_brightness"
+  else
+    enable_warmth "$current_brightness"
+  fi
 
 }
 
 main() {
-	toggle_warmth
+  toggle_warmth
 }
 
 main "$@"

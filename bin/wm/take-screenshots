@@ -16,15 +16,15 @@ Active Window (Clip & Save)|win|clip&save|0
 Full Screen Delay 5s (Save)|full|save|5"
 
 notify() {
-	urgency="$1"
-	timeout="$2"
-	body="$3"
+  urgency="$1"
+  timeout="$2"
+  body="$3"
 
-	notify-send \
-		-a "$APP_NAME" \
-		-u "$urgency" \
-		-t "$timeout" \
-		"$body"
+  notify-send \
+    -a "$APP_NAME" \
+    -u "$urgency" \
+    -t "$timeout" \
+    "$body"
 }
 
 notify_info() { notify "normal" 3000 "$1"; }
@@ -33,140 +33,140 @@ notify_success() { notify "normal" 3000 "$1"; }
 notify_error() { notify "critical" 5000 "$1"; }
 
 show_menu() {
-	printf '%s\n' "$MENU_DATA" | cut -d'|' -f1 |
-		rofi -dmenu -i -p "Screenshot:" -l 10
+  printf '%s\n' "$MENU_DATA" | cut -d'|' -f1 |
+    rofi -dmenu -i -p "Screenshot:" -l 10
 }
 
 parse_menu_selection() {
-	printf '%s\n' "$MENU_DATA" | grep -F "${1}|" | cut -d'|' -f2-4
+  printf '%s\n' "$MENU_DATA" | grep -F "${1}|" | cut -d'|' -f2-4
 }
 
 handle_menu() {
-	selection=$(show_menu) || exit 0
-	[ -z "$selection" ] && exit 0
+  selection=$(show_menu) || exit 0
+  [ -z "$selection" ] && exit 0
 
-	parsed=$(parse_menu_selection "$selection")
-	[ -z "$parsed" ] && {
-		notify_error "Unknown selection"
-		exit 1
-	}
+  parsed=$(parse_menu_selection "$selection")
+  [ -z "$parsed" ] && {
+    notify_error "Unknown selection"
+    exit 1
+  }
 
-	MODE=$(printf '%s' "$parsed" | cut -d'|' -f1)
-	STORE=$(printf '%s' "$parsed" | cut -d'|' -f2)
-	WAIT=$(printf '%s' "$parsed" | cut -d'|' -f3)
+  MODE=$(printf '%s' "$parsed" | cut -d'|' -f1)
+  STORE=$(printf '%s' "$parsed" | cut -d'|' -f2)
+  WAIT=$(printf '%s' "$parsed" | cut -d'|' -f3)
 }
 
 run_countdown() {
-	t="$1"
-	while [ "$t" -gt 0 ]; do
-		notify_countdown "$t"
-		t=$((t - 1))
-		sleep 1
-	done
+  t="$1"
+  while [ "$t" -gt 0 ]; do
+    notify_countdown "$t"
+    t=$((t - 1))
+    sleep 1
+  done
 }
 
 capture_select() {
-	maim -u -f png -s -b 2 -c 0.35,0.55,0.85,0.25 -l "$FILE"
+  maim -u -f png -s -b 2 -c 0.35,0.55,0.85,0.25 -l "$FILE"
 }
 
 capture_window() {
-	sleep 0.3
-	win_id=$(xdotool getactivewindow) || return 1
-	maim -u -f png -i "$win_id" "$FILE"
+  sleep 0.3
+  win_id=$(xdotool getactivewindow) || return 1
+  maim -u -f png -i "$win_id" "$FILE"
 }
 
 capture_full() {
-	maim -u -f png "$FILE"
+  maim -u -f png "$FILE"
 }
 
 take_screenshot() {
-	mkdir -p "$SHOT_DIR" || {
-		notify_error "Cannot create $SHOT_DIR"
-		return 1
-	}
+  mkdir -p "$SHOT_DIR" || {
+    notify_error "Cannot create $SHOT_DIR"
+    return 1
+  }
 
-	case "$MODE" in
-	select) capture_select ;;
-	win) capture_window ;;
-	full) capture_full ;;
-	*)
-		notify_error "Unknown mode: $MODE"
-		return 1
-		;;
-	esac
+  case "$MODE" in
+  select) capture_select ;;
+  win) capture_window ;;
+  full) capture_full ;;
+  *)
+    notify_error "Unknown mode: $MODE"
+    return 1
+    ;;
+  esac
 }
 
 copy_to_clipboard() {
-	xclip -selection clipboard -t image/png <"$FILE"
+  xclip -selection clipboard -t image/png <"$FILE"
 }
 
 save_to_disk() {
-	:
+  :
 }
 
 remove_temp_file() {
-	rm -f "$FILE"
+  rm -f "$FILE"
 }
 
 destination_label() {
-	case "$STORE" in
-	clip) printf 'clipboard' ;;
-	save) printf 'disk' ;;
-	'clip&save') printf 'disk & clipboard' ;;
-	*) return 1 ;;
-	esac
+  case "$STORE" in
+  clip) printf 'clipboard' ;;
+  save) printf 'disk' ;;
+  'clip&save') printf 'disk & clipboard' ;;
+  *) return 1 ;;
+  esac
 }
 
 handle_storage() {
-	label=$(destination_label) || {
-		notify_error "Unknown store: $STORE"
-		exit 1
-	}
+  label=$(destination_label) || {
+    notify_error "Unknown store: $STORE"
+    exit 1
+  }
 
-	case "$STORE" in
-	*clip*) copy_to_clipboard ;;
-	esac
+  case "$STORE" in
+  *clip*) copy_to_clipboard ;;
+  esac
 
-	case "$STORE" in
-	save | 'clip&save') save_to_disk ;;
-	esac
+  case "$STORE" in
+  save | 'clip&save') save_to_disk ;;
+  esac
 
-	case "$STORE" in
-	clip) remove_temp_file ;;
-	esac
+  case "$STORE" in
+  clip) remove_temp_file ;;
+  esac
 
-	notify_success "Saved to $label"
+  notify_success "Saved to $label"
 }
 
 parse_args() {
-	while getopts "m:s:w:" opt; do
-		case "$opt" in
-		m) MODE="$OPTARG" ;;
-		s) STORE="$OPTARG" ;;
-		w) WAIT="$OPTARG" ;;
-		*) ;;
-		esac
-	done
+  while getopts "m:s:w:" opt; do
+    case "$opt" in
+    m) MODE="$OPTARG" ;;
+    s) STORE="$OPTARG" ;;
+    w) WAIT="$OPTARG" ;;
+    *) ;;
+    esac
+  done
 }
 
 main() {
-	MODE="full"
-	STORE="clip&save"
-	WAIT=0
-	FILE="${SHOT_DIR}/screenshot_$(date +%Y-%m-%d-%H-%M-%S).png"
+  MODE="full"
+  STORE="clip&save"
+  WAIT=0
+  FILE="${SHOT_DIR}/screenshot_$(date +%Y-%m-%d-%H-%M-%S).png"
 
-	parse_args "$@"
+  parse_args "$@"
 
-	[ "$MODE" = "menu" ] && handle_menu
+  [ "$MODE" = "menu" ] && handle_menu
 
-	[ "$WAIT" -gt 0 ] && run_countdown "$WAIT"
+  [ "$WAIT" -gt 0 ] && run_countdown "$WAIT"
 
-	if take_screenshot; then
-		handle_storage
-	else
-		notify_error "Screenshot failed"
-		exit 1
-	fi
+  if take_screenshot; then
+    handle_storage
+  else
+    notify_error "Screenshot failed"
+    exit 1
+  fi
 }
 
 main "$@"

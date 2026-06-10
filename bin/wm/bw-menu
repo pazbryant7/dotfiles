@@ -19,140 +19,140 @@ extract_id() { printf "%s" "$1" | awk '{print $NF}'; }
 files_changed() { ! cmp -s "$1" "$2"; }
 
 check_vault_exists() {
-	[ -f "$ENCRYPTED_FILE" ] || {
-		notify_err "Vault not found. Run a sync first."
-		exit 1
-	}
+  [ -f "$ENCRYPTED_FILE" ] || {
+    notify_err "Vault not found. Run a sync first."
+    exit 1
+  }
 }
 
 decrypt_vault() {
-	gpg --decrypt "$ENCRYPTED_FILE" 2>/dev/null
+  gpg --decrypt "$ENCRYPTED_FILE" 2>/dev/null
 }
 
 prompt_rofi() {
-	printf "%s" "$1" | jq -r '
+  printf "%s" "$1" | jq -r '
 		.[] |
 		if   .type == 1 then "\(.name) | \(.login.username // "N/A") | \(.id)"
 		elif .type == 2 then "\(.name) | [Secure Note] | \(.id)"
 		elif .type == 3 then "\(.name) | [Card] | \(.id)"
 		else empty end
 	' | rofi -dmenu -i -p "Search vault:" \
-		-mesg "<b>Enter</b>: Pass | <b>Alt+u</b>: User | <b>Alt+t</b>: TOTP | <b>Alt+e</b>: Edit | <b>Alt+n</b>: New" \
-		-kb-custom-1 "Alt+u" \
-		-kb-custom-2 "Alt+t" \
-		-kb-custom-3 "Alt+e" \
-		-kb-custom-4 "Alt+n"
+    -mesg "<b>Enter</b>: Pass | <b>Alt+u</b>: User | <b>Alt+t</b>: TOTP | <b>Alt+e</b>: Edit | <b>Alt+n</b>: New" \
+    -kb-custom-1 "Alt+u" \
+    -kb-custom-2 "Alt+t" \
+    -kb-custom-3 "Alt+e" \
+    -kb-custom-4 "Alt+n"
 }
 
 ensure_bw_session() {
-	BW_SESSION="$(gopass -o "$SESSION_PATH" 2>/dev/null)"
-	export BW_SESSION
+  BW_SESSION="$(gopass -o "$SESSION_PATH" 2>/dev/null)"
+  export BW_SESSION
 
-	bw status | jq -e '.status == "unlocked"' >/dev/null && return 0
+  bw status | jq -e '.status == "unlocked"' >/dev/null && return 0
 
-	notify "Vault locked. Authenticating via gopass..."
-	BW_PASSWORD="$(gopass -o "$MASTER_PATH" 2>/dev/null)"
+  notify "Vault locked. Authenticating via gopass..."
+  BW_PASSWORD="$(gopass -o "$MASTER_PATH" 2>/dev/null)"
 
-	[ -z "$BW_PASSWORD" ] && {
-		notify_err "Master password not found in gopass."
-		exit 1
-	}
+  [ -z "$BW_PASSWORD" ] && {
+    notify_err "Master password not found in gopass."
+    exit 1
+  }
 
-	export BW_PASSWORD
-	NEW_SESSION="$(bw unlock --passwordenv BW_PASSWORD --raw 2>/dev/null)"
-	unset BW_PASSWORD
+  export BW_PASSWORD
+  NEW_SESSION="$(bw unlock --passwordenv BW_PASSWORD --raw 2>/dev/null)"
+  unset BW_PASSWORD
 
-	[ -z "$NEW_SESSION" ] && {
-		notify_err "Failed to unlock vault."
-		exit 1
-	}
+  [ -z "$NEW_SESSION" ] && {
+    notify_err "Failed to unlock vault."
+    exit 1
+  }
 
-	printf "%s\n" "$NEW_SESSION" | gopass insert -f "$SESSION_PATH" >/dev/null 2>&1
-	BW_SESSION="$NEW_SESSION"
-	export BW_SESSION
+  printf "%s\n" "$NEW_SESSION" | gopass insert -f "$SESSION_PATH" >/dev/null 2>&1
+  BW_SESSION="$NEW_SESSION"
+  export BW_SESSION
 }
 
 bg_sync_and_encrypt() {
-	notify "Syncing with Bitwarden server..."
-	bw sync --session "$BW_SESSION" >/dev/null
-	mkdir -p "${ENCRYPTED_FILE%/*}"
-	bw list items --session "$BW_SESSION" | gpg --encrypt --recipient "$GPG_RECIPIENT" --output "$ENCRYPTED_FILE" --yes
-	notify "Local vault successfully updated!"
+  notify "Syncing with Bitwarden server..."
+  bw sync --session "$BW_SESSION" >/dev/null
+  mkdir -p "${ENCRYPTED_FILE%/*}"
+  bw list items --session "$BW_SESSION" | gpg --encrypt --recipient "$GPG_RECIPIENT" --output "$ENCRYPTED_FILE" --yes
+  notify "Local vault successfully updated!"
 }
 
 bg_push() {
-	_mode="$1"
-	_id="$2"
-	_tmp="$3"
-	(
-		ensure_bw_session
-		case "$_mode" in
-		edit)
-			notify "Uploading changes..."
-			if bw edit item "$_id" "$(bw encode <"$_tmp")" --session "$BW_SESSION" >/dev/null 2>&1; then
-				bg_sync_and_encrypt
-			else
-				notify_err "Failed to push edit to server."
-			fi
-			;;
-		create)
-			notify "Creating new entry..."
-			if bw encode <"$_tmp" | bw create item --session "$BW_SESSION" >/dev/null 2>&1; then
-				bg_sync_and_encrypt
-			else
-				notify_err "Failed to create entry."
-			fi
-			;;
-		esac
-		rm -f "$_tmp"
-	) &
+  _mode="$1"
+  _id="$2"
+  _tmp="$3"
+  (
+    ensure_bw_session
+    case "$_mode" in
+    edit)
+      notify "Uploading changes..."
+      if bw edit item "$_id" "$(bw encode <"$_tmp")" --session "$BW_SESSION" >/dev/null 2>&1; then
+        bg_sync_and_encrypt
+      else
+        notify_err "Failed to push edit to server."
+      fi
+      ;;
+    create)
+      notify "Creating new entry..."
+      if bw encode <"$_tmp" | bw create item --session "$BW_SESSION" >/dev/null 2>&1; then
+        bg_sync_and_encrypt
+      else
+        notify_err "Failed to create entry."
+      fi
+      ;;
+    esac
+    rm -f "$_tmp"
+  ) &
 }
 
 clipboard_copy() {
-	_secret="$1"
-	_label="$2"
-	_name="$3"
-	printf "%s" "$_secret" | xclip -selection clipboard
-	notify "$_label for '$_name' copied! Clears in ${CLIPBOARD_TIMEOUT}s."
-	(
-		sleep "$CLIPBOARD_TIMEOUT"
-		[ "$(xclip -selection clipboard -o 2>/dev/null)" = "$_secret" ] &&
-			printf "" | xclip -selection clipboard
-	) &
+  _secret="$1"
+  _label="$2"
+  _name="$3"
+  printf "%s" "$_secret" | xclip -selection clipboard
+  notify "$_label for '$_name' copied! Clears in ${CLIPBOARD_TIMEOUT}s."
+  (
+    sleep "$CLIPBOARD_TIMEOUT"
+    [ "$(xclip -selection clipboard -o 2>/dev/null)" = "$_secret" ] &&
+      printf "" | xclip -selection clipboard
+  ) &
 }
 
 pick_template() {
-	printf "Login\nCard\nSecure Note" |
-		rofi -dmenu -i -p "Entry type:"
+  printf "Login\nCard\nSecure Note" |
+    rofi -dmenu -i -p "Entry type:"
 }
 
 ensure_template() {
-	_tmpl="$1"
-	[ -f "$_tmpl" ] && return 0
-	notify "Template missing — running sync..."
-	"$SYNC_SCRIPT" >&2
-	[ -f "$_tmpl" ] || {
-		notify_err "Sync failed, template still missing."
-		return 1
-	}
+  _tmpl="$1"
+  [ -f "$_tmpl" ] && return 0
+  notify "Template missing — running sync..."
+  "$SYNC_SCRIPT" >&2
+  [ -f "$_tmpl" ] || {
+    notify_err "Sync failed, template still missing."
+    return 1
+  }
 }
 
 open_in_editor() {
-	_tmp="$1"
-	cp "$_tmp" "${_tmp}.orig"
-	$TERM_CMD "$EDITOR" "$_tmp" 2>/dev/null
-	if ! files_changed "$_tmp" "${_tmp}.orig"; then
-		notify "No changes detected. Cancelled."
-		rm -f "$_tmp" "${_tmp}.orig"
-		return 1
-	fi
-	rm -f "${_tmp}.orig"
+  _tmp="$1"
+  cp "$_tmp" "${_tmp}.orig"
+  $TERM_CMD "$EDITOR" "$_tmp" 2>/dev/null
+  if ! files_changed "$_tmp" "${_tmp}.orig"; then
+    notify "No changes detected. Cancelled."
+    rm -f "$_tmp" "${_tmp}.orig"
+    return 1
+  fi
+  rm -f "${_tmp}.orig"
 }
 
 strip_placeholders() {
-	_filled="$1"
-	_base="$2"
-	jq --slurpfile base "$_base" '
+  _filled="$1"
+  _base="$2"
+  jq --slurpfile base "$_base" '
 		. as $filled |
 		$base[0] as $tmpl |
 		walk(
@@ -172,151 +172,151 @@ strip_placeholders() {
 }
 
 create_entry() {
-	_kind="$(pick_template)"
-	[ -z "$_kind" ] && return
+  _kind="$(pick_template)"
+  [ -z "$_kind" ] && return
 
-	case "$_kind" in
-	Login) _tmpl="$TEMPLATE_LOGIN" ;;
-	Card) _tmpl="$TEMPLATE_CARD" ;;
-	"Secure Note") _tmpl="$TEMPLATE_NOTE" ;;
-	*)
-		notify_err "Unknown entry type."
-		return 1
-		;;
-	esac
+  case "$_kind" in
+  Login) _tmpl="$TEMPLATE_LOGIN" ;;
+  Card) _tmpl="$TEMPLATE_CARD" ;;
+  "Secure Note") _tmpl="$TEMPLATE_NOTE" ;;
+  *)
+    notify_err "Unknown entry type."
+    return 1
+    ;;
+  esac
 
-	ensure_template "$_tmpl" || return
+  ensure_template "$_tmpl" || return
 
-	_tmp=$(mktemp -p /dev/shm bw_new_XXXXXX.json)
+  _tmp=$(mktemp -p /dev/shm bw_new_XXXXXX.json)
 
-	if [ "$_kind" = "Login" ]; then
-		_pw=$(gopass pwgen -y -1 18 1 2>/dev/null | tr -d '[:space:]')
-		if [ -n "$_pw" ]; then
-			jq --arg pw "$_pw" '.login.password = $pw' "$_tmpl" >"$_tmp"
-		else
-			notify "Could not generate password, field left blank."
-			cp "$_tmpl" "$_tmp"
-		fi
-	else
-		cp "$_tmpl" "$_tmp"
-	fi
+  if [ "$_kind" = "Login" ]; then
+    _pw=$(gopass pwgen -y -1 18 1 2>/dev/null | tr -d '[:space:]')
+    if [ -n "$_pw" ]; then
+      jq --arg pw "$_pw" '.login.password = $pw' "$_tmpl" >"$_tmp"
+    else
+      notify "Could not generate password, field left blank."
+      cp "$_tmpl" "$_tmp"
+    fi
+  else
+    cp "$_tmpl" "$_tmp"
+  fi
 
-	open_in_editor "$_tmp" || return
+  open_in_editor "$_tmp" || return
 
-	_stripped=$(strip_placeholders "$_tmp" "$_tmpl")
-	printf "%s" "$_stripped" | jq . >"$_tmp"
+  _stripped=$(strip_placeholders "$_tmp" "$_tmpl")
+  printf "%s" "$_stripped" | jq . >"$_tmp"
 
-	if [ "$_kind" = "Login" ]; then
-		_secret=$(jq -r '.login.password // empty' "$_tmp" 2>/dev/null)
-		_name=$(jq -r '.name // "entry"' "$_tmp" 2>/dev/null)
-		[ -n "$_secret" ] && clipboard_copy "$_secret" "Password" "$_name"
-	fi
+  if [ "$_kind" = "Login" ]; then
+    _secret=$(jq -r '.login.password // empty' "$_tmp" 2>/dev/null)
+    _name=$(jq -r '.name // "entry"' "$_tmp" 2>/dev/null)
+    [ -n "$_secret" ] && clipboard_copy "$_secret" "Password" "$_name"
+  fi
 
-	bg_push create "" "$_tmp"
+  bg_push create "" "$_tmp"
 }
 
 edit_entry() {
-	_id="$1"
-	_vault="$2"
-	_tmp=$(mktemp -p /dev/shm bw_edit_XXXXXX.json)
+  _id="$1"
+  _vault="$2"
+  _tmp=$(mktemp -p /dev/shm bw_edit_XXXXXX.json)
 
-	printf "%s" "$_vault" | jq --arg id "$_id" '.[] | select(.id == $id)' >"$_tmp"
+  printf "%s" "$_vault" | jq --arg id "$_id" '.[] | select(.id == $id)' >"$_tmp"
 
-	open_in_editor "$_tmp" || return
+  open_in_editor "$_tmp" || return
 
-	_secret=$(jq -r '.login.password // empty' "$_tmp" 2>/dev/null)
-	_name=$(jq -r '.name // "entry"' "$_tmp" 2>/dev/null)
-	[ -n "$_secret" ] && clipboard_copy "$_secret" "Password" "$_name"
+  _secret=$(jq -r '.login.password // empty' "$_tmp" 2>/dev/null)
+  _name=$(jq -r '.name // "entry"' "$_tmp" 2>/dev/null)
+  [ -n "$_secret" ] && clipboard_copy "$_secret" "Password" "$_name"
 
-	bg_push edit "$_id" "$_tmp"
+  bg_push edit "$_id" "$_tmp"
 }
 
 read_and_copy() {
-	_code="$1"
-	_id="$2"
-	_vault="$3"
+  _code="$1"
+  _id="$2"
+  _vault="$3"
 
-	_item=$(printf "%s" "$_vault" | jq --arg id "$_id" '.[] | select(.id == $id)')
-	_name=$(printf "%s" "$_item" | jq -r '.name // "Unknown"')
+  _item=$(printf "%s" "$_vault" | jq --arg id "$_id" '.[] | select(.id == $id)')
+  _name=$(printf "%s" "$_item" | jq -r '.name // "Unknown"')
 
-	case "$_code" in
-	0)
-		_secret=$(printf "%s" "$_item" | jq -r '
+  case "$_code" in
+  0)
+    _secret=$(printf "%s" "$_item" | jq -r '
 			if .type == 1 then .login.password // empty
 			elif .type == 2 then .notes // empty
 			elif .type == 3 then .card.number // empty
 			else empty end')
-		_label="Password"
-		;;
-	10)
-		_secret=$(printf "%s" "$_item" | jq -r '.login.username // empty')
-		_label="Username"
-		;;
-	11)
-		_totp_uri=$(printf "%s" "$_item" | jq -r '.login.totp // empty')
-		[ -z "$_totp_uri" ] && {
-			notify_err "No TOTP secret for '$_name'."
-			return
-		}
-		case "$_totp_uri" in
-		otpauth://*) _seed=$(printf "%s" "$_totp_uri" | sed 's/.*[?&]secret=\([^&]*\).*/\1/') ;;
-		*) _seed="$_totp_uri" ;;
-		esac
-		_secret=$(oathtool --totp -b "$_seed" 2>/dev/null)
-		[ -z "$_secret" ] && {
-			notify_err "Failed to generate TOTP for '$_name'."
-			return
-		}
-		_label="TOTP"
-		;;
-	esac
+    _label="Password"
+    ;;
+  10)
+    _secret=$(printf "%s" "$_item" | jq -r '.login.username // empty')
+    _label="Username"
+    ;;
+  11)
+    _totp_uri=$(printf "%s" "$_item" | jq -r '.login.totp // empty')
+    [ -z "$_totp_uri" ] && {
+      notify_err "No TOTP secret for '$_name'."
+      return
+    }
+    case "$_totp_uri" in
+    otpauth://*) _seed=$(printf "%s" "$_totp_uri" | sed 's/.*[?&]secret=\([^&]*\).*/\1/') ;;
+    *) _seed="$_totp_uri" ;;
+    esac
+    _secret=$(oathtool --totp -b "$_seed" 2>/dev/null)
+    [ -z "$_secret" ] && {
+      notify_err "Failed to generate TOTP for '$_name'."
+      return
+    }
+    _label="TOTP"
+    ;;
+  esac
 
-	if [ -n "$_secret" ]; then
-		clipboard_copy "$_secret" "$_label" "$_name"
-	else
-		notify_err "No $_label found for '$_name'."
-	fi
+  if [ -n "$_secret" ]; then
+    clipboard_copy "$_secret" "$_label" "$_name"
+  else
+    notify_err "No $_label found for '$_name'."
+  fi
 }
 
 route_action() {
-	_code="$1"
-	_selected="$2"
-	_vault="$3"
+  _code="$1"
+  _selected="$2"
+  _vault="$3"
 
-	case "$_code" in
-	1) exit 0 ;;
-	13)
-		create_entry
-		exit 0
-		;;
-	esac
+  case "$_code" in
+  1) exit 0 ;;
+  13)
+    create_entry
+    exit 0
+    ;;
+  esac
 
-	[ -z "$_selected" ] && exit 0
+  [ -z "$_selected" ] && exit 0
 
-	_id=$(extract_id "$_selected")
+  _id=$(extract_id "$_selected")
 
-	case "$_code" in
-	12) edit_entry "$_id" "$_vault" ;;
-	0 | 10 | 11) read_and_copy "$_code" "$_id" "$_vault" ;;
-	*) exit 1 ;;
-	esac
+  case "$_code" in
+  12) edit_entry "$_id" "$_vault" ;;
+  0 | 10 | 11) read_and_copy "$_code" "$_id" "$_vault" ;;
+  *) exit 1 ;;
+  esac
 }
 
 main() {
-	check_vault_exists
+  check_vault_exists
 
-	if [ "$1" = "new" ]; then
-		create_entry
-		exit 0
-	fi
+  if [ "$1" = "new" ]; then
+    create_entry
+    exit 0
+  fi
 
-	_vault=$(decrypt_vault)
-	[ -z "$_vault" ] && exit 1
+  _vault=$(decrypt_vault)
+  [ -z "$_vault" ] && exit 1
 
-	_selected=$(prompt_rofi "$_vault")
-	_code=$?
+  _selected=$(prompt_rofi "$_vault")
+  _code=$?
 
-	route_action "$_code" "$_selected" "$_vault"
+  route_action "$_code" "$_selected" "$_vault"
 }
 
 main "$@"
