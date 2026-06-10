@@ -1,76 +1,88 @@
 #!/usr/bin/env sh
+
 SESSION_DIRS="
 $HOME/Documents/github
 $HOME/Documents/github/temp
 "
-
 NOTES_PATH="$HOME/Documents/github/notes"
 NOTES_FILE="$NOTES_PATH/todo.md"
 
 current_session() {
-	tmux display-message -p '#S'
+  tmux display-message -p '#S'
 }
 
 session_exists() {
-	tmux has-session -t="$1" 2>/dev/null
+  tmux has-session -t="$1" 2>/dev/null
 }
 
 create_session() {
-	tmux new-session -ds "$1" -c "$2"
+  tmux new-session -ds "$1" -c "$2"
 }
 
 switch_to_session() {
-	tmux switch-client -t "$1"
+  tmux switch-client -t "$1"
 }
 
 notify() {
-	tmux display-message "$1"
+  tmux display-message "$1"
 }
 
 open_notes() {
-	tmux send-keys -t "$1" "${EDITOR:-nvim} $NOTES_FILE" Enter
-}
-
-pick_with_fzf() {
-	# shellcheck disable=SC2086
-	fd . --max-depth 1 --type d --type l --follow $SESSION_DIRS 2>/dev/null | fzf
+  tmux send-keys -t "$1" "${EDITOR:-nvim} $NOTES_FILE" Enter
 }
 
 session_name_from_path() {
-	basename "$1" | tr . _
+  basename "$1" | tr . _ | tr '[:upper:]' '[:lower:]'
+}
+
+pick_with_fzf() {
+  # shellcheck disable=SC2086
+  fd . --max-depth 1 --type d --type l --follow $SESSION_DIRS 2>/dev/null | fzf --multi
+}
+
+setup_session() {
+  path="$1"
+  name="$2"
+  [ "$(current_session)" = "$name" ] && {
+    notify "Already on session: $name"
+    return 1
+  }
+  session_exists "$name" || create_session "$name" "$path"
+  [ "$path" = "$NOTES_PATH" ] && open_notes "$name"
+  return 0
+}
+
+handle_single() {
+  path="$1"
+  name="${2:-$(session_name_from_path "$path")}"
+  setup_session "$path" "$name" && switch_to_session "$name"
+}
+
+handle_fzf() {
+  paths=$(pick_with_fzf)
+  [ -z "$paths" ] && {
+    printf 'No directories selected\n' >&2
+    exit 1
+  }
+
+  tmp=$(mktemp)
+  printf '%s\n' "$paths" | while IFS= read -r path; do
+    [ -z "$path" ] && continue
+    name=$(session_name_from_path "$path")
+    setup_session "$path" "$name"
+    printf '%s' "$name" >"$tmp"
+  done
+  last=$(cat "$tmp")
+  rm -f "$tmp"
+  [ -n "$last" ] && switch_to_session "$last"
 }
 
 main() {
-	if [ -n "$1" ]; then
-		selected_path="$1"
-	else
-		selected_path=$(pick_with_fzf)
-		if [ -z "$selected_path" ]; then
-			printf 'No directory selected\n' >&2
-			exit 1
-		fi
-	fi
-
-	if [ -n "$2" ]; then
-		session_name="$2"
-	else
-		session_name=$(session_name_from_path "$selected_path")
-	fi
-
-	if [ "$(current_session)" = "$session_name" ]; then
-		notify "Already on session: $session_name"
-		exit 0
-	fi
-
-	if ! session_exists "$session_name"; then
-		create_session "$session_name" "$selected_path"
-	fi
-
-	switch_to_session "$session_name"
-
-	if [ "$selected_path" = "$NOTES_PATH" ]; then
-		open_notes "$session_name"
-	fi
+  [ -n "$1" ] && {
+    handle_single "$@"
+    return
+  }
+  handle_fzf
 }
 
 main "$@"
