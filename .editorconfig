@@ -1,30 +1,34 @@
-root = true
+# ~/.editorconfig
+# Global editor config - applies to ALL projects
+# Used as fallback when project-specific config doesn't specify
+
+root = false
 
 [*]
-end_of_line = lf
 charset = utf-8
-trim_trailing_whitespace = true
+end_of_line = lf
 insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+[*.{yml,yaml}]
+indent_size = 2
+
+[Makefile]
+indent_style = tab
 
 [*.py]
-indent_style = space
 indent_size = 4
 
-[*.{js,ts,tsx,html,css}]
-indent_style = space
+[*.go]
+indent_style = tab
+
+[*.{c,cpp,h,hpp}]
+indent_size = 4
+
+[*.{sh,bash,zsh}]
 indent_size = 2
 
-[*.{sass,scss,less}]
-indent_style = space
+[*.lua]
 indent_size = 2
-
-[*.{yml,yaml,json,jsonc}]
-indent_style = space
-indent_size = 2
-
-[*.toml]
-indent_style = space
-indent_size = 2
-
-[*.md]
-trim_trailing_whitespace = false
