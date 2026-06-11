@@ -21,9 +21,6 @@ set -gx FZF_DEFAULT_OPTS "\
 --height=50% \
 --preview-window noborder \
 --bind 'ctrl-o:execute(xdg-open {})' \
---bind 'ctrl-x:execute(xdg-default {})' \
---bind 'ctrl-s:execute($HOME/bin/tmux/new-session {})+abort' \
---bind 'ctrl-e:execute($HOME/bin/tmux/new-session {} working)+abort' \
 "
 
 set -gx FZF_DEFAULT_COMMAND "fd \
