@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+
+die() {
+  echo "$1" >&2
+  exit 1
+}
+
+sessions() {
+  tmux list-sessions -F "#{session_name}"
+}
+
+pick() {
+  fzf --prompt="session > "
+}
+
+switch() {
+  tmux switch-client -t "$1"
+}
+
+main() {
+  selected=$(sessions | pick) || die "no session selected"
+  switch "$selected" || die "cannot switch to: $selected"
+}
+
+main "$@"

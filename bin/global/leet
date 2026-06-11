@@ -17,7 +17,7 @@ die() {
 }
 
 new_session() {
-  ./neww "$1"
+  "$HOME/bin/global/neww" "$1"
 }
 
 new_window() {
