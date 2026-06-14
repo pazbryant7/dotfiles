@@ -96,6 +96,7 @@ rtkit
 rustup
 screenkey
 starship
+steam
 stow
 sudo
 syncthing
