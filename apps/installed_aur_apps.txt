@@ -1,4 +1,6 @@
+[1m[33m
 brave-origin-bin
+downgrade
 dragon-drop
 grpcurl-bin
 helium-browser-bin
