@@ -20,7 +20,7 @@
   "sortby": "",
   "searchby": "name-desc",
   "gitflags": "",
-  "removemake": true,
+  "removemake": "always",
   "sudobin": "sudo",
   "sudoflags": "",
   "version": "12.6.0",
