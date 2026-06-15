@@ -51,6 +51,27 @@ select_color() {
   xcolor || die "failed to select color"
 }
 
+# Derive a brighter variant of a hex colour by scaling each RGB channel.
+# Usage: derive_primary "#rrggbb" [factor]
+# factor defaults to 1.4; channels are clamped to 255.
+derive_primary() {
+  raw="${1#'#'}"
+  [ ${#raw} -eq 6 ] || die "derive_primary: invalid hex colour '$1'"
+  factor="${2:-1.4}"
+  printf '#%s' "$(printf '%s' "$raw" | awk -v factor="$factor" '
+    {
+      r = strtonum("0x" substr($0, 1, 2))
+      g = strtonum("0x" substr($0, 3, 2))
+      b = strtonum("0x" substr($0, 5, 2))
+      r = int(r * factor); if (r > 255) r = 255
+      g = int(g * factor); if (g > 255) g = 255
+      b = int(b * factor); if (b > 255) b = 255
+      printf "%02x%02x%02x", r, g, b
+    }
+  ')"
+  printf '\n'
+}
+
 apply_rofi() {
   update_line "$THEME_RASI" \
     "background-alt:[[:space:]]*$HEX_PAT;" \
@@ -117,19 +138,11 @@ reload_all() {
   wait
 }
 
-usage() {
-  printf 'Usage: %s <accent> <primary>\n  accent   hex color for UI elements (prompted via xcolor if omitted)\n  primary  hex color for prompt/starship\n' \
-    "$(basename "$0")" >&2
-  exit 1
-}
-
 main() {
   accent="$1"
   primary="$2"
-
-  [ -n "$primary" ] || usage
   [ -n "$accent" ] || accent=$(select_color)
-
+  [ -n "$primary" ] || primary=$(derive_primary "$accent")
   apply_rofi "$accent" &
   apply_dunst "$accent" &
   apply_tmux "$accent" &
@@ -137,7 +150,6 @@ main() {
   apply_xresources "$accent" &
   apply_starship "$accent" "$primary" &
   wait
-
   reload_all
   printf 'Theme updated: accent=%s primary=%s\n' "$accent" "$primary"
 }
