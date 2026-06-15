@@ -2,6 +2,8 @@
 
 DIRS="$HOME/Documents/github/leetcode
 $HOME/Documents/github/temp/leetcode-practice"
+PRACTICE_DIR="$HOME/Documents/github/temp/leetcode-practice"
+PRACTICE_INDEX="$PRACTICE_DIR/index.ts"
 
 lower() {
   printf "%s" "$1" | tr '[:upper:]' '[:lower:]'
@@ -28,21 +30,27 @@ open_index() {
   tmux send-keys -t "$1" "nvim index.ts" Enter
 }
 
+ensure_practice() {
+  [ -d "$PRACTICE_DIR" ] || mkdir -p "$PRACTICE_DIR" ||
+    die "cannot create directory: $PRACTICE_DIR"
+  [ -f "$PRACTICE_INDEX" ] || touch "$PRACTICE_INDEX" ||
+    die "cannot create file: $PRACTICE_INDEX"
+}
+
 setup() {
   dir="$1"
   sname=$(name "$dir") || die "cannot derive name from: $dir"
   new_session "$dir" || die "cannot create session: $sname"
-
   [ "$sname" = "leetcode-practice" ] || return 0
   new_window "$sname" "$dir" || die "cannot create window: $sname"
   open_index "$sname" || die "cannot open index.ts: $sname"
 }
 
 workspace() {
+  ensure_practice
   for dir in $DIRS; do
     setup "$dir"
   done
 }
-
 main() { workspace; }
 main "$@"
