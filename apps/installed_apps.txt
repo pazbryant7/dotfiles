@@ -185,7 +185,6 @@ qbittorrent
 qt6ct
 rclone
 rebuild-detector
-reflector
 ripgrep
 rofi
 rsync
