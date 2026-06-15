@@ -13,7 +13,6 @@ alias gbl="ls ~/bin/global/"
 
 # main
 alias :q="exit"
-alias paru="yay"
 alias wg="sudo wg"
 alias sudo="sudo "
 alias pass="gopass"
