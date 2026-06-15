@@ -1,4 +1,5 @@
 [1m[33m
 brave-origin-bin
+helium-browser-bin
 yay
 yay-debug
