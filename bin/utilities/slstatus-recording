@@ -1,18 +1,14 @@
 #!/usr/bin/env sh
 
 RECORDING_ICON="^c#FFFFFF^[REC]^d^"
-PID_FILE="/tmp/screen_recorder.pid"
+RUNTIME_DIR="${XDG_RUNTIME_DIR:-/tmp}/screen_recorder"
+PID_FILE="$RUNTIME_DIR/ffmpeg.pid"
 
 is_recording() {
-  [ -f "$PID_FILE" ]
-}
-
-format_recording() {
-  printf "%s | " "$RECORDING_ICON"
+  [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE")" 2>/dev/null
 }
 
 main() {
-  is_recording && format_recording
+  is_recording && printf "%s | " "$RECORDING_ICON"
 }
-
 main "$@"
