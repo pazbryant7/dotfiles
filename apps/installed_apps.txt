@@ -36,6 +36,7 @@ gammastep
 git
 github-cli
 glow
+go
 gopass
 gst-plugin-pipewire
 hyperfine
