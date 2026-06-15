@@ -38,6 +38,7 @@ github-cli
 glow
 go
 gopass
+grub
 gst-plugin-pipewire
 hyperfine
 imagemagick
@@ -50,7 +51,6 @@ lazydocker
 lazygit
 libnotify
 libpulse
-limine
 linux
 linux-firmware
 linux-headers
