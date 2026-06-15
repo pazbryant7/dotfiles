@@ -45,7 +45,7 @@ setup_session() {
   name="$2"
   [ "$(current_session)" = "$name" ] && {
     notify "Already on session: $name"
-    return 1
+    return 0
   }
   session_exists "$name" || create_session "$name" "$path"
   [ "$path" = "$NOTES_PATH" ] && open_notes "$name"
