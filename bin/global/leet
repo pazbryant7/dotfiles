@@ -18,6 +18,10 @@ die() {
   exit 1
 }
 
+in_tmux() {
+  [ -n "$TMUX" ]
+}
+
 new_session() {
   "$HOME/bin/global/neww" "$1"
 }
@@ -52,5 +56,13 @@ workspace() {
     setup "$dir"
   done
 }
-main() { workspace; }
+
+main() {
+  if in_tmux; then
+    workspace
+  else
+    printf "Not in a tmux session.\n" >&2
+  fi
+}
+
 main "$@"
