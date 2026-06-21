@@ -31,7 +31,7 @@ new_window() {
 }
 
 open_index() {
-  tmux send-keys -t "$1" "nvim index.ts" Enter
+  tmux send-keys -t "$1" "LEETCODE=1 nvim index.ts" Enter
 }
 
 ensure_practice() {
