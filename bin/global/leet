@@ -3,7 +3,6 @@
 DIRS="$HOME/Documents/github/leetcode
 $HOME/Documents/github/temp/leetcode-practice"
 PRACTICE_DIR="$HOME/Documents/github/temp/leetcode-practice"
-PRACTICE_INDEX="$PRACTICE_DIR/index.ts"
 
 lower() {
   printf "%s" "$1" | tr '[:upper:]' '[:lower:]'
@@ -30,36 +29,48 @@ new_window() {
   tmux new-window -t "$1" -c "$2"
 }
 
+get_index_type() {
+  case "$1" in
+  js) printf "index.ts" ;;
+  py) printf "index.py" ;;
+  cpp) printf "index.cpp" ;;
+  rs) printf "index.rs" ;;
+  go) printf "index.go" ;;
+  *) die "unknown language: $1" ;;
+  esac
+}
+
 open_index() {
-  tmux send-keys -t "$1" "LEETCODE=1 nvim index.ts" Enter
+  file=$(get_index_type "$2") || die "cannot get the file type: $2"
+  tmux send-keys -t "$1" "LEETCODE=1 nvim $file" Enter
 }
 
 ensure_practice() {
   [ -d "$PRACTICE_DIR" ] || mkdir -p "$PRACTICE_DIR" ||
     die "cannot create directory: $PRACTICE_DIR"
-  [ -f "$PRACTICE_INDEX" ] || touch "$PRACTICE_INDEX" ||
-    die "cannot create file: $PRACTICE_INDEX"
 }
 
 setup() {
   dir="$1"
+  lang="$2"
   sname=$(name "$dir") || die "cannot derive name from: $dir"
   new_session "$dir" || die "cannot create session: $sname"
   [ "$sname" = "leetcode-practice" ] || return 0
   new_window "$sname" "$dir" || die "cannot create window: $sname"
-  open_index "$sname" || die "cannot open index.ts: $sname"
+  open_index "$sname" "$lang" || die "cannot open index: $sname"
 }
 
 workspace() {
   ensure_practice
   for dir in $DIRS; do
-    setup "$dir"
+    setup "$dir" "$1"
   done
 }
 
 main() {
+  lang="${1:-js}"
   if in_tmux; then
-    workspace
+    workspace "$lang"
   else
     printf "Not in a tmux session.\n" >&2
   fi
