@@ -3,4 +3,3 @@ brave-origin-bin
 dragon-drop
 helium-browser-bin
 yay
-yay-debug

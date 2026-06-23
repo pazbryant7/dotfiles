@@ -78,6 +78,7 @@ pacman-contrib
 pastel
 patchelf
 pavucontrol
+pcmanfm
 perl-image-exiftool
 picom
 pipewire
