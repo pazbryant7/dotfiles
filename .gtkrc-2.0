@@ -4,7 +4,7 @@
 include "/home/bryant/.gtkrc-2.0.mine"
 gtk-theme-name="Breeze-Dark"
 gtk-icon-theme-name="breeze-dark"
-gtk-font-name="National Park Medium 10.6"
+gtk-font-name="National Park Medium 11"
 gtk-cursor-theme-name="capitaine-cursors"
 gtk-cursor-theme-size=24
 gtk-toolbar-style=GTK_TOOLBAR_ICONS
@@ -15,5 +15,5 @@ gtk-enable-event-sounds=1
 gtk-enable-input-feedback-sounds=0
 gtk-xft-antialias=1
 gtk-xft-hinting=1
-gtk-xft-hintstyle="hintfull"
+gtk-xft-hintstyle="hintslight"
 gtk-xft-rgba="rgb"
