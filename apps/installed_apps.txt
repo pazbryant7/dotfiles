@@ -12,6 +12,7 @@ base-devel
 bat
 bitwarden-cli
 bob
+bottom
 breeze-gtk
 breeze-icons
 bun
