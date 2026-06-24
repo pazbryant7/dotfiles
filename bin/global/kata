@@ -42,7 +42,7 @@ get_index_type() {
 
 open_index() {
   file=$(get_index_type "$2") || die "cannot get file type: $2"
-  tmux send-keys -t "$1" "LEETCODE=1 nvim $file" Enter
+  tmux send-keys -t "$1" "KATA=1 nvim $file" Enter
 }
 
 ensure_dir() {
