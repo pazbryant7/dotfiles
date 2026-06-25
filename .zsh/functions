@@ -38,10 +38,8 @@ h() {
 # Shell functions for binds
 
 clear-and-redisplay() {
-  zle clear-screen
-  if [ -n "$TMUX" ]; then
-    tmux clear-history
-  fi
+  printf '\033[2J\033[3J\033[H'
+  zle redisplay
 }
 
 copy-terminal-buffer() {
