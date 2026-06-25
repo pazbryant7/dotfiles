@@ -27,6 +27,7 @@ alias xr="nvim ~/.Xresources"
 alias zsha="cd ~/.zsh && nvim  aliases"
 alias fishc="cd ~/.config/fish && nvim config.fish"
 alias alac="nvim ~/.config/alacritty/alacritty.toml"
+alias calc="python -i -c 'import math, cmath; from math import *'"
 
 alias sht="shutdown now"
 alias dh="rm ~/.history.db"
