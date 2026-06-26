@@ -32,9 +32,9 @@ decrypt_vault() {
 prompt_rofi() {
   printf "%s" "$1" | jq -r '
 		.[] |
-		if   .type == 1 then "\(.name) | \(.login.username // "N/A") | \(.id)"
-		elif .type == 2 then "\(.name) | [Secure Note] | \(.id)"
-		elif .type == 3 then "\(.name) | [Card] | \(.id)"
+		if   .type == 1 then "\(.name) | \(.id)\u0000display\u001f\(.name) | \(.login.username // "N/A") | \(.id)"
+		elif .type == 2 then "\(.name) | \(.id)\u0000display\u001f\(.name) | [Secure Note] | \(.id)"
+		elif .type == 3 then "\(.name) | \(.id)\u0000display\u001f\(.name) | [Card] | \(.id)"
 		else empty end
 	' | rofi -dmenu -i -p "Search vault:" \
     -mesg "<b>Enter</b>: Pass | <b>Alt+u</b>: User | <b>Alt+t</b>: TOTP | <b>Alt+e</b>: Edit | <b>Alt+n</b>: New" \
