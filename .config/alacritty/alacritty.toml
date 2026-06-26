@@ -12,15 +12,53 @@ size = 10.5
 
 [font.normal]
 family = "Annotation Mono"
-style = "DemiBold"
+style = "Bold"
 
 [font.bold]
 family = "Annotation Mono"
 style = "Bold"
 
 [font.offset]
-x = 2
+x = -2
 y = 1
+
+[mouse]
+hide_when_typing = true
+
+[window]
+opacity = 0.83
+dynamic_padding = true
+padding = { x = 0, y = 0 }
+
+
+[colors]
+[colors.primary]
+background = "#1e1e2e"
+foreground = "#ffffff"
+
+[colors.cursor]
+text = "#1d1f21"
+cursor = "#7c000a"
+
+[colors.normal]
+black = "#1d1f21"
+red = "#cc6666"
+green = "#b5bd68"
+yellow = "#f0c674"
+blue = "#81a2be"
+magenta = "#b294bb"
+cyan = "#8abeb7"
+white = "#c5c8c6"
+
+[colors.bright]
+black = "#666666"
+red = "#d54e53"
+green = "#b9ca4a"
+yellow = "#e7c547"
+blue = "#7aa6da"
+magenta = "#c397d8"
+cyan = "#70c0b1"
+white = "#eaeaea"
 
 
 [[keyboard.bindings]]
@@ -48,40 +86,7 @@ action = "ResetFontSize"
 key = "!"
 mods = "Control"
 
-[mouse]
-hide_when_typing = true
-
-[window]
-opacity = 0.83
-dynamic_padding = true
-padding = { x = 0, y = 0 }
-
-
-[colors]
-[colors.primary]
-background = "#1e1e2e"
-foreground = "#ffffff"
-
-[colors.cursor]
-text = "#1d1f21"
-cursor = "#3BA4A5"
-
-[colors.normal]
-black = "#1d1f21"
-red = "#cc6666"
-green = "#b5bd68"
-yellow = "#f0c674"
-blue = "#81a2be"
-magenta = "#b294bb"
-cyan = "#8abeb7"
-white = "#c5c8c6"
-
-[colors.bright]
-black = "#666666"
-red = "#d54e53"
-green = "#b9ca4a"
-yellow = "#e7c547"
-blue = "#7aa6da"
-magenta = "#c397d8"
-cyan = "#70c0b1"
-white = "#eaeaea"
+[[keyboard.bindings]]
+key = "S"
+mods = "Control|Shift"
+command = { program = "bash", args = ["-c", "~/bin/utilities/alacritty-switch-font"] }
