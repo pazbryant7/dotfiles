@@ -1,0 +1,47 @@
+#!/bin/sh
+
+STATE_FILE="${XDG_RUNTIME_DIR:-/tmp}/alacritty_font_state"
+STATES="DemiBold Bold ExtraBold"
+TOTAL=3
+
+read_state() {
+  cat "$STATE_FILE" 2>/dev/null || echo 0
+}
+
+write_state() {
+  echo "$1" >"$STATE_FILE"
+}
+
+next_state() {
+  echo $((($1 + 1) % TOTAL))
+}
+
+style_at() {
+  echo "$STATES" | cut -d' ' -f$(($1 + 1))
+}
+
+bold_for() {
+  case "$1" in
+  DemiBold) echo "Bold" ;;
+  Bold) echo "ExtraBold" ;;
+  ExtraBold) echo "ExtraBold" ;;
+  esac
+}
+
+apply_font() {
+  alacritty msg config \
+    "font.normal.style=\"$1\"" \
+    "font.bold.style=\"$2\""
+}
+
+main() {
+  current=$(read_state)
+
+  normal=$(style_at "$current")
+  bold=$(bold_for "$normal")
+
+  apply_font "$normal" "$bold"
+  write_state "$(next_state "$current")"
+}
+
+main
