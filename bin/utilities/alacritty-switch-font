@@ -1,7 +1,7 @@
 #!/bin/sh
 
 STATE_FILE="${XDG_RUNTIME_DIR:-/tmp}/alacritty_font_state"
-STATES="DemiBold Bold ExtraBold"
+STATES="Medium DemiBold Bold ExtraBold"
 TOTAL=3
 
 read_state() {
@@ -22,6 +22,7 @@ style_at() {
 
 bold_for() {
   case "$1" in
+  Medium) echo "DemiBold" ;;
   DemiBold) echo "Bold" ;;
   Bold) echo "ExtraBold" ;;
   ExtraBold) echo "ExtraBold" ;;
