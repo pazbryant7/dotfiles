@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 
-PRACTICE_DIR="$HOME/Documents/github/temp/kata"
-DIRS="$HOME/Documents/github/leetcode
-$PRACTICE_DIR"
+practice_dir="$HOME/Documents/github/temp/kata"
+dirs="$HOME/Documents/github/leetcode
+$practice_dir"
 
 lower() {
   printf "%s" "$1" | tr '[:upper:]' '[:lower:]'
@@ -49,19 +49,44 @@ ensure_dir() {
   [ -d "$1" ] || mkdir -p "$1" || die "cannot create directory: $1"
 }
 
+switch_to() {
+  tmux switch-client -t "$1"
+}
+
+exist_session() {
+  tmux has-session -t="$1" 2>/dev/null
+}
+
+in_practice() {
+  [ "$1" = "$practice_dir" ]
+}
+
+start_practicing() {
+  sname="$1"
+  dir="$2"
+  lang="$3"
+  new_window "$sname" "$dir" || die "cannot create new window"
+  open_index "$sname" "$lang" || die "cannot open index"
+}
+
 setup() {
   dir="$1"
   lang="$2"
   sname=$(name "$dir") || die "cannot derive name from: $dir"
+
+  if exist_session "$sname"; then
+    in_practice "$dir" || return 0
+    switch_to "$sname"
+    return 0
+  fi
+
   new_session "$dir" || die "cannot create session for: $dir"
-  [ "$dir" = "$PRACTICE_DIR" ] || return 0
-  new_window "$sname" "$dir" || die "cannot create window: $sname"
-  open_index "$sname" "$lang" || die "cannot open index: $sname"
+  in_practice "$dir" && start_practicing "$sname" "$dir" "$lang"
 }
 
 workspace() {
-  ensure_dir "$PRACTICE_DIR"
-  for dir in $DIRS; do
+  ensure_dir "$practice_dir"
+  for dir in $dirs; do
     setup "$dir" "$1"
   done
 }
