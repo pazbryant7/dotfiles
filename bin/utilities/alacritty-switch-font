@@ -2,7 +2,7 @@
 
 STATE_FILE="${XDG_RUNTIME_DIR:-/tmp}/alacritty_font_state"
 STATES="Medium DemiBold Bold ExtraBold"
-TOTAL=3
+TOTAL=4
 
 read_state() {
   cat "$STATE_FILE" 2>/dev/null || echo 0
