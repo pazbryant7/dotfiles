@@ -1,8 +1,19 @@
 #!/bin/sh
-
 STATE_FILE="${XDG_RUNTIME_DIR:-/tmp}/alacritty_font_state"
-STATES="Medium DemiBold Bold ExtraBold"
-TOTAL=4
+
+# States: normal_family|normal_style|bold_family|bold_style
+# Annotation Mono: DemiBold < Bold < ExtraBold
+# Recursive:       Medium (Mn Csl St Med) < SemiBold (Mn Csl St SmB) < Bold (Mn Csl St)
+STATES="
+Annotation Mono|DemiBold|Annotation Mono|Bold
+Annotation Mono|Bold|Annotation Mono|ExtraBold
+Annotation Mono|ExtraBold|Annotation Mono|ExtraBold
+Recursive Mn Csl St Med|Medium|Recursive Mn Csl St SmB|SemiBold
+Recursive Mn Csl St SmB|SemiBold|Recursive Mn Csl St|Bold
+Recursive Mn Csl St|Bold|Recursive Mn Csl St|Bold
+"
+
+TOTAL=6
 
 read_state() {
   cat "$STATE_FILE" 2>/dev/null || echo 0
@@ -16,32 +27,33 @@ next_state() {
   echo $((($1 + 1) % TOTAL))
 }
 
-style_at() {
-  echo "$STATES" | cut -d' ' -f$(($1 + 1))
+# Get the Nth non-empty line from STATES (0-indexed)
+state_at() {
+  echo "$STATES" | grep -v '^$' | sed -n "$(($1 + 1))p"
 }
 
-bold_for() {
-  case "$1" in
-  Medium) echo "DemiBold" ;;
-  DemiBold) echo "Bold" ;;
-  Bold) echo "ExtraBold" ;;
-  ExtraBold) echo "ExtraBold" ;;
-  esac
+field() {
+  echo "$1" | cut -d'|' -f"$2"
 }
 
 apply_font() {
   alacritty msg config \
-    "font.normal.style=\"$1\"" \
-    "font.bold.style=\"$2\""
+    "font.normal.family=\"$1\"" \
+    "font.normal.style=\"$2\"" \
+    "font.bold.family=\"$3\"" \
+    "font.bold.style=\"$4\""
 }
 
 main() {
   current=$(read_state)
+  entry=$(state_at "$current")
 
-  normal=$(style_at "$current")
-  bold=$(bold_for "$normal")
+  normal_family=$(field "$entry" 1)
+  normal_style=$(field "$entry" 2)
+  bold_family=$(field "$entry" 3)
+  bold_style=$(field "$entry" 4)
 
-  apply_font "$normal" "$bold"
+  apply_font "$normal_family" "$normal_style" "$bold_family" "$bold_style"
   write_state "$(next_state "$current")"
 }
 
