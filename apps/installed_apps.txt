@@ -106,6 +106,7 @@ tmux
 translate-shell
 tree
 tree-sitter-cli
+ttf-nerd-fonts-symbols
 typescript
 ueberzugpp
 ufw
