@@ -1,0 +1,7 @@
+map D trash
+map a create
+map x extract
+
+map gh cd ~
+map gd cd ~/Downloads
+map gm cd /run/media

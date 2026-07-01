@@ -1,0 +1,134 @@
+#!/bin/env sh
+#
+# extract.sh — universal archive extractor for lf.
+# Always extracts into a fresh, uniquely-named directory — never overwrites.
+#
+# Usage: extract.sh <archive...>
+
+warn() {
+  echo "extract.sh: $1" >&2
+}
+
+file_exists() {
+  [ -e "$1" ]
+}
+
+# Strip known archive extensions to get a base name for the output dir.
+base_name() {
+  name=$(basename "$1")
+  case "$name" in
+  *.tar.gz) echo "${name%.tar.gz}" ;;
+  *.tgz) echo "${name%.tgz}" ;;
+  *.tar.bz2) echo "${name%.tar.bz2}" ;;
+  *.tbz2) echo "${name%.tbz2}" ;;
+  *.tar.xz) echo "${name%.tar.xz}" ;;
+  *.tar) echo "${name%.tar}" ;;
+  *.zip) echo "${name%.zip}" ;;
+  *.rar) echo "${name%.rar}" ;;
+  *.7z) echo "${name%.7z}" ;;
+  *.gz) echo "${name%.gz}" ;;
+  *.bz2) echo "${name%.bz2}" ;;
+  *) echo "$name" ;;
+  esac
+}
+
+# Return a target dir that doesn't exist yet: name, name-1, name-2, ...
+unique_dir() {
+  base="$1"
+  dir="$base"
+  i=1
+  while [ -e "$dir" ]; do
+    dir="${base}-${i}"
+    i=$((i + 1))
+  done
+  echo "$dir"
+}
+
+extract_tar_gz() { tar xzvf "$1" -C "$2"; }
+extract_tar_bz2() { tar xjvf "$1" -C "$2"; }
+extract_tar_xz() { tar xJvf "$1" -C "$2"; }
+extract_tar() { tar xvf "$1" -C "$2"; }
+extract_zip() { unzip "$1" -d "$2"; }
+extract_rar() { unrar x "$1" "$2/"; }
+extract_7z() { 7z x "$1" -o"$2"; }
+
+# gz/bz2 are single-file compressors, not archives — output is one file.
+extract_gz() {
+  mkdir -p "$2"
+  gunzip -k -c "$1" >"$2/$(basename "${1%.gz}")"
+}
+extract_bz2() {
+  mkdir -p "$2"
+  bunzip2 -k -c "$1" >"$2/$(basename "${1%.bz2}")"
+}
+
+dispatch_extract() {
+  archive="$1"
+  target="$2"
+  case "$archive" in
+  *.tar.gz | *.tgz)
+    mkdir -p "$target"
+    extract_tar_gz "$archive" "$target"
+    ;;
+  *.tar.bz2 | *.tbz2)
+    mkdir -p "$target"
+    extract_tar_bz2 "$archive" "$target"
+    ;;
+  *.tar.xz)
+    mkdir -p "$target"
+    extract_tar_xz "$archive" "$target"
+    ;;
+  *.tar)
+    mkdir -p "$target"
+    extract_tar "$archive" "$target"
+    ;;
+  *.zip)
+    mkdir -p "$target"
+    extract_zip "$archive" "$target"
+    ;;
+  *.rar)
+    mkdir -p "$target"
+    extract_rar "$archive" "$target"
+    ;;
+  *.7z)
+    mkdir -p "$target"
+    extract_7z "$archive" "$target"
+    ;;
+  *.gz) extract_gz "$archive" "$target" ;;
+  *.bz2) extract_bz2 "$archive" "$target" ;;
+  *)
+    warn "don't know how to extract '$archive'"
+    return 1
+    ;;
+  esac
+}
+
+process_one() {
+  archive="$1"
+  if ! file_exists "$archive"; then
+    warn "'$archive' not found"
+    return 1
+  fi
+
+  base=$(base_name "$archive")
+  target=$(unique_dir "$base")
+
+  if ! dispatch_extract "$archive" "$target"; then
+    warn "failed to extract '$archive'"
+    return 1
+  fi
+
+  echo "extracted '$archive' -> '$target'"
+  return 0
+}
+
+main() {
+  status=0
+  for archive in "$@"; do
+    process_one "$archive" || status=1
+  done
+  return "$status"
+}
+
+main "$@"
+exit $?

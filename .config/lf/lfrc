@@ -1,0 +1,4 @@
+# Entry point — pulls in the rest. Keep this file empty of logic.
+source ~/.config/lf/config/settings.lf
+source ~/.config/lf/config/commands.lf
+source ~/.config/lf/config/keymaps.lf
