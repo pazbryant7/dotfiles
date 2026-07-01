@@ -4,30 +4,31 @@ Xft.antialias: 1
 Xft.hintstyle: hintslight
 Xft.lcdfilter: lcddefault
 
-! st specific
+
+! mocha
 *.background: #1e1e2e
 *.foreground: #ffffff
-*.cursorColor: #909090
+*.cursorColor: #4E445F
 
-*.color0:     #1e1e2e
-*.color8:     #666666
-*.color1:     #cc6666
-*.color9:     #d54e53
-*.color2:     #b5bd68
-*.color10:    #b9ca4a
-*.color3:     #f0c674
-*.color11:    #e7c547
-*.color4:     #81a2be
-*.color12:    #7aa6da
-*.color5:     #b294bb
-*.color13:    #c397d8
-*.color6:     #8abeb7
-*.color14:    #70c0b1
-*.color7:     #c5c8c6
-*.color15:    #eaeaea
+*.color0: #45475a
+*.color8: #585b70
+*.color1: #f38ba8
+*.color9: #f38ba8
+*.color2: #a6e3a1
+*.color10: #a6e3a1
+*.color3: #f9e2af
+*.color11: #f9e2af
+*.color4: #89b4fa
+*.color12: #89b4fa
+*.color5: #f5c2e7
+*.color13: #f5c2e7
+*.color6: #94e2d5
+*.color14: #94e2d5
+*.color7: #bac2de
+*.color15: #a6adc8
 
-st.alpha: 0.95
-st.chscale: 1.10
+st.alpha: 0.85
+st.chscale: 1.00
 st.cwscale: 0.90
 st.borderpx: 0px
 
@@ -39,9 +40,9 @@ Nsxiv.window.background: #1e1e2e
 Nsxiv.window.foreground: #ffffff
 
 ! DWM specific configurations
-dwm.selbgcolor: #505050
+dwm.selbgcolor: #4E445F
 dwm.selfgcolor: #ffffff
 dwm.normbgcolor: #000000
 dwm.normfgcolor: #817f7f
-dwm.selbordercolor: #505050
+dwm.selbordercolor: #4E445F
 dwm.normbordercolor: #817f7f
