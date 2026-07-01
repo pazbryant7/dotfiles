@@ -8,15 +8,6 @@ rez() {
   . /home/bryant/.zshrc
 }
 
-y() {
-  tmp="$(mktemp -t "yazi-cwd.XXXXXX")" || return
-  yazi "$@" --cwd-file="$tmp"
-  if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-    cd -- "$cwd" || return
-  fi
-  rm -f -- "$tmp"
-}
-
 h() {
   if [ -z "$TMUX" ]; then
     printf "Not in a tmux session.\n" >&2
