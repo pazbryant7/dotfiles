@@ -92,6 +92,7 @@ sudo
 terminus-font
 tmux
 translate-shell
+trash-cli
 tree-sitter-cli
 ttf-nerd-fonts-symbols
 ufw
