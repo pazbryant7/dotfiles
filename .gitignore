@@ -1,8 +1,9 @@
 .config/gh
+/.zsh/cache
 .config/calibre
+.config/jj/repos
 .config/qBittorrent
 .config/fish/plugins
-.config/ncmpcpp/error.log
-.config/jj/repos
 /.config/mpd/mpd.log
 /.config/mpd/mpdstate
+.config/ncmpcpp/error.log
