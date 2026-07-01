@@ -1,0 +1,50 @@
+cmd create %{{
+  printf "New file/dir: "
+  read ans
+  if [ -z "$ans" ]; then
+    exit 0
+  fi
+  sh ~/.config/lf/scripts/create "$ans"
+  status=$?
+  if [ "$status" -ne 0 ]; then
+    printf "create failed (exit %s). Press enter to continue." "$status"
+    read _
+  fi
+  lf -remote "send $id reload"
+}}
+
+cmd extract %{{
+  if [ -z "$fx" ]; then
+    printf "Nothing selected to extract. Press enter to continue."
+    read _
+    exit 0
+  fi
+  sh ~/.config/lf/scripts/extract $fx
+  status=$?
+  if [ "$status" -ne 0 ]; then
+    printf "extract finished with errors (exit %s). Press enter to continue." "$status"
+    read _
+  fi
+  lf -remote "send $id reload"
+}}
+
+cmd trash %{{
+  if [ -z "$fx" ]; then
+    printf "Nothing selected to trash. Press enter to continue."
+    read _
+    exit 0
+  fi
+  trash-put $fx
+  status=$?
+  if [ "$status" -ne 0 ]; then
+    printf "trash-put failed (exit %s). Press enter to continue." "$status"
+    read _
+  fi
+  lf -remote "send $id reload"
+}}
+
+cmd on-quit %{{
+  if [ -n "$LF_LAST_DIR_PATH" ]; then
+    pwd > "$LF_LAST_DIR_PATH"
+  fi
+}}

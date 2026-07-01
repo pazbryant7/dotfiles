@@ -1,0 +1,11 @@
+set shell sh
+
+set icons false
+set hidden false
+set preview true
+set drawbox false
+set truecolor true
+set ignorecase true
+
+set number
+set relativenumber
