@@ -24,7 +24,6 @@ eza
 fastfetch
 fd
 feh
-fish
 fzf
 gammastep
 git
