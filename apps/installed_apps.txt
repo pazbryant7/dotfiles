@@ -50,6 +50,7 @@ jujutsu
 just
 lazydocker
 lazygit
+lf
 libnotify
 libpulse
 linux
