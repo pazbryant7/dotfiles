@@ -96,6 +96,7 @@ tree-sitter-cli
 ttf-nerd-fonts-symbols
 ufw
 unclutter
+unrar
 uv
 wireplumber
 wpa_supplicant
