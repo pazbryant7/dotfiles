@@ -4,4 +4,3 @@
 . ~/.zsh/functions
 . ~/.zsh/path
 . ~/.zsh/config
-. ~/.zsh/plugin
