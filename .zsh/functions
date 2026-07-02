@@ -27,7 +27,6 @@ h() {
 }
 
 # Shell functions for binds
-
 clear-and-redisplay() {
   printf '\033[2J\033[3J\033[H'
   zle redisplay
@@ -53,6 +52,58 @@ smart-help() {
   else
     printf '\a'
   fi
+}
+
+lf() {
+  tmp="$(mktemp)"
+  command lf -last-dir-path="$tmp" "$@"
+  if [ -f "$tmp" ]; then
+    dir="$(cat "$tmp")"
+    rm -f "$tmp"
+    if [ -d "$dir" ] && [ "$dir" != "$PWD" ]; then
+      cd "$dir" || return
+    fi
+  fi
+}
+
+# Cache
+
+zsh-cache-init() {
+  local name=$1
+  shift
+  local cache_dir="${ZDOTDIR:-$HOME/.zsh}/cache"
+  local cache_file="$cache_dir/$name.zsh"
+  [[ -d $cache_dir ]] || mkdir -p "$cache_dir"
+  if [[ ! -s $cache_file ]]; then
+    "$@" >|"$cache_file" || return
+    zcompile "$cache_file" 2>/dev/null
+  fi
+  source "$cache_file"
+}
+
+#  Completion
+
+compinit-full() {
+  autoload -Uz compinit
+  compinit
+  zcompile_dump
+}
+
+load_completions() {
+  autoload -Uz compinit
+  compinit -C
+}
+
+zcompile_dump() {
+  local dump="${ZDOTDIR:-$HOME}/.zcompdump"
+  [[ -s $dump && (! -s $dump.zwc || $dump -nt $dump.zwc) ]] && zcompile "$dump"
+}
+
+zcompile_config() {
+  local f
+  for f in ~/.zshrc ~/.zsh/{aliases,functions,path,config,plugin}; do
+    [[ -f $f && (! -f $f.zwc || $f -nt $f.zwc) ]] && zcompile "$f"
+  done
 }
 
 # Plugin manager
@@ -85,16 +136,4 @@ plugin-update() {
     echo "Updating ${d:h:t}..."
     command git -C "${d:h}" pull --ff --recurse-submodules --depth 1 --rebase --autostash || return
   done
-}
-
-lf() {
-  tmp="$(mktemp)"
-  command lf -last-dir-path="$tmp" "$@"
-  if [ -f "$tmp" ]; then
-    dir="$(cat "$tmp")"
-    rm -f "$tmp"
-    if [ -d "$dir" ] && [ "$dir" != "$PWD" ]; then
-      cd "$dir" || return
-    fi
-  fi
 }
