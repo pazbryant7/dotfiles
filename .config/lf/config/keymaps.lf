@@ -6,3 +6,4 @@ map <c-n> drag
 map gh cd ~
 map gd cd ~/Downloads
 map gm cd /run/media
+map gt cd ~/.local/share/Trash/files

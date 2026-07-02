@@ -3,12 +3,10 @@
 # create.sh — smart file/dir creator for lf.
 #
 # Rules:
-#   - trailing "/"        -> force directory
-#   - last segment has "." -> file (parent dirs auto-created)
-#   - last segment has no "."-> directory
+#   - trailing "/" -> directory
+#   - otherwise    -> file (parent dirs auto-created)
 #
 # Usage: create.sh <path>
-
 die() {
   echo "create.sh: $1" >&2
   exit 1
@@ -17,14 +15,6 @@ die() {
 is_forced_dir() {
   case "$1" in
   */) return 0 ;;
-  *) return 1 ;;
-  esac
-}
-
-is_file_target() {
-  base=$(basename "$1")
-  case "$base" in
-  *.*) return 0 ;;
   *) return 1 ;;
   esac
 }
@@ -51,18 +41,11 @@ validate_target() {
 
 main() {
   target="$1"
-
   validate_target "$target"
-
   if is_forced_dir "$target"; then
     make_dir "$target"
-    return 0
-  fi
-
-  if is_file_target "$target"; then
-    make_file "$target"
   else
-    make_dir "$target"
+    make_file "$target"
   fi
 }
 
