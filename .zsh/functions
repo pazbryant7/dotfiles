@@ -106,6 +106,34 @@ zcompile_config() {
   done
 }
 
+clean_zcache() {
+  local target_dir="${1:-$PWD}"
+
+  if [[ ! -d "$target_dir" ]]; then
+    echo "Directory not found: $target_dir" >&2
+    return 1
+  fi
+
+  echo "Cleaning cache files in: $target_dir"
+
+  if [[ -d "$target_dir/cache" ]]; then
+    echo "Removing directory: $target_dir/cache"
+    rm -rf "$target_dir/cache"
+  fi
+
+  local zwc_files=("$target_dir"/**/*.zwc(N))
+  if ((${#zwc_files[@]} > 0)); then
+    for f in "${zwc_files[@]}"; do
+      echo "Removing file: $f"
+      rm -f "$f"
+    done
+  else
+    echo "No .zwc files found."
+  fi
+
+  echo "Done."
+}
+
 # Plugin manager
 
 plugin-load() {
