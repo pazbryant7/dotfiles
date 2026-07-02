@@ -8,33 +8,28 @@ alias cdi='zi'
 # weather
 alias weather='curl -s "wttr.in/Tecoh,Yucatan"'
 
-# global
-alias gbl="ls ~/bin/global/"
-
 # main
 alias :q="exit"
 alias wg="sudo wg"
 alias sudo="sudo "
 alias pass="gopass"
-alias name="generate_name"
-alias zshc="cd ~/.zsh && nvim ~/.zshrc"
-alias zshe="nvim ~/.zshenv"
-alias jjh="jj bookmark set main"
-alias c="xclip -selection clipboard"
-alias p="xclip -selection clipboard -o"
-alias feh="feh -g 860x600 --scale-down"
-alias xr="nvim ~/.Xresources"
-alias zsha="cd ~/.zsh && nvim  aliases"
-alias fishc="cd ~/.config/fish && nvim config.fish"
-alias alac="nvim ~/.config/alacritty/alacritty.toml"
-alias calc="python -i -c 'import math, cmath; from math import *'"
-
 alias sht="shutdown now"
+alias name="generate_name"
 alias dh="rm ~/.history.db"
 alias sp="systemctl suspend"
 alias rbt="systemctl reboot"
+alias xr="nvim ~/.Xresources"
+alias c="xclip -selection clipboard"
 alias fontcache="sudo fc-cache -f -v"
+alias feh="feh -g 860x600 --scale-down"
+alias p="xclip -selection clipboard -o"
+alias calc="python -i -c 'import math, cmath; from math import *'"
 alias rex="xrdb -remove && xrdb -merge ~/.Xresources && kill -USR1 \$(pidof st)"
+
+# zsh
+alias zshc="cd ~/.zsh && nvim ~/.zshrc"
+alias zshe="nvim ~/.zshenv"
+alias zsha="cd ~/.zsh && nvim  aliases"
 
 alias lzg="lazygit"
 
@@ -45,7 +40,5 @@ alias btm="btm --basic"
 alias ta="tmux attach"
 alias tk="tmux kill-server"
 alias tn="tmux new -s \$USER"
-
-alias zls="ls \$ZPLUGINDIR"
 
 alias motivation="mpv ~/Documents/github/media/videos/biy/cristiano.mp4"
