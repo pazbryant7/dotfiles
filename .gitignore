@@ -7,3 +7,8 @@
 /.config/mpd/mpd.log
 /.config/mpd/mpdstate
 .config/ncmpcpp/error.log
+/.zsh/plugin.zwc
+/.zsh/aliases.zwc
+/.zsh/functions.zwc
+/.zsh/path.zwc
+/.zsh/config.zwc
