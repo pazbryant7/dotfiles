@@ -58,5 +58,5 @@ common_prefix = ["sudo"]
 keymap_mode = "emacs"
 
 [daemon]
-enabled = true
-autostart = true
+enabled = false
+autostart = false
