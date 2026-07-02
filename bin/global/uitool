@@ -4,7 +4,6 @@ readonly XRESOURCES="$HOME/.Xresources"
 readonly TMUX_CONFIG="$HOME/.tmux.conf"
 readonly DUNSTRC="$HOME/.config/dunst/dunstrc"
 readonly THEME_RASI="$HOME/.config/rofi/theme.rasi"
-readonly STARSHIP_TOML="$HOME/.config/starship/starship.toml"
 readonly ALACRITTY_CONFIG="$HOME/.config/alacritty/alacritty.toml"
 
 HEX_PAT='#[0-9a-fA-F]\{6\}'
@@ -35,15 +34,6 @@ update_line() {
     warn "failed to update: $file"
     return 1
   }
-}
-
-update_starship_block_style() {
-  file="$1"
-  section="$2"
-  color="$3"
-  file_exists "$file" || return 1
-  sed -i "/^\[$section\]/,/^\[/ s/style = \"bold $HEX_PAT\"/style = \"bold $color\"/" "$file" ||
-    warn "failed to update starship section: $section"
 }
 
 select_color() {
@@ -108,14 +98,6 @@ apply_dunst() {
     "background = \"$1\""
 }
 
-apply_starship() {
-  update_line "$STARSHIP_TOML" \
-    "success_symbol = \"\[󰁕\](bold $HEX_PAT)\"" \
-    "success_symbol = \"[󰁕](bold $1)\""
-  update_starship_block_style "$STARSHIP_TOML" "directory" "$1"
-  update_starship_block_style "$STARSHIP_TOML" "git_branch" "$2"
-}
-
 reload_xresources() {
   file_exists "$XRESOURCES" || return 0
   xrdb -merge "$XRESOURCES" &&
@@ -148,7 +130,6 @@ main() {
   apply_tmux "$accent" &
   apply_alacritty "$accent" &
   apply_xresources "$accent" &
-  apply_starship "$accent" "$primary" &
   wait
   reload_all
   printf 'Theme updated: accent=%s primary=%s\n' "$accent" "$primary"
