@@ -48,3 +48,7 @@ cmd on-quit %{{
     pwd > "$LF_LAST_DIR_PATH"
   fi
 }}
+
+cmd drag &{{
+  dragon-drop -x -a -i -T $fx
+}}
