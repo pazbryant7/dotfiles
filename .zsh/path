@@ -11,11 +11,8 @@ extra_path=(
 	~/Documents/github/boilerplate/
 )
 
-extra_path_expanded=$(printf "%s:" "${extra_path[@]}")
 export PATH="${(j/:/)extra_path}:${PATH}"
 
 # extend fpath
 extra_fpath=()
-
-extra_fpath_expanded=$(printf "%s:" "${extra_fpath[@]}")
 FPATH="${(j/:/)extra_fpath}:${FPATH}"

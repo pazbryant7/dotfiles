@@ -2,51 +2,50 @@
 
 autoload -Uz \
   url-quote-magic \
-  edit-command-line \
-  compinit && compinit
+  edit-command-line
 
-# zsh widgets
-# ./functions should be
-# sourced before
+# Completions
+load_completions
+zcompile_dump &|
+zcompile_config &|
+
+# Functions from ./functions
 zle -N edit-command-line
 zle -N smart-help
 zle -N clear-and-redisplay
 zle -N copy-terminal-buffer
 
-# path autocompletion
+# Path autocompletion
 compdef _directories new
 
-# custom binds
+# Custom binds
 bindkey -e # use emacs preset
-
 bindkey '\eh' smart-help
 bindkey '^[e' edit-command-line
 bindkey '^L' clear-and-redisplay
 bindkey '^X' copy-terminal-buffer
 bindkey '^[[Z' reverse-menu-complete
 
-# zsh options
+# Zsh options
 setopt \
   AUTO_CD \
   HIST_FIND_NO_DUPS \
   HIST_IGNORE_ALL_DUPS
 
-# disable native zsh history file
+# Disable native zsh history file
 export HISTFILE=/dev/null
 
-# completion configuration
+# Completion configuration
 zstyle ':completion:*' menu select
-
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 
+# White prompt
 PROMPT='%F{white}%2~%f '
 
-# start software
-eval "$(fzf --zsh)"
-eval "$(atuin init zsh)"
-eval "$(zoxide init zsh)"
-eval "$(starship init zsh)"
-eval "$(fnm env --use-on-cd)"
+# Cached tool inits
+zsh-cache-init fzf fzf --zsh
+zsh-cache-init atuin atuin init zsh
+zsh-cache-init zoxide zoxide init zsh
 
 # disable "c-s delay"
 stty -ixon
