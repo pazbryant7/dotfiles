@@ -1,6 +1,6 @@
 set shell sh
 
-set icons false
+set icons true
 set hidden false
 set preview true
 set drawbox false
