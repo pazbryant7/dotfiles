@@ -18,7 +18,6 @@ export COLORTERM="truecolor"
 export MANPAGER="$EDITOR +Man!"
 export GOPATH="/home/bryant/go/bin"
 export XDG_CONFIG_HOME="$HOME/.config"
-export STARSHIP_CONFIG="/home/bryant/.config/starship/starship.toml"
 
 # }}
 
