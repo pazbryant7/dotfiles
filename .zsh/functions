@@ -4,6 +4,11 @@ keys() {
   xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf "%-3s %s\n", $5, $8 }'
 }
 
+dt() {
+  rm -rf "$HOME/.local/share/Trash"
+  printf "Trash dir was deleted"
+}
+
 rez() {
   . /home/bryant/.zshrc
 }
