@@ -34,7 +34,10 @@ cmd trash %{{
     read _
     exit 0
   fi
-  trash-put $fx
+  set -f
+  IFS='
+'
+  trash-put -- $fx
   status=$?
   if [ "$status" -ne 0 ]; then
     printf "trash-put failed (exit %s). Press enter to continue." "$status"
