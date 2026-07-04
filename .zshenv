@@ -12,11 +12,11 @@ export BROWSER="brave-origin"
 export SXHKD_SHELL="zsh"
 export OPENER="xdg-open"
 export CM_LAUNCHER="rofi"
-export SUDO_EDITOR=$EDITOR
 export COLORTERM="truecolor"
 export MANPAGER="$EDITOR +Man!"
 export GOPATH="/home/bryant/go/bin"
 export XDG_CONFIG_HOME="$HOME/.config"
+export SUDO_EDITOR="$HOME/.local/share/mise/shims/nvim"
 
 # }}
 
