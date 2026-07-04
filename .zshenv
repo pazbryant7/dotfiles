@@ -4,7 +4,6 @@ export EDITOR="nvim"
 export WM="dwm"
 export LESS="FRSX"
 export VIDEO="mpv"
-export GPG_TTY=$(tty)
 export VISUAL=$EDITOR
 export PAGER="less -R"
 export TERMINAL="xterm"

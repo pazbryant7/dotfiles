@@ -48,6 +48,6 @@ zsh-cache-init atuin atuin init zsh
 zsh-cache-init zoxide zoxide init zsh
 zsh-cache-init mise mise activate zsh
 
-# disable "c-s delay"
+# Disable "c-s delay"
 stty -ixon
 stty susp undef
