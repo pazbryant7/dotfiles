@@ -1,5 +1,0 @@
-[1m[33m
-brave-origin-bin
-dragon-drop
-helium-browser-bin
-yay

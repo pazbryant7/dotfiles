@@ -1,16 +1,34 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
-DOT_PATH="/home/bryant/Documents/github/dotfiles/apps"
+BASE_DIR="/home/bryant/Documents/github/dotfiles/apps"
+DISTRO=""
+DOT_PATH=""
+
+detect_distro() {
+  if [ -r /etc/os-release ]; then
+    DISTRO=$(. /etc/os-release && printf '%s' "$ID")
+  fi
+  case "$DISTRO" in
+  arch | void) ;;
+  *)
+    echo "Unsupported or undetected distro: '$DISTRO'" >&2
+    exit 1
+    ;;
+  esac
+}
+
+set_dot_path() {
+  DOT_PATH="$BASE_DIR/$DISTRO"
+  mkdir -p "$DOT_PATH"
+}
 
 sync_bin_dir() {
   dir="$1"
   output_file="$2"
   fd_flags="$3"
-
   if [ ! -d "$dir" ]; then
     return
   fi
-
   if command -v fd >/dev/null 2>&1; then
     fd . -d 1 $fd_flags "$dir" | awk -F/ '{print $NF}' | sort >"$DOT_PATH/$output_file"
   else
@@ -22,7 +40,6 @@ sync_command_output() {
   command="$1"
   output_file="$2"
   cmd_name=$(printf '%s' "$command" | awk '{print $1}')
-
   if command -v "$cmd_name" >/dev/null 2>&1; then
     eval "$command" | awk '{print $1}' | sort >"$DOT_PATH/$output_file"
   fi
@@ -34,6 +51,12 @@ sync_pacman_packages() {
 
 sync_aur_packages() {
   sync_command_output "yay -Qem" "installed_aur_apps.txt"
+}
+
+sync_xbps_packages() {
+  if command -v xbps-query >/dev/null 2>&1; then
+    xbps-query -m | sed -E 's/-[0-9][^-]*$//' | sort >"$DOT_PATH/installed_apps.txt"
+  fi
 }
 
 sync_rustup_components() {
@@ -49,20 +72,61 @@ sync_flatpak_apps() {
   fi
 }
 
-sync_binary_directories() {
+sync_mise_packages() {
+  if command -v mise >/dev/null 2>&1; then
+    mise list | awk '{print $1}' | sort -u >"$DOT_PATH/mise_installed.txt"
+  fi
+}
+
+sync_uv_tools() {
+  if command -v uv >/dev/null 2>&1; then
+    uv tool list | awk '{print $1}' | sort -u >"$DOT_PATH/uv_tools_installed.txt"
+  fi
+}
+
+sync_uv_bin_dir() {
   sync_bin_dir "/home/bryant/.local/bin" "uv_installed.txt" ""
+}
+
+sync_go_bin_dir() {
   sync_bin_dir "/home/bryant/go/bin" "go_installed.txt" "-t f"
+}
+
+sync_cargo_bin_dir() {
   sync_bin_dir "/home/bryant/.cargo/bin" "cargo_installed.txt" "-t f"
 }
 
-main() {
-  mkdir -p "$DOT_PATH"
+sync_binary_directories() {
+  sync_uv_bin_dir
+  sync_go_bin_dir
+  sync_cargo_bin_dir
+}
 
-  sync_binary_directories
-  sync_pacman_packages
-  sync_aur_packages
+sync_distro_packages() {
+  case "$DISTRO" in
+  arch)
+    sync_pacman_packages
+    sync_aur_packages
+    ;;
+  void)
+    sync_xbps_packages
+    ;;
+  esac
+}
+
+sync_common_tools() {
   sync_rustup_components
   sync_flatpak_apps
+  sync_mise_packages
+  sync_uv_tools
+}
+
+main() {
+  detect_distro
+  set_dot_path
+  sync_distro_packages
+  sync_common_tools
+  sync_binary_directories
 }
 
 main
