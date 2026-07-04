@@ -12,3 +12,6 @@
 /.zsh/functions.zwc
 /.zsh/path.zwc
 /.zsh/config.zwc
+/.config/mpd/mpd.pid
+/.gnupg/private-keys-v1.d
+/.gnupg
