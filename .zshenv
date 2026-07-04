@@ -1,7 +1,6 @@
 # {{ enviroment variables
 
-export EDITOR="$HOME/.local/share/bob/nvim-bin/nvim"
-
+export EDITOR="nvim"
 export WM="dwm"
 export LESS="FRSX"
 export VIDEO="mpv"

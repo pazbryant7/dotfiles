@@ -46,6 +46,7 @@ PROMPT='%F{white}%2~%f '
 zsh-cache-init fzf fzf --zsh
 zsh-cache-init atuin atuin init zsh
 zsh-cache-init zoxide zoxide init zsh
+zsh-cache-init mise mise activate zsh
 
 # disable "c-s delay"
 stty -ixon
