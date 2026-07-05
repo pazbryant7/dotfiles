@@ -8,4 +8,7 @@ set truecolor true
 set ignorecase true
 
 set number
+set ratios 2:3:2
 set relativenumber
+
+set previewer ~/.config/lf/scripts/preview

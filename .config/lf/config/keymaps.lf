@@ -2,6 +2,7 @@ map D trash
 map a create
 map x extract
 map <c-n> drag
+map W wallpaper
 
 map gh cd ~
 map gd cd ~/Downloads

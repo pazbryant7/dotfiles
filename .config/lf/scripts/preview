@@ -1,0 +1,140 @@
+#!/usr/bin/env sh
+#
+# lf file previewer (POSIX sh)
+# ------------------------------------------------------------------
+# Handles:
+#   - code / text files -> syntax highlighted via `bat` (falls back to `cat`)
+#   - images            -> fast rendering via `chafa` (ansi/sixel/kitty
+#                          auto-detected; symbols mode is cheap, good enough
+#                          just to identify the image)
+#   - video             -> thumbnail frame extracted with `ffmpegthumbnailer`,
+#                          rendered the same way as images, cached so it isn't
+#                          regenerated every time you hover the file
+#
+# Everything else (PDFs included) falls back to a plain `file` info line.
+#
+# Hook into lf (e.g. in settings.lf):
+#   set previewer ~/.config/lf/scripts/preview
+#
+# Dependencies (script degrades gracefully if any are missing):
+#   bat (or batcat)     - syntax highlighted code preview
+#   chafa               - fast terminal image rendering
+#   ffmpegthumbnailer   - extracts a video frame as a thumbnail
+#   file                - mime type detection (usually preinstalled)
+# ------------------------------------------------------------------
+
+cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/lf/thumbnails"
+
+has_command() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+pick_bat_binary() {
+  if has_command bat; then
+    printf '%s\n' "bat"
+  elif has_command batcat; then
+    printf '%s\n' "batcat"
+  fi
+}
+
+detect_mimetype() {
+  file -Lb --mime-type -- "$1" 2>/dev/null
+}
+
+is_text_file() {
+  grep -qI . "$1" 2>/dev/null
+}
+
+print_file_info() {
+  target="$1"
+  label="$2"
+  printf '%s: %s\n' "$label" "$(basename -- "$target")"
+  file -Lb -- "$target"
+}
+
+render_code() {
+  target="$1"
+  bat_bin=$(pick_bat_binary)
+  if [ -n "$bat_bin" ]; then
+    "$bat_bin" --color=always --style=numbers,changes --paging=never --line-range=:500 -- "$target"
+  else
+    cat -- "$target"
+  fi
+}
+
+render_image() {
+  target="$1"
+  # symbols mode is the cheapest chafa mode and plenty to identify an
+  # image; chafa auto-detects sixel/kitty graphics if supported.
+  chafa -f symbols --size="${width}x${height}" --animate=off -- "$target" 2>/dev/null
+}
+
+ensure_cache_dir() {
+  mkdir -p "$cache_dir" 2>/dev/null
+}
+
+thumbnail_path() {
+  target="$1"
+  key=$(printf '%s' "$target" | md5sum | cut -d' ' -f1)
+  mtime=$(stat -c %Y -- "$target" 2>/dev/null || stat -f %m -- "$target" 2>/dev/null)
+  printf '%s\n' "$cache_dir/${key}_${mtime}.jpg"
+}
+
+generate_thumbnail() {
+  target="$1"
+  thumb="$2"
+  [ -f "$thumb" ] && return 0
+  ffmpegthumbnailer -i "$target" -o "$thumb" -s 0 -q 2 >/dev/null 2>&1
+}
+
+render_video() {
+  target="$1"
+  if has_command ffmpegthumbnailer && has_command chafa; then
+    ensure_cache_dir
+    thumb=$(thumbnail_path "$target")
+    generate_thumbnail "$target" "$thumb"
+    if [ -f "$thumb" ]; then
+      render_image "$thumb"
+      return 0
+    fi
+  fi
+  print_file_info "$target" "Video file"
+}
+
+render_fallback() {
+  target="$1"
+  if is_text_file "$target"; then
+    render_code "$target"
+  else
+    print_file_info "$target" "File"
+  fi
+}
+
+main() {
+  path="$1"
+  width="$2"
+  height="$3"
+
+  mimetype=$(detect_mimetype "$path")
+
+  case "$mimetype" in
+  text/* | application/json | application/x-ndjson | application/xml | application/x-yaml | inode/x-empty)
+    render_code "$path"
+    ;;
+  image/*)
+    if has_command chafa; then
+      render_image "$path"
+    else
+      print_file_info "$path" "Image file"
+    fi
+    ;;
+  video/*)
+    render_video "$path"
+    ;;
+  *)
+    render_fallback "$path"
+    ;;
+  esac
+}
+
+main "$@"

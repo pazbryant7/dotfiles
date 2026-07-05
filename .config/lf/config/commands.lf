@@ -55,3 +55,7 @@ cmd on-quit %{{
 cmd drag &{{
   dragon-drop -x -a -i -T $fx
 }}
+
+cmd wallpaper ${{
+  ~/.config/lf/scripts/wallpaper "$f"
+}}

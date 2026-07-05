@@ -1,0 +1,68 @@
+#!/usr/bin/env sh
+#
+# Set the given file as wallpaper via feh (POSIX sh)
+# ------------------------------------------------------------------
+# Only accepts image files. Prints an error and exits non-zero for
+# anything else.
+#
+# Usage (from lf, e.g. in commands.lf):
+#   cmd wallpaper ${{ ~/.config/lf/scripts/wallpaper "$f" }}
+#
+# Standalone:
+#   ./wallpaper /path/to/image.png
+#
+# Dependencies:
+#   feh   - sets the wallpaper
+#   file  - mime type detection (usually preinstalled)
+# ------------------------------------------------------------------
+
+has_command() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+detect_mimetype() {
+    file -Lb --mime-type -- "$1" 2>/dev/null
+}
+
+is_image_file() {
+    case "$(detect_mimetype "$1")" in
+        image/*) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+print_error() {
+    printf 'Error: %s\n' "$1" >&2
+}
+
+set_wallpaper() {
+    feh --no-fehbg --bg-fill -- "$1"
+}
+
+main() {
+    target="$1"
+
+    if [ -z "$target" ]; then
+        print_error "no file given"
+        exit 1
+    fi
+
+    if [ ! -f "$target" ]; then
+        print_error "file not found: $target"
+        exit 1
+    fi
+
+    if ! has_command feh; then
+        print_error "feh is not installed"
+        exit 1
+    fi
+
+    if ! is_image_file "$target"; then
+        print_error "not an image: $target"
+        exit 1
+    fi
+
+    set_wallpaper "$target"
+}
+
+main "$@"
