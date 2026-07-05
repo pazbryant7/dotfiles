@@ -12,6 +12,7 @@ bottom
 breeze-gtk
 breeze-icons
 calibre
+chafa
 chrony
 cronie
 curl
