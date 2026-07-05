@@ -19,7 +19,7 @@ family = "Recursive Mn Csl St SmB"
 style = "SemiBold"
 
 [font.offset]
-x = -1
+x = 0
 y = 1
 
 [mouse]
@@ -38,7 +38,7 @@ foreground = "#ffffff"
 
 [colors.cursor]
 text = "#1d1f21"
-cursor = "#9B2526"
+cursor = "#A4A4A4"
 
 [colors.normal]
 black = "#1d1f21"
