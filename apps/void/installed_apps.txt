@@ -79,8 +79,10 @@ ripgrep
 rofi
 rsync
 screenkey
+socklog-void
 steam
 stow
+tealdeer
 terminus-font
 tmux
 translate-shell
