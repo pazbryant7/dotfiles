@@ -5,14 +5,16 @@ STATE_FILE="${XDG_RUNTIME_DIR:-/tmp}/alacritty_font_state"
 # Recursive first (states 0-2), then Annotation Mono (states 3-5)
 # normal_family|normal_style|bold_family|bold_style
 STATES="
+Recursive Mn Csl St|Regular|Recursive Mn Csl St Med|Medium
 Recursive Mn Csl St Med|Medium|Recursive Mn Csl St SmB|SemiBold
 Recursive Mn Csl St SmB|SemiBold|Recursive Mn Csl St|Bold
 Recursive Mn Csl St|Bold|Recursive Mn Csl St|Bold
+Annotation Mono|Medium|Annotation Mono|DemiBold
 Annotation Mono|DemiBold|Annotation Mono|Bold
 Annotation Mono|Bold|Annotation Mono|ExtraBold
 Annotation Mono|ExtraBold|Annotation Mono|ExtraBold
 "
-TOTAL=6
+TOTAL=8
 
 read_state() {
   cat "$STATE_FILE" 2>/dev/null || echo 0
@@ -44,8 +46,8 @@ main() {
   current=$(read_state)
   entry=$(state_at "$current")
 
-  apply_font "$(field "$entry" 1)" "$(field "$entry" 2)" \
-    "$(field "$entry" 3)" "$(field "$entry" 4)"
+  apply_font "$(field "$entry" 1)" "$(field "$entry" 2)" "$(field "$entry" 3)" \
+    "$(field "$entry" 4)"
 
   write_state "$(next_state "$current")"
 }
