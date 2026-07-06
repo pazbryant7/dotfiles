@@ -6,7 +6,7 @@ DEFAULT_NUMERIC_LAYOUT="bryantdn"
 DEFAULT_INTERNATIONAL_NUMERIC_LAYOUT="bryantdin"
 
 get_current_layout() {
-  setxkbmap -query | grep 'layout:' | awk '{print $2}'
+  setxkbmap -query | rg 'layout:' | awk '{print $2}'
 }
 
 send_notification() {

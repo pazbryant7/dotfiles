@@ -29,7 +29,7 @@ next_state() {
 }
 
 state_at() {
-  echo "$STATES" | grep -v '^$' | sed -n "$(($1 + 1))p"
+  echo "$STATES" | rg -v '^$' | sed -n "$(($1 + 1))p"
 }
 
 field() { echo "$1" | cut -d'|' -f"$2"; }

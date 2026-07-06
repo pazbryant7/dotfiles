@@ -21,7 +21,7 @@ get_window_count() {
 
 get_alternative_session() {
   tmux list-sessions -F '#{session_name}' 2>/dev/null |
-    grep -v "^$1$" | head -n 1
+    rg -v "^$1$" | head -n 1
 }
 
 kill_current_session() {

@@ -32,7 +32,7 @@ sync_bin_dir() {
   if command -v fd >/dev/null 2>&1; then
     fd . -d 1 $fd_flags "$dir" | awk -F/ '{print $NF}' | sort >"$DOT_PATH/$output_file"
   else
-    find "$dir" -maxdepth 1 -type f | awk -F/ '{print $NF}' | sort >"$DOT_PATH/$output_file"
+    fd -d1 -tf . "$dir" -x basename | sort >"$DOT_PATH/$output_file"
   fi
 }
 

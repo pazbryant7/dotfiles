@@ -38,7 +38,7 @@ show_menu() {
 }
 
 parse_menu_selection() {
-  printf '%s\n' "$MENU_DATA" | grep -F "${1}|" | cut -d'|' -f2-4
+  printf '%s\n' "$MENU_DATA" | rg -F "${1}|" | cut -d'|' -f2-4
 }
 
 handle_menu() {

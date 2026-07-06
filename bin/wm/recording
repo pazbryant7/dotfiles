@@ -135,7 +135,7 @@ select_profile() {
 # ---------------------------------------------------------------------------
 
 list_pulse_sources() {
-  pactl list short sources 2>/dev/null | awk '{print $2}' | grep -v "\.monitor$" || true
+  pactl list short sources 2>/dev/null | awk '{print $2}' | rg -v "\.monitor$" || true
 }
 
 list_alsa_sources() {
@@ -149,11 +149,11 @@ list_alsa_sources() {
 }
 
 pulse_source_exists() {
-  pactl list short sources 2>/dev/null | awk '{print $2}' | grep -qxF "$1"
+  pactl list short sources 2>/dev/null | awk '{print $2}' | rg -qxF "$1"
 }
 
 alsa_source_exists() {
-  arecord -l 2>/dev/null | grep -q "$(printf '%s' "$1" | sed 's/hw:/card /')"
+  arecord -l 2>/dev/null | rg -q "$(printf '%s' "$1" | sed 's/hw:/card /')"
 }
 
 # ---------------------------------------------------------------------------

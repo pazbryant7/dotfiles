@@ -28,7 +28,7 @@ notify() {
 open_notes() {
   name="$1"
   path="$2"
-  printf '%s\n' "$NOTES_PATH" | grep -Fxq "$path" || return
+  printf '%s\n' "$NOTES_PATH" | rg -qFx "$path" || return
   tmux send-keys -t "$name" "${EDITOR:-nvim} $path/$NOTES_FILE" Enter
 }
 
@@ -51,7 +51,7 @@ set_session() {
     create_session "$name" "$path"
     open_notes "$name" "$path"
   else
-    printf "%s ""Already in $name session"
+    notify "Already in $name session"
   fi
 
   return 0

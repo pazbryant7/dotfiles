@@ -46,22 +46,22 @@ notify_error() {
 list_sources() {
   pactl list short sources 2>/dev/null |
     awk '{ print $2 }' |
-    grep -v '\.monitor$'
+    rg -v '\.monitor$'
 }
 
 count_sources() {
-  count="$(list_sources | grep -c '.' 2>/dev/null)"
+  count="$(list_sources | rg -c '.' 2>/dev/null || echo 0)"
   echo "${count:-0}"
 }
 
 get_default_source() {
   pactl info 2>/dev/null |
-    grep 'Default Source' |
+    rg 'Default Source' |
     awk -F': ' '{ print $2 }'
 }
 
 is_real_source() {
-  echo "$1" | grep -qv '\.monitor$'
+  echo "$1" | rg -qv '\.monitor$'
 }
 
 select_source_interactive() {
@@ -147,7 +147,7 @@ start_ffmpeg() {
     -ac "${AUDIO_CHANNELS}" \
     -b:a "${AUDIO_BITRATE}" \
     "${OUTPUT_FILE}" 2>&1 |
-    grep -v 'Immediate exit' >&2 &
+    rg -v 'Immediate exit' >&2 &
   FFMPEG_PID=$!
 }
 

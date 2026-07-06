@@ -7,7 +7,7 @@ CONTEXT_LINES=3
 WORDS=""
 
 usage() {
-  grep '^# Usage:' "$0" | sed 's/^# //'
+  rg '^# Usage:' "$0" | sed 's/^# //'
   exit 1
 }
 
@@ -44,7 +44,7 @@ fetch_page() {
 strip_html() {
   sed 's/<[^>]*>//g' |
     sed 's/&amp;/\&/g; s/&lt;/</g; s/&gt;/>/g; s/&nbsp;/ /g; s/&#[0-9]*;//g' |
-    grep -v '^\s*$'
+    rg -v '^\s*$'
 }
 
 detect_last_page() {
@@ -63,7 +63,7 @@ search_in_text() {
   page_header_printed=0
 
   # iterate over each keyword (separated by ||)
-  printf '%s' "$WORDS" | tr '|' '\n' | grep -v '^$' | while IFS= read -r word; do
+  printf '%s' "$WORDS" | tr '|' '\n' | rg -v '^$' | while IFS= read -r word; do
     matches=$(rg -i -w -C "$CONTEXT_LINES" "$word" "$tmpfile" 2>/dev/null)
     if [ -n "$matches" ]; then
       if [ "$page_header_printed" -eq 0 ]; then
@@ -100,7 +100,7 @@ process_page() {
 
   # print grouped-by-page results
   page_hit=0
-  printf '%s' "$WORDS" | tr '|' '\n' | grep -v '^$' | while IFS= read -r word; do
+  printf '%s' "$WORDS" | tr '|' '\n' | rg -v '^$' | while IFS= read -r word; do
     matches=$(rg -i -w -C "$CONTEXT_LINES" "$word" "$tmpfile" 2>/dev/null)
     if [ -n "$matches" ]; then
       if [ "$page_hit" -eq 0 ]; then
