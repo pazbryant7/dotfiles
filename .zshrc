@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-. ~/.zsh/aliases
 . ~/.zsh/functions
+. ~/.zsh/aliases
 . ~/.zsh/path
 . ~/.zsh/config

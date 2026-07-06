@@ -29,6 +29,11 @@ alias zshc="cd ~/.zsh && nvim ~/.zshrc"
 alias zshe="nvim ~/.zshenv"
 alias zsha="cd ~/.zsh && nvim  aliases"
 
+# power managment
+alias sp="smart_power suspend"
+alias rbt="smart_power restart"
+alias sh="smart_power shutdown"
+
 alias lzg="lazygit"
 
 alias lzd="lazydocker"
