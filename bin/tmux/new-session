@@ -4,22 +4,20 @@ SESSION_DIRS="
 $HOME/Documents/github
 $HOME/Documents/github/temp
 "
-NOTES_PATH="$HOME/Documents/github/notes"
-NOTES_FILE="$NOTES_PATH/todo.md"
+NOTES_PATH="$HOME/Documents/github/notes
+$HOME/Documents/github/youtube
+"
+NOTES_FILE="todo.md"
 
 current_session() {
   tmux display-message -p '#S'
-}
-
-session_exists() {
-  tmux has-session -t="$1" 2>/dev/null
 }
 
 create_session() {
   tmux new-session -ds "$1" -c "$2"
 }
 
-switch_to_session() {
+switch_to() {
   tmux switch-client -t "$1"
 }
 
@@ -28,61 +26,68 @@ notify() {
 }
 
 open_notes() {
-  tmux send-keys -t "$1" "${EDITOR:-nvim} $NOTES_FILE" Enter
+  name="$1"
+  path="$2"
+  printf '%s\n' "$NOTES_PATH" | grep -Fxq "$path" || return
+  tmux send-keys -t "$name" "${EDITOR:-nvim} $path/$NOTES_FILE" Enter
 }
 
-session_name_from_path() {
+get_name() {
   basename "$1" | tr . _ | tr '[:upper:]' '[:lower:]'
 }
 
-pick_with_fzf() {
+pick_dirs() {
   # shellcheck disable=SC2086
   fd . --max-depth 1 --type d --type l --follow $SESSION_DIRS 2>/dev/null | fzf --multi
 }
 
-setup_session() {
+set_session() {
   path="$1"
   name="$2"
-  [ "$(current_session)" = "$name" ] && {
-    notify "Already on session: $name"
-    return 0
-  }
-  session_exists "$name" || create_session "$name" "$path"
-  [ "$path" = "$NOTES_PATH" ] && open_notes "$name"
+
+  curr_session="$(current_session)"
+
+  if [ "$curr_session" != "$name" ]; then
+    create_session "$name" "$path"
+    open_notes "$name" "$path"
+  else
+    printf "%s ""Already in $name session"
+  fi
+
   return 0
 }
 
-handle_single() {
+single() {
   path="$1"
-  name="${2:-$(session_name_from_path "$path")}"
-  setup_session "$path" "$name" && switch_to_session "$name"
+  name="${2:-$(get_name "$path")}"
+  set_session "$path" "$name" && switch_to "$name"
 }
 
-handle_fzf() {
-  paths=$(pick_with_fzf)
-  [ -z "$paths" ] && {
-    printf 'No directories selected\n' >&2
-    exit 1
-  }
+multi() {
+  paths=$(pick_dirs)
+
+  [ -z "$paths" ] && exit 1
 
   tmp=$(mktemp)
+
   printf '%s\n' "$paths" | while IFS= read -r path; do
     [ -z "$path" ] && continue
-    name=$(session_name_from_path "$path")
-    setup_session "$path" "$name"
+    name=$(get_name "$path")
+    set_session "$path" "$name"
     printf '%s' "$name" >"$tmp"
   done
+
   last=$(cat "$tmp")
   rm -f "$tmp"
-  [ -n "$last" ] && switch_to_session "$last"
+  [ -n "$last" ] && switch_to "$last"
 }
 
 main() {
   [ -n "$1" ] && {
-    handle_single "$@"
+    single "$@"
     return
   }
-  handle_fzf
+  multi
 }
 
 main "$@"
