@@ -5,6 +5,7 @@ map <c-n> drag
 map W wallpaper
 
 map gh cd ~
+map gc cd ~/.config
 map gd cd ~/Downloads
 map gm cd /run/media
 map gt cd ~/.local/share/Trash/files
