@@ -9,6 +9,7 @@ base-devel
 base-system
 bat
 bottom
+brave-origin-bin
 breeze-gtk
 breeze-icons
 calibre
@@ -24,7 +25,6 @@ fd
 feh
 ffmpeg
 ffmpegthumbnailer
-firefox
 fzf
 gammastep
 git
@@ -69,6 +69,7 @@ oath-toolkit
 pavucontrol
 picom
 pinentry-gtk
+piper
 pipewire
 python3-ansible-lint
 python3-packaging
