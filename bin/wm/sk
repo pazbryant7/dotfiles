@@ -15,7 +15,7 @@ execute_screen_key() {
 }
 
 stop_screen_key() {
-  killall screenkey 2>/dev/null
+  pkill screenkey 2>/dev/null
 }
 
 lock_available() {
