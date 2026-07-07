@@ -33,7 +33,7 @@ alias zsha="cd ~/.zsh && nvim  aliases"
 # power managment
 alias sp="smart_power suspend"
 alias rbt="smart_power restart"
-alias sh="smart_power shutdown"
+alias sht="smart_power shutdown"
 
 alias lzg="lazygit"
 
