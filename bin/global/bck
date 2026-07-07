@@ -1,7 +1,8 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
 BLOCK_DEVICE="/dev/sdb1"
 MEDIA_DESTINATION="/run/media/bryant/tiagovault"
+
 RSYNC_EXCLUDE_OPTS="*.sock
 SingletonLock
 SingletonSocket
@@ -35,7 +36,40 @@ Thumbs.db
 ehthumbs.db
 desktop.ini
 .fuse_hidden*
-.swp"
+.swp
+
+# --- Chromium-based (Brave, Helium) extras ---
+BrowserMetrics/
+BrowserMetrics-spare.pma
+Crash Reports/
+component_crx_cache/
+extensions_crx_cache/
+OptimizationHints/
+PepperFlash/
+SwReporter/
+WidevineCdm/
+pnacl/
+CertificateRevocation/
+FileTypePolicies/
+CrlSet/
+ZxcvbnData/
+hyphen-data/
+Subresource Filter/
+Greaselion/
+PKIMetadata/
+OriginTrials/
+TLSDeprecationConfig/
+AutofillStates/
+FirstPartySetsPreloaded/
+
+# --- Firefox extras ---
+cache2/
+startupCache/
+safebrowsing/
+security_state/
+minidumps/
+crashes/
+storage/temporary/"
 
 MEDIA_SOURCES="$HOME/Documents/books
 $HOME/Music
@@ -44,6 +78,11 @@ $HOME/.config/net.imput.helium
 $HOME/.config/mozilla/firefox
 $HOME/.config/qBittorrent
 $HOME/.config/BraveSoftware"
+
+# --- Filen (via rclone) settings ---
+FILEN_REMOTE="filen:"
+FILEN_QUOTA_BYTES=$((10 * 1024 * 1024 * 1024)) # 10 GiB free-tier quota (adjust if your plan differs)
+FILEN_WARN_BYTES=$((1 * 1024 * 1024 * 1024))   # warn when <=1 GiB would remain
 
 is_mounted() {
   mountpoint -q "$MEDIA_DESTINATION"
@@ -109,6 +148,7 @@ run_backup() {
   return 1
 }
 
+# Restores a source from the LOCAL disk mirror ($MEDIA_DESTINATION/backups/...).
 run_restore() {
   source_path="$1"
   exclude_file="$2"
@@ -142,6 +182,104 @@ run_restore() {
   return 1
 }
 
+# Restores a source directly from the Filen remote (bypasses the local disk
+# mirror entirely). Uses `rclone copy` rather than `sync` so, like run_restore
+# above, files that exist locally but not in the remote are kept rather than
+# wiped. Shows rclone's live progress percentage via -P.
+run_restore_filen() {
+  source_path="$1"
+  exclude_file="$2"
+  source_basename=$(basename "$source_path")
+  target_name=$(printf '%s\n' "$source_basename" | tr '[:upper:]' '[:lower:]')
+  error_log="/tmp/rclone_restore_errors_$target_name.log"
+  filen_src="${FILEN_REMOTE}backups/$target_name"
+
+  if ! command -v rclone >/dev/null 2>&1; then
+    printf '%s\n' "Error: 'rclone' is not installed or not on PATH." >&2
+    return 1
+  fi
+
+  if ! rclone lsf "$filen_src" >/dev/null 2>&1; then
+    printf "Error: No backup found at '%s' on Filen. Skipping.\n" "$filen_src" >&2
+    return 1
+  fi
+
+  if ! mkdir -p "$source_path"; then
+    printf "Error: Failed to create restore destination '%s'.\n" "$source_path" >&2
+    return 1
+  fi
+
+  printf '%s\n' "Restoring '$filen_src' (Filen) to '$source_path'..."
+
+  if rclone copy "$filen_src" "$source_path" --exclude-from="$exclude_file" -P 2>"$error_log"; then
+    rm -f "$error_log"
+    return 0
+  fi
+
+  printf "Error: rclone failed restoring '%s'. See log for details:\n" "$filen_src" >&2
+  printf "  %s\n" "$error_log" >&2
+  return 1
+}
+
+# Checks the size of the local backups folder against the Filen free-tier
+# quota and prints a warning if only ~1 GiB of headroom would be left. This is
+# an estimate based on the local mirror, since the backups folder is kept in
+# sync with the remote.
+check_filen_quota() {
+  backups_dir="$1"
+
+  used_bytes=$(du -sb "$backups_dir" 2>/dev/null | cut -f1)
+
+  if [ -z "$used_bytes" ]; then
+    printf '%s\n' "Warning: Could not determine size of '$backups_dir'; skipping quota check." >&2
+    return 0
+  fi
+
+  used_human=$(numfmt --to=iec --suffix=B "$used_bytes" 2>/dev/null || printf '%s bytes' "$used_bytes")
+  printf 'Info: Local backups folder size: %s (Filen quota: 10 GiB)\n' "$used_human"
+
+  remaining_bytes=$((FILEN_QUOTA_BYTES - used_bytes))
+
+  if [ "$remaining_bytes" -le "$FILEN_WARN_BYTES" ]; then
+    remaining_human=$(numfmt --to=iec --suffix=B "$remaining_bytes" 2>/dev/null || printf '%s bytes' "$remaining_bytes")
+    printf 'WARNING: Only %s of your Filen free-tier quota would remain. Consider trimming backups.\n' "$remaining_human" >&2
+  fi
+
+  return 0
+}
+
+# Mirrors the entire backups folder (including hidden files/dirs - rclone
+# includes them by default, no special flag needed) to the Filen remote.
+# `rclone sync` only transfers files that are new or changed (by size/modtime),
+# so unchanged files are skipped on subsequent runs, and it also removes files
+# from the remote that no longer exist locally, keeping the remote a true
+# mirror. -P shows rclone's live progress percentage/transfer stats.
+sync_to_filen() {
+  backups_dir="$MEDIA_DESTINATION/backups"
+
+  if [ ! -d "$backups_dir" ]; then
+    printf "Error: Backup source '%s' does not exist. Run a local backup first.\n" "$backups_dir" >&2
+    return 1
+  fi
+
+  if ! command -v rclone >/dev/null 2>&1; then
+    printf '%s\n' "Error: 'rclone' is not installed or not on PATH." >&2
+    return 1
+  fi
+
+  check_filen_quota "$backups_dir"
+
+  printf '%s\n' "Info: Syncing '$backups_dir' to Filen remote '$FILEN_REMOTE'..."
+
+  if rclone sync "$backups_dir" "$FILEN_REMOTE" --fast-list -P; then
+    printf '%s\n' "Success: Filen sync complete."
+    return 0
+  fi
+
+  printf '%s\n' "Error: rclone sync to Filen failed." >&2
+  return 1
+}
+
 flush_disk_cache() {
   if sync; then
     return 0
@@ -171,14 +309,33 @@ prompt_unmount() {
 
 prompt_mode() {
   printf '%s\n' "What would you like to do?" >&2
-  printf '%s\n' "  1) Backup" >&2
+  printf '%s\n' "  1) Backup (local, then auto-sync to Filen)" >&2
   printf '%s\n' "  2) Restore" >&2
-  printf '%s' "Enter choice [1/2]: " >&2
+  printf '%s\n' "  3) Sync backups to Filen" >&2
+  printf '%s' "Enter choice [1/2/3]: " >&2
   read -r mode_choice
 
   case "$mode_choice" in
   1) printf '%s\n' "backup" ;;
   2) printf '%s\n' "restore" ;;
+  3) printf '%s\n' "filensync" ;;
+  *)
+    printf '%s\n' "Error: Invalid choice." >&2
+    return 1
+    ;;
+  esac
+}
+
+prompt_restore_source() {
+  printf '%s\n' "Restore from where?" >&2
+  printf '%s\n' "  1) Local backup (disk)" >&2
+  printf '%s\n' "  2) Filen (remote)" >&2
+  printf '%s' "Enter choice [1/2]: " >&2
+  read -r restore_choice
+
+  case "$restore_choice" in
+  1) printf '%s\n' "local" ;;
+  2) printf '%s\n' "filen" ;;
   *)
     printf '%s\n' "Error: Invalid choice." >&2
     return 1
@@ -256,6 +413,21 @@ process_restore() {
   return $?
 }
 
+process_restore_filen() {
+  exclude_file="$1"
+  sources="$2"
+
+  printf '%s\n' "$sources" | while read -r source; do
+    [ -z "$source" ] && continue
+
+    if ! run_restore_filen "$source" "$exclude_file"; then
+      exit 1
+    fi
+  done
+
+  return $?
+}
+
 main() {
   mode=$(prompt_mode) || exit 1
 
@@ -275,8 +447,15 @@ main() {
     if ! process_sources "$exclude_file" "$MEDIA_SOURCES"; then
       printf '%s\n' "Warning: One or more backup tasks failed." >&2
     fi
+
+    # Auto-sync to Filen right after the local backup finishes.
+    if ! sync_to_filen; then
+      printf '%s\n' "Warning: Filen sync failed after local backup." >&2
+    fi
     ;;
   restore)
+    restore_source=$(prompt_restore_source) || exit 1
+
     selected=$(prompt_source_selection)
     printf '%s\n' "Warning: This will overwrite files in the selected locations. Continue? (y/n) "
     read -r confirm
@@ -288,8 +467,22 @@ main() {
       ;;
     esac
 
-    if ! process_restore "$exclude_file" "$selected"; then
-      printf '%s\n' "Warning: One or more restore tasks failed." >&2
+    case "$restore_source" in
+    local)
+      if ! process_restore "$exclude_file" "$selected"; then
+        printf '%s\n' "Warning: One or more restore tasks failed." >&2
+      fi
+      ;;
+    filen)
+      if ! process_restore_filen "$exclude_file" "$selected"; then
+        printf '%s\n' "Warning: One or more restore tasks failed." >&2
+      fi
+      ;;
+    esac
+    ;;
+  filensync)
+    if ! sync_to_filen; then
+      printf '%s\n' "Warning: Filen sync task failed." >&2
     fi
     ;;
   esac
