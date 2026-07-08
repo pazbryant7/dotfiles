@@ -19,6 +19,7 @@ cronie
 curl
 docker-buildx
 dunst
+elogind
 eza
 fastfetch
 fd
