@@ -18,6 +18,7 @@ chrony
 cronie
 curl
 docker-buildx
+dragon
 dunst
 elogind
 eza
