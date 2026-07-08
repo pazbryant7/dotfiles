@@ -15,6 +15,7 @@ if [ -f "$userresources" ]; then
   xrdb -merge "$userresources"
 fi
 
+# This loop natively launches the D-Bus user session on Void
 if [ -d /etc/X11/xinit/xinitrc.d ]; then
   for f in /etc/X11/xinit/xinitrc.d/?*.sh; do
     [ -x "$f" ] && . "$f"
@@ -24,20 +25,4 @@ fi
 
 export PATH="$HOME/bin/wm:$PATH"
 
-if [ -z "$XDG_RUNTIME_DIR" ]; then
-  if [ "$ID" = "void" ]; then
-    XDG_RUNTIME_DIR="/tmp/$(id -u)-runtime-dir"
-    export XDG_RUNTIME_DIR
-  fi
-
-  if [ -n "$XDG_RUNTIME_DIR" ] && [ ! -d "$XDG_RUNTIME_DIR" ]; then
-    mkdir -p "$XDG_RUNTIME_DIR"
-    chmod 0700 "$XDG_RUNTIME_DIR"
-  fi
-fi
-
-if [ "$ID" = "arch" ]; then
-  exec dwm
-else
-  exec dbus-run-session dwm
-fi
+exec dwm
