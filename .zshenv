@@ -17,6 +17,13 @@ export BROWSER="brave-origin-stable"
 export XDG_CONFIG_HOME="$HOME/.config"
 export SUDO_EDITOR="$HOME/.local/share/mise/shims/nvim"
 
+# History
+export HISTSIZE=50000
+export SAVEHIST=50000
+export HISTSIZE=50000
+export SAVEHIST=50000
+export HISTFILE="$HOME/.zsh_history"
+
 # }}
 
 #{{ fzf
