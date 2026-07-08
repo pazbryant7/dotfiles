@@ -91,3 +91,102 @@ cmd drag &{{
 cmd wallpaper ${{
   ~/.config/lf/scripts/wallpaper "$f"
 }}
+
+cmd bulk-rename ${{
+  old_names="$(mktemp)"
+  new_names="$(mktemp)"
+  set -f
+  IFS='
+'
+  if [ -n "$fs" ]; then
+    printf '%s\n' $fs > "$old_names"
+  else
+    printf '%s\n' "$f" > "$old_names"
+  fi
+  sed 's|.*/||' "$old_names" > "$new_names"
+
+  LF_BULK_RENAME=1 nvim "$new_names"
+
+  while IFS= read -r src_path && IFS= read -r new_base <&3; do
+    [ -z "$src_path" ] && continue
+    dir="$(dirname -- "$src_path")"
+    old_base="$(basename -- "$src_path")"
+    if [ "$old_base" != "$new_base" ] && [ -n "$new_base" ]; then
+        mv -n -- "$src_path" "$dir/$new_base"
+    fi
+  done <"$old_names" 3<"$new_names"
+  rm -f "$old_names" "$new_names"
+  lf -remote "send $id reload"
+}}
+
+cmd fzf-search ${{
+  result="$(
+    FZF_DEFAULT_COMMAND="rg --line-number --no-heading --color=always --smart-case ''" \
+    fzf --ansi --disabled --query "" \
+      --bind "change:reload:rg --line-number --no-heading --color=always --smart-case {q} || true" \
+      --delimiter : \
+      --preview 'bat --style=numbers --color=always --highlight-line {2} {1} 2>/dev/null || sed -n "{2}p" {1}' \
+      --preview-window '+{2}-5'
+  )"
+  file="$(printf '%s' "$result" | cut -d: -f1)"
+  if [ -n "$file" ]; then
+    lf -remote "send $id select \"$PWD/$file\""
+  fi
+}}
+
+cmd fzf-cd ${{
+  dir="$( (fd --type d --hidden --exclude .git 2>/dev/null || find . -type d -not -path '*/.git/*') | fzf --preview 'ls -la --color=always {}')"
+  if [ -n "$dir" ]; then
+    lf -remote "send $id cd \"$dir\""
+  fi
+}}
+
+
+cmd on-cd &{{
+  zoxide add "$PWD"
+  state="${XDG_CACHE_HOME:-$HOME/.cache}/lf"
+  mkdir -p "$state"
+  if [ -f "$state/curdir" ]; then
+    cp "$state/curdir" "$state/prevdir"
+  fi
+  printf '%s\n' "$PWD" > "$state/curdir"
+}}
+
+cmd cd-back ${{
+  state="${XDG_CACHE_HOME:-$HOME/.cache}/lf"
+  if [ -f "$state/prevdir" ]; then
+      lf -remote "send $id cd \"$(cat "$state/prevdir")\""
+  fi
+}}
+
+cmd zoxide ${{
+  if [ -n "$1" ]; then
+    dir="$(zoxide query -- "$@")"
+  else
+    dir="$(zoxide query -i)"
+  fi
+  if [ -n "$dir" ]; then
+    lf -remote "send $id cd \"$dir\""
+  fi
+}}
+
+cmd copy-path ${{
+  if [ -n "$fs" ]; then
+    list="$fs"
+  else
+    list="$f"
+  fi
+  if command -v xclip >/dev/null 2>&1; then
+    printf '%s\n' "$list" | xclip -selection clipboard
+  elif command -v xsel >/dev/null 2>&1; then
+    printf '%s\n' "$list" | xsel --clipboard --input
+  elif command -v wl-copy >/dev/null 2>&1; then
+    printf '%s\n' "$list" | wl-copy
+  elif command -v pbcopy >/dev/null 2>&1; then
+    printf '%s\n' "$list" | pbcopy
+  else
+    lf -remote "send $id echoerr 'No clipboard tool found (xclip/xsel/wl-copy/pbcopy)'"
+    exit 1
+  fi
+  lf -remote "send $id echo 'Copied path(s) to clipboard'"
+}}
