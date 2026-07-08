@@ -4,7 +4,6 @@ android-tools
 ansible
 ansible-core
 aria2
-atuin
 base-devel
 base-system
 bat
