@@ -68,6 +68,7 @@ nsxiv
 nwg-look
 oath-toolkit
 pavucontrol
+pcmanfm
 picom
 pinentry-gtk
 piper
@@ -108,5 +109,6 @@ xsv
 xtools
 yt-dlp
 zathura
+zathura-pdf-mupdf
 zoxide
 zsh
