@@ -88,9 +88,9 @@ smart_power() {
     esac
   elif [[ "$os_id" == "void" ]]; then
     case "$1" in
-    shutdown) sudo poweroff ;;
-    restart) sudo reboot ;;
-    suspend) sudo zzz ;;
+    shutdown) loginctl poweroff ;;
+    restart) loginctl reboot ;;
+    suspend) loginctl suspend ;;
     esac
   else
     echo "Error: Unrecognized OS ($os_id)."
