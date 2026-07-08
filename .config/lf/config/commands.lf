@@ -37,13 +37,45 @@ cmd trash %{{
   set -f
   IFS='
 '
+
+  # Full-path listing of the current dir exactly as lf displays it right now
+  listing="$(lf -remote "query $id files")"
+
+  next=""
+  prev=""
+  in_selection=0
+  for entry in $listing; do
+    is_sel=0
+    for sel in $fx; do
+      [ "$sel" = "$entry" ] && is_sel=1 && break
+    done
+    if [ "$is_sel" -eq 1 ]; then
+      in_selection=1
+      continue
+    fi
+    if [ "$in_selection" -eq 1 ] && [ -z "$next" ]; then
+      next="$entry"
+    fi
+    if [ "$in_selection" -eq 0 ]; then
+      prev="$entry"
+    fi
+  done
+
   trash-put -- $fx
   status=$?
   if [ "$status" -ne 0 ]; then
     printf "trash-put failed (exit %s). Press enter to continue." "$status"
     read _
   fi
+
+  lf -remote "send $id unselect"
   lf -remote "send $id reload"
+
+  target="$next"
+  [ -z "$target" ] && target="$prev"
+  if [ -n "$target" ]; then
+    lf -remote "send $id select \"$target\""
+  fi
 }}
 
 cmd on-quit %{{
