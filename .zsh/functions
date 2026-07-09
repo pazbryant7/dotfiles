@@ -80,20 +80,15 @@ smart_power() {
     os_id=$(grep '^ID=' /etc/os-release | cut -d= -f2 | tr -d '"')
   fi
 
-  if [[ "$os_id" == "arch" ]]; then
-    case "$1" in
-    shutdown) systemctl poweroff ;;
-    restart) systemctl reboot ;;
-    suspend) systemctl suspend ;;
-    esac
-  elif [[ "$os_id" == "void" ]]; then
+  if [[ "$os_id" == "artix" || "$os_id" == "void" ]]; then
     case "$1" in
     shutdown) loginctl poweroff ;;
     restart) loginctl reboot ;;
     suspend) loginctl suspend ;;
+    *) echo "Usage: smart_power {shutdown|restart|suspend}" ;;
     esac
   else
-    echo "Error: Unrecognized OS ($os_id)."
+    echo "Error: Unrecognized OS ($os_id). This script targets Artix and Void."
   fi
 }
 
