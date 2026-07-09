@@ -93,29 +93,13 @@ cmd wallpaper ${{
 }}
 
 cmd bulk-rename ${{
-  old_names="$(mktemp)"
-  new_names="$(mktemp)"
-  set -f
-  IFS='
-'
+  set -f; IFS='
+  '
   if [ -n "$fs" ]; then
-    printf '%s\n' $fs > "$old_names"
+    printf '%s\n' $fs | bulkrename
   else
-    printf '%s\n' "$f" > "$old_names"
+    printf '%s\n' "$f" | bulkrename
   fi
-  sed 's|.*/||' "$old_names" > "$new_names"
-
-  LF_BULK_RENAME=1 nvim "$new_names"
-
-  while IFS= read -r src_path && IFS= read -r new_base <&3; do
-    [ -z "$src_path" ] && continue
-    dir="$(dirname -- "$src_path")"
-    old_base="$(basename -- "$src_path")"
-    if [ "$old_base" != "$new_base" ] && [ -n "$new_base" ]; then
-        mv -n -- "$src_path" "$dir/$new_base"
-    fi
-  done <"$old_names" 3<"$new_names"
-  rm -f "$old_names" "$new_names"
   lf -remote "send $id reload"
 }}
 
