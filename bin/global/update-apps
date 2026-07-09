@@ -9,7 +9,7 @@ detect_distro() {
     DISTRO=$(. /etc/os-release && printf '%s' "$ID")
   fi
   case "$DISTRO" in
-  arch | void) ;;
+  artix | void) ;;
   *)
     echo "Unsupported or undetected distro: '$DISTRO'" >&2
     exit 1
@@ -104,7 +104,7 @@ sync_binary_directories() {
 
 sync_distro_packages() {
   case "$DISTRO" in
-  arch)
+  artix)
     sync_pacman_packages
     sync_aur_packages
     ;;
