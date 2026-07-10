@@ -66,6 +66,7 @@ openssh-runit
 pavucontrol
 picom
 pipewire
+pipewire-pulse
 qbittorrent
 qt6ct
 rclone
