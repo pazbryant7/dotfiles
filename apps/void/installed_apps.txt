@@ -99,6 +99,7 @@ xdotool
 xev
 xinit
 xorg-minimal
+xrandr
 xrdb
 xsetroot
 xsv
