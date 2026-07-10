@@ -96,6 +96,7 @@ xclip
 xcolor
 xdg-utils
 xdotool
+xev
 xinit
 xorg-minimal
 xrdb
