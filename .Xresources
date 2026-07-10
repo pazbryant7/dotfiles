@@ -33,7 +33,7 @@ st.cwscale: 0.90
 st.borderpx: 0px
 
 ! Annotation mono regular
-st.currentfont: 3
+st.currentfont: 0
 
 ! Nsxiv specific
 Nsxiv.window.background: #1e1e2e
