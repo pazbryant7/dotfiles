@@ -7,7 +7,6 @@ base-devel
 base-system
 bat
 bottom
-brave-origin-bin
 breeze-gtk
 breeze-icons
 calibre
@@ -30,7 +29,6 @@ gammastep
 git
 github-cli
 gnupg
-google-chrome
 gopass
 grub-i386-efi
 grub-x86_64-efi
@@ -59,6 +57,7 @@ mpd
 mpv
 ncmpcpp
 nerd-fonts-symbols-ttf
+nix
 noto-fonts-cjk
 noto-fonts-emoji
 nsxiv
