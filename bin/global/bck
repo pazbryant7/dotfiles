@@ -73,6 +73,7 @@ storage/temporary/"
 
 MEDIA_SOURCES="$HOME/Music
 $HOME/.config/calibre
+$HOME/.config/backups
 $HOME/Documents/books
 $HOME/.config/qBittorrent
 $HOME/.config/BraveSoftware
