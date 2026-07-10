@@ -1,3 +1,4 @@
+bitwarden-cli-bin
 brave-origin-bin
 mise-bin
 yay
