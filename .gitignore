@@ -16,3 +16,4 @@
 /.gnupg/private-keys-v1.d
 /.gnupg
 /.config/go/telemetry/
+/.config/rclone
