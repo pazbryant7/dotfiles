@@ -2,7 +2,6 @@ ImageMagick
 alacritty
 android-tools
 ansible
-ansible-core
 aria2
 base-devel
 base-system
@@ -15,7 +14,6 @@ calibre
 chafa
 chrony
 cronie
-curl
 docker-buildx
 dragon
 dunst
@@ -26,10 +24,12 @@ fd
 feh
 ffmpeg
 ffmpegthumbnailer
+freetype-devel
 fzf
 gammastep
 git
 github-cli
+gnupg
 google-chrome
 gopass
 grub-i386-efi
@@ -45,17 +45,12 @@ lf-r41_1
 libX11-devel
 libXft-devel
 libXinerama-devel
-libdrm-32bit
-libgcc-32bit
-libglvnd-32bit
-libstdc++-32bit
 linux
 lsof
 lua
 lua-devel
 luarocks
 maim
-mesa-dri-32bit
 mise
 mpc
 mpd
@@ -68,12 +63,10 @@ nsxiv
 nwg-look
 oath-toolkit
 pavucontrol
-pcmanfm
 picom
 pinentry-gtk
 piper
 pipewire
-python3-ansible-lint
 python3-packaging
 qbittorrent
 qt6ct
@@ -83,7 +76,6 @@ rofi
 rsync
 screenkey
 socklog-void
-steam
 stow
 tealdeer
 terminus-font
@@ -103,7 +95,7 @@ xcolor
 xdg-utils
 xdotool
 xinit
-xorg
+xorg-minimal
 xsetroot
 xsv
 xtools
