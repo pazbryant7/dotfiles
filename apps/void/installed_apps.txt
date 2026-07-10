@@ -51,6 +51,8 @@ lua
 lua-devel
 luarocks
 maim
+mesa-dri
+mesa-vulkan-intel
 mise
 mpc
 mpd
@@ -96,6 +98,7 @@ xdg-utils
 xdotool
 xinit
 xorg-minimal
+xrdb
 xsetroot
 xsv
 xtools
