@@ -17,7 +17,6 @@ docker-buildx
 dragon
 dunst
 elogind
-eza
 fastfetch
 fd
 feh
@@ -51,11 +50,11 @@ luarocks
 maim
 mesa-dri
 mesa-vulkan-intel
-mise
 mpc
 mpd
 mpv
 ncmpcpp
+neovim
 nerd-fonts-symbols-ttf
 nix
 noto-fonts-cjk
@@ -107,5 +106,4 @@ xtools
 yt-dlp
 zathura
 zathura-pdf-mupdf
-zoxide
 zsh

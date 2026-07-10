@@ -9,11 +9,6 @@ map <c-n> drag
 map <a-c> fzf-cd
 map <c-t> fzf-search
 
-map Z zoxide
-map zd cd-back
-map zp copy-path
-map zz push :zoxide<space>
-
 map gh cd ~
 map gc cd ~/.config
 map gd cd ~/Downloads

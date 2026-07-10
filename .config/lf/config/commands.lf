@@ -126,31 +126,10 @@ cmd fzf-cd ${{
 }}
 
 
-cmd on-cd &{{
-  zoxide add "$PWD"
-  state="${XDG_CACHE_HOME:-$HOME/.cache}/lf"
-  mkdir -p "$state"
-  if [ -f "$state/curdir" ]; then
-    cp "$state/curdir" "$state/prevdir"
-  fi
-  printf '%s\n' "$PWD" > "$state/curdir"
-}}
-
 cmd cd-back ${{
   state="${XDG_CACHE_HOME:-$HOME/.cache}/lf"
   if [ -f "$state/prevdir" ]; then
       lf -remote "send $id cd \"$(cat "$state/prevdir")\""
-  fi
-}}
-
-cmd zoxide ${{
-  if [ -n "$1" ]; then
-    dir="$(zoxide query -- "$@")"
-  else
-    dir="$(zoxide query -i)"
-  fi
-  if [ -n "$dir" ]; then
-    lf -remote "send $id cd \"$dir\""
   fi
 }}
 
