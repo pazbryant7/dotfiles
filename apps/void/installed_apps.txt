@@ -77,6 +77,7 @@ ripgrep
 rofi
 rsync
 screenkey
+setxkbmap
 socklog-void
 stow
 tealdeer
