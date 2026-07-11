@@ -4,7 +4,6 @@ set icons true
 set hidden false
 set preview true
 set drawbox false
-set truecolor true
 set ignorecase true
 
 set number

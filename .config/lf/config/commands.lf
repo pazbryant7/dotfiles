@@ -78,11 +78,6 @@ cmd trash %{{
   fi
 }}
 
-cmd on-quit %{{
-  if [ -n "$LF_LAST_DIR_PATH" ]; then
-    pwd > "$LF_LAST_DIR_PATH"
-  fi
-}}
 
 cmd drag &{{
   dragon-drop -x -a -i -T $fx
@@ -126,30 +121,40 @@ cmd fzf-cd ${{
 }}
 
 
-cmd cd-back ${{
+cmd b ${{
   state="${XDG_CACHE_HOME:-$HOME/.cache}/lf"
   if [ -f "$state/prevdir" ]; then
       lf -remote "send $id cd \"$(cat "$state/prevdir")\""
   fi
 }}
 
-cmd copy-path ${{
+cmd y ${{
   if [ -n "$fs" ]; then
     list="$fs"
   else
     list="$f"
   fi
+  # strip a trailing newline, if any, so we don't copy a blank last line
+  list="${list%$'\n'}"
+
   if command -v xclip >/dev/null 2>&1; then
-    printf '%s\n' "$list" | xclip -selection clipboard
+    printf '%s' "$list" | xclip -selection clipboard
   elif command -v xsel >/dev/null 2>&1; then
-    printf '%s\n' "$list" | xsel --clipboard --input
+    printf '%s' "$list" | xsel --clipboard --input
   elif command -v wl-copy >/dev/null 2>&1; then
-    printf '%s\n' "$list" | wl-copy
+    printf '%s' "$list" | wl-copy
   elif command -v pbcopy >/dev/null 2>&1; then
-    printf '%s\n' "$list" | pbcopy
+    printf '%s' "$list" | pbcopy
   else
     lf -remote "send $id echoerr 'No clipboard tool found (xclip/xsel/wl-copy/pbcopy)'"
     exit 1
   fi
   lf -remote "send $id echo 'Copied path(s) to clipboard'"
+}}
+
+
+cmd on-quit %{{
+  if [ -n "$LF_LAST_DIR_PATH" ]; then
+    pwd > "$LF_LAST_DIR_PATH"
+  fi
 }}
