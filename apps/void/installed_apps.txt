@@ -1,9 +1,7 @@
 ImageMagick
 alacritty
 android-tools
-ansible
 aria2
-base-devel
 base-system
 bat
 bottom
@@ -22,7 +20,6 @@ fd
 feh
 ffmpeg
 ffmpegthumbnailer
-freetype-devel
 fzf
 gammastep
 git
@@ -35,18 +32,13 @@ hyperfine
 intel-ucode
 jq
 jujutsu
-just
 lazydocker
 lazygit
 lf-r41_1
 libX11-devel
-libXft-devel
-libXinerama-devel
 linux
 lsof
 lua
-lua-devel
-luarocks
 maim
 mesa-dri
 mesa-vulkan-intel
@@ -67,7 +59,6 @@ picom
 pinentry-gtk
 piper
 pipewire
-python3-packaging
 qbittorrent
 qt6ct
 rclone
@@ -102,7 +93,6 @@ xrandr
 xrdb
 xsetroot
 xsv
-xtools
 yt-dlp
 zathura
 zathura-pdf-mupdf
