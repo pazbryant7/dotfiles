@@ -1,10 +1,10 @@
 # extend path
 extra_path=(
 	~/bin/global/
-	~/.local/bin/
 	~/bin/crontab/
 	/usr/local/bin/
-	~/.local/share/nvim/mason/bin/
+	~/.nix-profile/bin/
+	~/.nix-profile/share/man/
 	~/Documents/github/boilerplate/
 )
 
