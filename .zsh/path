@@ -4,7 +4,6 @@ extra_path=(
 	~/bin/crontab/
 	/usr/local/bin/
 	~/.nix-profile/bin/
-	~/.nix-profile/share/man/
 	~/Documents/github/boilerplate/
 )
 
