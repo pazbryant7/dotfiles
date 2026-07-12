@@ -4,18 +4,19 @@ export WM="dwm"
 export LESS="FRSX"
 export VIDEO="mpv"
 export EDITOR="nvim"
+export TERMINAL="st"
 export VISUAL=$EDITOR
 export PAGER="less -R"
-export TERMINAL="xterm"
 export OPENER="xdg-open"
 export CM_LAUNCHER="rofi"
+export SUDO_EDITOR="nvim"
 export XDG_SESSION_TYPE=x11
 export COLORTERM="truecolor"
 export MANPAGER="$EDITOR +Man!"
+export QT_QPA_PLATFORMTHEME=qt6ct
 export GOPATH="/home/bryant/go/bin"
 export BROWSER="brave-origin-stable"
 export XDG_CONFIG_HOME="$HOME/.config"
-export SUDO_EDITOR="$HOME/.local/share/mise/shims/nvim"
 
 # History
 export HISTSIZE=50000
