@@ -132,6 +132,9 @@ zcompile_config() {
   done
 }
 
+
+# Clean
+
 clean_zcache() {
   local target_dir="${1:-$PWD}"
 
