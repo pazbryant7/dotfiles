@@ -11,6 +11,7 @@ calibre
 chafa
 chrony
 cronie
+curl
 docker-buildx
 dragon
 dunst
