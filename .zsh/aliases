@@ -17,7 +17,6 @@ alias c="xclip -selection clipboard"
 alias fontcache="sudo fc-cache -f -v"
 alias feh="feh -g 860x600 --scale-down"
 alias p="xclip -selection clipboard -o"
-alias hms='home-manager switch --flake ~/.config/nix-config#main'
 alias calc="python -i -c 'import math, cmath; from math import *'"
 alias rex="xrdb -remove && xrdb -merge ~/.Xresources && kill -USR1 \$(pidof st)"
 
