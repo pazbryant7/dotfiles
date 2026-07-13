@@ -1,97 +1,63 @@
 #!/usr/bin/env sh
 
-BOILER_PLATE_DIR="$HOME/Documents/github/boilerplate/templates"
+BOILERPLATE_DIR="$HOME/Documents/github/templates/templates"
 
-select_template() {
-  fd --base-directory="$BOILER_PLATE_DIR" \
-    --hidden \
-    --type=file \
-    --exclude="*.md" |
-    fzf --multi --preview "bat --color=always --style=numbers $BOILER_PLATE_DIR/{}" \
-      --preview-window=right:60% \
-      --header="Select a template (ESC to exit)"
+check_dependencies() {
+	for cmd in fd fzf xclip; do
+		command -v "$cmd" >/dev/null 2>&1 || {
+			echo "Error: required command '$cmd' not found in PATH" >&2
+			exit 1
+		}
+	done
 }
 
-prompt_action() {
-  printf "%s" "$1"
-  read -r response
-  [ "$response" = "y" ]
+select_templates() {
+	fd --base-directory="$BOILERPLATE_DIR" --hidden --type=file --exclude="*.md" |
+		fzf --multi --preview "cat $BOILERPLATE_DIR/{}" \
+			--preview-window=right:60% \
+			--header="Select template(s) (Tab to multi-select, ESC to exit)"
 }
 
-copy_to_clipboard() {
-  filename=$(basename "$1")
-  printf "Template options for: %s\n" "$filename"
-
-  if ! prompt_action "Copy file to clipboard? (y/n) "; then
-    return 0
-  fi
-
-  if cat "$1" | xclip -selection clipboard; then
-    printf "✓ %s has been copied\n" "$filename"
-    return 0
-  fi
-
-  printf "Failed to copy to clipboard"
-  return 1
-}
-
-create_file_in_dir() {
-  filename=$(basename "$1")
-  dest="$(pwd)/$filename"
-
-  printf "Template options for: %s\n" "$filename"
-
-  if ! prompt_action "Create file in current directory? (y/n) "; then
-    return 0
-  fi
-
-  if [ -f "$dest" ]; then
-    if ! prompt_action "File already exist, overwrite it? (y/n) "; then
-      return 0
-    fi
-  fi
-
-  if cp --force "$1" "$dest"; then
-    printf "✓ %s has been created\n" "$filename"
-    return 0
-  fi
-
-  printf "✗ Failed to create file"
-  return 1
+resolve_path() {
+	printf '%s/%s' "$BOILERPLATE_DIR" "$1"
 }
 
 validate_template() {
-  template_file="$1"
-
-  if [ ! -f "$template_file" ]; then
-    printf "Error: Template file not found: %s\n" "$template_file" >&2
-    return 1
-  fi
-
-  return 0
+	[ -f "$1" ] || {
+		echo "Error: Template file not found: $1" >&2
+		exit 1
+	}
 }
 
-process_template() {
-  template="$1"
-  full_path="$BOILER_PLATE_DIR/$template"
+collect_contents() {
+	while IFS= read -r relative_path; do
+		[ -z "$relative_path" ] && continue
+		full_path=$(resolve_path "$relative_path")
+		validate_template "$full_path"
+		cat "$full_path"
+		printf '\n'
+	done
+}
 
-  validate_template "$full_path" || return 1
+copy_to_clipboard() {
+	xclip -selection clipboard
+}
 
-  copy_to_clipboard "$full_path"
-  create_file_in_dir "$full_path"
-  printf "\n"
+notify_success() {
+	printf 'Copied %s template(s) to the clipboard\n' "$1"
 }
 
 main() {
-  selected_templates=$(select_template)
+	check_dependencies
 
-  if [ -z "$selected_templates" ]; then
-    exit 1
-  fi
+	selected_templates=$(select_templates)
+	[ -z "$selected_templates" ] && exit 1
 
-  for template in $selected_templates; do
-    process_template "$template"
-  done
+	template_count=$(printf '%s\n' "$selected_templates" | grep -c .)
+
+	printf '%s\n' "$selected_templates" | collect_contents | copy_to_clipboard
+
+	notify_success "$template_count"
 }
 
 main
