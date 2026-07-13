@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
 SESSION_DIRS="
+$HOME/
 $HOME/Documents/github
 $HOME/Documents/github/temp
 "
