@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
 
 # weather
+alias l="less"
 alias weather='curl -s "wttr.in/Tecoh,Yucatan"'
 
 # main
