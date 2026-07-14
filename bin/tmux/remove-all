@@ -1,14 +1,27 @@
 #!/usr/bin/env sh
 
-# Creates home session if it doesn't exist and switches to it.
-
-get_session_name() {
+get_current_session_name() {
   tmux display-message -p "#S"
 }
 
+get_session_name_from_path() {
+  basename "$1"
+}
+
+session_exists() {
+  tmux has-session -t "$1" 2>/dev/null
+}
+
+create_session() {
+  tmux new-session -d -s "$1" -c "$2"
+}
+
+switch_to_session() {
+  tmux switch-client -t "$1"
+}
+
 kill_all_except() {
-  name="$1"
-  tmux kill-session -a -t "$name"
+  tmux kill-session -a -t "$1"
 }
 
 notify() {
@@ -16,11 +29,23 @@ notify() {
 }
 
 main() {
-  name=$(get_session_name)
-  [ -z "$name" ] && exit 1
+  path="$1"
+
+  if [ -z "$path" ]; then
+    name=$(get_current_session_name)
+    [ -z "$name" ] && exit 1
+  else
+    name=$(get_session_name_from_path "$path")
+    [ -z "$name" ] && exit 1
+
+    if ! session_exists "$name"; then
+      create_session "$name" "$path" || exit 1
+    fi
+
+    switch_to_session "$name" || exit 1
+  fi
 
   kill_all_except "$name" || exit 1
-
   notify
 }
 
