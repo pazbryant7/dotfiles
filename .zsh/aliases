@@ -21,10 +21,10 @@ alias p="xclip -selection clipboard -o"
 alias calc="python -i -c 'import math, cmath; from math import *'"
 alias rex="xrdb -remove && xrdb -merge ~/.Xresources && kill -USR1 \$(pidof st)"
 
-# --- nix
+#  nix
 alias nd='nix develop'
 alias ngb='nix-store --gc'
-
+alias nss='env IN_NIX_SHELL=1 nix shell nixpkgs#bash-language-server nixpkgs#shfmt'
 
 # zsh
 alias zshc="cd ~/.zsh && nvim ~/.zshrc"
@@ -48,5 +48,5 @@ alias ta="tmux attach"
 alias tk="tmux kill-server"
 alias tn="tmux new -s \$USER"
 
-# cr7
+# motivation
 alias motivation="mpv ~/Documents/github/media/videos/biy/cristiano.mp4"

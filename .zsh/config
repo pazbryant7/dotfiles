@@ -39,8 +39,19 @@ setopt \
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 
+# Nix shell indicator
+if [[ -n "$IN_NIX_SHELL" ]]; then
+  case "$IN_NIX_SHELL" in
+    pure)   NIX_TAG="%F{green}[NIXSHELL:pure]%f " ;;
+    impure) NIX_TAG="%F{yellow}[NIXSHELL:impure]%f " ;;
+    *)      NIX_TAG="%F{green}[NIXSHELL]%f " ;;
+  esac
+else
+  NIX_TAG=""
+fi
+
 # White prompt
-PROMPT='%F{white}%2~%f '
+PROMPT="${NIX_TAG}%F{white}%2~%f "
 
 # Cached tool inits
 zsh-cache-init fzf fzf --zsh
