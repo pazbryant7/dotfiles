@@ -5,9 +5,9 @@ autoload -Uz \
   edit-command-line
 
 # Completions
-load_completions
-zcompile_dump &|
-zcompile_config &|
+zcompletions
+zcompile-dump &|
+zcompile-config &|
 
 # Functions from ./functions
 zle -N edit-command-line

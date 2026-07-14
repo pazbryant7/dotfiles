@@ -109,33 +109,32 @@ zsh-cache-init() {
 
 #  Completion
 
-compinit-full() {
+zcompinit() {
   autoload -Uz compinit
   compinit
   zcompile_dump
 }
 
-load_completions() {
+zcompletions() {
   autoload -Uz compinit
   compinit -C
 }
 
-zcompile_dump() {
+zcompile-dump() {
   local dump="${ZDOTDIR:-$HOME}/.zcompdump"
   [[ -s $dump && (! -s $dump.zwc || $dump -nt $dump.zwc) ]] && zcompile "$dump"
 }
 
-zcompile_config() {
+zcompile-config() {
   local f
   for f in ~/.zshrc ~/.zsh/{aliases,functions,path,config,plugin}; do
     [[ -f $f && (! -f $f.zwc || $f -nt $f.zwc) ]] && zcompile "$f"
   done
 }
 
-
 # Clean
 
-clean_zcache() {
+zclean() {
   local target_dir="${1:-$PWD}"
 
   if [[ ! -d "$target_dir" ]]; then
