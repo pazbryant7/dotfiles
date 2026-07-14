@@ -1,8 +1,6 @@
 7zip
 ImageMagick
 alacritty
-android-tools
-aria2
 base-system
 bat
 bottom
