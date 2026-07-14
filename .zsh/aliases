@@ -22,7 +22,7 @@ alias calc="python -i -c 'import math, cmath; from math import *'"
 alias rex="xrdb -remove && xrdb -merge ~/.Xresources && kill -USR1 \$(pidof st)"
 
 # --- nix
-alias d='nix develop'
+alias nd='nix develop'
 alias ngb='nix-store --gc'
 
 
