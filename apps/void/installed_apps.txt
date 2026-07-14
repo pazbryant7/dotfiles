@@ -1,3 +1,4 @@
+7zip
 ImageMagick
 alacritty
 android-tools
@@ -53,12 +54,10 @@ nix
 noto-fonts-cjk
 noto-fonts-emoji
 nsxiv
-nwg-look
 oath-toolkit
 pavucontrol
 picom
 pinentry-gtk
-piper
 pipewire
 qbittorrent
 qt6ct
@@ -79,6 +78,8 @@ tree
 tree-sitter-cli
 udisks2
 ufw
+unrar
+unzip
 uv
 void-repo-multilib
 void-repo-multilib-nonfree
@@ -90,6 +91,7 @@ xdotool
 xev
 xinit
 xorg-minimal
+xprop
 xrandr
 xrdb
 xsetroot
