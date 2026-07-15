@@ -7,27 +7,48 @@ die() {
   exit 1
 }
 
-validate_url() {
-  [ -z "$1" ] && die "No URL provided.\nUsage: download-audio [--mp3] <url>"
+validate_nix() {
+  if [ -z "$IN_NIX_WRAPPER" ] && command -v nix >/dev/null 2>&1; then
+    IN_NIX_SHELL=1 exec nix shell nixpkgs#nodejs-slim -c sh "$0" "$@"
+  fi
+}
+
+validate_deps() {
+  command -v yt-dlp >/dev/null 2>&1 || die "yt-dlp not found on PATH. Install it or install nix."
 }
 
 validate_cookie_file() {
   [ ! -f "$COOKIE_FILE" ] && die "cookies.txt not found. Place it at: $COOKIE_FILE"
 }
 
+validate_urls() {
+  [ -z "$urls" ] && die "No URL provided.\nUsage: download-audio [--mp3] [-d <dir>] <url> [url...]"
+}
+
+validate_dir() {
+  mkdir -p "$dir" 2>/dev/null || die "Could not create/access directory: $dir"
+}
+
 parse_args() {
   mp3=false
-  url=""
-
+  dir="."
+  urls=""
   while [ $# -gt 0 ]; do
     case "$1" in
     -m | --mp3)
       mp3=true
       shift
       ;;
+    -d | --dir)
+      shift
+      [ $# -eq 0 ] && die "Missing argument for -d/--dir"
+      dir="$1"
+      shift
+      ;;
     -*) die "Unknown flag: $1" ;;
     *)
-      url="$1"
+      urls="${urls}${1}
+"
       shift
       ;;
     esac
@@ -36,31 +57,38 @@ parse_args() {
 
 download() {
   if $mp3; then
-    printf 'Downloading as MP3: %s\n' "$url"
-    set -- --audio-format mp3
+    fmt_args="--audio-format mp3"
   else
-    printf 'Downloading best audio: %s\n' "$url"
-    set --
+    fmt_args=""
   fi
 
-  yt-dlp -f bestaudio \
-    -x \
-    --verbose \
-    --add-metadata \
-    --audio-quality 0 \
-    --embed-thumbnail \
-    --cookies "$COOKIE_FILE" \
-    --js-runtimes "bun:/usr/bin/bun" \
-    -o "%(title)s.%(ext)s" \
-    "$@" \
-    "$url"
+  printf '%s\n' "$urls" | while IFS= read -r url; do
+    [ -z "$url" ] && continue
+    if $mp3; then
+      printf 'Downloading as MP3: %s\n' "$url"
+    else
+      printf 'Downloading best audio: %s\n' "$url"
+    fi
+    yt-dlp -f bestaudio \
+      -x \
+      --verbose \
+      --add-metadata \
+      --audio-quality 0 \
+      --embed-thumbnail \
+      --cookies "$COOKIE_FILE" \
+      -o "$dir/%(title)s.%(ext)s" \
+      $fmt_args \
+      "$url"
+  done
 }
 
 main() {
+  validate_nix "$@"
   parse_args "$@"
-  validate_url "$url"
+  validate_urls
   validate_cookie_file
+  validate_deps
+  validate_dir
   download
 }
-
 main "$@"
