@@ -1,0 +1,62 @@
+db_path = "~/.history.db"
+filter_mode = "global" # session/global/directory/host
+filter_mode_shell_up_key_binding = "session" # session/global/directory/host
+key_path = "~/.key"
+session_path = "~/.session"
+dialect = "us"
+style = "compact"
+inline_height = 10
+auto_sync = false
+update_check = false
+
+history_filter = [
+  "^y$",
+  "^z$",
+  "^cd$",
+  "^sp$",
+  "^vi$",
+  "^xr$",
+  "^ls$",
+  "^lzg$",
+  "^rex$",
+  "^fzf$",
+  "^lzd$",
+  "^nvim$",
+  "^clear",
+]
+
+cwd_filter = ["^/very/secret/area"]
+
+max_preview_height = 4
+show_help = true
+secrets_filter = true
+enter_accept = true
+
+common_subcommands = [
+  "apt",
+  "cargo",
+  "composer",
+  "dnf",
+  "docker",
+  "git",
+  "go",
+  "ip",
+  "kubectl",
+  "nix",
+  "nmcli",
+  "npm",
+  "pecl",
+  "pnpm",
+  "podman",
+  "port",
+  "systemctl",
+  "tmux",
+  "yarn",
+]
+
+common_prefix = ["sudo"]
+keymap_mode = "emacs"
+
+[daemon]
+enabled = false
+autostart = false
