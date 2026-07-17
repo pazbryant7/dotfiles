@@ -36,7 +36,6 @@ jujutsu
 lazydocker
 lazygit
 lf-r41_1
-libX11-devel
 linux
 lsof
 lua
