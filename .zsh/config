@@ -22,7 +22,6 @@ compdef _directories new
 bindkey -e # use emacs preset
 bindkey '\eh' smart-help
 bindkey '^[e' edit-command-line
-bindkey '^R' fzf-history-widget
 bindkey '^L' clear-and-redisplay
 bindkey '^X' copy-terminal-buffer
 bindkey '^[[Z' reverse-menu-complete
@@ -30,10 +29,6 @@ bindkey '^[[Z' reverse-menu-complete
 # Zsh options
 setopt \
   AUTO_CD \
-  HIST_IGNORE_DUPS \
-  EXTENDED_HISTORY \
-  HIST_FIND_NO_DUPS \
-  HIST_IGNORE_ALL_DUPS
 
 # Completion configuration
 zstyle ':completion:*' menu select
@@ -55,6 +50,7 @@ PROMPT="${NIX_TAG}%F{white}%2~%f "
 
 # Cached tool inits
 zsh-cache-init fzf fzf --zsh
+zsh-cache-init atuin atuin init zsh
 
 # Disable "c-s delay"
 stty -ixon
