@@ -30,6 +30,9 @@ bindkey '^[[Z' reverse-menu-complete
 setopt \
   AUTO_CD \
 
+# Disable native zsh history file
+export HISTFILE=/dev/null
+
 # Completion configuration
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
