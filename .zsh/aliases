@@ -28,8 +28,8 @@ alias nsn='env IN_NIX_SHELL=1 nix shell nixpkgs#nil nixpkgs#statix nixpkgs#nixfm
 alias nss='env IN_NIX_SHELL=1 nix shell nixpkgs#bash-language-server nixpkgs#shfmt'
 
 # zsh
-alias zshc="cd ~/.zsh && nvim ~/.zshrc"
 alias zshe="nvim ~/.zshenv"
+alias zshc="cd ~/.zsh && nvim config"
 alias zsha="cd ~/.zsh && nvim  aliases"
 
 # power managment
@@ -48,6 +48,3 @@ alias btm="btm --basic"
 alias ta="tmux attach"
 alias tk="tmux kill-server"
 alias tn="tmux new -s \$USER"
-
-# motivation
-alias motivation="mpv ~/Documents/github/media/videos/biy/cristiano.mp4"
