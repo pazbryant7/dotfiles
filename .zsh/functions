@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 
+ZSH_CACHE_DIR="${ZDOTDIR:-$HOME/.zsh}/cache"
+
 keys() {
   xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf "%-3s %s\n", $5, $8 }'
 }
@@ -97,9 +99,8 @@ smart_power() {
 zsh-cache-init() {
   local name=$1
   shift
-  local cache_dir="${ZDOTDIR:-$HOME/.zsh}/cache"
-  local cache_file="$cache_dir/$name.zsh"
-  [[ -d $cache_dir ]] || mkdir -p "$cache_dir"
+  local cache_file="$ZSH_CACHE_DIR/$name.zsh"
+  [[ -d $ZSH_CACHE_DIR ]] || mkdir -p "$ZSH_CACHE_DIR"
   if [[ ! -s $cache_file ]]; then
     "$@" >|"$cache_file" || return
     zcompile "$cache_file" 2>/dev/null
@@ -107,21 +108,21 @@ zsh-cache-init() {
   source "$cache_file"
 }
 
-#  Completion
-
+# Completion
 zcompinit() {
+  local dump="$ZSH_CACHE_DIR/zcompdump"
+  [[ -d $ZSH_CACHE_DIR ]] || mkdir -p "$ZSH_CACHE_DIR"
   autoload -Uz compinit
-  compinit
-  zcompile-dump
-}
-
-zcompletions() {
-  autoload -Uz compinit
-  compinit -C
+  if [[ -s $dump ]]; then
+    compinit -C -d "$dump"   # cache exists: trust it, skip security check, no regen
+  else
+    compinit -d "$dump"      # no cache: full init
+    zcompile-dump
+  fi
 }
 
 zcompile-dump() {
-  local dump="${ZDOTDIR:-$HOME}/.zcompdump"
+  local dump="$ZSH_CACHE_DIR/zcompdump"
   [[ -s $dump && (! -s $dump.zwc || $dump -nt $dump.zwc) ]] && zcompile "$dump"
 }
 
@@ -133,22 +134,17 @@ zcompile-config() {
 }
 
 # Clean
-
 zclean() {
   local target_dir="${1:-$PWD}"
-
   if [[ ! -d "$target_dir" ]]; then
     echo "Directory not found: $target_dir" >&2
     return 1
   fi
-
   echo "Cleaning cache files in: $target_dir"
-
   if [[ -d "$target_dir/cache" ]]; then
     echo "Removing directory: $target_dir/cache"
     rm -rf "$target_dir/cache"
   fi
-
   local zwc_files=("$target_dir"/**/*.zwc(N))
   if ((${#zwc_files[@]} > 0)); then
     for f in "${zwc_files[@]}"; do
@@ -158,6 +154,5 @@ zclean() {
   else
     echo "No .zwc files found."
   fi
-
   echo "Done."
 }

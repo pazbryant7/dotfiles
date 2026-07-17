@@ -5,8 +5,7 @@ autoload -Uz \
   edit-command-line
 
 # Completions
-zcompletions
-zcompile-dump &|
+zcompinit
 zcompile-config &|
 
 # Functions from ./functions
