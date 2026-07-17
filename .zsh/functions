@@ -112,7 +112,7 @@ zsh-cache-init() {
 zcompinit() {
   autoload -Uz compinit
   compinit
-  zcompile_dump
+  zcompile-dump
 }
 
 zcompletions() {
