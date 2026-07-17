@@ -1,6 +1,7 @@
 7zip
 ImageMagick
 alacritty
+atuin
 base-system
 bat
 bottom
