@@ -60,3 +60,6 @@ keymap_mode = "emacs"
 [daemon]
 enabled = false
 autostart = false
+
+[ai]
+enabled = false
