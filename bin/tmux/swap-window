@@ -1,0 +1,37 @@
+#!/usr/bin/env sh
+
+current() {
+  tmux display-message -p '#I'
+}
+
+ask() {
+  tmux command-prompt -p "swap with window:" "run-shell '$0 %%'"
+}
+
+swap() {
+  tmux swap-window -s "$1" -t "$2"
+}
+
+focus() {
+  tmux select-window -t "$1"
+}
+
+main() {
+  dst=$1
+
+  if [ -z "$dst" ]; then
+    ask
+    exit 0
+  fi
+
+  src=$(current)
+
+  if [ "$dst" = "$src" ]; then
+    exit 0
+  fi
+
+  swap "$src" "$dst"
+  focus "$dst"
+}
+
+main "$@"
