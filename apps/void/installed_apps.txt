@@ -13,6 +13,7 @@ chafa
 chrony
 cronie
 curl
+dbeaver
 docker-buildx
 dragon
 dunst
