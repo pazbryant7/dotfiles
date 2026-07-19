@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+
+exist() {
+  tmux list-windows -F '#{window_index}' | grep -qx "$1"
+}
+
+goto() {
+  tmux select-window -t ":$1"
+}
+
+create() {
+  tmux new-window -t ":$1"
+}
+
+main() {
+  n="$1"
+  if exist "$n"; then
+    goto "$n"
+  else
+    create "$n"
+  fi
+}
+
+main "$1"
