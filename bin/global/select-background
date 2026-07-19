@@ -45,7 +45,7 @@ main() {
   accent_color=$(printf "%s\n" "$colors" | sed -n '4p')
   primary_color=$(printf "%s\n" "$colors" | sed -n '6p')
 
-  [ -n "$accent_color" ] && ~/bin/global/uitool "$accent_color" "$primary_color"
+  [ -n "$accent_color" ] && ~/bin/wm/uitool "$accent_color" "$primary_color"
 }
 
 main "$@"
