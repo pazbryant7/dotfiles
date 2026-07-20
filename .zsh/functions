@@ -61,7 +61,7 @@ smart-help() {
   fi
 }
 
-lf() {
+y() {
   tmp="$(mktemp)"
   command lf -last-dir-path="$tmp" "$@"
   if [ -f "$tmp" ]; then
