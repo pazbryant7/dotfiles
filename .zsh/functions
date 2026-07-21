@@ -15,6 +15,14 @@ rez() {
   . /home/bryant/.zshrc
 }
 
+tk() {
+  if [ -z "$TMUX" ]; then
+    tmux kill-server
+  else
+    ~/bin/tmux/remove-all "/home/$USER"
+  fi
+}
+
 h() {
   if [ -z "$TMUX" ]; then
     printf "Not in a tmux session.\n" >&2
