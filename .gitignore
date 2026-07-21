@@ -18,3 +18,4 @@
 /.config/go/telemetry/
 /.config/rclone
 /.config/gtk-4.0/gtk.css
+/.config/xsettingsd
