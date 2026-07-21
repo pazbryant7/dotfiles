@@ -5,8 +5,6 @@ atuin
 base-system
 bat
 bottom
-breeze-gtk
-breeze-icons
 calibre
 cbonsai
 chafa
