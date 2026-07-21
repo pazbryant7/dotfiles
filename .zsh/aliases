@@ -46,5 +46,5 @@ alias btm="btm --basic"
 
 # tmux
 alias ta="tmux attach"
-alias tk="tmux kill-server"
 alias tn="tmux new -s \$USER"
+alias tk="~/bin/tmux/remove-all /home/$USER"
