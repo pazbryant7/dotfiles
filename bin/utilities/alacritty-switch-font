@@ -9,12 +9,14 @@ Recursive Mn Csl St|Regular|Recursive Mn Csl St Med|Medium
 Recursive Mn Csl St Med|Medium|Recursive Mn Csl St SmB|SemiBold
 Recursive Mn Csl St SmB|SemiBold|Recursive Mn Csl St|Bold
 Recursive Mn Csl St|Bold|Recursive Mn Csl St|Bold
+Annotation Mono|Regular|Annotation Mono|Medium
 Annotation Mono|Medium|Annotation Mono|DemiBold
 Annotation Mono|DemiBold|Annotation Mono|Bold
 Annotation Mono|Bold|Annotation Mono|ExtraBold
 Annotation Mono|ExtraBold|Annotation Mono|ExtraBold
 "
-TOTAL=8
+
+TOTAL=$(echo "$STATES" | rg -v '^$' | wc -l)
 
 read_state() {
   cat "$STATE_FILE" 2>/dev/null || echo 0
