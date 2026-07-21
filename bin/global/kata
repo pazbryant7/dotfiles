@@ -22,7 +22,7 @@ in_tmux() {
 }
 
 new_session() {
-  "$HOME/bin/global/neww" "$1"
+  "$HOME/bin/global/n" "$1"
 }
 
 new_window() {
