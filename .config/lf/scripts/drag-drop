@@ -1,0 +1,44 @@
+#!/usr/bin/env sh
+
+find_dragon_binary() {
+  if command -v dragon >/dev/null 2>&1; then
+    printf 'dragon\n'
+    return 0
+  fi
+  if command -v dragon-drop >/dev/null 2>&1; then
+    printf 'dragon-drop\n'
+    return 0
+  fi
+  return 1
+}
+
+warn_about_missing_files() {
+  for file in "$@"; do
+    if [ ! -e "$file" ]; then
+      warn "Warning: file does not exist: $file"
+    fi
+  done
+}
+
+launch_dragon() {
+  dragon_bin=$1
+  shift
+  "$dragon_bin" --and-exit -- "$@"
+}
+
+main() {
+  require_at_least_one_arg "$#" "Usage: $(basename -- "$0") FILE [FILE...]"
+
+  dragon_bin=$(find_dragon_binary)
+  if [ -z "$dragon_bin" ]; then
+    die "dragon (dragon-drop) is not installed"
+  fi
+
+  warn_about_missing_files "$@"
+
+  if ! launch_dragon "$dragon_bin" "$@"; then
+    die "dragon exited with an error"
+  fi
+}
+
+main "$@"

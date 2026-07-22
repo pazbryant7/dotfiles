@@ -1,0 +1,86 @@
+#!/usr/bin/env sh
+
+WAYLAND_DISPLAY=${WAYLAND_DISPLAY:-}
+DISPLAY=${DISPLAY:-}
+
+find_path_resolver() {
+  if command -v realpath >/dev/null 2>&1; then
+    printf 'realpath\n'
+    return 0
+  fi
+  if command -v grealpath >/dev/null 2>&1; then
+    printf 'grealpath\n'
+    return 0
+  fi
+  if command -v readlink >/dev/null 2>&1; then
+    printf 'readlink -f\n'
+    return 0
+  fi
+  return 1
+}
+
+build_path_list() {
+  resolver=$1
+  shift
+  for file in "$@"; do
+    if [ ! -e "$file" ]; then
+      warn "Warning: skipping missing file: $file"
+      continue
+    fi
+    # shellcheck disable=SC2086
+    if ! $resolver -- "$file"; then
+      warn "Warning: could not resolve path for: $file"
+    fi
+  done
+}
+
+detect_clipboard_backend() {
+  if [ -n "$WAYLAND_DISPLAY" ] && command -v wl-copy >/dev/null 2>&1; then
+    printf 'wayland\n'
+    return 0
+  fi
+  if [ "$(uname -s)" = "Darwin" ] && command -v pbcopy >/dev/null 2>&1; then
+    printf 'macos\n'
+    return 0
+  fi
+  if [ -n "$DISPLAY" ] && command -v xclip >/dev/null 2>&1; then
+    printf 'xclip\n'
+    return 0
+  fi
+  if [ -n "$DISPLAY" ] && command -v xsel >/dev/null 2>&1; then
+    printf 'xsel\n'
+    return 0
+  fi
+  return 1
+}
+
+copy_to_clipboard() {
+  backend=$(detect_clipboard_backend)
+  if [ -z "$backend" ]; then
+    die "No supported clipboard tool found (need wl-copy, xclip, xsel or pbcopy)"
+  fi
+  case "$backend" in
+  wayland) wl-copy ;;
+  macos) pbcopy ;;
+  xclip) xclip -selection clipboard ;;
+  xsel) xsel --clipboard --input ;;
+  esac
+}
+
+main() {
+  require_at_least_one_arg "$#" "Usage: $(basename -- "$0") FILE [FILE...]"
+
+  resolver=$(find_path_resolver)
+  if [ -z "$resolver" ]; then
+    die "No realpath/grealpath/readlink available to resolve paths"
+  fi
+
+  paths=$(build_path_list "$resolver" "$@")
+  if [ -z "$paths" ]; then
+    die "No valid files to copy"
+  fi
+
+  printf '%s\n' "$paths" | copy_to_clipboard
+}
+
+main "$@"

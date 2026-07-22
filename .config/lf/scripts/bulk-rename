@@ -1,0 +1,97 @@
+#!/usr/bin/env sh
+
+OLD_INDEX=""
+NEW_INDEX=""
+LF_ID=""
+
+script_dir=$(dirname -- "$0")
+. "$script_dir/lib"
+
+cleanup() {
+  [ -n "$OLD_INDEX" ] && rm -f "$OLD_INDEX"
+  [ -n "$NEW_INDEX" ] && rm -f "$NEW_INDEX"
+}
+
+die() {
+  msg="$1"
+  if [ -n "$LF_ID" ]; then
+    lf -remote "send $LF_ID echoerr bulk-rename: $msg"
+  else
+    echo "bulk-rename: $msg" >&2
+  fi
+  exit 1
+}
+
+make_tempfiles() {
+  OLD_INDEX="$(mktemp)" || die "could not create temp file"
+  [ -n "$OLD_INDEX" ] || die "could not create temp file"
+
+  NEW_INDEX="$(mktemp)" || die "could not create temp file"
+  [ -n "$NEW_INDEX" ] || die "could not create temp file"
+}
+
+build_index() {
+  current_file="$1"
+  shift
+
+  if [ "$#" -gt 0 ]; then
+    printf '%s\n' "$@" >"$OLD_INDEX" || die "could not write index"
+  else
+    dir="$(dirname "$current_file")" || die "could not resolve directory"
+    (cd "$dir" && printf '%s\n' *) >"$OLD_INDEX" ||
+      die "could not list directory: $dir"
+  fi
+
+  [ -s "$OLD_INDEX" ] || die "no files to rename"
+}
+
+edit_index() {
+  cp "$OLD_INDEX" "$NEW_INDEX" || die "could not copy index"
+
+  editor="${EDITOR:-vi}"
+  "$editor" "$NEW_INDEX" </dev/tty >/dev/tty
+  [ "$?" -eq 0 ] || die "editor exited with an error"
+}
+
+check_line_count() {
+  old_n=$(wc -l <"$OLD_INDEX") || die "could not read old index"
+  new_n=$(wc -l <"$NEW_INDEX") || die "could not read new index"
+  [ "$old_n" -eq "$new_n" ] || die "number of lines changed, aborting"
+}
+
+perform_renames() {
+  exec 3<"$OLD_INDEX"
+  exec 4<"$NEW_INDEX"
+  while IFS= read -r a <&3 && IFS= read -r b <&4; do
+    [ "$a" = "$b" ] && continue
+    if [ -e "$b" ]; then
+      lf -remote "send $LF_ID echoerr bulk-rename: skipped, exists: $b"
+      continue
+    fi
+    mv -- "$a" "$b"
+  done
+  exec 3<&- 4<&-
+}
+
+notify_reload() {
+  lf -remote "send $LF_ID reload"
+}
+
+main() {
+  [ "$#" -ge 2 ] || die "usage: bulk-rename.sh <lf-id> <current-file> [selected-file ...]"
+
+  LF_ID="$1"
+  current_file="$2"
+  shift 2
+
+  trap cleanup EXIT INT TERM
+
+  make_tempfiles
+  build_index "$current_file" "$@"
+  edit_index
+  check_line_count
+  perform_renames
+  notify_reload
+}
+
+main "$@"

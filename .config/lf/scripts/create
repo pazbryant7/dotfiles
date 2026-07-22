@@ -1,18 +1,12 @@
-#!/bin/env sh
-#
-# create.sh — smart file/dir creator for lf.
-#
-# Rules:
-#   - trailing "/" -> directory
-#   - otherwise    -> file (parent dirs auto-created)
-#
-# Usage: create.sh <path>
-die() {
-  echo "create.sh: $1" >&2
-  exit 1
-}
+#!/usr/bin/env sh
 
-is_forced_dir() {
+script_dir=$(dirname -- "$0")
+. "$script_dir/lib"
+
+script_dir=$(dirname -- "$0")
+. "$script_dir/lib"
+
+ends_with_slash() {
   case "$1" in
   */) return 0 ;;
   *) return 1 ;;
@@ -20,33 +14,45 @@ is_forced_dir() {
 }
 
 ensure_parent_dir() {
-  parent=$(dirname "$1")
-  [ "$parent" = "." ] && return 0
-  mkdir -p "$parent" || die "failed to create parent directory '$parent'"
+  parent=$(dirname -- "$1")
+  if [ "$parent" = "." ] || [ "$parent" = "/" ]; then
+    return 0
+  fi
+  if ! mkdir -p -- "$parent"; then
+    die "Failed to create parent directory: $parent"
+  fi
 }
 
 make_dir() {
-  mkdir -p "$1" || die "failed to create directory '$1'"
+  if ! mkdir -p -- "$1"; then
+    die "Failed to create directory: $1"
+  fi
 }
 
 make_file() {
   ensure_parent_dir "$1"
-  touch "$1" || die "failed to create file '$1'"
+  if ! touch -- "$1"; then
+    die "Failed to create file: $1"
+  fi
 }
 
 validate_target() {
-  [ -n "$1" ] || die "no target given"
-  [ -e "$1" ] && die "'$1' already exists"
+  if [ -e "$1" ]; then
+    die "'$1' already exists"
+  fi
 }
 
 main() {
-  target="$1"
+  require_at_least_one_arg "$#" "Usage: $(basename -- "$0") NAME"
+  target=$1
+
   validate_target "$target"
-  if is_forced_dir "$target"; then
+
+  if ends_with_slash "$target"; then
     make_dir "$target"
   else
     make_file "$target"
   fi
 }
 
-main "$1"
+main "$@"

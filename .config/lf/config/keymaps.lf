@@ -5,17 +5,13 @@ map x extract
 map W wallpaper
 map R bulk-rename
 
-map C copy-path
-
 map <c-n> drag
-map <a-c> fzf-cd
-map <c-t> fzf-search
 
 map ";" read
 map ":" search-next
 
 map gh cd ~
 map gc cd ~/.config
-map gd cd ~/Downloads
 map gm cd /run/media
+map gd cd ~/Downloads
 map gt cd ~/.local/share/Trash/files

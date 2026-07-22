@@ -1,28 +1,5 @@
 #!/usr/bin/env sh
 #
-# lf file previewer (POSIX sh)
-# ------------------------------------------------------------------
-# Handles:
-#   - code / text files -> syntax highlighted via `bat` (falls back to `cat`)
-#   - images            -> fast rendering via `chafa` (ansi/sixel/kitty
-#                          auto-detected; symbols mode is cheap, good enough
-#                          just to identify the image)
-#   - video             -> thumbnail frame extracted with `ffmpegthumbnailer`,
-#                          rendered the same way as images, cached so it isn't
-#                          regenerated every time you hover the file
-#
-# Everything else (PDFs included) falls back to a plain `file` info line.
-#
-# Hook into lf (e.g. in settings.lf):
-#   set previewer ~/.config/lf/scripts/preview
-#
-# Dependencies (script degrades gracefully if any are missing):
-#   bat (or batcat)     - syntax highlighted code preview
-#   chafa               - fast terminal image rendering
-#   ffmpegthumbnailer   - extracts a video frame as a thumbnail
-#   file                - mime type detection (usually preinstalled)
-# ------------------------------------------------------------------
-
 cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/lf/thumbnails"
 
 has_command() {
@@ -75,9 +52,10 @@ ensure_cache_dir() {
 
 thumbnail_path() {
   target="$1"
+  suffix="$2"
   key=$(printf '%s' "$target" | md5sum | cut -d' ' -f1)
   mtime=$(stat -c %Y -- "$target" 2>/dev/null || stat -f %m -- "$target" 2>/dev/null)
-  printf '%s\n' "$cache_dir/${key}_${mtime}.jpg"
+  printf '%s\n' "$cache_dir/${key}_${mtime}${suffix}.jpg"
 }
 
 generate_thumbnail() {
@@ -91,7 +69,7 @@ render_video() {
   target="$1"
   if has_command ffmpegthumbnailer && has_command chafa; then
     ensure_cache_dir
-    thumb=$(thumbnail_path "$target")
+    thumb=$(thumbnail_path "$target" "")
     generate_thumbnail "$target" "$thumb"
     if [ -f "$thumb" ]; then
       render_image "$thumb"
@@ -99,6 +77,46 @@ render_video() {
     fi
   fi
   print_file_info "$target" "Video file"
+}
+
+generate_pdf_thumbnail() {
+  target="$1"
+  thumb="$2"
+  [ -f "$thumb" ] && return 0
+  base="${thumb%.jpg}"
+  pdftoppm -jpeg -f 1 -l 1 -scale-to 1200 -- "$target" "$base" >/dev/null 2>&1
+  # pdftoppm names its output "<base>-1.jpg"; normalize it to $thumb.
+  generated="${base}-1.jpg"
+  [ -f "$generated" ] && mv -- "$generated" "$thumb"
+}
+
+render_pdf() {
+  target="$1"
+  if has_command pdftoppm && has_command chafa; then
+    ensure_cache_dir
+    thumb=$(thumbnail_path "$target" "_pdf")
+    generate_pdf_thumbnail "$target" "$thumb"
+    if [ -f "$thumb" ]; then
+      render_image "$thumb"
+      return 0
+    fi
+  fi
+  if has_command pdftotext; then
+    pdftotext -l 1 -- "$target" - 2>/dev/null
+  else
+    print_file_info "$target" "PDF file"
+  fi
+}
+
+render_zip() {
+  target="$1"
+  if has_command zipinfo; then
+    zipinfo -1 -- "$target" 2>/dev/null
+  elif has_command unzip; then
+    unzip -l -- "$target" 2>/dev/null
+  else
+    print_file_info "$target" "Zip file"
+  fi
 }
 
 render_fallback() {
@@ -114,9 +132,7 @@ main() {
   path="$1"
   width="$2"
   height="$3"
-
   mimetype=$(detect_mimetype "$path")
-
   case "$mimetype" in
   text/* | application/json | application/x-ndjson | application/xml | application/x-yaml | inode/x-empty)
     render_code "$path"
@@ -130,6 +146,12 @@ main() {
     ;;
   video/*)
     render_video "$path"
+    ;;
+  application/pdf)
+    render_pdf "$path"
+    ;;
+  application/zip | application/x-zip-compressed)
+    render_zip "$path"
     ;;
   *)
     render_fallback "$path"

@@ -1,0 +1,32 @@
+#!/usr/bin/env sh
+
+trash_one() {
+  file=$1
+  if [ ! -e "$file" ]; then
+    warn "Warning: skipping missing file: $file"
+    return 1
+  fi
+  if trash-put -- "$file"; then
+    return 0
+  fi
+  warn "Warning: could not trash: $file"
+  return 1
+}
+
+main() {
+  require_at_least_one_arg "$#" "Usage: $(basename -- "$0") FILE [FILE...]"
+  require_command trash-put "Install trash-cli."
+
+  fail_count=0
+  for file in "$@"; do
+    if ! trash_one "$file"; then
+      fail_count=$((fail_count + 1))
+    fi
+  done
+
+  if [ "$fail_count" -gt 0 ]; then
+    die "$fail_count file(s) could not be trashed"
+  fi
+}
+
+main "$@"
