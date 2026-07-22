@@ -21,6 +21,8 @@ tk() {
   else
     ~/bin/tmux/remove-all "/home/$USER"
   fi
+
+  cd "$HOME"
 }
 
 h() {
