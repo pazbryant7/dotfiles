@@ -32,8 +32,6 @@ st.chscale: 1.00
 st.cwscale: 0.90
 st.borderpx: 0px
 
-st.font: IBM 3270:style=Regular:pixelsize=20:antialias=true:autohint=true
-
 ! Nsxiv specific
 Nsxiv.window.background: #1e1e2e
 Nsxiv.window.foreground: #ffffff
