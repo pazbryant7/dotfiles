@@ -11,12 +11,11 @@ TERM = "xterm-256color"
 size = 10.5
 
 [font.normal]
-family = "Recursive Mn Csl St Med"
-style = "Medium"
+family = "IBM 3270"
+style = "Regular"
 
 [font.bold]
-family = "Recursive Mn Csl St SmB"
-style = "SemiBold"
+family = "IBM 3270"
 
 [font.offset]
 x = 0
@@ -38,7 +37,7 @@ foreground = "#ffffff"
 
 [colors.cursor]
 text = "#1d1f21"
-cursor = "#A4A4A4"
+cursor = "#43667e"
 
 [colors.normal]
 black = "#1d1f21"
@@ -90,3 +89,13 @@ mods = "Control"
 key = "S"
 mods = "Control|Shift"
 command = { program = "bash", args = ["-c", "~/bin/utilities/alacritty-switch-font"] }
+
+[[keyboard.bindings]]
+action = "ScrollLineUp"
+key = "K"
+mods = "Control|Shift"
+
+[[keyboard.bindings]]
+action = "ScrollLineDown"
+key = "J"
+mods = "Control|Shift"
