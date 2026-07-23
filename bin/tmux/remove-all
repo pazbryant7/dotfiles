@@ -1,11 +1,17 @@
 #!/usr/bin/env sh
 
+MIN_SESSIONS=1
+
 get_current_session_name() {
   tmux display-message -p "#S"
 }
 
 get_session_name_from_path() {
   basename "$1"
+}
+
+get_active_sessions() {
+  tmux ls | wc -l
 }
 
 session_exists() {
@@ -20,8 +26,12 @@ switch_to_session() {
   tmux switch-client -t "$1"
 }
 
-kill_all_except() {
+go_home() {
   tmux kill-session -a -t "$1"
+}
+
+nuke() {
+  tmux kill-server
 }
 
 notify() {
@@ -45,7 +55,12 @@ main() {
     switch_to_session "$name" || exit 1
   fi
 
-  kill_all_except "$name" || exit 1
+  if [ "$(get_active_sessions)" = "$MIN_SESSIONS" ]; then
+    nuke
+  else
+    go_home "$name" || exit 1
+  fi
+
   notify
 }
 
