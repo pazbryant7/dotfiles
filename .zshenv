@@ -18,6 +18,13 @@ export GOPATH="/home/bryant/go/bin"
 export BROWSER="brave-origin-stable"
 export XDG_CONFIG_HOME="$HOME/.config"
 
+# History
+export HISTSIZE=50000
+export SAVEHIST=50000
+export HISTSIZE=50000
+export SAVEHIST=50000
+export HISTFILE="$HOME/.zsh_history"
+
 # }}
 
 #{{ fzf
