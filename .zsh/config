@@ -29,6 +29,9 @@ bindkey '^[[Z' reverse-menu-complete
 setopt \
   AUTO_CD \
 
+# Disable native zsh history file
+export HISTFILE=/dev/null
+
 # Completion configuration
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
@@ -46,6 +49,10 @@ fi
 
 # White prompt
 PROMPT="${NIX_TAG}%F{white}%2~%f "
+
+# Cached tool inits
+zsh-cache-init fzf fzf --zsh
+zsh-cache-init atuin atuin init zsh
 
 # Disable "c-s delay"
 stty -ixon
