@@ -5,13 +5,23 @@ $HOME/
 $HOME/Documents/github
 $HOME/Documents/github/temp
 "
+
 NOTES_PATH="$HOME/Documents/github/notes
 $HOME/Documents/github/youtube
 "
+
 NOTES_FILE="todo.md"
 
-current_session() {
-  tmux display-message -p '#S'
+get_name() {
+  basename "$1" | tr . _ | tr '[:upper:]' '[:lower:]'
+}
+
+session_exists() {
+  tmux has-session -t "=$1" 2>/dev/null
+}
+
+is_notes_path() {
+  printf '%s\n' "$NOTES_PATH" | rg -qFx "$1"
 }
 
 create_session() {
@@ -27,14 +37,7 @@ notify() {
 }
 
 open_notes() {
-  name="$1"
-  path="$2"
-  printf '%s\n' "$NOTES_PATH" | rg -qFx "$path" || return
-  tmux send-keys -t "$name" "${EDITOR:-nvim} $path/$NOTES_FILE" Enter
-}
-
-get_name() {
-  basename "$1" | tr . _ | tr '[:upper:]' '[:lower:]'
+  tmux send-keys -t "$1" "${EDITOR:-nvim} $2/$NOTES_FILE" Enter
 }
 
 pick_dirs() {
@@ -42,39 +45,35 @@ pick_dirs() {
   fd . --max-depth 1 --type d --type l --follow $SESSION_DIRS 2>/dev/null | fzf --multi
 }
 
-set_session() {
+ensure_session() {
   path="$1"
   name="$2"
 
-  curr_session="$(current_session)"
-
-  if [ "$curr_session" != "$name" ]; then
-    create_session "$name" "$path"
-    open_notes "$name" "$path"
-  else
-    notify "Already in $name session"
+  if session_exists "$name"; then
+    return 0
   fi
 
+  create_session "$name" "$path"
+  is_notes_path "$path" && open_notes "$name" "$path"
   return 0
 }
 
 single() {
   path="$1"
   name="${2:-$(get_name "$path")}"
-  set_session "$path" "$name" && switch_to "$name"
+  ensure_session "$path" "$name"
+  switch_to "$name"
 }
 
 multi() {
   paths=$(pick_dirs)
-
   [ -z "$paths" ] && exit 1
 
   tmp=$(mktemp)
-
   printf '%s\n' "$paths" | while IFS= read -r path; do
     [ -z "$path" ] && continue
     name=$(get_name "$path")
-    set_session "$path" "$name"
+    ensure_session "$path" "$name"
     printf '%s' "$name" >"$tmp"
   done
 
