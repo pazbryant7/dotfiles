@@ -8,6 +8,10 @@ ask() {
   tmux command-prompt -p "swap with window:" "run-shell '$0 %%'"
 }
 
+exists() {
+  tmux list-windows -F '#I' | grep -qx "$1"
+}
+
 swap() {
   tmux swap-window -s "$1" -t "$2"
 }
@@ -16,22 +20,27 @@ focus() {
   tmux select-window -t "$1"
 }
 
+move_window() {
+  tmux move-window -s "$1" -t "$2"
+}
+
 main() {
   dst=$1
-
   if [ -z "$dst" ]; then
     ask
     exit 0
   fi
-
   src=$(current)
-
   if [ "$dst" = "$src" ]; then
     exit 0
   fi
-
-  swap "$src" "$dst"
-  focus "$dst"
+  if exists "$dst"; then
+    swap "$src" "$dst"
+    focus "$dst"
+  else
+    move_window "$src" "$dst"
+    focus "$dst"
+  fi
 }
 
 main "$@"
