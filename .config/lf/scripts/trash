@@ -1,5 +1,8 @@
 #!/usr/bin/env sh
 
+script_dir=$(dirname -- "$0")
+. "$script_dir/lib"
+
 trash_one() {
   file=$1
   if [ ! -e "$file" ]; then

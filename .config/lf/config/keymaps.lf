@@ -10,8 +10,12 @@ map <c-n> drag
 map ";" read
 map ":" search-next
 
+map <c-r>
+map <c-l> reload
+
 map gh cd ~
 map gc cd ~/.config
 map gm cd /run/media
 map gd cd ~/Downloads
 map gt cd ~/.local/share/Trash/files
+
