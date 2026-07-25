@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
-DEFAULT_LAYOUT="bryantd"
-DEFAULT_INTERNATIONAL_LAYOUT="bryantdi"
-DEFAULT_NUMERIC_LAYOUT="bryantdn"
-DEFAULT_INTERNATIONAL_NUMERIC_LAYOUT="bryantdin"
+DEFAULT_LAYOUT="bryantq"
+DEFAULT_LAYOUT_INTL="bryantqi"
+DEFAULT_DVORAK_LAYOUT="bryantd"
+DEFAULT_DVORAK_LAYOUT_INTL="bryantdi"
 
 get_current_layout() {
   setxkbmap -query | rg 'layout:' | awk '{print $2}'
@@ -21,7 +21,6 @@ set_layout_and_notify() {
 
 toggle_layout() {
   current_layout=$(get_current_layout)
-
   if [ "$current_layout" = "$1" ]; then
     set_layout_and_notify "$2"
   else
@@ -29,13 +28,32 @@ toggle_layout() {
   fi
 }
 
+toggle_international() {
+  current_layout=$(get_current_layout)
+  case "$current_layout" in
+    "$DEFAULT_LAYOUT")
+      set_layout_and_notify "$DEFAULT_LAYOUT_INTL"
+      ;;
+    "$DEFAULT_LAYOUT_INTL")
+      set_layout_and_notify "$DEFAULT_LAYOUT"
+      ;;
+    "$DEFAULT_DVORAK_LAYOUT")
+      set_layout_and_notify "$DEFAULT_DVORAK_LAYOUT_INTL"
+      ;;
+    "$DEFAULT_DVORAK_LAYOUT_INTL")
+      set_layout_and_notify "$DEFAULT_DVORAK_LAYOUT"
+      ;;
+    *)
+      set_layout_and_notify "$DEFAULT_LAYOUT"
+      ;;
+  esac
+}
+
 main() {
-  if [ "$1" = "numbers" ]; then
-    toggle_layout "$DEFAULT_NUMERIC_LAYOUT" \
-      "$DEFAULT_INTERNATIONAL_NUMERIC_LAYOUT"
+  if [ "$1" = "x" ]; then
+    toggle_layout "$DEFAULT_LAYOUT" "$DEFAULT_DVORAK_LAYOUT"
   else
-    toggle_layout "$DEFAULT_LAYOUT" \
-      "$DEFAULT_INTERNATIONAL_LAYOUT"
+    toggle_international
   fi
 }
 
