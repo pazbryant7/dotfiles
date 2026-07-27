@@ -23,7 +23,7 @@ warn_about_missing_files() {
 launch_dragon() {
   dragon_bin=$1
   shift
-  "$dragon_bin" --and-exit -- "$@"
+  "$dragon_bin" --all-compact --and-exit "$@"
 }
 
 main() {
