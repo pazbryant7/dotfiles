@@ -27,7 +27,7 @@ Xft.lcdfilter: lcddefault
 *.color7: #bac2de
 *.color15: #a6adc8
 
-st.alpha: 1.00
+st.alpha: 0.97
 st.chscale: 1.00
 st.cwscale: 0.90
 st.borderpx: 0px
