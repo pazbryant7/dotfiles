@@ -5,8 +5,9 @@ atuin
 base-system
 bat
 bottom
+breeze-gtk
+breeze-qt6
 calibre
-cbonsai
 chafa
 chrony
 cronie
@@ -39,6 +40,7 @@ lf-r41_1
 linux
 lsof
 lua
+lxappearance
 maim
 mesa-dri
 mesa-vulkan-intel
