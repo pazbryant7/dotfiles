@@ -16,7 +16,11 @@ get_name() {
   basename "$1" | tr . _ | tr '[:upper:]' '[:lower:]'
 }
 
-session_exists() {
+get_curr() {
+  tmux display-message -p "#S"
+}
+
+exist() {
   tmux has-session -t "=$1" 2>/dev/null
 }
 
@@ -24,7 +28,7 @@ is_notes_path() {
   printf '%s\n' "$NOTES_PATH" | rg -qFx "$1"
 }
 
-create_session() {
+create() {
   tmux new-session -ds "$1" -c "$2"
 }
 
@@ -45,24 +49,37 @@ pick_dirs() {
   fd . --max-depth 1 --type d --type l --follow $SESSION_DIRS 2>/dev/null | fzf --multi
 }
 
-ensure_session() {
+inside_of() {
+  [ "$1" = "$(get_curr)" ]
+}
+
+verify() {
   path="$1"
   name="$2"
 
-  if session_exists "$name"; then
-    return 0
+  if inside_of "$name"; then
+    notify "Aleady inside of $2"
+    return 1
   fi
 
-  create_session "$name" "$path"
-  is_notes_path "$path" && open_notes "$name" "$path"
+  if ! exist "$name"; then
+    create "$name" "$path"
+  fi
+
+  if is_notes_path "$path"; then
+    open_notes "$name" "$path"
+  fi
+
   return 0
 }
 
 single() {
   path="$1"
   name="${2:-$(get_name "$path")}"
-  ensure_session "$path" "$name"
-  switch_to "$name"
+
+  if verify "$path" "$name"; then
+    switch_to "$name"
+  fi
 }
 
 multi() {
@@ -73,7 +90,7 @@ multi() {
   printf '%s\n' "$paths" | while IFS= read -r path; do
     [ -z "$path" ] && continue
     name=$(get_name "$path")
-    ensure_session "$path" "$name"
+    verify "$path" "$name"
     printf '%s' "$name" >"$tmp"
   done
 
