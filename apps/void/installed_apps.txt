@@ -1,6 +1,7 @@
 7zip
 ImageMagick
 alacritty
+aria2
 atuin
 base-system
 bat
@@ -22,6 +23,7 @@ fd
 feh
 ffmpeg
 ffmpegthumbnailer
+firefox
 fzf
 gammastep
 git
