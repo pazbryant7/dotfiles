@@ -1,0 +1,136 @@
+#!/usr/bin/env sh
+
+# nsh - run a nix shell built from named tool profiles
+#
+# Usage:
+#   nsh <profile> [profile...]              interactive shell
+#   nsh <profile> [profile...] -- cmd args  run a command, then exit
+#   nsh list | -l | --list                  list available profiles
+
+CONF="$HOME/.config/ns/profiles.conf"
+
+die() {
+  printf 'Error: %s\n' "$1" >&2
+  exit 1
+}
+
+usage() {
+  printf 'Usage: nsh <profile> [profile...] [-- cmd args...]\n' >&2
+  printf '       nsh list | -l | --list\n' >&2
+  printf 'Profiles are defined in %s\n' "$CONF" >&2
+  exit 1
+}
+
+check_deps() {
+  command -v nix >/dev/null 2>&1 || die "nix not found on PATH."
+  command -v awk >/dev/null 2>&1 || die "awk not found on PATH."
+}
+
+check_config() {
+  [ -f "$CONF" ] || die "Config not found: $CONF"
+  [ -r "$CONF" ] || die "Config not readable: $CONF"
+}
+
+check_profile_exists() {
+  profile="$1"
+  grep -qxF "[$profile]" "$CONF"
+  if [ $? -ne 0 ]; then
+    die "Unknown profile: $profile (see $CONF)"
+  fi
+}
+
+profile_packages() {
+  profile="$1"
+  awk -v profile="$profile" '
+    /^\[.*\]$/ {
+      insec = ($0 == "[" profile "]")
+      next
+    }
+    insec && NF && $0 !~ /^#/ {
+      print "nixpkgs#" $1
+    }
+  ' "$CONF"
+  if [ $? -ne 0 ]; then
+    die "Failed to parse profile: $profile"
+  fi
+}
+
+list_profiles() {
+  names=$(awk '
+    /^\[.*\]$/ {
+      name = $0
+      sub(/^\[/, "", name)
+      sub(/\]$/, "", name)
+      print name
+    }
+  ' "$CONF")
+  if [ $? -ne 0 ]; then
+    die "Failed to parse config: $CONF"
+  fi
+  [ -z "$names" ] && die "No profiles found in: $CONF"
+
+  for name in $names; do
+    pkgs=$(profile_packages "$name" | sed 's/^nixpkgs#//' | tr '\n' ' ')
+    printf '%-16s %s\n' "$name" "$pkgs"
+  done
+}
+
+split_args() {
+  # populates globals: profiles (space list), cmd (space list, may be empty)
+  profiles=""
+  cmd=""
+  while [ $# -gt 0 ]; do
+    case "$1" in
+    --)
+      shift
+      cmd="$*"
+      return
+      ;;
+    *)
+      profiles="$profiles $1"
+      shift
+      ;;
+    esac
+  done
+}
+
+build_package_list() {
+  pkgs=""
+  for profile in $profiles; do
+    check_profile_exists "$profile"
+    found=$(profile_packages "$profile")
+    [ -z "$found" ] && die "Profile has no packages: $profile"
+    pkgs="$pkgs $found"
+  done
+  pkgs=$(printf '%s\n' $pkgs | sort -u | tr '\n' ' ')
+  [ -z "$pkgs" ] && die "No packages resolved from: $profiles"
+}
+
+run_shell() {
+  if [ -n "$cmd" ]; then
+    IN_NIX_SHELL=1 exec nix shell $pkgs -c $cmd
+  else
+    IN_NIX_SHELL=1 exec nix shell $pkgs
+  fi
+  die "Failed to exec nix shell"
+}
+
+main() {
+  [ $# -eq 0 ] && usage
+  check_config
+
+  case "$1" in
+  list | -l | --list)
+    list_profiles
+    exit 0
+    ;;
+  esac
+
+  check_deps
+  split_args "$@"
+  [ -z "$profiles" ] && usage
+  build_package_list
+  run_shell
+}
+
+main "$@"
