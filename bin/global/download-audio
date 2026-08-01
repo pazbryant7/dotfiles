@@ -7,9 +7,10 @@ die() {
   exit 1
 }
 
-validate_nix() {
-  if [ -z "$IN_NIX_WRAPPER" ] && command -v nix >/dev/null 2>&1; then
-    IN_NIX_SHELL=1 exec nix shell nixpkgs#nodejs-slim -c sh "$0" "$@"
+validate_node() {
+  if ! command -v "node" >/dev/null 2>&1; then
+    printf "NodeJS is not installed."
+    exit 1
   fi
 }
 
@@ -83,7 +84,7 @@ download() {
 }
 
 main() {
-  validate_nix "$@"
+  validate_node
   parse_args "$@"
   validate_urls
   validate_cookie_file
@@ -91,4 +92,5 @@ main() {
   validate_dir
   download
 }
+
 main "$@"
