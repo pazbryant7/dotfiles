@@ -21,12 +21,6 @@ alias p="xclip -selection clipboard -o"
 alias calc="python -i -c 'import math, cmath; from math import *'"
 alias rex="xrdb -remove && xrdb -merge ~/.Xresources && kill -USR1 \$(pidof st)"
 
-#  nix
-alias d='nix develop'
-alias ngb='nix-store --gc'
-alias nsn='env IN_NIX_SHELL=1 nix shell nixpkgs#nil nixpkgs#statix nixpkgs#nixfmt'
-alias nss='env IN_NIX_SHELL=1 nix shell nixpkgs#bash-language-server nixpkgs#shfmt'
-
 # zsh
 alias zshe="nvim ~/.zshenv"
 alias zshc="cd ~/.zsh && nvim config"
