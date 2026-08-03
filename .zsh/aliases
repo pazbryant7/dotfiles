@@ -40,4 +40,4 @@ alias btm="btm --basic"
 
 # tmux
 alias ta="tmux attach"
-alias tn="tmux new -s \$USER"
+alias tn="tmux new -c \$HOME -s \$USER"
