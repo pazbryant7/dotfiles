@@ -7,7 +7,7 @@
 #   nsh <profile> [profile...] -- cmd args  run a command, then exit
 #   nsh list | -l | --list                  list available profiles
 
-CONF="$HOME/.config/ns/profiles.conf"
+CONF="$HOME/.config/nx/profiles.conf"
 
 die() {
   printf 'Error: %s\n' "$1" >&2
