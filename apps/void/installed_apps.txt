@@ -7,7 +7,7 @@ base-system
 bat
 bottom
 breeze-gtk
-breeze-qt6
+breeze-icons
 calibre
 chafa
 chrony
@@ -81,7 +81,6 @@ udisks2
 ufw
 unrar
 unzip
-uv
 void-repo-multilib
 void-repo-multilib-nonfree
 void-repo-nonfree
