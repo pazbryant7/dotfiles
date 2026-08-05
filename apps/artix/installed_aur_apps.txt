@@ -1,5 +1,0 @@
-bitwarden-cli-bin
-brave-origin-bin
-lazydocker-bin
-mise-bin
-yay

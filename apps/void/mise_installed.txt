@@ -1,5 +1,0 @@
-go
-neovim
-node
-python
-rust

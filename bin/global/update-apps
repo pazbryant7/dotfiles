@@ -66,26 +66,13 @@ sync_rustup_components() {
   fi
 }
 
-sync_flatpak_apps() {
-  if command -v flatpak >/dev/null 2>&1; then
-    flatpak list --app --columns=application | tail -n +2 | sort >"$DOT_PATH/flatpak_installed.txt"
+sync_nix_packages() {
+  if ! command -v nix >/dev/null 2>&1; then
+    return
   fi
-}
-
-sync_mise_packages() {
-  if command -v mise >/dev/null 2>&1; then
-    mise list | awk '{print $1}' | sort -u >"$DOT_PATH/mise_installed.txt"
-  fi
-}
-
-sync_uv_tools() {
-  if command -v uv >/dev/null 2>&1; then
-    uv tool list | awk '{print $1}' | sort -u >"$DOT_PATH/uv_tools_installed.txt"
-  fi
-}
-
-sync_uv_bin_dir() {
-  sync_bin_dir "/home/bryant/.local/bin" "uv_installed.txt" ""
+  nix profile list 2>/dev/null |
+    awk -F': +' '/^Name:/{print $2}' |
+    sort -u >"$DOT_PATH/nix_installed.txt"
 }
 
 sync_go_bin_dir() {
@@ -97,7 +84,6 @@ sync_cargo_bin_dir() {
 }
 
 sync_binary_directories() {
-  sync_uv_bin_dir
   sync_go_bin_dir
   sync_cargo_bin_dir
 }
@@ -116,9 +102,7 @@ sync_distro_packages() {
 
 sync_common_tools() {
   sync_rustup_components
-  sync_flatpak_apps
-  sync_mise_packages
-  sync_uv_tools
+  sync_nix_packages
 }
 
 main() {
