@@ -5,15 +5,18 @@ STATE_FILE="${XDG_RUNTIME_DIR:-/tmp}/alacritty_font_state"
 # Recursive first (states 0-2), then Annotation Mono (states 3-5)
 # normal_family|normal_style|bold_family|bold_style
 STATES="
+Recursive Mn Csl St Lt|Light|Recursive Mn Csl St|Regular
 Recursive Mn Csl St|Regular|Recursive Mn Csl St Med|Medium
 Recursive Mn Csl St Med|Medium|Recursive Mn Csl St SmB|SemiBold
 Recursive Mn Csl St SmB|SemiBold|Recursive Mn Csl St|Bold
 Recursive Mn Csl St|Bold|Recursive Mn Csl St|Bold
+Annotation Mono|Light|Annotation Mono|Regular
 Annotation Mono|Regular|Annotation Mono|Medium
 Annotation Mono|Medium|Annotation Mono|DemiBold
 Annotation Mono|DemiBold|Annotation Mono|Bold
 Annotation Mono|Bold|Annotation Mono|ExtraBold
 Annotation Mono|ExtraBold|Annotation Mono|ExtraBold
+IBM 3270|Regular|IBM 3270|Bold
 "
 
 TOTAL=$(echo "$STATES" | rg -v '^$' | wc -l)
