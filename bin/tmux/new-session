@@ -53,33 +53,28 @@ inside_of() {
   [ "$1" = "$(get_curr)" ]
 }
 
-verify() {
+build() {
   path="$1"
   name="$2"
 
-  if inside_of "$name"; then
-    notify "Aleady inside of $2"
-    return 1
-  fi
-
-  if ! exist "$name"; then
-    create "$name" "$path"
-  fi
+  create "$name" "$path"
 
   if is_notes_path "$path"; then
     open_notes "$name" "$path"
   fi
-
-  return 0
 }
 
 single() {
   path="$1"
   name="${2:-$(get_name "$path")}"
 
-  if verify "$path" "$name"; then
-    switch_to "$name"
+  if exist "$name" && inside_of "$name"; then
+    notify "Already inside of $name"
+  elif ! exist "$name"; then
+    build "$path" "$name"
   fi
+
+  switch_to "$name"
 }
 
 multi() {
@@ -90,7 +85,7 @@ multi() {
   printf '%s\n' "$paths" | while IFS= read -r path; do
     [ -z "$path" ] && continue
     name=$(get_name "$path")
-    verify "$path" "$name"
+    build "$path" "$name"
     printf '%s' "$name" >"$tmp"
   done
 
