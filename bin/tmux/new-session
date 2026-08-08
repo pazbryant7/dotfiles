@@ -2,6 +2,7 @@
 
 SESSION_DIRS="
 $HOME/
+$HOME/bin
 $HOME/Documents/github
 $HOME/Documents/github/temp
 "
