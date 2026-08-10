@@ -1,11 +1,11 @@
 #!/usr/bin/env sh
 
-# nsh - run a nix shell built from named tool profiles
+# nx - run a nix shell built from named tool profiles
 #
 # Usage:
-#   nsh <profile> [profile...]              interactive shell
-#   nsh <profile> [profile...] -- cmd args  run a command, then exit
-#   nsh list | -l | --list                  list available profiles
+#   nx <profile> [profile...]              interactive shell
+#   nx <profile> [profile...] -- cmd args  run a command, then exit
+#   nx list | -l | --list                  list available profiles
 
 CONF="$HOME/.config/nx/profiles.conf"
 
@@ -15,8 +15,8 @@ die() {
 }
 
 usage() {
-  printf 'Usage: nsh <profile> [profile...] [-- cmd args...]\n' >&2
-  printf '       nsh list | -l | --list\n' >&2
+  printf 'Usage: nx <profile> [profile...] [-- cmd args...]\n' >&2
+  printf '       nx list | -l | --list\n' >&2
   printf 'Profiles are defined in %s\n' "$CONF" >&2
   exit 1
 }
