@@ -4,5 +4,4 @@
 [1moxfmt[0m
 [1mslstatus[0m
 [1mst[0m
-[1mstylua[0m
 [1mventoy[0m
