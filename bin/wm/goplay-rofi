@@ -1,0 +1,87 @@
+#!/usr/bin/env sh
+
+set -x
+
+GOPLAY="/home/bryant/bin/global/goplay"
+TAB="$(printf '\t')"
+
+format_row() {
+  printf '%s  —  %s  [%s]' "$1" "$2" "$3"
+}
+
+list_history() {
+  printf '\0prompt\037YouTube\n'
+  printf '\0no-custom\037false\n'
+  printf '\0use-hot-keys\037true\n'
+  "$GOPLAY" history | while IFS="$TAB" read -r id title url quality played_at; do
+    label=$(format_row "$title" "$url" "$quality" "$played_at")
+    printf '%s\0info\037%s\n' "$label" "$id"
+  done
+}
+
+resolve_url() {
+  sel_text="$1"
+  sel_id="$2"
+  if [ -n "$sel_id" ]; then
+    "$GOPLAY" get "$sel_id" | cut -f3
+  else
+    printf '%s' "$sel_text"
+  fi
+}
+
+action_play_default() {
+  url=$(resolve_url "$1" "$2")
+  [ -n "$url" ] || return 0
+  "$GOPLAY" play "$url" >/dev/null 2>&1
+}
+
+action_play_quality() {
+  sel_text="$1"
+  sel_id="$2"
+  quality="$3"
+  url=$(resolve_url "$sel_text" "$sel_id")
+  [ -n "$url" ] || return 0
+  "$GOPLAY" play "$url" --quality "$quality" >/dev/null 2>&1
+}
+
+launch_rofi() {
+  self=$(readlink -f "$0" 2>/dev/null || echo "$0")
+  exec rofi -modi "goplay:$self" -show goplay \
+    -kb-custom-1 "F1" \
+    -kb-custom-2 "F2" \
+    -kb-custom-3 "F3" \
+    -p "YouTube"
+}
+
+dispatch() {
+  retv="$1"
+  sel_text="$2"
+  sel_id="$3"
+
+  case "$retv" in
+  0)
+    list_history
+    return 0
+    ;;
+  1 | 2)
+    action_play_default "$sel_text" "$sel_id"
+    return 0 # let rofi close
+    ;;
+  10) action_play_quality "$sel_text" "$sel_id" "480" ;;
+  11) action_play_quality "$sel_text" "$sel_id" "720" ;;
+  12) action_play_quality "$sel_text" "$sel_id" "1080" ;;
+  esac
+
+  list_history
+}
+
+main() {
+  if [ -z "${ROFI_RETV+x}" ]; then
+    launch_rofi
+    exit 0
+  fi
+
+  dispatch "${ROFI_RETV:-0}" "$1" "$ROFI_INFO"
+}
+
+main "$@"

@@ -1,0 +1,217 @@
+#!/usr/bin/env python3
+"""
+goplay - YouTube player via mpv, with automatic playback history.
+
+Plays a URL through mpv immediately (no waiting on the network), then
+resolves the real video title via yt-dlp in a detached background process
+and updates the history entry once it's known.
+
+History is keyed by URL: replaying something already in history bumps its
+`played_at` timestamp instead of creating a duplicate row.
+"""
+import argparse
+import json
+import os
+import shutil
+import subprocess
+import sys
+import time
+import uuid
+
+CONFIG_DIR = os.path.expanduser("~/.config/goplay")
+DATA_FILE = os.path.join(CONFIG_DIR, "history.json")
+
+MPV_BIN = "mpv"
+
+QUALITIES = {
+    "480": "bestvideo[height<=480]+bestaudio/best[height<=480]",
+    "720": "bestvideo[height<=720]+bestaudio/best[height<=720]",
+    "1080": "bestvideo[height<=1080]+bestaudio/best[height<=1080]",
+}
+
+DEFAULT_QUALITY = "720"
+
+
+def load():
+    if not os.path.exists(DATA_FILE):
+        return {"history": []}
+    with open(DATA_FILE) as f:
+        try:
+            return json.load(f)
+        except json.JSONDecodeError:
+            sys.exit(f"goplay: {DATA_FILE} is corrupt JSON")
+
+
+def save(data):
+    os.makedirs(CONFIG_DIR, exist_ok=True)
+    tmp = DATA_FILE + ".tmp"
+    with open(tmp, "w") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+    os.replace(tmp, DATA_FILE)
+
+
+def new_id(data):
+    existing = {h["id"] for h in data["history"]}
+    while True:
+        i = uuid.uuid4().hex[:8]
+        if i not in existing:
+            return i
+
+
+def find_by_id(data, id_):
+    for h in data["history"]:
+        if h["id"] == id_:
+            return h
+    return None
+
+
+def find_by_url(data, url):
+    for h in data["history"]:
+        if h["url"] == url:
+            return h
+    return None
+
+
+def check_quality(quality):
+    if quality not in QUALITIES:
+        sys.exit(f"goplay: unknown quality '{quality}'. Known: {', '.join(QUALITIES)}")
+
+
+def fmt_row(h):
+    return f"{h['id']}\t{h['title']}\t{h['url']}\t{h['quality']}\t{h['played_at']}"
+
+
+def cmd_play(args):
+    if not shutil.which(MPV_BIN):
+        sys.exit(f"goplay: {MPV_BIN} not found")
+    url = args.url
+    if not url:
+        sys.exit("goplay: URL is required")
+    quality = args.quality or DEFAULT_QUALITY
+    check_quality(quality)
+
+    data = load()
+    entry = find_by_url(data, url)
+    now = time.strftime("%Y-%m-%dT%H:%M:%S")
+    if entry:
+        entry["quality"] = quality
+        entry["played_at"] = now
+    else:
+        entry = {
+            "id": new_id(data),
+            "title": url,  # placeholder until yt-dlp resolves it
+            "url": url,
+            "quality": quality,
+            "played_at": now,
+        }
+        data["history"].append(entry)
+    save(data)
+
+    subprocess.Popen(
+        [MPV_BIN, f"--ytdl-format={QUALITIES[quality]}", url],
+        start_new_session=True,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+
+    if shutil.which("yt-dlp"):
+        subprocess.Popen(
+            [sys.argv[0], "_resolve-title", entry["id"], url],
+            start_new_session=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+
+    print(entry["id"])
+
+
+def cmd_resolve_title(args):
+    result = subprocess.run(
+        ["yt-dlp", "--get-title", args.url], capture_output=True, text=True
+    )
+    title = result.stdout.strip()
+    if not title:
+        return
+    data = load()
+    entry = find_by_id(data, args.id)
+    if entry:
+        entry["title"] = title
+        save(data)
+
+
+def cmd_history(args):
+    data = load()
+    items = sorted(data["history"], key=lambda h: h["played_at"], reverse=True)
+    if args.json:
+        print(json.dumps(items, indent=2))
+        return
+    for h in items:
+        print(fmt_row(h))
+
+
+def cmd_get(args):
+    data = load()
+    h = find_by_id(data, args.id)
+    if not h:
+        sys.exit(f"goplay: no history entry with id {args.id}")
+    if args.json:
+        print(json.dumps(h))
+    else:
+        print(fmt_row(h))
+
+
+def cmd_clear(args):
+    if not args.yes:
+        reply = input(f"Clear all {len(load()['history'])} history entries? [y/N] ").strip().lower()
+        if reply != "y":
+            print("Cancelled.")
+            return
+    save({"history": []})
+
+
+def cmd_qualities(args):
+    for name, fmt in QUALITIES.items():
+        marker = " (default)" if name == DEFAULT_QUALITY else ""
+        print(f"{name}{marker}\t{fmt}")
+
+
+def main():
+    p = argparse.ArgumentParser(prog="goplay", description="YouTube player via mpv with playback history")
+    sub = p.add_subparsers(dest="cmd", required=True)
+
+    pl = sub.add_parser("play", help="play a URL and log it to history")
+    pl.add_argument("url")
+    pl.add_argument("--quality", choices=list(QUALITIES))
+    pl.set_defaults(func=cmd_play)
+
+    rt = sub.add_parser("_resolve-title", help=argparse.SUPPRESS)  # internal
+    rt.add_argument("id")
+    rt.add_argument("url")
+    rt.set_defaults(func=cmd_resolve_title)
+
+    hi = sub.add_parser("history", help="list playback history, most recent first")
+    hi.add_argument("--json", action="store_true")
+    hi.set_defaults(func=cmd_history)
+
+    g = sub.add_parser("get", help="print one history entry's fields")
+    g.add_argument("id")
+    g.add_argument("--json", action="store_true")
+    g.set_defaults(func=cmd_get)
+
+    cl = sub.add_parser("clear", help="clear all history")
+    cl.add_argument("--yes", action="store_true", help="skip confirmation")
+    cl.set_defaults(func=cmd_clear)
+
+    q = sub.add_parser("qualities", help="list configured quality options")
+    q.set_defaults(func=cmd_qualities)
+
+    args = p.parse_args()
+    args.func(args)
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except BrokenPipeError:
+        os.dup2(os.open(os.devnull, os.O_WRONLY), sys.stdout.fileno())
+        sys.exit(1)
