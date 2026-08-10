@@ -1,11 +1,12 @@
 #!/usr/bin/env zsh
 
 # weather
-alias l="less"
 alias weather='curl -s "wttr.in/Tecoh,Yucatan"'
 
 # main
+alias l="less"
 alias :q="exit"
+alias lsi="ls -1"
 alias wg="sudo wg"
 alias sudo="sudo "
 alias pass="gopass"
