@@ -1,5 +1,6 @@
 [default]
-ytdl-format=bestvideo[height<=?1080]+bestaudio/best
 force-seekable=yes
 demuxer-max-bytes=150000000
 demuxer-max-back-bytes=75000000
+ytdl-format=bestvideo[height<=720]+bestaudio/best[height<=720]
+ytdl-raw-options=cookies="/home/bryant/Downloads/cookies.txt"
