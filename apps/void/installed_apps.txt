@@ -15,6 +15,7 @@ chrony
 cronie
 curl
 dbeaver
+dconf
 docker-buildx
 dragon
 dunst
@@ -24,7 +25,6 @@ fd
 feh
 ffmpeg
 ffmpegthumbnailer
-firefox
 fzf
 gammastep
 git
@@ -34,12 +34,14 @@ gopass
 grub-i386-efi
 grub-x86_64-efi
 hyperfine
+intel-media-driver
 intel-ucode
 jq
 jujutsu
 lazydocker
 lazygit
 lf-r41_1
+libva-utils
 linux
 lsof
 lua
