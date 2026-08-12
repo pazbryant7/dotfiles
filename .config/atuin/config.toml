@@ -22,10 +22,9 @@ history_filter = [
   "^fzf$",
   "^lzd$",
   "^nvim$",
-  "^clear",
+  "^clear$",
 ]
 
-cwd_filter = ["^/very/secret/area"]
 
 max_preview_height = 4
 show_help = true
