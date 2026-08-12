@@ -1,6 +1,5 @@
 7zip
 ImageMagick
-StyLua
 alacritty
 aria2
 atuin
@@ -55,7 +54,6 @@ ncmpcpp
 neovim
 nerd-fonts-symbols-ttf
 nix
-nodejs
 noto-fonts-cjk
 noto-fonts-emoji
 nsxiv
