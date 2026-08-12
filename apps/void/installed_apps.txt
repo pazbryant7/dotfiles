@@ -41,7 +41,6 @@ jujutsu
 lazydocker
 lazygit
 lf-r41_1
-libva-utils
 linux
 lsof
 lua
