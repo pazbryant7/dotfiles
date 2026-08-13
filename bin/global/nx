@@ -22,19 +22,26 @@ usage() {
 }
 
 check_deps() {
-  command -v nix >/dev/null 2>&1 || die "nix not found on PATH."
-  command -v awk >/dev/null 2>&1 || die "awk not found on PATH."
+  if ! command -v nix >/dev/null 2>&1; then
+    die "nix not found on PATH."
+  fi
+  if ! command -v awk >/dev/null 2>&1; then
+    die "awk not found on PATH."
+  fi
 }
 
 check_config() {
-  [ -f "$CONF" ] || die "Config not found: $CONF"
-  [ -r "$CONF" ] || die "Config not readable: $CONF"
+  if [ ! -f "$CONF" ]; then
+    die "Config not found: $CONF"
+  fi
+  if [ ! -r "$CONF" ]; then
+    die "Config not readable: $CONF"
+  fi
 }
 
 check_profile_exists() {
   profile="$1"
-  grep -qxF "[$profile]" "$CONF"
-  if [ $? -ne 0 ]; then
+  if ! grep -qxF "[$profile]" "$CONF"; then
     die "Unknown profile: $profile (see $CONF)"
   fi
 }
@@ -67,7 +74,10 @@ list_profiles() {
   if [ $? -ne 0 ]; then
     die "Failed to parse config: $CONF"
   fi
-  [ -z "$names" ] && die "No profiles found in: $CONF"
+
+  if [ -z "$names" ]; then
+    die "No profiles found in: $CONF"
+  fi
 
   for name in $names; do
     pkgs=$(profile_packages "$name" | sed 's/^nixpkgs#//' | tr '\n' ' ')
@@ -99,17 +109,21 @@ build_package_list() {
   for profile in $profiles; do
     check_profile_exists "$profile"
     found=$(profile_packages "$profile")
-    [ -z "$found" ] && die "Profile has no packages: $profile"
+    if [ -z "$found" ]; then
+      die "Profile has no packages: $profile"
+    fi
     pkgs="$pkgs $found"
   done
+
   pkgs=$(printf '%s\n' $pkgs | sort -u | tr '\n' ' ')
-  [ -z "$pkgs" ] && die "No packages resolved from: $profiles"
+  if [ -z "$pkgs" ]; then
+    die "No packages resolved from: $profiles"
+  fi
 }
 
 run_shell() {
-  export IN_NX_SHELL=1
+  export IN_NIX_SHELL=1
   export NX_SHELL_PROFILE="$profiles"
-
   if [ -n "$cmd" ]; then
     exec nix shell $pkgs -c $cmd
   else
@@ -119,7 +133,10 @@ run_shell() {
 }
 
 main() {
-  [ $# -eq 0 ] && usage
+  if [ $# -eq 0 ]; then
+    usage
+  fi
+
   check_config
 
   case "$1" in
@@ -131,7 +148,11 @@ main() {
 
   check_deps
   split_args "$@"
-  [ -z "$profiles" ] && usage
+
+  if [ -z "$profiles" ]; then
+    usage
+  fi
+
   build_package_list
   run_shell
 }

@@ -18,7 +18,11 @@ die() {
 }
 
 in_tmux() {
-  [ -n "$TMUX" ]
+  if [ -n "$TMUX" ]; then
+    return 0
+  else
+    return 1
+  fi
 }
 
 new_session() {
@@ -31,22 +35,33 @@ new_window() {
 
 get_index_type() {
   case "$1" in
-  js) printf "index.ts" ;;
-  py) printf "index.py" ;;
-  cpp) printf "index.cpp" ;;
-  rs) printf "index.rs" ;;
-  go) printf "index.go" ;;
-  *) die "unknown language: $1" ;;
+  js)
+    printf "index.ts"
+    ;;
+  py)
+    printf "index.py"
+    ;;
+  cpp)
+    printf "index.cpp"
+    ;;
+  rs)
+    printf "index.rs"
+    ;;
+  go)
+    printf "index.go"
+    ;;
+  *)
+    die "unknown language: $1"
+    ;;
   esac
 }
 
-open_index() {
-  file=$(get_index_type "$2") || die "cannot get file type: $2"
-  tmux send-keys -t "$1" "KATA=1 nvim $file" Enter
-}
-
 ensure_dir() {
-  [ -d "$1" ] || mkdir -p "$1" || die "cannot create directory: $1"
+  if [ ! -d "$1" ]; then
+    if ! mkdir -p "$1"; then
+      die "cannot create directory: $1"
+    fi
+  fi
 }
 
 switch_to() {
@@ -57,31 +72,23 @@ exist_session() {
   tmux has-session -t="$1" 2>/dev/null
 }
 
-in_practice() {
-  [ "$1" = "$practice_dir" ]
-}
-
-start_practicing() {
-  sname="$1"
-  dir="$2"
-  lang="$3"
-  new_window "$sname" "$dir" || die "cannot create new window"
-  open_index "$sname" "$lang" || die "cannot open index"
-}
-
 setup() {
   dir="$1"
   lang="$2"
-  sname=$(name "$dir") || die "cannot derive name from: $dir"
+
+  sname=$(name "$dir")
+  if [ -z "$sname" ]; then
+    die "cannot derive name from: $dir"
+  fi
 
   if exist_session "$sname"; then
-    in_practice "$dir" || return 0
     switch_to "$sname"
     return 0
   fi
 
-  new_session "$dir" || die "cannot create session for: $dir"
-  in_practice "$dir" && start_practicing "$sname" "$dir" "$lang"
+  if ! new_session "$dir"; then
+    die "cannot create session for: $dir"
+  fi
 }
 
 workspace() {
