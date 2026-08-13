@@ -107,10 +107,13 @@ build_package_list() {
 }
 
 run_shell() {
+  export IN_NX_SHELL=1
+  export NX_SHELL_PROFILE="$profiles"
+
   if [ -n "$cmd" ]; then
-    IN_NIX_SHELL=1 exec nix shell $pkgs -c $cmd
+    exec nix shell $pkgs -c $cmd
   else
-    IN_NIX_SHELL=1 exec nix shell $pkgs
+    exec nix shell $pkgs
   fi
   die "Failed to exec nix shell"
 }

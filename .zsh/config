@@ -36,10 +36,12 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 # Nix shell indicator
 if [[ -n "$IN_NIX_SHELL" ]]; then
   case "$IN_NIX_SHELL" in
-    pure)   NIX_TAG="%F{green}[NIXSHELL:pure]%f " ;;
-    impure) NIX_TAG="%F{yellow}[NIXSHELL:impure]%f " ;;
-    *)      NIX_TAG="%F{green}[NIXSHELL]%f " ;;
+    pure)   NIX_TAG="%F{green}[DEVELOP:pure]%f " ;;
+    impure) NIX_TAG="%F{yellow}[DEVELOP:impure]%f " ;;
+    *)      NIX_TAG="%F{green}[DEVELOP]%f " ;;
   esac
+elif [[ -n "$IN_NX_SHELL" ]]; then
+  NIX_TAG="%F{cyan}[NX:${NX_SHELL_PROFILE}]%f "
 else
   NIX_TAG=""
 fi
