@@ -15,7 +15,8 @@ parse_args() {
   while getopts "u:w:c:h" opt; do
     case "$opt" in
     u) URL_PATTERN="$OPTARG" ;;
-    w) WORDS="$WORDS${WORDS:+||}$OPTARG" ;;
+    w) WORDS="${WORDS}${WORDS:+
+}$OPTARG" ;;
     c) CONTEXT_LINES="$OPTARG" ;;
     *) usage ;;
     esac
@@ -55,35 +56,6 @@ detect_last_page() {
   printf '%d' "$last"
 }
 
-search_in_text() {
-  page="$1"
-  tmpfile=$(mktemp)
-  printf '%s' "$2" >"$tmpfile"
-
-  page_header_printed=0
-
-  # iterate over each keyword (separated by ||)
-  printf '%s' "$WORDS" | tr '|' '\n' | rg -v '^$' | while IFS= read -r word; do
-    matches=$(rg -i -w -C "$CONTEXT_LINES" "$word" "$tmpfile" 2>/dev/null)
-    if [ -n "$matches" ]; then
-      if [ "$page_header_printed" -eq 0 ]; then
-        printf '\n>>> FOUND on page %d <<<\n' "$page"
-        page_header_printed=1
-      fi
-      printf '  [keyword: %s]\n' "$word"
-      printf '%s\n' "$matches" | while IFS= read -r line; do
-        printf '    [p%d] %s\n' "$page" "$line"
-      done
-      printf '  ---\n'
-    fi
-  done
-
-  rm -f "$tmpfile"
-
-  # re-check to return correct exit code (subshell above can't set outer var)
-  rg -i -w -l "$(printf '%s' "$WORDS" | sed 's/||/|/g')" "$tmpfile" 2>/dev/null
-}
-
 process_page() {
   page="$1"
   url=$(build_url "$page")
@@ -95,13 +67,14 @@ process_page() {
   fi
   text=$(printf '%s' "$html" | strip_html)
 
-  tmpfile=$(mktemp)
+  tmpfile=$(mktemp) || return 2
   printf '%s' "$text" >"$tmpfile"
 
   # print grouped-by-page results
   page_hit=0
-  printf '%s' "$WORDS" | tr '|' '\n' | rg -v '^$' | while IFS= read -r word; do
-    matches=$(rg -i -w -C "$CONTEXT_LINES" "$word" "$tmpfile" 2>/dev/null)
+  while IFS= read -r word || [ -n "$word" ]; do
+    [ -n "$word" ] || continue
+    matches=$(rg -F -i -w -C "$CONTEXT_LINES" -- "$word" "$tmpfile" 2>/dev/null)
     if [ -n "$matches" ]; then
       if [ "$page_hit" -eq 0 ]; then
         printf '\n>>> FOUND on page %d <<<\n' "$page"
@@ -113,14 +86,12 @@ process_page() {
       done
       printf '  ---\n'
     fi
-  done
+  done <<EOF
+$WORDS
+EOF
 
-  # exit code: did any keyword match?
-  pattern=$(printf '%s' "$WORDS" | sed 's/||/|/g')
-  rg -q -i -w "$pattern" "$tmpfile" 2>/dev/null
-  result=$?
   rm -f "$tmpfile"
-  return $result
+  [ "$page_hit" -eq 1 ]
 }
 
 main() {
@@ -134,7 +105,7 @@ main() {
   fi
 
   last_page=$(detect_last_page "$first_html")
-  keywords=$(printf '%s' "$WORDS" | sed 's/||/, /g')
+  keywords=$(printf '%s' "$WORDS" | tr '\n' ', ')
   printf 'Scanning %d page(s) for: %s\n\n' "$last_page" "$keywords" >&2
 
   total_found=0
