@@ -1,6 +1,10 @@
 #!/bin/sh
 
-STATE_FILE="${XDG_RUNTIME_DIR:-/tmp}/alacritty_font_state"
+umask 077
+STATE_DIR="${XDG_RUNTIME_DIR:-$HOME/.cache}/alacritty"
+mkdir -p "$STATE_DIR" || exit 1
+chmod 700 "$STATE_DIR" || exit 1
+STATE_FILE="$STATE_DIR/font_state"
 
 # Recursive first (states 0-2), then Annotation Mono (states 3-5)
 # normal_family|normal_style|bold_family|bold_style
