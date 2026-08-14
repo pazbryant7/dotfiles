@@ -1,6 +1,10 @@
 #!/bin/sh
 
-STATE_FILE="/tmp/screen_warmth_active.lock"
+umask 077
+STATE_DIR="${XDG_RUNTIME_DIR:-$HOME/.cache}/screen_warmth"
+mkdir -p "$STATE_DIR" || exit 1
+chmod 700 "$STATE_DIR" || exit 1
+STATE_FILE="$STATE_DIR/active"
 WARM_TEMP="4200K"
 METHOD="randr"
 DEFAULT_WARMTH="6500K"
@@ -9,17 +13,15 @@ enable_warmth() {
   current_brightness="$1"
 
   gammastep -m "$METHOD" -P -O "$WARM_TEMP" \
-    -b"$current_brightness" \
-    : >/dev/null 2>&1 >"$STATE_FILE"
+    -b "$current_brightness" >/dev/null 2>&1 &&
+    : >"$STATE_FILE"
 }
 
 disable_warmth() {
   current_brightness="$1"
 
-  gammastep -m"$METHOD" -P -O"$DEFAULT_WARMTH" \
-    -b "$current_brightness"
-
-  rm -f "$STATE_FILE"
+  gammastep -m "$METHOD" -P -O "$DEFAULT_WARMTH" \
+    -b "$current_brightness" && rm -f "$STATE_FILE"
 }
 
 get_current_brightness() {
