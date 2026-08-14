@@ -27,3 +27,20 @@ bash_cache_init() {
 
   source "$cache_file"
 }
+
+bash_load_fzf() {
+  [ -n "${BASH_FZF_LOADED:-}" ] && return 0
+  bash_cache_init fzf fzf --bash || return 1
+  # fzf binds Ctrl-R too; restore Atuin's history widget after loading it.
+  if [ "${__atuin_bind_ctrl_r:-false}" = true ]; then
+    atuin-bind -m emacs '\C-r' atuin-search-emacs
+    atuin-bind -m vi-insert '\C-r' atuin-search-viins
+    atuin-bind -m vi-command '/' atuin-search-emacs
+  fi
+  BASH_FZF_LOADED=1
+}
+
+bash_fzf_file_widget() {
+  bash_load_fzf || return
+  fzf-file-widget
+}

@@ -8,8 +8,10 @@ bind 'set completion-ignore-case on'
 # Custom binds
 bind '"\ee": edit-and-execute-command'
 
+# Load fzf's large integration only when its file widget is first used.
+bind -x '"\C-t": bash_fzf_file_widget'
+
 # Cached tool inits
-bash_cache_init fzf fzf --bash
 bash_cache_init atuin atuin init bash
 
 # Disable "c-s delay"
