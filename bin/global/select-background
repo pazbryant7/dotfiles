@@ -9,6 +9,14 @@ get_palette() {
     printf "Error: No image path provided." >&2
     return 1
   }
+  command -v magick >/dev/null 2>&1 || {
+    printf 'Error: magick not found.' >&2
+    return 1
+  }
+  magick "$img" -ping -format '' info: >/dev/null 2>&1 || {
+    printf 'Error: Cannot read image: %s' "$img" >&2
+    return 1
+  }
   magick "$img" +dither -colors 8 -format '%c' histogram:info: |
     sed -n 's/.*\(#\([0-9A-Fa-f]\{6\}\)\).*/\1/p'
 }
@@ -25,8 +33,12 @@ set_background() {
     return 1
   }
 
-  feh --bg-fill "$img"
+  feh --bg-fill "$img" || return 1
   printf '%s' "Background set to: $(basename "$img")"
+}
+
+valid_color() {
+  printf '%s\n' "$1" | grep -q '^#[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]$'
 }
 
 main() {
@@ -39,13 +51,20 @@ main() {
     }
   fi
 
-  set_background "$selected"
+  [ -f "$selected" ] && [ -r "$selected" ] || {
+    printf 'Error: Cannot read image: %s' "$selected" >&2
+    return 1
+  }
   colors=$(get_palette "$selected") || exit 1
 
   accent_color=$(printf "%s\n" "$colors" | sed -n '4p')
-  primary_color=$(printf "%s\n" "$colors" | sed -n '6p')
+  valid_color "$accent_color" || {
+    printf 'Error: Could not derive a valid palette from: %s' "$selected" >&2
+    return 1
+  }
 
-  [ -n "$accent_color" ] && ~/bin/wm/uitool "$accent_color" "$primary_color"
+  set_background "$selected" || return 1
+  "$HOME/bin/wm/uitool" "$accent_color"
 }
 
 main "$@"
