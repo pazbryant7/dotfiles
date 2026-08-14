@@ -18,6 +18,12 @@ notify_err() { notify-send "Bitwarden Error" "$1"; }
 extract_id() { printf "%s" "$1" | awk '{print $NF}'; }
 files_changed() { ! cmp -s "$1" "$2"; }
 
+open_editor() {
+  # EDITOR may include options (for example, "nvim -f"). Disable globbing
+  # while splitting that user-controlled command string into its argv.
+  EDITOR_CMD="$EDITOR" $TERM_CMD sh -c 'set -f; set -- $EDITOR_CMD "$@"; exec "$@"' sh "$1"
+}
+
 check_vault_exists() {
   [ -f "$ENCRYPTED_FILE" ] || {
     notify_err "Vault not found. Run a sync first."
@@ -74,9 +80,32 @@ ensure_bw_session() {
 
 bg_sync_and_encrypt() {
   notify "Syncing with Bitwarden server..."
-  bw sync --session "$BW_SESSION" >/dev/null
-  mkdir -p "${ENCRYPTED_FILE%/*}"
-  bw list items --session "$BW_SESSION" | gpg --encrypt --recipient "$GPG_RECIPIENT" --output "$ENCRYPTED_FILE" --yes
+  if ! bw sync --session "$BW_SESSION" >/dev/null; then
+    notify_err "Failed to sync with Bitwarden server."
+    return 1
+  fi
+
+  (umask 077 && mkdir -p "${ENCRYPTED_FILE%/*}") || return 1
+  _bse_json=$(umask 077 && mktemp "${ENCRYPTED_FILE%/*}/.bw_vault.XXXXXX") || return 1
+  _bse_encrypted=$(umask 077 && mktemp "${ENCRYPTED_FILE%/*}/.bw_vault.gpg.XXXXXX") || {
+    rm -f "$_bse_json"
+    return 1
+  }
+
+  if ! bw list items --session "$BW_SESSION" >"$_bse_json" ||
+    ! [ -s "$_bse_json" ] ||
+    ! jq -e 'type == "array" and length > 0' "$_bse_json" >/dev/null ||
+    ! gpg --encrypt --recipient "$GPG_RECIPIENT" --output "$_bse_encrypted" --yes <"$_bse_json"; then
+    rm -f "$_bse_json" "$_bse_encrypted"
+    notify_err "Failed to update local vault cache."
+    return 1
+  fi
+
+  rm -f "$_bse_json"
+  mv -f "$_bse_encrypted" "$ENCRYPTED_FILE" || {
+    rm -f "$_bse_encrypted"
+    return 1
+  }
   notify "Local vault successfully updated!"
 }
 
@@ -140,7 +169,7 @@ ensure_template() {
 open_in_editor() {
   _tmp="$1"
   cp "$_tmp" "${_tmp}.orig"
-  $TERM_CMD "$EDITOR" "$_tmp" 2>/dev/null
+  open_editor "$_tmp" 2>/dev/null
   if ! files_changed "$_tmp" "${_tmp}.orig"; then
     notify "No changes detected. Cancelled."
     rm -f "$_tmp" "${_tmp}.orig"
