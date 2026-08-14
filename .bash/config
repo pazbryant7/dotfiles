@@ -20,16 +20,32 @@ stty susp undef
 
 bash_set_prompt() {
   local nix_tag=""
-  if [ -n "${NX_SHELL_PROFILE:-}" ]; then
+  local dir parent
+
+  if [[ -n ${NX_SHELL_PROFILE:-} ]]; then
     nix_tag="\[\e[36m\][NX:${NX_SHELL_PROFILE}]\[\e[0m\] "
-  elif [ -n "${IN_NIX_SHELL:-}" ]; then
+  elif [[ -n ${IN_NIX_SHELL:-} ]]; then
     case "$IN_NIX_SHELL" in
-    pure) nix_tag="\[\e[32m\][DEVELOP:pure]\[\e[0m\] " ;;
-    impure) nix_tag="\[\e[33m\][DEVELOP:impure]\[\e[0m\] " ;;
-    *) nix_tag="\[\e[32m\][DEVELOP]\[\e[0m\] " ;;
+      pure)
+        nix_tag="\[\e[32m\][DEVELOP:pure]\[\e[0m\] "
+        ;;
+      impure)
+        nix_tag="\[\e[33m\][DEVELOP:impure]\[\e[0m\] "
+        ;;
+      *)
+        nix_tag="\[\e[32m\][DEVELOP]\[\e[0m\] "
+        ;;
     esac
   fi
-  PS1="${nix_tag}\[\e[37m\]\W\[\e[0m\] "
+
+  dir="${PWD/#$HOME/~}"
+
+  if [[ $dir == */* ]]; then
+    parent="${dir%/*}"
+    dir="${parent##*/}/${dir##*/}"
+  fi
+
+  PS1="${nix_tag}\[\e[37m\]${dir}\[\e[0m\] "
 }
 
 PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND; }bash_set_prompt"
