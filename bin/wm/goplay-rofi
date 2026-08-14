@@ -1,9 +1,8 @@
 #!/usr/bin/env sh
 
-set -x
-
 GOPLAY="/home/bryant/bin/global/goplay"
 TAB="$(printf '\t')"
+FIELD_SEPARATOR="$(printf '\034')"
 
 format_row() {
   printf '%s  —  %s  [%s]' "$1" "$2" "$3"
@@ -13,8 +12,14 @@ list_history() {
   printf '\0prompt\037YouTube\n'
   printf '\0no-custom\037false\n'
   printf '\0use-hot-keys\037true\n'
-  "$GOPLAY" history | while IFS="$TAB" read -r id title url quality played_at; do
-    label=$(format_row "$title" "$url" "$quality" "$played_at")
+  "$GOPLAY" history | awk -F "$TAB" -v sep="$FIELD_SEPARATOR" '
+    NF >= 5 {
+      title = $2
+      for (i = 3; i <= NF - 3; i++) title = title FS $i
+      print $1 sep title sep $(NF - 2) sep $(NF - 1)
+    }
+  ' | while IFS="$FIELD_SEPARATOR" read -r id title url quality; do
+    label=$(format_row "$title" "$url" "$quality")
     printf '%s\0info\037%s\n' "$label" "$id"
   done
 }
