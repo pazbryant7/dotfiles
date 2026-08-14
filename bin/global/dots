@@ -7,13 +7,20 @@ create_dots_dir() {
 }
 
 stow_dots() {
-  stow --dir="$DOTS_DIR" --target="$HOME" --adopt --restow .
+  case "${1:-}" in
+  "") stow --dir="$DOTS_DIR" --target="$HOME" --restow . ;;
+  --adopt) stow --dir="$DOTS_DIR" --target="$HOME" --adopt --restow . ;;
+  *)
+    printf 'Usage: dots [--adopt]\n' >&2
+    return 1
+    ;;
+  esac
 }
 
 main() {
   create_dots_dir
   cd "$DOTS_DIR" || return 1
-  stow_dots
+  stow_dots "$1"
   cd - || return 1
 }
 
