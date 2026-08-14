@@ -1,6 +1,10 @@
 #!/bin/env sh
 
-LOCK_FILE="/tmp/screenkey.lock"
+umask 077
+STATE_DIR="${XDG_RUNTIME_DIR:-$HOME/.cache}/screenkey"
+mkdir -p "$STATE_DIR" || exit 1
+chmod 700 "$STATE_DIR" || exit 1
+LOCK_FILE="$STATE_DIR/lock"
 
 lock_descriptor() {
   exec 9>"$LOCK_FILE"
