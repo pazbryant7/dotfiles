@@ -57,12 +57,6 @@ parse_args() {
 }
 
 download() {
-  if $mp3; then
-    fmt_args="--audio-format mp3"
-  else
-    fmt_args=""
-  fi
-
   printf '%s\n' "$urls" | while IFS= read -r url; do
     [ -z "$url" ] && continue
     if $mp3; then
@@ -70,16 +64,18 @@ download() {
     else
       printf 'Downloading best audio: %s\n' "$url"
     fi
-    yt-dlp -f bestaudio \
+    set -- -f bestaudio \
       -x \
       --verbose \
       --add-metadata \
       --audio-quality 0 \
       --embed-thumbnail \
       --cookies "$COOKIE_FILE" \
-      -o "$dir/%(title)s.%(ext)s" \
-      $fmt_args \
-      "$url"
+      -o "$dir/%(title)s.%(ext)s"
+    if $mp3; then
+      set -- "$@" --audio-format mp3
+    fi
+    yt-dlp "$@" "$url"
   done
 }
 
