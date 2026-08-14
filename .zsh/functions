@@ -2,45 +2,8 @@
 
 ZSH_CACHE_DIR="${ZDOTDIR:-$HOME/.zsh}/cache"
 
-keys() {
-  xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf "%-3s %s\n", $5, $8 }'
-}
-
-dt() {
-  rm -rf "$HOME/.local/share/Trash"
-  printf "Trash dir was deleted"
-}
-
 rez() {
   . /home/bryant/.zshrc
-}
-
-tk() {
-  if [ -z "$TMUX" ]; then
-    tmux kill-server
-  else
-    ~/bin/tmux/remove-all "/home/$USER"
-  fi
-
-  cd "$HOME"
-}
-
-h() {
-  if [ -z "$TMUX" ]; then
-    printf "Not in a tmux session.\n" >&2
-    return 1
-  fi
-  local tmux_current_pane_path tmux_current_session_path
-  tmux_current_pane_path="$(tmux display-message -p '#{pane_current_path}')" || return 1
-  tmux_current_session_path="$(tmux display-message -p '#{session_path}')" || return 1
-  if [ "$tmux_current_pane_path" = "$tmux_current_session_path" ]; then
-    tmux display-message "You are already in your session root directory"
-    return 0
-  fi
-  cd "$tmux_current_session_path" || {
-    tmux display-message "Error: Could not change to session root: $tmux_current_session_path"
-    return 1
-  }
 }
 
 # Shell functions for binds
@@ -68,39 +31,6 @@ smart-help() {
     zle accept-line
   else
     printf '\a'
-  fi
-}
-
-y() {
-  tmp="$(mktemp)"
-  command lf -last-dir-path="$tmp" "$@"
-  if [ -f "$tmp" ]; then
-    dir="$(cat "$tmp")"
-    rm -f "$tmp"
-    if [ -d "$dir" ] && [ "$dir" != "$PWD" ]; then
-      cd "$dir" || return
-    fi
-  fi
-}
-
-# OS-aware power management wrapper
-
-smart_power() {
-  local os_id="unknown"
-
-  if [[ -f /etc/os-release ]]; then
-    os_id=$(grep '^ID=' /etc/os-release | cut -d= -f2 | tr -d '"')
-  fi
-
-  if [[ "$os_id" == "artix" || "$os_id" == "void" ]]; then
-    case "$1" in
-    shutdown) loginctl poweroff ;;
-    restart) loginctl reboot ;;
-    suspend) loginctl suspend ;;
-    *) echo "Usage: smart_power {shutdown|restart|suspend}" ;;
-    esac
-  else
-    echo "Error: Unrecognized OS ($os_id). This script targets Artix and Void."
   fi
 }
 

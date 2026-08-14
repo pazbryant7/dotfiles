@@ -1,0 +1,8 @@
+load() {
+  local file="$1"
+  [ -r "$file" ] || {
+    printf 'Missing shell configuration: %s\n' "$file" >&2
+    return 1
+  }
+  source "$file"
+}

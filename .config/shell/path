@@ -1,0 +1,14 @@
+extra_path=(
+  "$HOME/bin/global/"
+  "$HOME/bin/crontab/"
+  "/usr/local/bin/"
+  "$HOME/.nix-profile/bin/"
+  "$HOME/Documents/github/boilerplate/"
+)
+
+path_prefix=""
+for path_entry in "${extra_path[@]}"; do
+  path_prefix="${path_prefix:+$path_prefix:}$path_entry"
+done
+
+export PATH="${path_prefix}${PATH:+:$PATH}"

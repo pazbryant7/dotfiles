@@ -1,0 +1,34 @@
+# Regular commands
+alias l="less"
+alias :q="exit"
+alias lsi="ls -1"
+alias dh="rm ~/.history.db"
+
+# System and desktop tools
+alias wg="sudo wg"
+alias sudo="sudo "
+alias xr="nvim ~/.Xresources"
+alias c="xclip -selection clipboard"
+alias p="xclip -selection clipboard -o"
+alias fontcache="sudo fc-cache -f -v"
+alias feh="feh -g 860x600 --scale-down"
+alias rex="xrdb -remove && xrdb -merge ~/.Xresources && kill -USR1 \$(pidof st)"
+
+# External tools
+alias weather='curl -s "wttr.in/Tecoh,Yucatan"'
+alias pass="gopass"
+alias ff="fastfetch"
+alias name="generate_name"
+alias calc="python -i -c 'import math, cmath; from math import *'"
+alias lzg="lazygit"
+alias lzd="lazydocker"
+alias btm="btm --basic"
+
+# Power management
+alias sp="smart_power suspend"
+alias rbt="smart_power restart"
+alias sht="smart_power shutdown"
+
+# Tmux
+alias ta="tmux attach"
+alias tn="tmux new -c \$HOME -s \$USER"

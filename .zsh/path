@@ -1,13 +1,5 @@
 # extend path
-extra_path=(
-	~/bin/global/
-	~/bin/crontab/
-	/usr/local/bin/
-	~/.nix-profile/bin/
-	~/Documents/github/boilerplate/
-)
-
-export PATH="${(j/:/)extra_path}:${PATH}"
+load "$SHELL_CONFIG_DIR/path"
 
 # extend fpath
 extra_fpath=()

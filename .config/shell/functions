@@ -1,0 +1,72 @@
+# Functions shared by interactive Bash and Zsh sessions.
+
+keys() {
+  xev | awk -F'[ )]+' '/^KeyPress/ { a[NR+2] } NR in a { printf "%-3s %s\n", $5, $8 }'
+}
+
+dt() {
+  rm -rf "$HOME/.local/share/Trash"
+  printf "Trash dir was deleted"
+}
+
+tk() {
+  if [ -z "$TMUX" ]; then
+    tmux kill-server
+  else
+    "$HOME/bin/tmux/remove-all" "/home/$USER"
+  fi
+
+  cd "$HOME" || return
+}
+
+h() {
+  if [ -z "$TMUX" ]; then
+    printf "Not in a tmux session.\n" >&2
+    return 1
+  fi
+
+  local tmux_current_pane_path tmux_current_session_path
+  tmux_current_pane_path="$(tmux display-message -p '#{pane_current_path}')" || return 1
+  tmux_current_session_path="$(tmux display-message -p '#{session_path}')" || return 1
+  if [ "$tmux_current_pane_path" = "$tmux_current_session_path" ]; then
+    tmux display-message "You are already in your session root directory"
+    return 0
+  fi
+  cd "$tmux_current_session_path" || {
+    tmux display-message "Error: Could not change to session root: $tmux_current_session_path"
+    return 1
+  }
+}
+
+y() {
+  local tmp dir
+  tmp="$(mktemp)" || return 1
+  command lf -last-dir-path="$tmp" "$@"
+  if [ -f "$tmp" ]; then
+    dir="$(cat "$tmp")"
+    rm -f "$tmp"
+    if [ -d "$dir" ] && [ "$dir" != "$PWD" ]; then
+      cd "$dir" || return
+    fi
+  fi
+}
+
+smart_power() {
+  local os_id="unknown"
+
+  if [ -f /etc/os-release ]; then
+    os_id=$(grep '^ID=' /etc/os-release | cut -d= -f2 | tr -d '"')
+  fi
+
+  case "$os_id" in
+  artix | void)
+    case "$1" in
+    shutdown) loginctl poweroff ;;
+    restart) loginctl reboot ;;
+    suspend) loginctl suspend ;;
+    *) printf "Usage: smart_power {shutdown|restart|suspend}\n" ;;
+    esac
+    ;;
+  *) printf "Error: Unrecognized OS (%s). This function targets Artix and Void.\n" "$os_id" ;;
+  esac
+}

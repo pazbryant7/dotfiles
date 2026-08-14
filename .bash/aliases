@@ -1,0 +1,4 @@
+# Bash
+alias bashe="nvim ~/.bashrc"
+alias bashc="cd ~/.bash && nvim config"
+alias basha="cd ~/.bash && nvim aliases"

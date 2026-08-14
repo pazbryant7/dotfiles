@@ -1,0 +1,29 @@
+BASH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/bash"
+
+reload_bash() {
+  source "$HOME/.bashrc"
+}
+
+bash_cache_init() {
+  local name="$1" cache_file command_path temp_file
+  shift
+
+  command_path="$(command -v "$name")" || return 0
+  cache_file="$BASH_CACHE_DIR/$name.bash"
+  (umask 077 && mkdir -p "$BASH_CACHE_DIR") || return 1
+  chmod 700 "$BASH_CACHE_DIR" || return 1
+
+  if [ ! -s "$cache_file" ] || [ "$command_path" -nt "$cache_file" ]; then
+    temp_file="$(umask 077 && mktemp "$BASH_CACHE_DIR/$name.XXXXXX")" || return 1
+    if ! "$@" >"$temp_file"; then
+      rm -f "$temp_file"
+      return 1
+    fi
+    mv -f "$temp_file" "$cache_file" || {
+      rm -f "$temp_file"
+      return 1
+    }
+  fi
+
+  source "$cache_file"
+}

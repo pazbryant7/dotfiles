@@ -1,0 +1,33 @@
+# Bash options
+shopt -s autocd
+export HISTFILE=/dev/null
+
+# Completion configuration
+bind 'set completion-ignore-case on'
+
+# Custom binds
+bind '"\ee": edit-and-execute-command'
+
+# Cached tool inits
+bash_cache_init fzf fzf --bash
+bash_cache_init atuin atuin init bash
+
+# Disable "c-s delay"
+stty -ixon
+stty susp undef
+
+bash_set_prompt() {
+  local nix_tag=""
+  if [ -n "${NX_SHELL_PROFILE:-}" ]; then
+    nix_tag="\[\e[36m\][NX:${NX_SHELL_PROFILE}]\[\e[0m\] "
+  elif [ -n "${IN_NIX_SHELL:-}" ]; then
+    case "$IN_NIX_SHELL" in
+    pure) nix_tag="\[\e[32m\][DEVELOP:pure]\[\e[0m\] " ;;
+    impure) nix_tag="\[\e[33m\][DEVELOP:impure]\[\e[0m\] " ;;
+    *) nix_tag="\[\e[32m\][DEVELOP]\[\e[0m\] " ;;
+    esac
+  fi
+  PS1="${nix_tag}\[\e[37m\]\W\[\e[0m\] "
+}
+
+PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND; }bash_set_prompt"
