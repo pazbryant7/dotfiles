@@ -60,16 +60,8 @@ PKIMetadata/
 OriginTrials/
 TLSDeprecationConfig/
 AutofillStates/
-FirstPartySetsPreloaded/
+FirstPartySetsPreloaded/"
 
-# --- Firefox extras ---
-cache2/
-startupCache/
-safebrowsing/
-security_state/
-minidumps/
-crashes/
-storage/temporary/"
 
 MEDIA_SOURCES="$HOME/Music
 $HOME/.config/calibre
@@ -77,7 +69,6 @@ $HOME/.config/backups
 $HOME/Documents/books
 $HOME/.config/qBittorrent
 $HOME/.config/BraveSoftware
-$HOME/.config/mozilla/firefox
 $HOME/.config/net.imput.helium
 $HOME/Documents/github/ansible-dots/.secrets"
 
@@ -87,7 +78,8 @@ FILEN_QUOTA_BYTES=$((10 * 1024 * 1024 * 1024)) # 10 GiB free-tier quota (adjust 
 FILEN_WARN_BYTES=$((1 * 1024 * 1024 * 1024))   # warn when <=1 GiB would remain
 
 is_mounted() {
-  mountpoint -q "$MEDIA_DESTINATION"
+  mountpoint -q "$MEDIA_DESTINATION" &&
+    findmnt -rn --source "$BLOCK_DEVICE" --target "$MEDIA_DESTINATION" >/dev/null 2>&1
 }
 
 mount_disk() {
@@ -98,8 +90,13 @@ mount_disk() {
 
   printf '%s\n' "Info: Attempting to mount '$BLOCK_DEVICE'..."
   if udisksctl mount -b "$BLOCK_DEVICE"; then
-    printf '%s\n' "Success: Mounted '$BLOCK_DEVICE' at '$MEDIA_DESTINATION'."
-    return 0
+    if is_mounted; then
+      printf '%s\n' "Success: Mounted '$BLOCK_DEVICE' at '$MEDIA_DESTINATION'."
+      return 0
+    fi
+
+    printf "Error: '%s' was not mounted at expected destination '%s'.\n" "$BLOCK_DEVICE" "$MEDIA_DESTINATION" >&2
+    return 1
   fi
 
   printf '%s\n' "Error: Failed to mount '$BLOCK_DEVICE'." >&2
@@ -384,7 +381,9 @@ process_sources() {
   exclude_file="$1"
   sources="$2"
 
-  printf '%s\n' "$sources" | while read -r source; do
+  printf '%s\n' "$sources" | (
+  failed=0
+  while read -r source; do
     [ -z "$source" ] && continue
 
     if [ ! -d "$source" ]; then
@@ -393,9 +392,11 @@ process_sources() {
     fi
 
     if ! run_backup "$source" "$exclude_file"; then
-      exit 1
+      failed=1
     fi
   done
+  exit "$failed"
+  )
 
   return $?
 }
@@ -431,6 +432,7 @@ process_restore_filen() {
 }
 
 main() {
+  operation_failed=0
   mode=$(prompt_mode) || exit 1
 
   printf '%s\n' "=== Starting ${mode} process ==="
@@ -448,11 +450,13 @@ main() {
   backup)
     if ! process_sources "$exclude_file" "$MEDIA_SOURCES"; then
       printf '%s\n' "Warning: One or more backup tasks failed." >&2
-    fi
-
-    # Auto-sync to Filen right after the local backup finishes.
-    if ! sync_to_filen; then
-      printf '%s\n' "Warning: Filen sync failed after local backup." >&2
+      operation_failed=1
+    else
+      # Do not mirror a partially failed local backup to the remote.
+      if ! sync_to_filen; then
+        printf '%s\n' "Warning: Filen sync failed after local backup." >&2
+        operation_failed=1
+      fi
     fi
     ;;
   restore)
@@ -485,6 +489,7 @@ main() {
   filensync)
     if ! sync_to_filen; then
       printf '%s\n' "Warning: Filen sync task failed." >&2
+      operation_failed=1
     fi
     ;;
   esac
@@ -492,7 +497,7 @@ main() {
   if flush_disk_cache; then
     prompt_unmount
     printf '%s\n' "=== ${mode} has finished. ==="
-    exit 0
+    exit "$operation_failed"
   else
     printf '%s\n' "ERROR: Disk cache flush failed." >&2
     exit 1
