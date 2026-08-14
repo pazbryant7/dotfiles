@@ -2,7 +2,8 @@
 
 CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}"
 ENCRYPTED_FILE="$CACHE_DIR/bw_vault.gpg"
-SESSION_FILE="${XDG_RUNTIME_DIR:-/tmp}/bw_session"
+RUNTIME_DIR="${XDG_RUNTIME_DIR:-$CACHE_DIR}/bw-sync"
+SESSION_FILE="$RUNTIME_DIR/session"
 TEMPLATE_LOGIN="$CACHE_DIR/bw_login_template.json"
 TEMPLATE_CARD="$CACHE_DIR/bw_card_template.json"
 TEMPLATE_NOTE="$CACHE_DIR/bw_note_template.json"
@@ -23,8 +24,17 @@ load_session() {
 }
 
 save_session() {
-  printf "%s" "$1" >"$SESSION_FILE"
-  chmod 600 "$SESSION_FILE"
+  _ss_tmp=$(mktemp "$RUNTIME_DIR/session.XXXXXX") || return 1
+  printf "%s" "$1" >"$_ss_tmp" || {
+    rm -f "$_ss_tmp"
+    return 1
+  }
+  chmod 600 "$_ss_tmp" && mv -f "$_ss_tmp" "$SESSION_FILE"
+}
+
+prepare_runtime_dir() {
+  (umask 077 && mkdir -p "$RUNTIME_DIR") || return 1
+  chmod 700 "$RUNTIME_DIR"
 }
 
 validate_session() {
@@ -47,7 +57,7 @@ get_session() {
   fi
   info "session" "locked, authenticating..."
   _gs_token=$(unlock_vault) || return 1
-  save_session "$_gs_token"
+  save_session "$_gs_token" || return 1
   printf "%s" "$_gs_token"
 }
 
@@ -58,10 +68,26 @@ sync_vault() {
 
 encrypt_vault() {
   _ev_recipient="$(gopass_field username)"
-  mkdir -p "${ENCRYPTED_FILE%/*}"
+  [ -n "$_ev_recipient" ] || return 1
+  (umask 077 && mkdir -p "${ENCRYPTED_FILE%/*}") || return 1
+  _ev_json=$(umask 077 && mktemp "${ENCRYPTED_FILE%/*}/.bw_vault.XXXXXX") || return 1
+  _ev_encrypted=$(umask 077 && mktemp "${ENCRYPTED_FILE%/*}/.bw_vault.gpg.XXXXXX") || {
+    rm -f "$_ev_json"
+    return 1
+  }
   info "encrypt" "$ENCRYPTED_FILE"
-  bw list items --session "$1" |
-    gpg --encrypt --recipient "$_ev_recipient" --output "$ENCRYPTED_FILE" --yes
+  if ! bw list items --session "$1" >"$_ev_json" ||
+    ! [ -s "$_ev_json" ] ||
+    ! jq -e 'type == "array" and length > 0' "$_ev_json" >/dev/null ||
+    ! gpg --encrypt --recipient "$_ev_recipient" --output "$_ev_encrypted" --yes <"$_ev_json"; then
+    rm -f "$_ev_json" "$_ev_encrypted"
+    return 1
+  fi
+  rm -f "$_ev_json"
+  mv -f "$_ev_encrypted" "$ENCRYPTED_FILE" || {
+    rm -f "$_ev_encrypted"
+    return 1
+  }
 }
 
 fetch_template() {
@@ -74,7 +100,15 @@ fetch_template() {
 }
 
 write_template() {
-  printf "%s" "$2" | jq . >"$1"
+  _wt_tmp=$(umask 077 && mktemp "${1%/*}/.${1##*/}.XXXXXX") || return 1
+  if ! printf "%s" "$2" | jq . >"$_wt_tmp"; then
+    rm -f "$_wt_tmp"
+    return 1
+  fi
+  mv -f "$_wt_tmp" "$1" || {
+    rm -f "$_wt_tmp"
+    return 1
+  }
   info "template" "$1"
 }
 
@@ -153,6 +187,7 @@ cache_templates() {
 }
 
 main() {
+  prepare_runtime_dir || die "could not create private runtime directory"
   _session=$(get_session) || die "failed to unlock vault"
   sync_vault "$_session" || die "vault sync failed"
   encrypt_vault "$_session" || die "vault encryption failed"
