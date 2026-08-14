@@ -7,6 +7,7 @@ export EDITOR="nvim"
 export TERMINAL="st"
 export VISUAL=$EDITOR
 export PAGER="less -R"
+export BROWSER="helium"
 export OPENER="xdg-open"
 export CM_LAUNCHER="rofi"
 export SUDO_EDITOR="nvim"
@@ -17,7 +18,6 @@ export NIXPKGS_ALLOW_INSECURE=1
 export MANPAGER="$EDITOR +Man!"
 export QT_QPA_PLATFORMTHEME=qt6ct
 export GOPATH="/home/bryant/go/bin"
-export BROWSER="brave-origin-stable"
 export XDG_CONFIG_HOME="$HOME/.config"
 
 # }}
