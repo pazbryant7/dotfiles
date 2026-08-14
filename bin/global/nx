@@ -85,37 +85,9 @@ list_profiles() {
   done
 }
 
-split_args() {
-  # populates globals: profiles (space list), cmd (space list, may be empty)
-  profiles=""
-  cmd=""
-  while [ $# -gt 0 ]; do
-    case "$1" in
-    --)
-      shift
-      cmd="$*"
-      return
-      ;;
-    *)
-      profiles="$profiles $1"
-      shift
-      ;;
-    esac
-  done
-}
-
 build_package_list() {
-  pkgs=""
-  for profile in $profiles; do
-    check_profile_exists "$profile"
-    found=$(profile_packages "$profile")
-    if [ -z "$found" ]; then
-      die "Profile has no packages: $profile"
-    fi
-    pkgs="$pkgs $found"
-  done
+  pkgs=$(printf '%s' "$pkgs" | sort -u | tr '\n' ' ')
 
-  pkgs=$(printf '%s\n' $pkgs | sort -u | tr '\n' ' ')
   if [ -z "$pkgs" ]; then
     die "No packages resolved from: $profiles"
   fi
@@ -124,8 +96,10 @@ build_package_list() {
 run_shell() {
   export IN_NIX_SHELL=1
   export NX_SHELL_PROFILE="$profiles"
-  if [ -n "$cmd" ]; then
-    exec nix shell $pkgs -c $cmd
+  # Package names cannot contain whitespace; disable globbing for this expansion.
+  set -f
+  if [ $# -gt 0 ]; then
+    exec nix shell $pkgs -c "$@"
   else
     exec nix shell $pkgs
   fi
@@ -147,14 +121,34 @@ main() {
   esac
 
   check_deps
-  split_args "$@"
+  profiles=""
+  pkgs=""
+  while [ $# -gt 0 ]; do
+    case "$1" in
+    --)
+      shift
+      break
+      ;;
+    *)
+      profiles="${profiles}${profiles:+ }$1"
+      check_profile_exists "$1"
+      found=$(profile_packages "$1")
+      if [ -z "$found" ]; then
+        die "Profile has no packages: $1"
+      fi
+      pkgs="${pkgs}${found}
+"
+      shift
+      ;;
+    esac
+  done
 
   if [ -z "$profiles" ]; then
     usage
   fi
 
   build_package_list
-  run_shell
+  run_shell "$@"
 }
 
 main "$@"
