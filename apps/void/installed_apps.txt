@@ -35,6 +35,7 @@ grub-x86_64-efi
 hyperfine
 intel-media-driver
 intel-ucode
+intel-video-accel
 jq
 jujutsu
 lazydocker
