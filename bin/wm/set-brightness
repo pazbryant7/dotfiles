@@ -6,7 +6,7 @@ WARM_COLOR_TEMP="4200K"
 DEFAULT_COLOR_TEMP="6500K"
 
 prompt_brightness() {
-  rofi -dmenu -p "Enter brightness (0-9 or 0.0-1.0):" -lines 1
+  rofi -dmenu -p "Enter brightness (1-7 or 0.0-1.0):" -lines 1
 }
 
 normalize_brightness() {
@@ -22,7 +22,12 @@ normalize_brightness() {
   7) brightness="0.10" ;;
   esac
 
-  echo "$brightness"
+  case "$brightness" in
+  0 | 0.0 | 0.00 | 0.[0-9] | 0.[0-9][0-9] | 1 | 1.0 | 1.00) ;;
+  *) return 1 ;;
+  esac
+
+  printf '%s\n' "$brightness"
 }
 
 get_current_color_temp() {
@@ -42,16 +47,7 @@ apply_brightness() {
   brightness="$1"
   color_temp="$2"
 
-  echo "$brightness"
-  echo "$color_temp"
-
-  max_gammastep_brightness="1.00"
-
-  if awk "BEGIN { exit !($brightness > $max_gammastep_brightness) }"; then
-    xrandr --output "$OUTPUT" --brightness "$brightness"
-  else
-    gammastep -m "$RANDR_METHOD" -P -O "$color_temp" -b "$brightness"
-  fi
+  gammastep -m "$RANDR_METHOD" -P -O "$color_temp" -b "$brightness"
 }
 
 main() {
@@ -59,7 +55,10 @@ main() {
   [ -z "$brightness" ] && exit 0
 
   color_temp="$(get_current_color_temp)"
-  brightness="$(normalize_brightness "$brightness")"
+  brightness="$(normalize_brightness "$brightness")" || {
+    printf '%s\n' "Brightness must be a shortcut from 1 to 7 or a value from 0.0 to 1.0." >&2
+    exit 1
+  }
 
   apply_brightness "$brightness" "$color_temp"
 }
