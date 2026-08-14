@@ -138,16 +138,12 @@ build_output_path() {
 # ---------------------------------------------------------------------------
 
 start_ffmpeg() {
-  # stderr is filtered to suppress the known "Immediate exit" trailer
-  # messages that appear on clean Ctrl+C shutdown — the file is always
-  # written correctly regardless of those messages.
   ffmpeg -hide_banner -loglevel error \
     -f pulse -i "${MICROPHONE}" \
     -ar "${SAMPLE_RATE}" \
     -ac "${AUDIO_CHANNELS}" \
     -b:a "${AUDIO_BITRATE}" \
-    "${OUTPUT_FILE}" 2>&1 |
-    rg -v 'Immediate exit' >&2 &
+    "${OUTPUT_FILE}" &
   FFMPEG_PID=$!
 }
 
@@ -229,6 +225,7 @@ main() {
   TIMER_PID=$!
 
   wait "${FFMPEG_PID}"
+  on_exit
 }
 
 main "$@"
