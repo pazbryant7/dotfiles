@@ -1,12 +1,11 @@
 #!/bin/env sh
 
 OUTPUT="HDMI-2"
-RANDR_METHOD="randr"
-WARM_COLOR_TEMP="4200K"
-DEFAULT_COLOR_TEMP="6500K"
 
 prompt_brightness() {
-  rofi -dmenu -p "Enter brightness (1-7 or 0.0-1.0):" -lines 1
+  rofi -dmenu \
+    -p "Brightness (1-7 shortcut or value like 1.2):" \
+    -lines 1
 }
 
 normalize_brightness() {
@@ -22,45 +21,59 @@ normalize_brightness() {
   7) brightness="0.10" ;;
   esac
 
-  case "$brightness" in
-  0 | 0.0 | 0.00 | 0.[0-9] | 0.[0-9][0-9] | 1 | 1.0 | 1.00) ;;
-  *) return 1 ;;
-  esac
+  awk -v value="$brightness" '
+    BEGIN {
+      if (value ~ /^[0-9]+([.][0-9]+)?$/ && value > 0) {
+        print value
+        exit 0
+      }
 
-  printf '%s\n' "$brightness"
+      exit 1
+    }
+  '
 }
 
-get_current_color_temp() {
-  gamma="$(xrandr --verbose | awk '/Gamma:/ { print $2 }')"
+get_current_gamma() {
+  gamma="$(xrandr --verbose |
+    awk -v output="$OUTPUT" '
+      $1 == output { found = 1 }
+      found && /Gamma:/ {
+        print $2
+        exit
+      }
+    ')"
 
-  color_temp="$DEFAULT_COLOR_TEMP"
-  warm_gamma="1.0:1.2:1.5"
-
-  if [ "$gamma" = "$warm_gamma" ]; then
-    color_temp="$WARM_COLOR_TEMP"
-  fi
-
-  echo "$color_temp"
+  case "$gamma" in
+  1.0:1.2:1.5 | 1:1.2:1.5)
+    printf '%s\n' "1.0:1.2:1.5"
+    ;;
+  *)
+    printf '%s\n' "1.0:1.0:1.0"
+    ;;
+  esac
 }
 
 apply_brightness() {
   brightness="$1"
-  color_temp="$2"
+  gamma="$2"
 
-  gammastep -m "$RANDR_METHOD" -P -O "$color_temp" -b "$brightness"
+  xrandr \
+    --output "$OUTPUT" \
+    --brightness "$brightness" \
+    --gamma "$gamma"
 }
 
 main() {
   brightness="$(prompt_brightness)"
   [ -z "$brightness" ] && exit 0
 
-  color_temp="$(get_current_color_temp)"
   brightness="$(normalize_brightness "$brightness")" || {
-    printf '%s\n' "Brightness must be a shortcut from 1 to 7 or a value from 0.0 to 1.0." >&2
+    printf '%s\n' "Brightness must be a positive number." >&2
     exit 1
   }
 
-  apply_brightness "$brightness" "$color_temp"
+  gamma="$(get_current_gamma)"
+  apply_brightness "$brightness" "$gamma"
 }
 
 main "$@"
