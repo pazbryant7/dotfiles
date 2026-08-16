@@ -32,7 +32,7 @@ st.chscale: 1.00
 st.cwscale: 0.90
 st.borderpx: 0px
 
-st.currentfont: 9
+st.currentfont: 0
 
 ! Nsxiv specific
 Nsxiv.window.background: #1e1e2e
