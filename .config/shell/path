@@ -1,9 +1,9 @@
 extra_path=(
+  "/usr/local/bin/"
   "$HOME/bin/global/"
   "$HOME/bin/crontab/"
-  "/usr/local/bin/"
   "$HOME/.nix-profile/bin/"
-  "$HOME/Documents/github/boilerplate/"
+  "$HOME/Documents/github/templates/bin/"
 )
 
 path_prefix=""
