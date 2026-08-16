@@ -1,5 +1,7 @@
 # Regular commands
+alias cd="z"
 alias l="less"
+alias cdi="zi"
 alias :q="exit"
 alias lsi="ls -1"
 alias dh="rm ~/.history.db"
