@@ -12,6 +12,10 @@ DEFAULT_WARMTH="6500K"
 enable_warmth() {
   current_brightness="$1"
 
+  if awk -v brightness="$current_brightness" 'BEGIN { exit !(brightness > 1) }'; then
+    current_brightness="1"
+  fi
+
   gammastep -m "$METHOD" -P -O "$WARM_TEMP" \
     -b "$current_brightness" >/dev/null 2>&1 &&
     : >"$STATE_FILE"
