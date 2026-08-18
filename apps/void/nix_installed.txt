@@ -1,8 +1,8 @@
 [1mbitwarden-cli[0m
 [1mbrave-origin-flake[0m
+[1mcodex[0m
 [1mdwm[0m
 [1mhelium-browser-nix-flake[0m
-[1mopencode[0m
 [1mslstatus[0m
 [1mst[0m
 [1mventoy[0m

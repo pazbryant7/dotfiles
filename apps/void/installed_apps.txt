@@ -40,7 +40,7 @@ jq
 jujutsu
 lazydocker
 lazygit
-lf-r41_1
+lf-r42_1
 linux
 lsof
 lua
@@ -101,4 +101,5 @@ xsv
 yt-dlp
 zathura
 zathura-pdf-mupdf
+zoxide
 zsh
