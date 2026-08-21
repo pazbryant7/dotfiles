@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
 
-DEFAULT_LAYOUT="bryantq"
-DEFAULT_LAYOUT_INTL="bryantqi"
-DEFAULT_DVORAK_LAYOUT="bryantd"
-DEFAULT_DVORAK_LAYOUT_INTL="bryantdi"
+DEFAULT_LAYOUT="bryantqc"
+DEFAULT_LAYOUT_INTL="bryantqic"
+DEFAULT_DVORAK_LAYOUT="bryantdc"
+DEFAULT_DVORAK_LAYOUT_INTL="bryantdic"
 
 get_current_layout() {
   setxkbmap -query | rg 'layout:' | awk '{print $2}'
