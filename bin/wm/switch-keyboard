@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
 
-DEFAULT_LAYOUT="bryantqc"
-DEFAULT_LAYOUT_INTL="bryantqic"
-DEFAULT_DVORAK_LAYOUT="bryantdc"
-DEFAULT_DVORAK_LAYOUT_INTL="bryantdic"
+DEFAULT_LAYOUT="bryantqinv"
+DEFAULT_LAYOUT_INTL="bryantqinvi"
+STANDARD_LAYOUT="bryantq"
+STANDARD_LAYOUT_INTL="bryantqi"
 
 get_current_layout() {
   setxkbmap -query | rg 'layout:' | awk '{print $2}'
@@ -15,7 +15,7 @@ send_notification() {
 }
 
 set_layout_and_notify() {
-  setxkbmap "$1"
+  setxkbmap -option -layout "$1"
   send_notification "$1"
 }
 
@@ -37,11 +37,11 @@ toggle_international() {
     "$DEFAULT_LAYOUT_INTL")
       set_layout_and_notify "$DEFAULT_LAYOUT"
       ;;
-    "$DEFAULT_DVORAK_LAYOUT")
-      set_layout_and_notify "$DEFAULT_DVORAK_LAYOUT_INTL"
+    "$STANDARD_LAYOUT")
+      set_layout_and_notify "$STANDARD_LAYOUT_INTL"
       ;;
-    "$DEFAULT_DVORAK_LAYOUT_INTL")
-      set_layout_and_notify "$DEFAULT_DVORAK_LAYOUT"
+    "$STANDARD_LAYOUT_INTL")
+      set_layout_and_notify "$STANDARD_LAYOUT"
       ;;
     *)
       set_layout_and_notify "$DEFAULT_LAYOUT"
@@ -51,7 +51,7 @@ toggle_international() {
 
 main() {
   if [ "$1" = "x" ]; then
-    toggle_layout "$DEFAULT_LAYOUT" "$DEFAULT_DVORAK_LAYOUT"
+    toggle_layout "$DEFAULT_LAYOUT" "$STANDARD_LAYOUT"
   else
     toggle_international
   fi
