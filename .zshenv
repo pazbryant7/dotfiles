@@ -3,21 +3,21 @@
 export WM="dwm"
 export LESS="FRSX"
 export VIDEO="mpv"
-export EDITOR="nvim"
+export EDITOR="$HOME/.local/share/bob/nvim-bin/nvim"
 export TERMINAL="st"
 export VISUAL=$EDITOR
 export PAGER="less -R"
 export BROWSER="helium"
 export OPENER="xdg-open"
 export CM_LAUNCHER="rofi"
-export SUDO_EDITOR="nvim"
+export SUDO_EDITOR="$EDITOR"
 export XDG_SESSION_TYPE=x11
 export COLORTERM="truecolor"
 export NIXPKGS_ALLOW_UNFREE=1
 export NIXPKGS_ALLOW_INSECURE=1
 export MANPAGER="$EDITOR +Man!"
 export QT_QPA_PLATFORMTHEME=qt6ct
-export GOPATH="/home/bryant/go/bin"
+export GOPATH="$HOME/go/bin"
 export XDG_CONFIG_HOME="$HOME/.config"
 
 # }}
