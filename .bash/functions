@@ -1,20 +1,20 @@
-BASH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/bash"
+cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/bash"
 
 reload_bash() {
   source "$HOME/.bashrc"
 }
 
-bash_cache_init() {
+cache_init() {
   local name="$1" cache_file command_path temp_file
   shift
 
   command_path="$(command -v "$name")" || return 0
-  cache_file="$BASH_CACHE_DIR/$name.bash"
-  (umask 077 && mkdir -p "$BASH_CACHE_DIR") || return 1
-  chmod 700 "$BASH_CACHE_DIR" || return 1
+  cache_file="$cache_dir/$name.bash"
+  (umask 077 && mkdir -p "$cache_dir") || return 1
+  chmod 700 "$cache_dir" || return 1
 
   if [ ! -s "$cache_file" ] || [ "$command_path" -nt "$cache_file" ]; then
-    temp_file="$(umask 077 && mktemp "$BASH_CACHE_DIR/$name.XXXXXX")" || return 1
+    temp_file="$(umask 077 && mktemp "$cache_dir/$name.XXXXXX")" || return 1
     if ! "$@" >"$temp_file"; then
       rm -f "$temp_file"
       return 1
@@ -28,19 +28,19 @@ bash_cache_init() {
   source "$cache_file"
 }
 
-bash_load_fzf() {
-  [ -n "${BASH_FZF_LOADED:-}" ] && return 0
-  bash_cache_init fzf fzf --bash || return 1
+load_fzf() {
+  [ -n "${fzf_loaded:-}" ] && return 0
+  cache_init fzf fzf --bash || return 1
   # fzf binds Ctrl-R too; restore Atuin's history widget after loading it.
   if [ "${__atuin_bind_ctrl_r:-false}" = true ]; then
     atuin-bind -m emacs '\C-r' atuin-search-emacs
     atuin-bind -m vi-insert '\C-r' atuin-search-viins
     atuin-bind -m vi-command '/' atuin-search-emacs
   fi
-  BASH_FZF_LOADED=1
+  fzf_loaded=1
 }
 
-bash_fzf_file_widget() {
-  bash_load_fzf || return
+fzf_file_widget() {
+  load_fzf || return
   fzf-file-widget
 }

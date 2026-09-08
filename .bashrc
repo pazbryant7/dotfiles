@@ -3,13 +3,9 @@ case $- in
 *) return ;;
 esac
 
-BASH_CONFIG_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.bash" && pwd -P)" || return
-SHELL_CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/shell"
-source "$SHELL_CONFIG_DIR/load" || return
+root_dir="$(builtin cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)" || return
+shell_dir="$root_dir/.shell"
+bash_dir="$root_dir/.bash"
+source "$shell_dir/load" || return
 
-load "$SHELL_CONFIG_DIR/functions"
-load "$BASH_CONFIG_DIR/functions"
-load "$SHELL_CONFIG_DIR/aliases"
-load "$BASH_CONFIG_DIR/aliases"
-load "$BASH_CONFIG_DIR/path"
-load "$BASH_CONFIG_DIR/config"
+load_modules "$shell_dir" "$bash_dir" || return

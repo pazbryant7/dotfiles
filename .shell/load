@@ -1,0 +1,24 @@
+load() {
+  local file
+
+  for file in "$@"; do
+    if [ ! -r "$file" ]; then
+      printf 'Missing shell configuration: %s\n' "$file" >&2
+      return 1
+    fi
+    source "$file" || return 1
+  done
+}
+
+load_modules() {
+  local shared_dir="$1"
+  local shell_dir="$2"
+
+  load \
+    "$shared_dir/functions" \
+    "$shell_dir/functions" \
+    "$shared_dir/aliases" \
+    "$shell_dir/aliases" \
+    "$shared_dir/path" \
+    "$shell_dir/config"
+}

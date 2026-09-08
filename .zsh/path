@@ -1,6 +1,0 @@
-# extend path
-load "$SHELL_CONFIG_DIR/path"
-
-# extend fpath
-extra_fpath=()
-FPATH="${(j/:/)extra_fpath}:${FPATH}"

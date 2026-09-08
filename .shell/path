@@ -1,0 +1,20 @@
+__shell_add_path() {
+  local dir prefix=""
+  local -a paths=(
+    "/usr/local/bin"
+    "$HOME/bin/global"
+    "$HOME/bin/crontab"
+    "$HOME/.nix-profile/bin"
+    "$HOME/.local/share/bob/nvim-bin"
+    "$HOME/Documents/github/templates/bin"
+  )
+
+  for dir in "${paths[@]}"; do
+    prefix="${prefix:+$prefix:}$dir"
+  done
+
+  export PATH="${prefix}${PATH:+:$PATH}"
+}
+
+__shell_add_path
+unset -f __shell_add_path

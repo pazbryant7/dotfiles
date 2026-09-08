@@ -1,9 +1,9 @@
 #!/usr/bin/env zsh
 
-ZSH_CACHE_DIR="${ZDOTDIR:-$HOME/.zsh}/cache"
+cache_dir="${ZDOTDIR:-$HOME/.zsh}/cache"
 
 rez() {
-  . /home/bryant/.zshrc
+  source "$HOME/.zshrc"
 }
 
 # Shell functions for binds
@@ -36,40 +36,40 @@ smart-help() {
 
 # Cache
 
-zsh-cache-init() {
+cache_init() {
   local name=$1
   shift
-  local cache_file="$ZSH_CACHE_DIR/$name.zsh"
-  [[ -d $ZSH_CACHE_DIR ]] || mkdir -p "$ZSH_CACHE_DIR"
-  if [[ ! -s $cache_file ]]; then
-    "$@" >|"$cache_file" || return
-    zcompile "$cache_file" 2>/dev/null
+  local file="$cache_dir/$name.zsh"
+  [[ -d $cache_dir ]] || mkdir -p "$cache_dir"
+  if [[ ! -s $file ]]; then
+    "$@" >|"$file" || return
+    zcompile "$file" 2>/dev/null
   fi
-  source "$cache_file"
+  source "$file"
 }
 
 # Completion
-zcompinit() {
-  local dump="$ZSH_CACHE_DIR/zcompdump"
-  [[ -d $ZSH_CACHE_DIR ]] || mkdir -p "$ZSH_CACHE_DIR"
+init_completion() {
+  local dump="$cache_dir/zcompdump"
+  [[ -d $cache_dir ]] || mkdir -p "$cache_dir"
   autoload -Uz compinit
   if [[ -s $dump ]]; then
     compinit -C -d "$dump"   # cache exists: trust it, skip security check, no regen
   else
     compinit -d "$dump"      # no cache: full init
-    zcompile-dump
+    compile_dump
   fi
 }
 
-zcompile-dump() {
-  local dump="$ZSH_CACHE_DIR/zcompdump"
+compile_dump() {
+  local dump="$cache_dir/zcompdump"
   [[ -s $dump && (! -s $dump.zwc || $dump -nt $dump.zwc) ]] && zcompile "$dump"
 }
 
-zcompile-config() {
-  local f
-  for f in ~/.zshrc ~/.zsh/{aliases,functions,path,config,plugin}; do
-    [[ -f $f && (! -f $f.zwc || $f -nt $f.zwc) ]] && zcompile "$f"
+compile_config() {
+  local file
+  for file in "$HOME/.zshrc" "$HOME/.zsh/aliases" "$HOME/.zsh/functions" "$HOME/.zsh/config"; do
+    [[ -f $file && (! -f $file.zwc || $file -nt $file.zwc) ]] && zcompile "$file"
   done
 }
 

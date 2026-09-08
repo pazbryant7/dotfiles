@@ -4,7 +4,7 @@
 
 - This is a GNU Stow home-directory tree, not an application project. Tracked root paths are intended to resolve under `$HOME`; `.stow-local-ignore` excludes repository-only assets and metadata.
 - Deploy from the repository root with `stow --target="$HOME" --restow .`. `dots` performs that safe restow; pass `dots --adopt` only when intentionally adopting local changes, because adoption can overwrite repository files with home-directory configuration.
-- Shell startup is ordered by `.zshrc`: `.zsh/functions`, `.zsh/aliases`, `.zsh/path`, then `.zsh/config`. Bash is intentionally minimal for `nix develop`: `.bashrc` follows the same module order under `.bash/`. Portable definitions live in `.config/shell/`; keep shell-specific integrations out of that directory. `bin/global/` is added to `PATH` by `.config/shell/path`; `bin/tmux/`, `bin/wm/`, and `bin/utilities/` are invoked by their configured callers.
+- Shell startup is handled by the root-level `.shell/`, `.zsh/`, and `.bash/` modules. `.zshrc` and `.bashrc` load shared functions, shell-specific functions, shared aliases, shell-specific aliases, shared paths, and finally shell-specific configuration. Bash is intentionally minimal for `nix develop`. Portable definitions live in `.shell/`; keep shell-specific integrations out of that directory. `bin/global/` is added to `PATH` by `.shell/path`; `bin/tmux/`, `bin/wm/`, and `bin/utilities/` are invoked by their configured callers.
 - `.config/nx/profiles.conf` defines named package groups for `bin/global/nx`. Use `nx list` to inspect them and `nx <profile> [profile...] -- <command>` to run a focused tool in a temporary Nix shell.
 
 ## Generated and Machine-Specific Data

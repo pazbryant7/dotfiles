@@ -13,7 +13,7 @@ tk() {
   if [ -z "$TMUX" ]; then
     tmux kill-server
   else
-    "$HOME/bin/tmux/remove-all" "/home/$USER"
+    "$HOME/bin/tmux/remove-all" "$HOME"
   fi
 
   cd "$HOME" || return
@@ -25,20 +25,20 @@ h() {
     return 1
   fi
 
-  local tmux_current_pane_path tmux_current_session_path
-  tmux_current_pane_path="$(tmux display-message -p '#{pane_current_path}')" || return 1
-  tmux_current_session_path="$(tmux display-message -p '#{session_path}')" || return 1
-  if [ "$tmux_current_pane_path" = "$tmux_current_session_path" ]; then
+  local pane_path session_path
+  pane_path="$(tmux display-message -p '#{pane_current_path}')" || return 1
+  session_path="$(tmux display-message -p '#{session_path}')" || return 1
+  if [ "$pane_path" = "$session_path" ]; then
     tmux display-message "You are already in your session root directory"
     return 0
   fi
-  cd "$tmux_current_session_path" || {
-    tmux display-message "Error: Could not change to session root: $tmux_current_session_path"
+  cd "$session_path" || {
+    tmux display-message "Error: Could not change to session root: $session_path"
     return 1
   }
 }
 
-y() {
+lf() {
   local tmp dir
   tmp="$(mktemp)" || return 1
   command lf -last-dir-path="$tmp" "$@"
