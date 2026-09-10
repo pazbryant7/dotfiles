@@ -3,4 +3,3 @@
 [mounts]
 	path = /home/bryant/Documents/github/pass
 [mounts "legacy"]
-	path = /home/bryant/Documents/github/pass-backup
