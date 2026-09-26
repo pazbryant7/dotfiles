@@ -35,7 +35,7 @@ nuke() {
 }
 
 notify() {
-  tmux display-message "Welcome home $USER, all other sessions removed"
+  tmux display-message "All other sessions removed"
 }
 
 main() {
