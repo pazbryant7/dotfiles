@@ -27,3 +27,4 @@ x-scheme-handler/postman=Postman.desktop
 audio/x-m4a=ffplay.desktop
 application/x-pem-file=nvim.desktop
 text/html=nvim.desktop
+application/x-bittorrent=org.qbittorrent.qBittorrent.desktop
