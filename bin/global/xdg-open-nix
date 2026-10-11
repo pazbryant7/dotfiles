@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# Do not leak Nix's private runtime libraries into Void desktop handlers.
+unset LD_LIBRARY_PATH GIO_EXTRA_MODULES GDK_PIXBUF_MODULE_FILE QT_PLUGIN_PATH QML2_IMPORT_PATH ALSA_PLUGIN_DIR
+exec /usr/bin/xdg-open "$@"
