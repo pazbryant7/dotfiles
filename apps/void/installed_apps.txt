@@ -5,6 +5,7 @@ aria2
 atuin
 base-system
 bat
+bob
 bottom
 breeze-gtk
 breeze-icons
@@ -40,7 +41,7 @@ jq
 jujutsu
 lazydocker
 lazygit
-lf-r42_1
+lf-r42_2
 linux
 lsof
 lua
@@ -52,7 +53,6 @@ mpc
 mpd
 mpv
 ncmpcpp
-neovim
 nerd-fonts-symbols-ttf
 nix
 noto-fonts-cjk
@@ -88,6 +88,9 @@ void-repo-multilib-nonfree
 void-repo-nonfree
 xclip
 xcolor
+xdg-desktop-portal
+xdg-desktop-portal-gtk
+xdg-user-dirs
 xdg-utils
 xdotool
 xev

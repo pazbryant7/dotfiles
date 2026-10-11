@@ -1,5 +1,5 @@
 __shell_add_path() {
-  local dir prefix=""
+  local dir entry prefix="" remaining unique="" seen=":"
   local -a paths=(
     "/usr/local/bin"
     "$HOME/bin/global"
@@ -13,7 +13,33 @@ __shell_add_path() {
     prefix="${prefix:+$prefix:}$dir"
   done
 
-  export PATH="${prefix}${PATH:+:$PATH}"
+  PATH="${prefix}${PATH:+:$PATH}"
+
+  # Avoid growing PATH each time an interactive subshell loads this file.
+  remaining="$PATH"
+  while [ -n "$remaining" ]; do
+    case "$remaining" in
+    *:*)
+      entry=${remaining%%:*}
+      remaining=${remaining#*:}
+      ;;
+    *)
+      entry=$remaining
+      remaining=
+      ;;
+    esac
+
+    [ -n "$entry" ] || continue
+    case "$seen" in
+    *":$entry:"*) ;;
+    *)
+      seen="${seen}${entry}:"
+      unique="${unique:+$unique:}$entry"
+      ;;
+    esac
+  done
+
+  export PATH="$unique"
 }
 
 __shell_add_path

@@ -11,12 +11,10 @@ export BROWSER="brave-origin"
 export OPENER="xdg-open"
 export CM_LAUNCHER="rofi"
 export SUDO_EDITOR="$EDITOR"
-export XDG_SESSION_TYPE=x11
 export COLORTERM="truecolor"
 export NIXPKGS_ALLOW_UNFREE=1
 export NIXPKGS_ALLOW_INSECURE=1
 export MANPAGER="$EDITOR +Man!"
-export QT_QPA_PLATFORMTHEME=qt6ct
 export GOPATH="$HOME/go/bin"
 export XDG_CONFIG_HOME="$HOME/.config"
 
